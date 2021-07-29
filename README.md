@@ -16,10 +16,7 @@
 
 [RFC 7235 (authentication)](https://www.rfc-editor.org/rfc/pdfrfc/rfc7235.txt.pdf)
 
-- https://refactoring.guru/design-patterns
-
 ## To do list / check list:
-
 
 #### General 
 
@@ -65,6 +62,10 @@
 		- [ ] The cgi should be run in the correct directory for relativ path file access
 		- [ ] Your server should work with one CGI (php-cgi, python...)
 	- [ ] make the route able to accept uploaded files and configure where it should be saved
+- [ ] You must provide some configuration files and default basic files to test/demonstrate every feature is working during eval
 
-- [ ] You must provide some configuration files and default basic files to test/demonstrate
-every feature is working during eval
+
+## Refs :
+
+- [Design pattern helper](https://refactoring.guru/design-patterns)
+- [Namespace naming convention](https://stackoverflow.com/questions/228783/what-are-the-rules-about-using-an-underscore-in-a-c-identifier)

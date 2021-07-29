@@ -49,7 +49,7 @@ UNAME := $(shell uname)
 
 NAME = webserv
 
-SRC_DIR = ./srcs
+SRC_DIR = ./src
 INC_DIR = $(shell find . -type d -name "includes")
 OBJ_DIR = obj
 
