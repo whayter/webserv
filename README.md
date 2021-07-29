@@ -15,3 +15,5 @@
 [RFC 7234 (catching)](https://www.rfc-editor.org/rfc/pdfrfc/rfc7234.txt.pdf)
 
 [RFC 7235 (authentication)](https://www.rfc-editor.org/rfc/pdfrfc/rfc7235.txt.pdf)
+
+- https://refactoring.guru/design-patterns
