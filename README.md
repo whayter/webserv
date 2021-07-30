@@ -46,7 +46,7 @@
 - [ ] setup the [server_names](http://nginx.org/en/docs/http/server_names.html) or not
 - [ ] The first server for a host:port will be the default for this host:port (meaning it will answer to all request that doesn’t belong to an other server)
 - [ ] setup default error pages
-- [ ] limit client body size
+- [ ] limit [client body size](http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size)
 - [ ] setup routes with one or multiple of the following rules/configuration (routes wont be using regexp):
 	- [ ] define a list of accepted HTTP Methods for the route
 	- [ ] define an HTTP redirection.
