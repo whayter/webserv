@@ -84,3 +84,7 @@
 	- [server block](https://nginx.org/en/docs/http/ngx_http_core_module.html#server)
 - [How nginx process request](https://nginx.org/en/docs/http/request_processing.html)
 - [all nginx config directives](https://nginx.org/en/docs/http/ngx_http_core_module.html)
+
+#### Sync fork
+
+- [Syncing a fork](https://docs.github.com/en/github/collaborating-with-pull-requests/working-with-forks/syncing-a-fork)
