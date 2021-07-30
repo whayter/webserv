@@ -43,7 +43,7 @@
 #### Config file should be able to :
 
 - [ ] choose the port and host of each "server"
-- [ ] setup the server_names or not
+- [ ] setup the [server_names](http://nginx.org/en/docs/http/server_names.html) or not
 - [ ] The first server for a host:port will be the default for this host:port (meaning it will answer to all request that doesn’t belong to an other server)
 - [ ] setup default error pages
 - [ ] limit client body size
@@ -77,3 +77,6 @@
 - [how to use namespace to separate interface from implementation](https://softwareengineering.stackexchange.com/questions/233672/how-to-use-namespaces-to-separate-interface-from-implementation-in-c/399588)
 - [The problems with Avoiding Smurf Naming classes with namespaces](https://softwareengineering.stackexchange.com/questions/191929/the-problems-with-avoiding-smurf-naming-classes-with-namespaces?noredirect=1&lq=1)
 - [Multiple classes with the same name, but different namespaces?](https://softwareengineering.stackexchange.com/questions/251760/multiple-classes-with-the-same-name-but-different-namespaces?rq=1)
+
+#### Nginx doc
+- [Creating NGINX Plus and NGINX Configuration Files](https://docs.nginx.com/nginx/admin-guide/basic-functionality/managing-configuration-files/)
