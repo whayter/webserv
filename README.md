@@ -71,4 +71,9 @@
 ## Refs :
 
 - [Design pattern helper](https://refactoring.guru/design-patterns)
+
+#### namespaces
 - [Namespace naming convention](https://stackoverflow.com/questions/228783/what-are-the-rules-about-using-an-underscore-in-a-c-identifier)
+- [how to use namespace to separate interface from implementation](https://softwareengineering.stackexchange.com/questions/233672/how-to-use-namespaces-to-separate-interface-from-implementation-in-c/399588)
+- [The problems with Avoiding Smurf Naming classes with namespaces](https://softwareengineering.stackexchange.com/questions/191929/the-problems-with-avoiding-smurf-naming-classes-with-namespaces?noredirect=1&lq=1)
+- [Multiple classes with the same name, but different namespaces?](https://softwareengineering.stackexchange.com/questions/251760/multiple-classes-with-the-same-name-but-different-namespaces?rq=1)
