@@ -42,12 +42,12 @@
 
 #### Config file should be able to :
 
-- [ ] choose the port and host of each "server"
+- [ ] choose the [port and host](http://nginx.org/en/docs/http/ngx_http_core_module.html#listen) of each "[server](https://nginx.org/en/docs/http/ngx_http_core_module.html#server)"
 - [ ] setup the [server_names](http://nginx.org/en/docs/http/server_names.html) or not
 - [ ] The first server for a host:port will be the default for this host:port (meaning it will answer to all request that doesn’t belong to an other server)
-- [ ] setup default error pages
+- [ ] setup default [error pages](http://nginx.org/en/docs/http/ngx_http_core_module.html#error_page)
 - [ ] limit [client body size](http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size)
-- [ ] setup routes with one or multiple of the following rules/configuration (routes wont be using regexp):
+- [ ] [setup routes](http://nginx.org/en/docs/http/ngx_http_core_module.html#location) with one or multiple of the following rules/configuration (routes wont be using regexp):
 	- [ ] define a list of accepted HTTP Methods for the route
 	- [ ] define an HTTP redirection.
 	- [ ] define a directory or a file from where the file should be search (for example if url /kapouet is rooted to /tmp/www, url /kapouet/pouic/toto/pouet is /tmp/www/pouic/toto/pouet)
@@ -79,7 +79,15 @@
 - [Multiple classes with the same name, but different namespaces?](https://softwareengineering.stackexchange.com/questions/251760/multiple-classes-with-the-same-name-but-different-namespaces?rq=1)
 
 #### Nginx doc
+- [nginx doc](http://nginx.org/en/)
 - [Creating NGINX Plus and NGINX Configuration Files](https://docs.nginx.com/nginx/admin-guide/basic-functionality/managing-configuration-files/)
 	- [server block](https://nginx.org/en/docs/http/ngx_http_core_module.html#server)
 - [How nginx process request](https://nginx.org/en/docs/http/request_processing.html)
 - [all nginx config directives](https://nginx.org/en/docs/http/ngx_http_core_module.html)
+
+#### Sync fork
+
+- [Syncing a fork](https://docs.github.com/en/github/collaborating-with-pull-requests/working-with-forks/syncing-a-fork)
+
+#### config
+- https://stackoverflow.com/questions/16041623/the-best-way-to-handle-config-in-large-c-project
