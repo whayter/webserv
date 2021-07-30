@@ -80,3 +80,6 @@
 
 #### Nginx doc
 - [Creating NGINX Plus and NGINX Configuration Files](https://docs.nginx.com/nginx/admin-guide/basic-functionality/managing-configuration-files/)
+	- [server block](https://nginx.org/en/docs/http/ngx_http_core_module.html#server)
+- [How nginx process request](https://nginx.org/en/docs/http/request_processing.html)
+- [all nginx config directives](https://nginx.org/en/docs/http/ngx_http_core_module.html)
