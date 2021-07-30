@@ -16,7 +16,7 @@
 
 [RFC 7235 (authentication)](https://www.rfc-editor.org/rfc/pdfrfc/rfc7235.txt.pdf)
 
-## To do list / check list:
+## To do list / check list from subject:
 
 #### General 
 
@@ -64,6 +64,9 @@
 	- [ ] make the route able to accept uploaded files and configure where it should be saved
 - [ ] You must provide some configuration files and default basic files to test/demonstrate every feature is working during eval
 
+
+## Our todo list :
+- [ ] ?
 
 ## Refs :
 
