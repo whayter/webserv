@@ -88,3 +88,6 @@
 #### Sync fork
 
 - [Syncing a fork](https://docs.github.com/en/github/collaborating-with-pull-requests/working-with-forks/syncing-a-fork)
+
+#### config
+- https://stackoverflow.com/questions/16041623/the-best-way-to-handle-config-in-large-c-project
