@@ -11,9 +11,10 @@ public:
 	// Scanner (const char *source) : pos(source) {}
 	Scanner (std::ifstream *inputStream) : inStream(inputStream) {}
 	~Scanner(){};
-	inline char peek(){return ;}
-	inline int getLine(void)	{ return line;}
-	inline int getColumn(void)	{ return column;}
+
+	inline char	peek(void)		{ return _c; }
+	inline int	getLine(void)	{ return _line; }
+	inline int	getColumn(void)	{ return _column; }
 	
 	/// @brief Increment to next character, and increment line/column count 
 	void moveForward()
@@ -43,11 +44,11 @@ private:
 	Scanner();
 	Scanner();
 
-	int line	= 1;
-	int column	= 1;
+	int _line	= 1;
+	int _column	= 1;
 	// const char *pos;
 	std::ifstream *inStream;
-
+	char _c
 }; /* struct Scanner */
 
 struct ScopedEnumTokenType
