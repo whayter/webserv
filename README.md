@@ -117,6 +117,9 @@ ok
 - [Scoped enum in c++98](https://stackoverflow.com/questions/61269537/how-to-implement-scoped-enum-in-c98-and-can-be-used-like-enum-class-in-c11)
 
 - [scanner class example](https://link.springer.com/content/pdf/bbm%3A978-0-387-79422-8%2F1.pdf)
+	- [entire book (link above is missing explanations)](https://1lib.fr/book/540032/438c1d)
+- [std::variant an union...](https://www.bfilipek.com/2018/06/variant.html)
+- [union and variant guideline](https://www.modernescpp.com/index.php/c-core-guidelines-rules-for-unions)
 
 #### structure file interface, header...
 - https://softwareengineering.stackexchange.com/questions/323738/how-can-i-effectively-use-one-file-per-class-in-c
