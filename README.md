@@ -109,3 +109,4 @@ ok
 #### config
 - https://stackoverflow.com/questions/16041623/the-best-way-to-handle-config-in-large-c-project
 - https://www.guru99.com/compiler-design-lexical-analysis.html#2
+- https://tlevesque.developpez.com/tutoriels/csharp/parser-texte-csharp-sprache/#Lno-III
