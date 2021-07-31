@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 21:45:59 by juligonz          #+#    #+#             */
-/*   Updated: 2021/07/31 22:01:39 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/07/31 22:26:06 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@ struct ScopedEnumTokenType
 {
 	enum TokenType
 	{
-		kIdentifier = 0, 
+		kIdentifier = 0,
 		kString, kInteger,
 		kLeftBrace, kRightBrace,
-		kSemicolon
+		kSemicolon,
 		kEof, kError 
 	};
 };
