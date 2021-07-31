@@ -1,15 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Scanner.hpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/07/31 21:45:53 by juligonz          #+#    #+#             */
+/*   Updated: 2021/07/31 21:47:00 by juligonz         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef SCANNER_HPP
 #define SCANNER_HPP
 
-#include <cctype>
-#include <string>
 #include <istream>
+#include <iostream>
 
 class Scanner
 {
 public:
-	// Scanner (const char *source) : pos(source) {}
-	Scanner (std::ifstream *inputStream) : inStream(inputStream) {}
+	Scanner (std::istream &inputStream) :
+		_line(0), _column(0), _inStream(inputStream), _c(0) {}
 	~Scanner(){};
 
 	inline char	peek(void)		{ return _c; }
@@ -19,14 +30,14 @@ public:
 	/// @brief Increment to next character, and increment line/column count 
 	void moveForward()
 	{
-		if (*pos == '\n')
+		if (_c == '\n')
 		{
-			line++;
-			column = 1;
+			_line++;
+			_column = 1;
 		}
 		else
-			column++;
-		pos++;
+			_column++;
+		_c = _inStream.get();
 	}
 
 	char next()
@@ -35,47 +46,18 @@ public:
 		return peek();
 	}
 
-	// void skipWhitespaces()
-	// {
-	// 	while (isspace(static_cast<unsigned char>(peek())))
-	// 		moveForward();		
-	// }
+	void skipWhitespaces()
+	{
+		while (isspace(static_cast<unsigned char>(peek())))
+			moveForward();		
+	}
 private:
 	Scanner();
-	Scanner();
 
-	int _line	= 1;
-	int _column	= 1;
-	// const char *pos;
-	std::ifstream *inStream;
-	char _c
+	int _line;
+	int _column;
+	std::istream& _inStream;
+	char _c;
 }; /* struct Scanner */
-
-struct ScopedEnumTokenType
-{
-	enum class TokenType
-	{
-		IDENTIFIER, STRING, INTEGER
-	};
-};
-typedef ScopedEnumTokenType::TokenType TokenType;
-
-/// @brief Used for type punning (c++98...), TokenValue can be either int or string.
-/// To know which type is active, refer to TokenType.
-/// If the type not integer, then the active type is int.
-union TokenValue
-{
-	std::string str;
-	int			integer;
-};
-
-struct Token
-{
-	TokenType type;
-	TokenValue value;
-	int
-};
-
-
 
 #endif /* SCANNER_HPP */

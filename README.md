@@ -79,6 +79,7 @@ ok
 #### http server + sockets, etc...
 
 - [Good server example, using builder and singleton pattern](https://users.cs.jmu.edu/bernstdh/web/common/lectures/slides_http-server-example_java.php)
+	- [design improved](https://users.cs.jmu.edu/bernstdh/web/common/lectures/slides_http-servlet-example_java.php) 
 - [Socket programming tuto (java)](https://www.infoworld.com/article/2853780/socket-programming-for-scalable-systems.html)
 - [Cours prog reseau c++ - Tcp - Un premier serveur](https://bousk.developpez.com/cours/reseau-c++/TCP/08-premier-serveur-mini-serveur/)
 - [Writing C++ HTTP server from scratch (1)-thread pool](https://www.programmersought.com/article/51864013425/)
@@ -120,7 +121,12 @@ ok
 	- [entire book (link above is missing explanations)](https://1lib.fr/book/540032/438c1d)
 - [std::variant an union...](https://www.bfilipek.com/2018/06/variant.html)
 - [union and variant guideline](https://www.modernescpp.com/index.php/c-core-guidelines-rules-for-unions)
+- [c++98 - union restricted for complex type like string...and variant not in c++98...](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2544.pdf)
+- [type punning using reinterpret cast undefined ?](https://stackoverflow.com/questions/53995657/is-reinterpret-cast-type-punning-actually-undefined-behavior)
 
 #### structure file interface, header...
 - https://softwareengineering.stackexchange.com/questions/323738/how-can-i-effectively-use-one-file-per-class-in-c
 - https://stackoverflow.com/questions/27102956/structuring-c-application-directory-and-folders
+
+#### Google c++ style guide
+- https://google.github.io/styleguide/cppguide.html
