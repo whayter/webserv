@@ -111,3 +111,5 @@ ok
 - https://www.guru99.com/compiler-design-lexical-analysis.html#2
 - https://stackoverflow.com/questions/14954721/what-is-the-difference-between-a-token-and-a-lexeme
 - https://tlevesque.developpez.com/tutoriels/csharp/parser-texte-csharp-sprache/#Lno-III
+- https://rosettacode.org/wiki/Compiler/lexical_analyzer
+- https://visualstudiomagazine.com/articles/2014/06/01/compiler-basics-part-2.aspx
