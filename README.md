@@ -74,6 +74,20 @@ ok
 ## Refs :
 
 - [Design pattern helper](https://refactoring.guru/design-patterns)
+- [Design pattern helper 2](https://sourcemaking.com/design_patterns)
+
+#### http server + sockets, etc...
+
+- [Good server example, using builder and singleton pattern](https://users.cs.jmu.edu/bernstdh/web/common/lectures/slides_http-server-example_java.php)
+- [Socket programming tuto (java)](https://www.infoworld.com/article/2853780/socket-programming-for-scalable-systems.html)
+- [Cours prog reseau c++ - Tcp - Un premier serveur](https://bousk.developpez.com/cours/reseau-c++/TCP/08-premier-serveur-mini-serveur/)
+- [Writing C++ HTTP server from scratch (1)-thread pool](https://www.programmersought.com/article/51864013425/)
+- https://codereview.stackexchange.com/questions/217783/simple-http-server
+- [Developing Flexible and High-performance Web Servers with Frameworks and Patterns](https://www.dre.vanderbilt.edu/~schmidt/PDF/computing-surveys.pdf)
+
+#### Parsing http request
+
+- [Writing http parser](https://fr.slideshare.net/fukamachi/writing-a-fast-http-parser)
 
 #### namespaces
 - [Namespace naming convention](https://stackoverflow.com/questions/228783/what-are-the-rules-about-using-an-underscore-in-a-c-identifier)
@@ -94,3 +108,4 @@ ok
 
 #### config
 - https://stackoverflow.com/questions/16041623/the-best-way-to-handle-config-in-large-c-project
+- https://www.guru99.com/compiler-design-lexical-analysis.html#2
