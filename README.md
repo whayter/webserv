@@ -113,3 +113,11 @@ ok
 - https://tlevesque.developpez.com/tutoriels/csharp/parser-texte-csharp-sprache/#Lno-III
 - https://rosettacode.org/wiki/Compiler/lexical_analyzer
 - https://visualstudiomagazine.com/articles/2014/06/01/compiler-basics-part-2.aspx
+
+- [Scoped enum in c++98](https://stackoverflow.com/questions/61269537/how-to-implement-scoped-enum-in-c98-and-can-be-used-like-enum-class-in-c11)
+
+- [scanner class example](https://link.springer.com/content/pdf/bbm%3A978-0-387-79422-8%2F1.pdf)
+
+#### structure file interface, header...
+- https://softwareengineering.stackexchange.com/questions/323738/how-can-i-effectively-use-one-file-per-class-in-c
+- https://stackoverflow.com/questions/27102956/structuring-c-application-directory-and-folders
