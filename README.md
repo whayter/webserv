@@ -114,6 +114,7 @@ ok
 - https://tlevesque.developpez.com/tutoriels/csharp/parser-texte-csharp-sprache/#Lno-III
 - https://rosettacode.org/wiki/Compiler/lexical_analyzer
 - https://visualstudiomagazine.com/articles/2014/06/01/compiler-basics-part-2.aspx
+- https://www.nginx.com/wp-content/uploads/2018/12/NGINX-Conf-2018-slides_Hulegaard-config-analysis.pdf
 
 - [Scoped enum in c++98](https://stackoverflow.com/questions/61269537/how-to-implement-scoped-enum-in-c98-and-can-be-used-like-enum-class-in-c11)
 
@@ -123,6 +124,8 @@ ok
 - [union and variant guideline](https://www.modernescpp.com/index.php/c-core-guidelines-rules-for-unions)
 - [c++98 - union restricted for complex type like string...and variant not in c++98...](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2544.pdf)
 - [type punning using reinterpret cast undefined ?](https://stackoverflow.com/questions/53995657/is-reinterpret-cast-type-punning-actually-undefined-behavior)
+
+- [scanner - how to know if next-char is eof](https://stackoverflow.com/questions/6283632/how-to-know-if-the-next-character-is-eof-in-c)
 
 #### structure file interface, header...
 - https://softwareengineering.stackexchange.com/questions/323738/how-can-i-effectively-use-one-file-per-class-in-c

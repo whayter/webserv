@@ -54,11 +54,13 @@ INC_DIR = $(shell find . -type d -name "includes")
 OBJ_DIR = obj
 
 SRCS_DIR = $(shell find $(SRC_DIR) -type d)
+INCS_DIR = $(shell find $(INC_DIR) -type d)
 
-INC =
-vpath %.hpp $(INC_DIR)
+vpath %.hpp $(INCS_DIR)
 
 SRC = main.cpp
+SRC+= Scanner.cpp Lexer.cpp
+
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))
 vpath %.cpp $(SRCS_DIR)
@@ -67,7 +69,7 @@ LDFLAGS = $(foreach lib, $(LIB_DIR),-L$(lib))  $(foreach lib, $(LIB),-l$(lib))
 
 CXX = clang++
 CXXFLAGS  = -Wall -Wextra -Werror -std=c++98 #-g #-fsanitize=address  -fsanitize=undefined -fstack-protector  
-IFLAGS  = $(foreach inc, $(INC_DIR),-I$(inc))
+IFLAGS  = $(foreach inc, $(INCS_DIR),-I$(inc))
 
 #OS specific
 ifeq ($(UNAME), Darwin)
@@ -106,19 +108,21 @@ valgrind: $(NAME)
 	@cat output_valgrind
 
 show:
-	@printf "$(_MAGENTA)UNAME  :$(_GREEN)  $(UNAME)$(_END)\n"
-	@printf "$(_MAGENTA)ARCH   :$(_GREEN)  $(shell uname -p)$(_END)\n\n"
-	@printf "$(_CYAN)NAME   :$(_RED)  $(NAME)$(_END)\n\n"
-	@printf "$(_CYAN)CXX    :$(_RED)  $(CXX)$(_END)\n"
-	@printf "$(_CYAN)CXXFLAGS :$(_RED)  $(CXXFLAGS)$(_END)\n"
-	@printf "$(_CYAN)IFLAGS :$(_RED)  $(IFLAGS)$(_END)\n"
+	@printf "$(_MAGENTA)UNAME   :$(_GREEN)  $(UNAME)$(_END)\n"
+	@printf "$(_MAGENTA)ARCH    :$(_GREEN)  $(shell uname -p)$(_END)\n\n"
+	@printf "$(_CYAN)NAME    :$(_RED)  $(NAME)$(_END)\n\n"
+	@printf "$(_CYAN)CXX     :$(_RED)  $(CXX)$(_END)\n"
+	@printf "$(_CYAN)CXXFLAGS:$(_RED)  $(CXXFLAGS)$(_END)\n"
+	@printf "$(_CYAN)IFLAGS  :$(_RED)  $(IFLAGS)$(_END)\n"
 	@printf "$(_CYAN)LDFLAGS :$(_RED)  $(LDFLAGS)$(_END)\n\n"
-	@printf "$(_CYAN)SRC_DIR:$(_RED)  $(SRC_DIR)$(_END)\n"
-	@printf "$(_CYAN)INC_DIR:$(_RED)  $(INC_DIR)$(_END)\n"
-	@printf "$(_CYAN)LIB_DIR:$(_RED)  $(LIB_DIR)$(_END)\n\n"
-	@printf "$(_CYAN)INC    :$(_RED)  $(INC)$(_END)\n"
-	@printf "$(_CYAN)SRC    :$(_RED)  $(SRC)$(_END)\n"
-	@printf "$(_CYAN)OBJ    :$(_RED)  $(OBJ)$(_END)\n"
+	@printf "$(_CYAN)SRC_DIR :$(_RED)  $(SRC_DIR)$(_END)\n"
+	@printf "$(_CYAN)INC_DIR :$(_RED)  $(INC_DIR)$(_END)\n"
+	@printf "$(_CYAN)SRCS_DIR:$(_RED)  $(SRCS_DIR)$(_END)\n"
+	@printf "$(_CYAN)INCS_DIR:$(_RED)  $(INCS_DIR)$(_END)\n"
+	@printf "$(_CYAN)LIB_DIR :$(_RED)  $(LIB_DIR)$(_END)\n\n"
+	@printf "$(_CYAN)INC     :$(_RED)  $(INC)$(_END)\n"
+	@printf "$(_CYAN)SRC     :$(_RED)  $(SRC)$(_END)\n"
+	@printf "$(_CYAN)OBJ     :$(_RED)  $(OBJ)$(_END)\n"
 
 clean:
 	@rm -rf $(OBJ_DIR) output_valgrind
