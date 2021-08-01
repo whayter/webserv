@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 21:45:59 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/01 01:41:57 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/01 04:11:26 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ struct ScopedEnum
 		kEndOfInput = 0, kError,
 		kString, kInteger,
 		kLeftBrace, kRightBrace,
-		kSemicolon, kComma
+		kSemicolon, kComma,
+		kIdentifier
 	};
 };
 typedef ScopedEnum::TokenType TokenType;
@@ -38,7 +39,8 @@ const char* TokenTypeToCstring(TokenType type)
 		"kEnfOfInput", "kError",
 		"kString", "kInteger",
 		"kLeftBrace", "kRightBrace",
-		"kSemicolon", "kComma"
+		"kSemicolon", "kComma",
+		"kIdentifier"
 	};
 	return str[type];
 }
@@ -73,15 +75,21 @@ public:
 	Lexer(std::istream inputStream);
 	~Lexer();
 
-	bool hasMore
+	
+	bool	hasMore(void);
+	Token	nextToken(void);
+
 
 private:
 	Lexer();
 
+	// Token	error()
+
 	Token makeToken(TokenType type, Token t);
 	Token simply(TokenType type);
+	Token expect(char expected, TokenType type);
+	Token follow(char expected, Token ifYes, TokenType ifNo);
 	
-
 	Scanner _scanner;
 	Scanner _pre_state;
 	static const std::map<std::string, TokenType> keywords;

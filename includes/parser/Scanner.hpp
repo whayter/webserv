@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 21:45:53 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/01 01:49:09 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/01 04:14:55 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ public:
 	inline char	peek(void)		{ return _c; }
 	inline int	getLine(void)	{ return _line; }
 	inline int	getColumn(void)	{ return _column; }
+	inline bool	eof(void)		{ return _inStream.eof(); }
 	
 	/// @brief Increment to next character, and increment line/column count 
 	void		moveForward();
