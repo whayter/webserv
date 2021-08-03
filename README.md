@@ -79,10 +79,12 @@ ok
 #### http server + sockets, etc...
 
 - [Good server example, using builder and singleton pattern](https://users.cs.jmu.edu/bernstdh/web/common/lectures/slides_http-server-example_java.php)
+	- [design improved](https://users.cs.jmu.edu/bernstdh/web/common/lectures/slides_http-servlet-example_java.php) 
 - [Socket programming tuto (java)](https://www.infoworld.com/article/2853780/socket-programming-for-scalable-systems.html)
 - [Cours prog reseau c++ - Tcp - Un premier serveur](https://bousk.developpez.com/cours/reseau-c++/TCP/08-premier-serveur-mini-serveur/)
 - [Writing C++ HTTP server from scratch (1)-thread pool](https://www.programmersought.com/article/51864013425/)
 - https://codereview.stackexchange.com/questions/217783/simple-http-server
+- [Let’s Build A Web Server (Python)](https://ruslanspivak.com/lsbaws-part1/)
 - [Developing Flexible and High-performance Web Servers with Frameworks and Patterns](https://www.dre.vanderbilt.edu/~schmidt/PDF/computing-surveys.pdf)
 
 #### Parsing http request
@@ -113,11 +115,34 @@ ok
 - https://tlevesque.developpez.com/tutoriels/csharp/parser-texte-csharp-sprache/#Lno-III
 - https://rosettacode.org/wiki/Compiler/lexical_analyzer
 - https://visualstudiomagazine.com/articles/2014/06/01/compiler-basics-part-2.aspx
+- https://www.nginx.com/wp-content/uploads/2018/12/NGINX-Conf-2018-slides_Hulegaard-config-analysis.pdf
 
 - [Scoped enum in c++98](https://stackoverflow.com/questions/61269537/how-to-implement-scoped-enum-in-c98-and-can-be-used-like-enum-class-in-c11)
 
 - [scanner class example](https://link.springer.com/content/pdf/bbm%3A978-0-387-79422-8%2F1.pdf)
+	- [entire book (link above is missing explanations)](https://1lib.fr/book/540032/438c1d)
+- [std::variant an union...](https://www.bfilipek.com/2018/06/variant.html)
+- [union and variant guideline](https://www.modernescpp.com/index.php/c-core-guidelines-rules-for-unions)
+- [c++98 - union restricted for complex type like string...and variant not in c++98...](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2544.pdf)
+- [type punning using reinterpret cast undefined ?](https://stackoverflow.com/questions/53995657/is-reinterpret-cast-type-punning-actually-undefined-behavior)
+
+- [scanner - how to know if next-char is eof](https://stackoverflow.com/questions/6283632/how-to-know-if-the-next-character-is-eof-in-c)
+- https://www.cs.colostate.edu/~mstrout/CS553Fall06/slides/lecture02a-scanparse.pdf
+- [for lexer parser example from father of c++](http://index-of.co.uk/Programming/The%20C++%20Programming.Language.4th.Edition.Jun.2013%5BA4%5D.pdf)
+- [How to parse http req - example lib poco](https://stackoverflow.com/questions/15179409/how-to-parse-http-request-in-c)
+
+- [Youtubev](https://www.youtube.com/watch?v=KRbzEaUmog8&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=54)
+- [Youtube2 - LL(1)](https://www.youtube.com/watch?v=qYvCFUEseQI&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=53&t=1s)
+- [Youtube3 - LL(1) recursive decent parser stategy](https://www.youtube.com/watch?v=qYvCFUEseQI&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=53&t=1s)
+
+- [looking for a clear definition of what a tokenizer parser and lexers are](https://stackoverflow.com/questions/380455/looking-for-a-clear-definition-of-what-a-tokenizer-parser-and-lexers-are)
 
 #### structure file interface, header...
 - https://softwareengineering.stackexchange.com/questions/323738/how-can-i-effectively-use-one-file-per-class-in-c
 - https://stackoverflow.com/questions/27102956/structuring-c-application-directory-and-folders
+
+#### Google c++ style guide
+- https://google.github.io/styleguide/cppguide.html
+
+#### Sockets
+- https://www.youtube.com/watch?v=YwHErWJIh6Y
