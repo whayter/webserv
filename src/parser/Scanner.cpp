@@ -6,11 +6,11 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 01:06:24 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/01 04:13:20 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/01 04:27:25 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Scanner.hpp"
+#include "parser/Scanner.hpp"
 
 Scanner::Scanner (std::istream &inputStream):
 	_line(0), _column(0), _inStream(inputStream), _c(0) {}

@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 21:45:59 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/01 04:11:26 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/01 23:37:53 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <ostream>
 #include <map>
 
-#include "Scanner.hpp"
+#include "parser/Scanner.hpp"
 
 struct ScopedEnum
 {
@@ -86,12 +86,12 @@ private:
 	// Token	error()
 
 	Token makeToken(TokenType type, Token t);
-	Token simply(TokenType type);
-	Token expect(char expected, TokenType type);
-	Token follow(char expected, Token ifYes, TokenType ifNo);
+	// Token simply(TokenType type);
+	// Token expect(char expected, TokenType type);
+	// Token follow(char expected, Token ifYes, TokenType ifNo);
 	
 	Scanner _scanner;
-	Scanner _pre_state;
+	Scanner _prevState;
 	static const std::map<std::string, TokenType> keywords;
 };
 

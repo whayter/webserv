@@ -84,6 +84,7 @@ ok
 - [Cours prog reseau c++ - Tcp - Un premier serveur](https://bousk.developpez.com/cours/reseau-c++/TCP/08-premier-serveur-mini-serveur/)
 - [Writing C++ HTTP server from scratch (1)-thread pool](https://www.programmersought.com/article/51864013425/)
 - https://codereview.stackexchange.com/questions/217783/simple-http-server
+- [Let’s Build A Web Server (Python)](https://ruslanspivak.com/lsbaws-part1/)
 - [Developing Flexible and High-performance Web Servers with Frameworks and Patterns](https://www.dre.vanderbilt.edu/~schmidt/PDF/computing-surveys.pdf)
 
 #### Parsing http request
@@ -126,6 +127,9 @@ ok
 - [type punning using reinterpret cast undefined ?](https://stackoverflow.com/questions/53995657/is-reinterpret-cast-type-punning-actually-undefined-behavior)
 
 - [scanner - how to know if next-char is eof](https://stackoverflow.com/questions/6283632/how-to-know-if-the-next-character-is-eof-in-c)
+- https://www.cs.colostate.edu/~mstrout/CS553Fall06/slides/lecture02a-scanparse.pdf
+- [for lexer parser example from father of c++](http://index-of.co.uk/Programming/The%20C++%20Programming.Language.4th.Edition.Jun.2013%5BA4%5D.pdf)
+- [How to parse http req - example lib poco](https://stackoverflow.com/questions/15179409/how-to-parse-http-request-in-c)
 
 #### structure file interface, header...
 - https://softwareengineering.stackexchange.com/questions/323738/how-can-i-effectively-use-one-file-per-class-in-c
