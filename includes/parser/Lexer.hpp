@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 21:45:59 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/01 23:37:53 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/03 06:02:38 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ struct Token
 {
 	TokenType	type;
 	std::string	valueString;
-	int			valueInt;
+	int			valueInt; 	// stupid union that doesn't work under
+							// c++98 with complex type like strings
 	int			line;
 	int			column;
 };
@@ -76,7 +77,7 @@ public:
 	~Lexer();
 
 	
-	bool	hasMore(void);
+	bool	hasNext(void);
 	Token	nextToken(void);
 
 

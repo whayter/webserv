@@ -1,32 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Lexer.cpp                                          :+:      :+:    :+:   */
+/*   IUri.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/01 01:10:59 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/03 05:40:49 by juligonz         ###   ########.fr       */
+/*   Created: 2021/08/03 10:57:01 by juligonz          #+#    #+#             */
+/*   Updated: 2021/08/03 11:10:23 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/Lexer.hpp"
+#ifndef IURI_HPP
+#define IURI_HPP
 
-Lexer::Lexer(std::istream inputStream):
-	_scanner(inputStream), _pre_state(_scanner) {}
+#include <string>
 
-bool Lexer::hasNext(void)
+class IUri
 {
-	return _scanner.eof();
+public:
+	virtual ~IUri();
+	virtual bool isValid() = 0;
+	virtual bool isAbsolute() = 0;
+	virtual bool isOpaque() = 0;
+	virtual std::string scheme() = 0;
+	virtual std::string path() = 0;
+	virtual std::string query() = 0;
+
+	// virtual bool operator== ( const IURI& obj ) const = 0;
+};
+
+IUri::IUri(/* args */)
+{
 }
 
-Token Lexer::makeToken(TokenType type, Token t)
+IUri::~IUri()
 {
-	if (type == ScopedEnum::kInteger)
-		return ;
-	return (Token){.type=type,.valueString=NULL,.valueInt=0,.line=_pre_state};
 }
 
-Lexer::~Lexer()
-{
-}
+#endif

@@ -131,9 +131,18 @@ ok
 - [for lexer parser example from father of c++](http://index-of.co.uk/Programming/The%20C++%20Programming.Language.4th.Edition.Jun.2013%5BA4%5D.pdf)
 - [How to parse http req - example lib poco](https://stackoverflow.com/questions/15179409/how-to-parse-http-request-in-c)
 
+- [Youtubev](https://www.youtube.com/watch?v=KRbzEaUmog8&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=54)
+- [Youtube2 - LL(1)](https://www.youtube.com/watch?v=qYvCFUEseQI&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=53&t=1s)
+- [Youtube3 - LL(1) recursive decent parser stategy](https://www.youtube.com/watch?v=qYvCFUEseQI&list=PLKUb7MEve0TjHQSKUWChAWyJPCpYMRovO&index=53&t=1s)
+
+- [looking for a clear definition of what a tokenizer parser and lexers are](https://stackoverflow.com/questions/380455/looking-for-a-clear-definition-of-what-a-tokenizer-parser-and-lexers-are)
+
 #### structure file interface, header...
 - https://softwareengineering.stackexchange.com/questions/323738/how-can-i-effectively-use-one-file-per-class-in-c
 - https://stackoverflow.com/questions/27102956/structuring-c-application-directory-and-folders
 
 #### Google c++ style guide
 - https://google.github.io/styleguide/cppguide.html
+
+#### Sockets
+- https://www.youtube.com/watch?v=YwHErWJIh6Y
