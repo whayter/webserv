@@ -1,9 +1,6 @@
-# Webserv
+# Webserv - Written in c++98 (The subject force us to use 98)
 
 ## Documentation
-
-yeye
-ok
 
 [Build a simple http server from scratch (C)](https://medium.com/from-the-scratch/http-server-what-do-you-need-to-know-to-build-a-simple-http-server-from-scratch-d1ef8945e4fa)
 
@@ -78,18 +75,31 @@ ok
 
 #### http server + sockets, etc...
 
+
 - [Good server example, using builder and singleton pattern](https://users.cs.jmu.edu/bernstdh/web/common/lectures/slides_http-server-example_java.php)
 	- [design improved](https://users.cs.jmu.edu/bernstdh/web/common/lectures/slides_http-servlet-example_java.php) 
 - [Socket programming tuto (java)](https://www.infoworld.com/article/2853780/socket-programming-for-scalable-systems.html)
+
+- [Cours prog reseau c++ - Tcp - Premiers pas en tant que server](https://bousk.developpez.com/cours/reseau-c++/TCP/04-serveur-premiers-pas)
 - [Cours prog reseau c++ - Tcp - Un premier serveur](https://bousk.developpez.com/cours/reseau-c++/TCP/08-premier-serveur-mini-serveur/)
 - [Writing C++ HTTP server from scratch (1)-thread pool](https://www.programmersought.com/article/51864013425/)
 - https://codereview.stackexchange.com/questions/217783/simple-http-server
 - [Let’s Build A Web Server (Python)](https://ruslanspivak.com/lsbaws-part1/)
 - [Developing Flexible and High-performance Web Servers with Frameworks and Patterns](https://www.dre.vanderbilt.edu/~schmidt/PDF/computing-surveys.pdf)
+- http://manpagesfr.free.fr/man/man7/ip.7.html
+
+- [socket - Address family](https://www.ibm.com/docs/en/i/7.4?topic=family-af-inet-address)
+- [Basic socket design](https://www.ibm.com/docs/en/i/7.4?topic=programming-basic-socket-design)
+- [Advanced socket concepts - Non blocking I/O](https://www.ibm.com/docs/en/i/7.4?topic=concepts-nonblocking-io)
+- [Async prog, blocking and non blocking I/O](https://luminousmen.com/post/asynchronous-programming-blocking-and-non-blocking)
+
+![image](https://www.ibm.com/docs/en/ssw_ibm_i_74/rzab6/rxab6502.gif)
 
 #### Parsing http request
 
 - [Writing http parser](https://fr.slideshare.net/fukamachi/writing-a-fast-http-parser)
+- [Http Message Format](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages)
+- [Http Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages#http_requests)
 
 #### namespaces
 - [Namespace naming convention](https://stackoverflow.com/questions/228783/what-are-the-rules-about-using-an-underscore-in-a-c-identifier)
