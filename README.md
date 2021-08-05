@@ -100,7 +100,7 @@
 - [Writing http parser](https://fr.slideshare.net/fukamachi/writing-a-fast-http-parser)
 - [Http Message Format](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages)
 - [Http Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages#http_requests)
-
+- [The anatomy of http request](https://betterprogramming.pub/the-anatomy-of-an-http-request-728a469ecba9)
 #### namespaces
 - [Namespace naming convention](https://stackoverflow.com/questions/228783/what-are-the-rules-about-using-an-underscore-in-a-c-identifier)
 - [how to use namespace to separate interface from implementation](https://softwareengineering.stackexchange.com/questions/233672/how-to-use-namespaces-to-separate-interface-from-implementation-in-c/399588)
