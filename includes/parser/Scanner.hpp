@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 21:45:53 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/06 12:11:22 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/06 13:06:50 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,17 +144,8 @@ public:
 	inline Token peekToken() { return _actualToken; };
 private:
 
-	bool charIsString(char c);
-	Token makeToken(TokenKind kind, std::string value)
-	{
-		Token t;
-
-		t.kind = kind;
-		t.valueString = value;
-		t.column = _scan.getColumn();
-		t.line = _scan.getLine();
-		return t;
-	} 
+	bool _charIsString(char c);
+	Token _makeToken(TokenKind kind, std::string value);
 
 	Scanner _scan;
 	Token	_actualToken;
@@ -182,31 +173,43 @@ Token Scanner2::getToken()
 		switch (c)
 		{
 			case  -1:
-			case  0 :	return makeToken(ScopedEnum::kEndOfInput, "");
-			case ':':	return makeToken(ScopedEnum::kColon, ":");
-			case ',':	return makeToken(ScopedEnum::kComma, ",");
-			case '\n':	return makeToken(ScopedEnum::kNewLine, ",");
+			case  0 :	return _makeToken(ScopedEnum::kEndOfInput, "");
+			case ':':	return _makeToken(ScopedEnum::kColon, ":");
+			case ',':	return _makeToken(ScopedEnum::kComma, ",");
+			case '\n':	return _makeToken(ScopedEnum::kNewLine, ",");
 			default:
 				std::string lexeme = "";
-				if (isalnum(c) || c == '/' || c == '.' )
+				if (is)
 				{
 					while (isalnum(c) || c == '/' || c == '.' || c == '-')
 					{
 						lexeme+=c;
 						c = _scan.get();
 					}
-					return makeToken(ScopedEnum::kString, lexeme);
+					return _makeToken(ScopedEnum::kString, lexeme);
 				}
-				return makeToken(ScopedEnum::kError, "Cant parse string");
+				return _makeToken(ScopedEnum::kError, "Cant parse string");
 		}	
 	}
-	return makeToken(ScopedEnum::kError, "Wtf man");
+	return _makeToken(ScopedEnum::kError, "Wtf man");
 }
 
-bool Scanner2::charIsString(char c){
-	if (isalnum(c) || c == '/' || c == '.' || c == '-' || c==)
+/// Must only be called in the switch statement
+bool Scanner2::_charIsString(char c){
+	if (isprint(c))
 		return true;
 	return false;
 }
+
+Token Scanner2::_makeToken(TokenKind kind, std::string value)
+{
+	Token t;
+
+	t.kind = kind;
+	t.valueString = value;
+	t.column = _scan.getColumn();
+	t.line = _scan.getLine();
+	return t;
+} 
 
 #endif /* SCANNER_HPP */
