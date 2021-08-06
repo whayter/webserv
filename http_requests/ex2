@@ -1,0 +1,12 @@
+POST /getip HTTP/1.1
+Content-Type: text/plain
+User-Agent: PostmanRuntime/7.26.10
+Accept: */*
+Postman-Token: 969ffb76-2d3a-42cd-9b1b-701aca68ecdf
+Host: dynamicdns.park-your-domain.com
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Content-Length: 9
+Cookie: ASPSESSIONIDQADTQAQR=JNJLAIGBPIMBDAJPJNIFKIEK
+
+test test
