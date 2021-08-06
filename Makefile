@@ -59,7 +59,7 @@ INCS_DIR = $(shell find $(INC_DIR) -type d)
 vpath %.hpp $(INCS_DIR)
 
 SRC = main.cpp
-SRC+= Scanner.cpp Lexer.cpp
+SRC+= Scanner.cpp ScannerHttpRequest.cpp
 
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))

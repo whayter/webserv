@@ -6,11 +6,11 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:39:02 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/06 14:20:10 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/06 15:06:37 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/ScannerHttpRequest.hpp"
+#include "parser/http/ScannerHttpRequest.hpp"
 
 namespace parser
 {
@@ -52,9 +52,8 @@ Token ScannerHttpRequest::getToken()
 					_scan.unget();
 				return _makeToken(ScopedEnum::kString, lexeme);
 			}
-			return _makeToken(ScopedEnum::kError, "Cant parse char to lexeme");
+			return _makeToken(ScopedEnum::kError, "Cant parse lexeme");
 	}
-	// return _makeToken(ScopedEnum::kError, "Wtf man");
 }
 
 /// Must only be called in the switch statement
@@ -84,8 +83,6 @@ std::ostream & operator <<(std::ostream& os, const Token &t)
 	{
 		case (ScopedEnum::kString)		:	os << "=\"" << t.valueString << "\"> ";	break;
 		case (ScopedEnum::kError)		:	os << "=\"" << t.valueString << "\"> ";	break;
-		// case (ScopedEnum::kInteger)		: 	os << ":" << t.valueInt;				break;
-		
 		default							:	os << "> "; break;
 	}
 	return os;
