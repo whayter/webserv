@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 21:45:53 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/06 13:06:50 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/06 13:24:49 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,12 @@ private:
 
 	/// @brief Increment to next character, and increment line/column count 
 	void		moveForward();
+	/// @brief Decrement to previous character, and decrement line/column count 
+	void		moveBackward();
 
 	int				_line;
 	int				_column;
+	int				_lastColumn;
 	std::istream&	_inStream;
 	char			_c;
 }; /* class Scanner */
@@ -58,6 +61,7 @@ void Scanner::moveForward()
 	if (_c == '\n')
 	{
 		_line++;
+		_lastColumn = _column;
 		_column = 1;
 	}
 	else
@@ -65,9 +69,27 @@ void Scanner::moveForward()
 	_c = _inStream.get();
 }
 
+void Scanner::moveBackward()
+{
+	if (_c == '\n')
+	{
+		_line--;
+		_column = _lastColumn;
+	}
+	else
+		_column--;
+	_inStream.unget();
+}
+
 char Scanner::get()
 {
 	moveForward();
+	return _c;
+}
+
+char Scanner::unget()
+{
+	moveBackward();
 	return _c;
 }
 
@@ -163,39 +185,40 @@ Token Scanner2::getToken()
 {
 	char c = 0;
 
-	while ((c = _scan.get()))
+	do
 	{
-		do
-		{
-			/* code */
-		} while (c != '\n' && isspace(c));
+		c = _scan.get();
+	} while (c != '\n' && isspace(c));
 
-		switch (c)
-		{
-			case  -1:
-			case  0 :	return _makeToken(ScopedEnum::kEndOfInput, "");
-			case ':':	return _makeToken(ScopedEnum::kColon, ":");
-			case ',':	return _makeToken(ScopedEnum::kComma, ",");
-			case '\n':	return _makeToken(ScopedEnum::kNewLine, ",");
-			default:
-				std::string lexeme = "";
-				if (is)
+	switch (c)
+	{
+		case  -1:
+		case  0 :	return _makeToken(ScopedEnum::kEndOfInput, "");
+		case ':':	return _makeToken(ScopedEnum::kColon, ":");
+		case ',':	return _makeToken(ScopedEnum::kComma, ",");
+		case '\n':	return _makeToken(ScopedEnum::kNewLine, ",");
+		default:
+			std::string lexeme = "";
+			if (_charIsString(c))
+			{
+				while (_charIsString(c))
 				{
-					while (isalnum(c) || c == '/' || c == '.' || c == '-')
-					{
-						lexeme+=c;
-						c = _scan.get();
-					}
-					return _makeToken(ScopedEnum::kString, lexeme);
+					lexeme += c;
+					c = _scan.get();
 				}
-				return _makeToken(ScopedEnum::kError, "Cant parse string");
-		}	
+				if (!_charIsString(c))
+					_scan.unget();
+				return _makeToken(ScopedEnum::kString, lexeme);
+			}
+			return _makeToken(ScopedEnum::kError, "Cant parse char to lexeme");
 	}
-	return _makeToken(ScopedEnum::kError, "Wtf man");
+	// return _makeToken(ScopedEnum::kError, "Wtf man");
 }
 
 /// Must only be called in the switch statement
 bool Scanner2::_charIsString(char c){
+	if (c == ':' || isspace(c))
+		return false;
 	if (isprint(c))
 		return true;
 	return false;
