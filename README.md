@@ -101,6 +101,18 @@
 - [Http Message Format](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages)
 - [Http Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages#http_requests)
 - [The anatomy of http request](https://betterprogramming.pub/the-anatomy-of-an-http-request-728a469ecba9)
+- [Design and Evaluation of HTTP Protocol Parsers](https://hal.inria.fr/hal-01497010/document)
+- [Builder design pattern in modern c](https://dzone.com/articles/builder-design-pattern-in-modern-c)
+- https://perishablepress.com/stop-using-unsafe-characters-in-urls/#unreserved-characters
+
+- [The normal procedure for parsing an HTTP message is to read the
+   start-line into a structure, read each header field into a hash table
+   by field name until the empty line, and then use the parsed data to
+   determine if a message body is expected.  If a message body has been
+   indicated, then it is read as a stream until an amount of octets
+   equal to the message body length is read or the connection is closed.](https://datatracker.ietf.org/doc/html/rfc7230#page-20)
+
+
 #### namespaces
 - [Namespace naming convention](https://stackoverflow.com/questions/228783/what-are-the-rules-about-using-an-underscore-in-a-c-identifier)
 - [how to use namespace to separate interface from implementation](https://softwareengineering.stackexchange.com/questions/233672/how-to-use-namespaces-to-separate-interface-from-implementation-in-c/399588)
