@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/30 14:07:41 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/06 14:07:51 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/06 17:46:10 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,30 +25,20 @@ int main(int ac, char** av)
 	(void)av;
 
 	std::ifstream req ("./http_requests/ex1");
-		
-	// std::stringstream ss("test tefer ;gegre ;gre e");
 
-	// Scanner scanner(ss);
+	// parser::http::ScannerHttpRequest scanner(req);
 
-	// char c=0;
-	// while (!scanner.eof())
+	// while (true)
 	// {
-	// 	c = scanner.get();
-	// 	std::cout << c;
+	// 	parser::http::Token t = scanner.getToken();
+	// 	std::cout << t << std::endl;
+	// 	if (t.kind == parser::http::ScopedEnum::kEndOfInput)
+	// 		break;
 	// }
 	// std::cout << std::endl;
 
-	parser::http::ScannerHttpRequest scanner(req);
 
-	while (true)
-	{
-		parser::http::Token t = scanner.getToken();
-		std::cout << t << std::endl;
-		if (t.kind == parser::http::ScopedEnum::kEndOfInput)
-			break;
-	}
-	std::cout << std::endl;
-	
+
 	
 	// server serv;
 	// long socket;
