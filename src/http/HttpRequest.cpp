@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:36:30 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/07 11:43:39 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/07 15:05:00 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,39 @@ std::string HttpRequest::getRequestURI()
 	else
 		return _uri.getPath();
 }
+
+
+void HttpRequest::setMethod(std::string method)
+{
+	_method = method;
+}
+
+void HttpRequest::setUri(const Uri &uri)
+{
+	_uri = uri;
+}
+
+void HttpRequest::setVersion(std::string version)
+{
+	_version = version;
+}
+
+std::string HttpRequest::toString()
+{
+	std::string s;
+	map_type header;
+	map_type::iterator it;
+
+	s = "Method:\n\t" + getMethod() + "\n";
+	s += "URI:\n\t" + getRequestURI() + "\n";
+	// s += "Parameters:\n\t" + _queryString + "\n";
+	s += "Headers:\n";
+	header = this->getHeaders();
+	for (it = header.begin(); it != header.end(); it++)
+		s += "\t" + it->first + "\t" + it->second + "\n";
+	return s;
+}
+
 
 // void HttpRequest::read(std::istream is)
 // {
@@ -55,37 +88,6 @@ std::string HttpRequest::getRequestURI()
 // 	}
 // 	this->setContentLength(this->getContentLength());
 // }
-
-void HttpRequest::setMethod(std::string method)
-{
-	_method = method;
-}
-
-void HttpRequest::setUri(const Uri &uri)
-{
-	_uri = uri;
-}
-
-void HttpRequest::setVersion(std::string version)
-{
-	_version = version;
-}
-
-std::string HttpRequest::toString()
-{
-	std::string s;
-	map_type header;
-	map_type::iterator it;
-
-	s = "Method:\n\t" + getMethod() + "\n";
-	s += "URI:\n\t" + getRequestURI() + "\n";
-	s += "Parameters:\n\t" + _queryString + "\n";
-	s += "Headers:\n";
-	header = this->getHeaders();
-	for (it = header.begin(); it != header.end(); it++)
-		s += "\t" + it->first + "\t" + it->second + "\n";
-	return s;
-}
 
 void HttpRequest::write(std::ostream os)
 {

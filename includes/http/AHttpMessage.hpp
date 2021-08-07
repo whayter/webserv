@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 14:47:44 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/07 11:16:41 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/07 13:01:26 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,19 +33,19 @@ class AHttpMessage
 		virtual ~AHttpMessage();
 
 		std::string		getContent();
-		size_type		getContentLength();
+		std::string 	getHeader(std::string name);
+		// size_type		getContentLength();
 		map_type		getHeaders();
-		std::string 	getHeaderAt(std::string name);
+
+
+		void 			addHeader(std::string name, std::string value);
+		void			setContent(std::string content);
+		// void			setContentType(std::string type);
+		// void 			setHeaders(map_type headers);
 
         // virtual void	read(std::istream is) = 0;
 		void			readContent(std::istream is);
-
-		void			setContent(std::string content);
-		void			setContentLength(int contentLength);
-		void			setContentType(std::string type);
-		void 			setHeader(std::string name, std::string value);
-		void 			setHeaders(map_type headers);
-
+	
 	protected:
 
 	/* --- Member variables ------------------------------------------------- */

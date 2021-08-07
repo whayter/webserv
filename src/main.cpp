@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/30 14:07:41 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/07 12:02:51 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/07 12:12:44 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,14 @@
 // #include "Scanner.hpp"
 // #include "ScannerHttpRequest.hpp"
 #include "ParserHttpRequest.hpp"
+#include "HttpRequest.hpp"
 
 int main(int ac, char** av)
 {
 	(void)ac;
 	(void)av;
 
-	std::ifstream req ("./http_requests/ex1");
+	std::ifstream req ("./http_requests/ex2");
 
 	// parser::http::ScannerHttpRequest scanner(req);
 
@@ -32,7 +33,6 @@ int main(int ac, char** av)
 	// 		break;
 	// }
 	// std::cout << std::endl;
-
 	HttpRequest resquest = parser::http::ParserHttpRequest::create(req);
 
 	

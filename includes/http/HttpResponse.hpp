@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpResponse.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 09:29:57 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/04 14:51:20 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/07 13:12:53 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,18 @@ class HttpResponse: public AHttpMessage
 		int				getStatus();
 		std::string		getStatusMessage(int code);
 
+
+
+		void			setStatus(int code);
+		void			setContentLength(int contentLength);
+
 		void			read(std::istream is);
+		void			write(std::ostream os);
 
 		void			sendError(int code, std::ofstream out);
 
-		void			setStatus(int code);
-
 		std::string		toString();
 		
-		void			write(std::ostream os);
 
 	private:
 

@@ -111,7 +111,8 @@
    determine if a message body is expected.  If a message body has been
    indicated, then it is read as a stream until an amount of octets
    equal to the message body length is read or the connection is closed.](https://datatracker.ietf.org/doc/html/rfc7230#page-20)
-
+- [Field value component (allowed char)](https://datatracker.ietf.org/doc/html/rfc7230#section-3.2.6)
+- https://stackoverflow.com/questions/47687379/what-characters-are-allowed-in-http-header-values
 
 #### namespaces
 - [Namespace naming convention](https://stackoverflow.com/questions/228783/what-are-the-rules-about-using-an-underscore-in-a-c-identifier)

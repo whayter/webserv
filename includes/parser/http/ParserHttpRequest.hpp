@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 14:55:33 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/07 11:31:12 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/07 17:29:17 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,25 +28,38 @@ class ParserHttpRequest
 {
 public:
 
-	static HttpRequest create(std::istream inputStream){
+	static HttpRequest create(std::istream & inputStream){
 		ScannerHttpRequest scanner(inputStream);
 		HttpRequest result;
-	// 	Token t = scanner.getToken();
-	// // std::cout << t << std::endl; //////
-	// 	if (	!t.value.compare("GET") ||	!t.value.compare("POST")
-	// 		||	!t.value.compare("DELETE"))
-	// 	{
-	// 		result.setMethod(t.value);
-	// 		t = scanner.getToken();
-	// // std::cout << t << std::endl; //////
-	// 		result.setUri(Uri(t.value));
-	// 	}
-	// 	while((t = scanner.getToken()).kind != ScopedEnum::kEndOfInput)
-	// 	{
-	// // std::cout << t << std::endl; /////////
-	// 		if (t.kind == parser::http::ScopedEnum::kEndOfInput)
-	// 			break;
-	// 	}
+		Token t = scanner.getToken();
+		if (	!t.value.compare("GET") ||	!t.value.compare("POST")
+			||	!t.value.compare("DELETE"))
+		{
+			result.setMethod(t.value);
+			std::cout << t << std::endl; /////////
+			
+			t = scanner.getToken();
+			result.setUri(Uri(t.value));
+			std::cout << t << std::endl; /////////
+			
+			t = scanner.getToken();
+			result.setVersion(t.value);
+			std::cout << t << std::endl; /////////
+		}
+		while((t = scanner.getToken()).kind != ScopedEnum::kEndOfInput)
+		{
+			std::cout << t << std::endl; /////////
+			// switch (t.kind)
+			// {
+			// case ScopedEnum::k:
+				
+			// 	break;
+			
+			// default:
+			// 	break;
+			// }
+		}
+		std::cout << t << std::endl; /////////
 		
 		return result;
 	}
