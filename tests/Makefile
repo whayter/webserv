@@ -138,9 +138,12 @@ fclean: clean
 	@rm -fr $(BUILD_DIR)/ $(NAME).dSYM/
 	@printf "$(_RED)Removed : $(_MAGENTA)./$(NAME), $(NAME).dSYM/$(_R)\n"
 
+check:
+	$(BUILD_DIR)/$(NAME)
+
 re: fclean all
 
-.PHONY: all run debug valgrind norminette bonus show clean fclean re
+.PHONY: all run debug valgrind norminette bonus show clean fclean re check
 
 #******************************************************************************#
 #                                  REMINDER                                    #  
