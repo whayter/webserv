@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:39:02 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/06 15:06:37 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/07 11:23:20 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ Token ScannerHttpRequest::_makeToken(TokenKind kind, std::string value)
 	Token t;
 
 	t.kind = kind;
-	t.valueString = value;
+	t.value = value;
 	t.column = _scan.getColumn();
 	t.line = _scan.getLine();
 	return t;
@@ -81,8 +81,8 @@ std::ostream & operator <<(std::ostream& os, const Token &t)
 	os << "<" << TokenKindToCstring(t.kind);
 	switch (t.kind)
 	{
-		case (ScopedEnum::kString)		:	os << "=\"" << t.valueString << "\"> ";	break;
-		case (ScopedEnum::kError)		:	os << "=\"" << t.valueString << "\"> ";	break;
+		case (ScopedEnum::kString)		:	os << "=\"" << t.value << "\"> ";	break;
+		case (ScopedEnum::kError)		:	os << "=\"" << t.value << "\"> ";	break;
 		default							:	os << "> "; break;
 	}
 	return os;

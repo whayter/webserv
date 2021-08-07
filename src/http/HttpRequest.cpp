@@ -6,13 +6,13 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:36:30 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/06 17:23:39 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/07 10:34:43 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "http/HttpRequest.hpp"
 
-HttpRequest::HttpRequest() {}
+HttpRequest::HttpRequest(): AHttpMessage() {}
 
 HttpRequest::~HttpRequest() {}
 

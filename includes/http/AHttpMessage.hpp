@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AHttpMessage.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 14:47:44 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/04 14:35:21 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/07 11:16:41 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ class AHttpMessage
 		map_type		getHeaders();
 		std::string 	getHeaderAt(std::string name);
 
-        virtual void	read(std::istream is) = 0;
+        // virtual void	read(std::istream is) = 0;
 		void			readContent(std::istream is);
 
 		void			setContent(std::string content);
@@ -54,4 +54,4 @@ class AHttpMessage
         map_type		_headers;
 };
 
-#endif;
+#endif

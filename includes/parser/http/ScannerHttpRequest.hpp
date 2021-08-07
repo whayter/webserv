@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:36:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/06 14:19:48 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/07 10:46:58 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,7 @@ typedef ScopedEnum::TokenKind TokenKind;
 struct Token
 {
 	TokenKind	kind;
-	std::string	valueString;
-	// int			valueInt; 	// stupid union that doesn't work under
-	// 						// c++98 with complex type like strings
+	std::string	value;
 	int			line;
 	int			column;
 };

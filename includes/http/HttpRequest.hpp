@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 11:04:34 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/06 17:18:00 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/07 11:08:30 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class HttpRequest: public AHttpMessage
 		// void			read(std::istream is);
 
 		void			setMethod(std::string method);
-		void			setUri(Uri &uri);
+		void			setUri(const Uri &uri);
 		void			setVersion(std::string version);
 
 		std::string 	toString();

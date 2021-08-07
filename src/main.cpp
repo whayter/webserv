@@ -6,18 +6,14 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/30 14:07:41 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/06 17:46:10 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/07 11:25:14 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/webserv.hpp"
-#include "../includes/server.hpp"
-
-#include <iostream>
-#include <sstream>
 #include <fstream>
-#include "Scanner.hpp"
-#include "ScannerHttpRequest.hpp"
+// #include "Scanner.hpp"
+// #include "ScannerHttpRequest.hpp"
+#include "ParserHttpRequest.hpp"
 
 int main(int ac, char** av)
 {
@@ -37,7 +33,7 @@ int main(int ac, char** av)
 	// }
 	// std::cout << std::endl;
 
-
+	HttpRequest resquest = parser::http::ParserHttpRequest::create(req);
 
 	
 	// server serv;
