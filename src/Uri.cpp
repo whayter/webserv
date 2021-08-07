@@ -6,11 +6,13 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/05 13:06:01 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/07 11:06:07 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/07 11:54:47 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Uri.hpp"
+
+Uri::Uri(){}
 
 Uri::Uri(std::string uri)
 {
@@ -21,11 +23,11 @@ Uri::Uri(std::string uri)
 
 Uri::~Uri() {}
 
-bool isValid() {}
+// bool isValid() {}
 
-bool isAbsolute() {}
+// bool isAbsolute() {}
 
-bool isOpaque() {}
+// bool isOpaque() {}
 
 std::string Uri::getScheme()
 {

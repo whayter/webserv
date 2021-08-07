@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpStatus.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:43:13 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/04 14:47:24 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/07 11:52:30 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ std::string HttpStatus::getMessage(int code) const
 		case 510: return "Not Extended";
 		case 511: return "Network Authentication Required";
 
-		default: return ("Unknown status code: " + code);
+		default: return ("Unknown status code");
 	}
 }
 

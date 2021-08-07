@@ -60,6 +60,8 @@ vpath %.hpp $(INCS_DIR)
 
 SRC = main.cpp
 SRC+= Scanner.cpp ScannerHttpRequest.cpp
+SRC+= AHttpMessage.cpp HttpRequest.cpp HttpResponse.cpp HttpStatus.cpp
+SRC+= Uri.cpp
 
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))

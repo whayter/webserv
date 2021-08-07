@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   AHttpMessage.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 13:20:58 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/04 14:52:16 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/07 12:01:09 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "http/AHttpMessage.hpp"
 
 AHttpMessage::AHttpMessage() {}
+AHttpMessage::~AHttpMessage() {}
 
 std::string AHttpMessage::getContent()
 {

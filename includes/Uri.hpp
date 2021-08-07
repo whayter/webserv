@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/03 13:01:23 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/07 11:00:21 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/07 11:54:52 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,13 @@ class Uri
 
 	/* --- Member functions ------------------------------------------------- */
 
+		Uri();
 		Uri(std::string uri);
 		~Uri();
 
-		bool			isValid();
-		bool			isAbsolute();
-		bool			isOpaque();
+		// bool			isValid();
+		// bool			isAbsolute();
+		// bool			isOpaque();
 
 		std::string		getScheme();
 		std::string		getPath();

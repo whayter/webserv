@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:36:30 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/07 10:34:43 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/07 11:43:39 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void HttpRequest::setMethod(std::string method)
 	_method = method;
 }
 
-void HttpRequest::setUri(Uri &uri)
+void HttpRequest::setUri(const Uri &uri)
 {
 	_uri = uri;
 }
