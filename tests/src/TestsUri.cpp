@@ -3,13 +3,19 @@
 #include "Uri.hpp"
 
 TEST_CASE( "Uri - ", "[class][uri]" ) {
+    Uri uri;
 
+    SECTION( "Simple /index.html" ) {
+        uri = Uri(" /index.html");
 
-    SECTION("resizing bigger changes size and capacity") {
-        // v.resize( 10 );
+        REQUIRE(uri.getPath() == "index.html");
+    }
 
-        // REQUIRE( v.size() == 10 );
-        // REQUIRE( v.capacity() >= 10 );
+    SECTION( "Simple /index.html" ) {
+        uri = Uri(" /index.html?format=json&sort=asc");
+
+        REQUIRE(uri.getPath() == "index.html");
+        REQUIRE(uri.getQueryString() == "format=json&sort=asc");
     }
 
 }

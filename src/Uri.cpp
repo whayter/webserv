@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/05 13:06:01 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/07 11:54:47 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/07 18:36:03 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,10 @@ Uri::~Uri() {}
 
 // bool isOpaque() {}
 
-std::string Uri::getScheme()
-{
-    return _scheme;
-}
+// std::string Uri::getScheme()
+// {
+//     return _scheme;
+// }
 
 std::string Uri::getPath()
 {
