@@ -19,8 +19,6 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: make
-      run: |
-        cd tests
-        make
+      run: make -C tests
     - name: make check
-      run: make check
+      run: make check -C tests
