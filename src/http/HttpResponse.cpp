@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpResponse.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:47:59 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/04 14:50:02 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/07 13:13:51 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,18 @@ std::string HttpResponse::getStatusMessage(int code)
 	return _status.getMessage(code);
 }
 
+void HttpResponse::setStatus(int code)
+{
+	_status.setValue(code);
+}
+
+void HttpResponse::setContentLength(int contentLength)
+{
+	std::ostringstream os;
+	os << contentLength;
+	this->addHeader("Content-Length", os.str());
+}
+
 void HttpResponse::read(std::istream is)
 {
 	std::string line, s;
@@ -47,16 +59,13 @@ void HttpResponse::read(std::istream is)
 			pos = line.find(":");
 			s = line.substr(0, pos);
 			line.erase(0, pos + 1);
-			this->setHeader(s, line);
+			this->addHeader(s, line);
 		}
 	}
 	catch(const std::exception& e)
 	{
 		this->setStatus(HttpStatus::NoContent);
 	}
-	
-
-
 }
 
 void HttpResponse::sendError(int code, std::ofstream out)
@@ -65,11 +74,6 @@ void HttpResponse::sendError(int code, std::ofstream out)
 	out << code << " - " << this->getStatusMessage(code);
 	out << "</p></body></html>";
 	setStatus(code);
-}
-
-void HttpResponse::setStatus(int code)
-{
-	_status.setValue(code);
 }
 
 std::string HttpResponse::toString()

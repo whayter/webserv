@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AHttpMessage.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 14:47:44 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/04 14:35:21 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/07 13:01:26 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,19 +33,19 @@ class AHttpMessage
 		virtual ~AHttpMessage();
 
 		std::string		getContent();
-		size_type		getContentLength();
+		std::string 	getHeader(std::string name);
+		// size_type		getContentLength();
 		map_type		getHeaders();
-		std::string 	getHeaderAt(std::string name);
 
-        virtual void	read(std::istream is) = 0;
-		void			readContent(std::istream is);
 
+		void 			addHeader(std::string name, std::string value);
 		void			setContent(std::string content);
-		void			setContentLength(int contentLength);
-		void			setContentType(std::string type);
-		void 			setHeader(std::string name, std::string value);
-		void 			setHeaders(map_type headers);
+		// void			setContentType(std::string type);
+		// void 			setHeaders(map_type headers);
 
+        // virtual void	read(std::istream is) = 0;
+		void			readContent(std::istream is);
+	
 	protected:
 
 	/* --- Member variables ------------------------------------------------- */
@@ -54,4 +54,4 @@ class AHttpMessage
         map_type		_headers;
 };
 
-#endif;
+#endif

@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   HttpStatus.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 17:24:53 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/04 14:47:02 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/07 11:48:56 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HTTP_STATUS
-# define HTPP_STATUS
+#ifndef HTTP_STATUS_HPP
+#define HTTP_STATUS_HPP
 
-# include <string>
+#include <string>
 
 class HttpStatus
 {
@@ -114,4 +114,4 @@ class HttpStatus
 		int				_value;
 };
 
-#endif
+#endif /* HTTP_STATUS_HPP */

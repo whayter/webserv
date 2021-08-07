@@ -3,35 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   AHttpMessage.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 13:20:58 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/04 14:52:16 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/07 13:01:39 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "http/AHttpMessage.hpp"
 
 AHttpMessage::AHttpMessage() {}
+AHttpMessage::~AHttpMessage() {}
 
 std::string AHttpMessage::getContent()
 {
 	return _content;
 }
 
-AHttpMessage::size_type AHttpMessage::getContentLength()
-{
-	size_type result;
-	std::istringstream(getHeaderAt("Content-Length")) >> result;
-	return result;
-}
+// AHttpMessage::size_type AHttpMessage::getContentLength()
+// {
+// 	size_type result;
+// 	std::istringstream(getHeader("Content-Length")) >> result;
+// 	return result;
+// }
 
 AHttpMessage::map_type AHttpMessage::getHeaders()
 {
 	return _headers;
 }
 
-std::string AHttpMessage::getHeaderAt(std::string name)
+std::string AHttpMessage::getHeader(std::string name)
 {
 	return _headers.at(name);
 }
@@ -43,28 +44,21 @@ void AHttpMessage::readContent(std::istream is)
 
 void AHttpMessage::setContent(std::string content)
 {
-	this->setContentLength(content.size());
+	// this->setContentLength(content.size());
 	_content = content;
 }
 
-void AHttpMessage::setContentLength(int contentLength)
-{
-	std::ostringstream os;
-	os << contentLength;
-	this->setHeader("Content-Length", os.str());
-}
+// void AHttpMessage::setContentType(std::string type)
+// {
+// 	this->addHeader("Content-Type", type);       
+// }
 
-void AHttpMessage::setContentType(std::string type)
-{
-	this->setHeader("Content-Type", type);       
-}
-
-void AHttpMessage::setHeader(std::string name, std::string value)
+void AHttpMessage::addHeader(std::string name, std::string value)
 {
 	_headers.insert(std::make_pair<std::string, std::string>(name, value));
 }
 
-void AHttpMessage::setHeaders(map_type headers)
-{
-	_headers = headers;
-}
+// void AHttpMessage::setHeaders(map_type headers)
+// {
+// 	_headers = headers;
+// }
