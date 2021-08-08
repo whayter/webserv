@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpRequest.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 11:04:34 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/04 14:41:22 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/07 18:05:42 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,22 +30,22 @@ class HttpRequest: public AHttpMessage
 		std::string		getMethod();
 		std::string		getRequestURI();
  
-		void			read(std::istream is);
 
 		void			setMethod(std::string method);
-		void			setUri(Uri &uri);
+		void			setUri(const Uri &uri);
 		void			setVersion(std::string version);
 
 		std::string 	toString();
 
+		// void			read(std::istream is);
 		void			write(std::ostream os);
 
 	private:
 
 	/* --- Member variables ------------------------------------------------- */
 
-		map_type		_queryParameters;
-		std::string		_method, _version, _queryString;
+		// map_type		_queryParameters;
+		std::string		_method, _version; // _queryString;
 		Uri				_uri;
 };
 

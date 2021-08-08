@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Uri.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/05 13:06:01 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/05 13:09:49 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/07 18:36:03 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Uri.hpp"
 
-Uri::Uri() {}
-		
+Uri::Uri(){}
+
 Uri::Uri(std::string uri)
 {
     std::stringstream ss(uri);
@@ -23,16 +23,16 @@ Uri::Uri(std::string uri)
 
 Uri::~Uri() {}
 
-bool isValid() {}
+// bool isValid() {}
 
-bool isAbsolute() {}
+// bool isAbsolute() {}
 
-bool isOpaque() {}
+// bool isOpaque() {}
 
-std::string Uri::getScheme()
-{
-    return _scheme;
-}
+// std::string Uri::getScheme()
+// {
+//     return _scheme;
+// }
 
 std::string Uri::getPath()
 {

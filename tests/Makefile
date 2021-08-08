@@ -38,30 +38,33 @@ _IWHITE   =\e[107m
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#                                                   +#+  +:+       +#+         #
+#    By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#                                                      #+#    #+#              #
-#                                                     ###   ########.fr        #
+#    Created: 2020/05/20 12:43:01 by juligonz          #+#    #+#              #
+#    Updated: 2020/08/24 16:37:55 by juligonz         ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
 UNAME := $(shell uname)
 
-NAME = webserv
+NAME = tests
 
-SRC_DIR = ./src
+SRC_DIR = ./src ../src
+BUILD_DIR = ./build
 INC_DIR = $(shell find . -type d -name "includes")
+INC_DIR+= ../includes
 OBJ_DIR = obj
 
 SRCS_DIR = $(shell find $(SRC_DIR) -type d)
-INCS_DIR = $(shell find $(INC_DIR) -type d)
 
-vpath %.hpp $(INCS_DIR)
+INC = 
+vpath %.hpp $(INC_DIR)
 
-SRC = main.cpp
-SRC+= Scanner.cpp ScannerHttpRequest.cpp
-SRC+= AHttpMessage.cpp HttpRequest.cpp HttpResponse.cpp HttpStatus.cpp
-SRC+= Uri.cpp
+# Unit test framework source code
+SRC = main.cpp catch_amalgamated.cpp
+
+# Our tests
+SRC+= TestsUri.cpp Uri.cpp
 
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))
@@ -70,8 +73,8 @@ vpath %.cpp $(SRCS_DIR)
 LDFLAGS = $(foreach lib, $(LIB_DIR),-L$(lib))  $(foreach lib, $(LIB),-l$(lib))
 
 CXX = clang++
-CXXFLAGS  = -Wall -Wextra -Werror -std=c++98 #-g #-fsanitize=address  -fsanitize=undefined -fstack-protector  
-IFLAGS  = $(foreach inc, $(INCS_DIR),-I$(inc))
+CXXFLAGS  = -Wall -Wextra -Werror -std=c++17#-g #-fsanitize=address  -fsanitize=undefined -fstack-protector  
+IFLAGS  = $(foreach inc, $(INC_DIR),-I$(inc))
 
 #OS specific
 ifeq ($(UNAME), Darwin)
@@ -89,11 +92,13 @@ $(OBJ_DIR)/%.o: %.cpp
 	@$(CXX) $(CXXFLAGS) $(IFLAGS) -c $< -o $@
 
 $(NAME): $(INC) $(OBJ)
-	@$(CXX) $(CXXFLAGS) $(IFLAGS)  -o $@ $(OBJ) $(LDFLAGS)
+	mkdir -p $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) $(IFLAGS)  -o $(BUILD_DIR)/$@ $(OBJ) $(LDFLAGS)
 	@printf "$(_GREEN)Compiled : $(_MAGENTA)$(NAME)$(_R)\n"
 	@printf "\nDo $(_CYAN)$(_BOLD)make show$(_R) to debug the Makefile\n"
 	@printf "Do $(_RED)$(_BOLD)make debug$(_R) to run tests with lldb\n"
 	@printf "Do $(_YELLOW)$(_BOLD)make valgrind$(_R) to run valgrind $(_MAGENTA)(May have falses positives under OSX)$(_R)\n"
+	@printf "Do $(_GREEN)$(_BOLD)make check$(_R) to run unit tests $(_R)\n"
 
 run: $(NAME)
 	@./$(NAME)
@@ -131,12 +136,15 @@ clean:
 	@printf "$(_RED)Removed :$(_MAGENTA) $(OBJ_DIR)/$(_MAGENTA)\n"
 
 fclean: clean
-	@rm -fr $(NAME) $(DEBUG_EXEC) $(NAME).dSYM/
+	@rm -fr $(BUILD_DIR)/ $(NAME).dSYM/
 	@printf "$(_RED)Removed : $(_MAGENTA)./$(NAME), $(NAME).dSYM/$(_R)\n"
+
+check: $(NAME)
+	$(BUILD_DIR)/$(NAME)
 
 re: fclean all
 
-.PHONY: all run debug valgrind norminette bonus show clean fclean re
+.PHONY: all run debug valgrind norminette bonus show clean fclean re check
 
 #******************************************************************************#
 #                                  REMINDER                                    #  

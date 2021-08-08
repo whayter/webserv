@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Uri.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/03 13:01:23 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/05 13:09:35 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/07 18:34:08 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,11 @@ class Uri
 		Uri(std::string uri);
 		~Uri();
 
-		bool			isValid();
-		bool			isAbsolute();
-		bool			isOpaque();
+		// bool			isValid();
+		// bool			isAbsolute();
+		// bool			isOpaque();
 
-		std::string		getScheme();
+		// std::string		getScheme();
 		std::string		getPath();
 		std::string		getQueryString();
 		map_type		getQueries(std::string queries);
