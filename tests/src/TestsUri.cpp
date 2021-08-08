@@ -20,10 +20,10 @@ TEST_CASE( "Uri - Construction", "[class][uri]" ) {
 
     uri.setAuthority("www.42.com");
 	REQUIRE( uri.getAuthority() == "www.42.com");
-	REQUIRE( uri.getPort() == 80);
+	// REQUIRE( uri.getPort() == 80);
 	REQUIRE( uri.getSpecifiedPort() == 0);
 
-	uri.setAuthority("user@intra.42.com:8000");
+	uri.setAuthority("user@intrA.42.com:8000");
 	REQUIRE( uri.getUserInfo() == "user");
 	REQUIRE( uri.getHost() == "intra.42.com");
 	REQUIRE( uri.getPort() == 8000);

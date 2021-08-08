@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/05 13:06:01 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/08 16:37:05 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/08 18:32:39 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,52 @@ void Uri::_parsePathEtc(const std::string& pathEtc){
     throw "Not implemented";
 }
 
+
+//       authority   = [ userinfo "@" ] host [ ":" port ]
 void Uri::_parseAuthority(const std::string& authority){
-    (void)authority;
-    throw "Not implemented";    
+ 
+    std::string tmp;
+
+    std::string::const_iterator it = authority.cbegin();
+    std::string::const_iterator end = authority.cend();
+    
+    while(it != end && *it != '/' && *it != '?' && *it != '#')
+    {
+        if (*it == '@')
+        {   
+            _userInfo = tmp;
+            tmp.clear();
+        }
+        else
+            tmp += *it;
+        it++;
+    }
+    _parseHostAndPort(tmp);
+}
+
+void Uri::_parseHostAndPort(const std::string& hostAndPort)
+{
+    std::string host;
+    u_short port = 0;
+
+    std::string::const_iterator it = hostAndPort.cbegin();
+    std::string::const_iterator end = hostAndPort.cend();
+
+    while(it != end && *it != ':')
+        host += *it++;
+    
+    if (it != end && *it == ':')
+    {
+        it++;
+        while (it != end && isdigit(*it))
+        {
+            port = port * 10 + *it - '0';
+        }
+        if (it != end)
+            throw Uri::SyntaxError();
+    }
+    _host = host;
+    _port = port;
 }
 
 
@@ -110,9 +153,14 @@ std::string				Uri::getPathAndQuery() const
 }
 std::string				Uri::getAuthority() const
 {
+    std::string result;
+
     if (!_userInfo.empty())
-        return _userInfo + "@" + _path;
-    return _path;
+        result += _userInfo + "@";
+    result += _host;
+    if (_port != 0)
+        result += ':' + std::to_string(_port);
+    return result;
 }
 
 
@@ -161,10 +209,12 @@ void        			Uri::setQuery(const std::string& query)
     _query = query;
 }
 
-/// Parses the given authority part for the URI and sets the user-info, host, port components accordingly
 void					Uri::setAuthority(const std::string& authority)
 {
-    (void)authority;
+    _userInfo.clear();
+    _host.clear();
+    _port = 0;
+    _parseAuthority(authority);
 }
 
 

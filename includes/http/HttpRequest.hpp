@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 11:04:34 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/07 18:05:42 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/08 14:46:35 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,11 @@ class HttpRequest: public AHttpMessage
 
 		HttpRequest();
 		~HttpRequest();
+
+		/// Copy constructor
+		// HttpRequest(HttpRequest &);
+		/// Assignment operator
+		// HttpRequest& operator=(const HttpRequest &);
 		
 		std::string		getMethod();
 		std::string		getRequestURI();

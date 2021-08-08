@@ -6,19 +6,20 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/03 13:01:23 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/08 15:49:58 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/08 17:36:23 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef URI_HPP
-# define URI_HPP
+#define URI_HPP
 
-# include <string>
-# include <sstream>
-# include <cctype>
-# include <algorithm>
-# include <map>
-# include <vector>
+#include <string>
+#include <sstream>
+#include <cctype>
+#include <algorithm>
+#include <map>
+#include <iostream>
+#include <exception>
 
 /**
  *    The following are two example URIs and their component parts:
@@ -93,6 +94,7 @@ class Uri
 		
 		void					setPort(u_short);
 		void					setQuery(const std::string&);
+		/// Parses the given authority part and sets the user-info, host, port components accordingly
 		void					setAuthority(const std::string&);
 	
 		std::string				decode(std::string s);
@@ -118,6 +120,7 @@ class Uri
 		void _parseUri(const std::string& uri);
 		void _parsePathEtc(const std::string& pathEtc);
 		void _parseAuthority(const std::string& authority);
+		void _parseHostAndPort(const std::string& hostAndPort);
 
 		u_short _getWellKnownPort() const ;
 
@@ -126,6 +129,15 @@ class Uri
 			std::transform(s.begin(), s.end(), s.begin(), tolower);
 			return s;
 		}
+
+	/* --- Exception -------------------------------------------------------- */
+	
+	class SyntaxError: public std::exception {
+		virtual const char* what() const throw() {
+			return "Uri syntax error";
+		}
+	};
+
 };
 
 #endif
