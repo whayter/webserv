@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/05 13:06:01 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/08 15:43:41 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/08 16:37:05 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,12 @@ void Uri::_parsePathEtc(const std::string& pathEtc){
     throw "Not implemented";
 }
 
+void Uri::_parseAuthority(const std::string& authority){
+    (void)authority;
+    throw "Not implemented";    
+}
+
+
 
 Uri::~Uri() {}
 
@@ -104,8 +110,9 @@ std::string				Uri::getPathAndQuery() const
 }
 std::string				Uri::getAuthority() const
 {
-    throw "Not implemented";
-    return "";
+    if (!_userInfo.empty())
+        return _userInfo + "@" + _path;
+    return _path;
 }
 
 
@@ -127,7 +134,8 @@ void					Uri::setPath(const std::string& path)
 }
 void					Uri::setPathEtc(const std::string& pathEtc)
 {
-        throw "Not implemented";
+    (void)pathEtc;
+    throw "Not implemented";
 }
 
 void					Uri::setSpecifiedPort(u_short port)
@@ -137,6 +145,10 @@ void					Uri::setSpecifiedPort(u_short port)
 void					Uri::setRawQuery(const std::string& query)
 {
     _query = query;
+}
+void					Uri::setFragment(const std::string& fragment)
+{
+    _fragment = fragment;
 }
 
 void					Uri::setPort(u_short port)
@@ -148,6 +160,13 @@ void        			Uri::setQuery(const std::string& query)
 {
     _query = query;
 }
+
+/// Parses the given authority part for the URI and sets the user-info, host, port components accordingly
+void					Uri::setAuthority(const std::string& authority)
+{
+    (void)authority;
+}
+
 
 u_short                 Uri::_getWellKnownPort() const
 {
@@ -189,4 +208,15 @@ std::string Uri::decode(std::string s)
         }
     }
     return decoded;
+}
+
+void Uri::clear()
+{
+    _scheme.clear();
+    _userInfo.clear();
+    _host.clear();
+    _port = 0;
+    _path.clear();
+    _query.clear();
+    _fragment.clear();
 }

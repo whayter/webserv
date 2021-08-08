@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/03 13:01:23 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/08 15:43:15 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/08 15:49:58 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ class Uri
 		inline std::string		getPath()			{ return _path;		}
 		inline u_short			getSpecifiedPort()	{ return _port;		}
 		inline std::string		getRawQuery()		{ return _query;	}
+		inline std::string		getFragment()		{ return _fragment;	}
 		
 		ushort					getPort() const;
 		std::string				getQuery() const;
@@ -88,11 +89,15 @@ class Uri
 		void					setPathEtc(const std::string&);
 		void					setSpecifiedPort(u_short);
 		void					setRawQuery(const std::string&);
+		void					setFragment(const std::string&);
 		
 		void					setPort(u_short);
 		void					setQuery(const std::string&);
+		void					setAuthority(const std::string&);
 	
 		std::string				decode(std::string s);
+
+		void 					clear();
 
 		//bool operator==(const Uri& obj) const {}
 
