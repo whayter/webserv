@@ -1,24 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   webserv.hpp                                        :+:      :+:    :+:   */
+/*   ServerManager.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/07/30 12:30:42 by hwinston          #+#    #+#             */
-/*   Updated: 2021/07/30 14:33:52 by hwinston         ###   ########.fr       */
+/*   Created: 2021/08/08 19:24:36 by hwinston          #+#    #+#             */
+/*   Updated: 2021/08/08 19:35:57 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef WEBSERV_HPP
-# define WEBSERV_HPP
+#ifndef SERVER_MANAGER_HPP
+# define SERVER_MANAGER_HPP
 
-# include <iostream>
+#include "Server.hpp"
+#include "Client.hpp"
 
-# include <netinet/in.h>
-# include <arpa/inet.h>
+class ServerManager
+{
+    public:
+        ServerManager()
+        {
+            
+        }
 
-# include <fcntl.h>
-# include <unistd.h>
+        ~ServerManager() {}
+
+        void run()
+        {
+            
+        }
+};
 
 #endif
