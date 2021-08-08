@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/03 13:01:23 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/07 18:34:08 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/08 15:43:15 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,22 @@
 # include <cctype>
 # include <algorithm>
 # include <map>
+# include <vector>
+
+/**
+ *    The following are two example URIs and their component parts:
+ * 
+ *          foo://example.com:8042/over/there?name=ferret#nose
+ *        \_/   \______________/\_________/ \_________/ \__/
+ *         |           |            |            |        |
+ *      scheme     authority       path        query   fragment
+ *         |   _____________________|__
+ *        / \ /                        \
+ *        urn:example:animal:ferret:nose
+ * 
+ * source rfc: https://www.ietf.org/rfc/rfc3986.txt
+ * 
+ */
 
 class Uri
 {
@@ -30,20 +46,53 @@ class Uri
 
 	/* --- Member functions ------------------------------------------------- */
 
+		/// @brief Create empty uri
 		Uri();
-		Uri(std::string uri);
+		/// @brief Create uri from string
+		Uri(const std::string& uri);
+		/// @brief Create uri from scheme and path (including authority, query and fragment in path)
+		Uri(const std::string& scheme, const std::string& pathEtc);
+		/// @brief Create uri from scheme, authority, and path (including query and fragment in path)
+		Uri(const std::string& scheme, const std::string& authority, const std::string& pathEtc);
+		/// @brief Create uri from scheme, authority, path, and query (excluding fragment in query)
+		Uri(const std::string& scheme, const std::string& authority, const std::string& path, const std::string& query);
+		/// @brief Create uri from scheme, authority, path, query and fragment
+		Uri(const std::string& scheme, const std::string& authority, const std::string& path, const std::string& query, const std::string& fragment);
+		
+		/// @brief Copy constructor
+		Uri(Uri&);
+		// /// @brief Assignment operator
+		// Uri& operator=(const Uri&);
+		// /// @brief Parse string and assign it
+		// Uri& operator=(const std::string& uri);
+
 		~Uri();
 
-		// bool			isValid();
-		// bool			isAbsolute();
-		// bool			isOpaque();
-
-		// std::string		getScheme();
-		std::string		getPath();
-		std::string		getQueryString();
-		map_type		getQueries(std::string queries);
+		inline std::string		getScheme()			{ return _scheme;	}
+		inline std::string		getUserInfo()		{ return _userInfo; }
+		inline std::string		getHost()			{ return _host; 	}
+		inline std::string		getPath()			{ return _path;		}
+		inline u_short			getSpecifiedPort()	{ return _port;		}
+		inline std::string		getRawQuery()		{ return _query;	}
 		
-		std::string		decode(std::string s);
+		ushort					getPort() const;
+		std::string				getQuery() const;
+		std::string				getPathEtc() const;
+		std::string				getPathAndQuery() const;
+		std::string				getAuthority() const;
+
+		void					setScheme(const std::string&);
+		void					setUserInfo(const std::string&);
+		void					setHost(const std::string&);
+		void					setPath(const std::string&);
+		void					setPathEtc(const std::string&);
+		void					setSpecifiedPort(u_short);
+		void					setRawQuery(const std::string&);
+		
+		void					setPort(u_short);
+		void					setQuery(const std::string&);
+	
+		std::string				decode(std::string s);
 
 		//bool operator==(const Uri& obj) const {}
 
@@ -51,9 +100,21 @@ class Uri
 
 	/* --- Member variables ------------------------------------------------- */
 
-		std::string _scheme, _path, _queryString;
+		std::string _scheme;
+		std::string _userInfo;
+		std::string _host;
+		u_short		_port;
+		std::string _path;
+		std::string _query;
+		std::string _fragment;
 
 	/* --- Private functions ------------------------------------------------ */
+
+		void _parseUri(const std::string& uri);
+		void _parsePathEtc(const std::string& pathEtc);
+		void _parseAuthority(const std::string& authority);
+
+		u_short _getWellKnownPort() const ;
 
 		std::string _toLower(std::string s)
 		{
