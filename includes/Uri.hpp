@@ -101,6 +101,9 @@ class Uri
 
 		void 					clear();
 
+		u_short		getWellKnownPort() const ;
+		bool		isWellKnownPort() const ;
+
 		//bool operator==(const Uri& obj) const {}
 
 	private:
@@ -122,7 +125,6 @@ class Uri
 		void _parseAuthority(const std::string& authority);
 		void _parseHostAndPort(const std::string& hostAndPort);
 
-		u_short _getWellKnownPort() const ;
 
 		void _lowerStringInPlace(std::string& s);
 

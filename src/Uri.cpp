@@ -73,9 +73,36 @@ void Uri::_parseUri(const std::string& uri){
     throw "Not implemented";
 }
 
-void Uri::_parsePathEtc(const std::string& pathEtc){
-    (void)pathEtc;
-    // throw "Not implemented";
+void Uri::_parsePathEtc(const std::string& pathEtc)
+{
+    std::string path;
+    std::string query;
+    std::string fragment;
+    std::string::const_iterator it = pathEtc.cbegin();
+    std::string::const_iterator end = pathEtc.cend();
+  
+    while(it != end && *it != '?' && *it != '#')
+    {
+        path += *it;
+        it++;
+    }
+    if (it != end)
+        it++;
+    while(it != end && *it != '#')
+    {
+        query += *it;
+        it++;
+    }
+    if (it != end)
+        it++;
+    while(it != end && *it != '#')
+    {
+        fragment += *it;
+        it++;
+    }
+    _path = path;
+    _query = query;
+    _fragment = fragment;
 }
 
 
@@ -136,7 +163,7 @@ Uri::~Uri() {}
 u_short					Uri::getPort() const
 {
     if (_port == 0)
-        return _getWellKnownPort();
+        return getWellKnownPort();
     return _port;
 }
 
@@ -147,11 +174,20 @@ std::string				Uri::getQuery() const
 
 std::string				Uri::getPathEtc() const
 {
-    return _path + _query + _fragment;
+   std::string result;
+
+    result += _path;
+    if (!_query.empty())
+        result += '?' + _query;
+    if (!_fragment.empty())
+        result += '#' + _fragment;
+    return result;
 }
 std::string				Uri::getPathAndQuery() const
 {
-    return _path + _query;
+    if (!_query.empty())
+        return _path + '?' + _query;
+    return _path;
 }
 std::string				Uri::getAuthority() const
 {
@@ -160,7 +196,7 @@ std::string				Uri::getAuthority() const
     if (!_userInfo.empty())
         result += _userInfo + "@";
     result += _host;
-    if (_port != 0)
+    if (_port != 0 && !isWellKnownPort())
         result += ':' + std::to_string(_port);
     return result;
 }
@@ -223,7 +259,7 @@ void					Uri::setAuthority(const std::string& authority)
 }
 
 
-u_short                 Uri::_getWellKnownPort() const
+u_short                 Uri::getWellKnownPort() const
 {
     std::map<std::string, u_short> m;
     
@@ -238,6 +274,11 @@ u_short                 Uri::_getWellKnownPort() const
     if (m.find(_scheme) != m.end())
         return m[_scheme];
     return 0;
+}
+
+bool Uri::isWellKnownPort() const
+{
+    return _port == getWellKnownPort();
 }
 
 std::string Uri::decode(std::string s)

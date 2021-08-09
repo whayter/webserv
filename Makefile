@@ -126,6 +126,9 @@ show:
 	@printf "$(_CYAN)SRC     :$(_RED)  $(SRC)$(_END)\n"
 	@printf "$(_CYAN)OBJ     :$(_RED)  $(OBJ)$(_END)\n"
 
+check:
+	@$(MAKE) check -C tests
+
 clean:
 	@rm -rf $(OBJ_DIR) output_valgrind
 	@printf "$(_RED)Removed :$(_MAGENTA) $(OBJ_DIR)/$(_MAGENTA)\n"
@@ -136,7 +139,7 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all run debug valgrind norminette bonus show clean fclean re
+.PHONY: all run debug valgrind norminette bonus show check clean fclean re
 
 #******************************************************************************#
 #                                  REMINDER                                    #  
