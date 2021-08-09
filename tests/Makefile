@@ -140,7 +140,7 @@ fclean: clean
 	@printf "$(_RED)Removed : $(_MAGENTA)./$(NAME), $(NAME).dSYM/$(_R)\n"
 
 check: $(NAME)
-	$(BUILD_DIR)/$(NAME)
+	@$(BUILD_DIR)/$(NAME)
 
 re: fclean all
 
