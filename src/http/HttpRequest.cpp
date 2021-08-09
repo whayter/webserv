@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:36:30 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/07 15:05:00 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/08 14:34:23 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,16 @@
 HttpRequest::HttpRequest(): AHttpMessage() {}
 
 HttpRequest::~HttpRequest() {}
+
+// HttpRequest::HttpRequest(HttpRequest &other):
+// 	AHttpMessage()
+// {}
+
+// HttpRequest& operator=(const HttpRequest &)
+// {
+	
+// }
+
 
 std::string HttpRequest::getMethod()
 {
