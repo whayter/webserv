@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/03 13:01:23 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/08 17:36:23 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/09 11:34:06 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ class Uri
 		/// Parses the given authority part and sets the user-info, host, port components accordingly
 		void					setAuthority(const std::string&);
 	
-		std::string				decode(std::string s);
+		std::string			decode(std::string s);
 
 		void 					clear();
 
@@ -124,11 +124,7 @@ class Uri
 
 		u_short _getWellKnownPort() const ;
 
-		std::string _toLower(std::string s)
-		{
-			std::transform(s.begin(), s.end(), s.begin(), tolower);
-			return s;
-		}
+		void _lowerStringInPlace(std::string& s);
 
 	/* --- Exception -------------------------------------------------------- */
 	

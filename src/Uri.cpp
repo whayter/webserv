@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/05 13:06:01 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/08 18:32:39 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/09 11:57:23 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,14 @@ Uri::Uri(const std::string& uri):
 Uri::Uri(const std::string& scheme, const std::string& pathEtc):
     _scheme(scheme), _port(0)
 {
-    _toLower(scheme);
+    _lowerStringInPlace(_scheme);
     _parsePathEtc(pathEtc);
 }
 
 Uri::Uri(const std::string& scheme, const std::string& authority, const std::string& pathEtc)
     : _scheme(scheme)
 {
-    _toLower(scheme);
+    _lowerStringInPlace(_scheme);
     _parseAuthority(authority);
     _parsePathEtc(pathEtc);   
 }
@@ -38,14 +38,14 @@ Uri::Uri(const std::string& scheme, const std::string& authority, const std::str
 Uri::Uri(const std::string& scheme, const std::string& authority, const std::string& path, const std::string& query)
     : _scheme(scheme), _path(path), _query(query)
 {
-    _toLower(scheme);
+    _lowerStringInPlace(_scheme);
     _parseAuthority(authority);
 }
 
 Uri::Uri(const std::string& scheme, const std::string& authority, const std::string& path, const std::string& query, const std::string& fragment)
     : _scheme(scheme), _path(path), _query(query), _fragment(fragment)
 {
-    _toLower(scheme);
+    _lowerStringInPlace(_scheme);
     _parseAuthority(authority);
 }
 
@@ -75,7 +75,7 @@ void Uri::_parseUri(const std::string& uri){
 
 void Uri::_parsePathEtc(const std::string& pathEtc){
     (void)pathEtc;
-    throw "Not implemented";
+    // throw "Not implemented";
 }
 
 
@@ -118,11 +118,13 @@ void Uri::_parseHostAndPort(const std::string& hostAndPort)
         while (it != end && isdigit(*it))
         {
             port = port * 10 + *it - '0';
+            it++;
         }
         if (it != end)
             throw Uri::SyntaxError();
     }
-    _host = host;
+    _host =  host;
+    _lowerStringInPlace(_host);
     _port = port;
 }
 
@@ -178,12 +180,15 @@ void					Uri::setHost(const std::string& host)
 }
 void					Uri::setPath(const std::string& path)
 {
-    _path = path;
+    _path = decode(path);   
 }
 void					Uri::setPathEtc(const std::string& pathEtc)
 {
     (void)pathEtc;
-    throw "Not implemented";
+    _path.clear();
+    _query.clear();
+    _fragment.clear();
+    _parsePathEtc(pathEtc);
 }
 
 void					Uri::setSpecifiedPort(u_short port)
@@ -269,4 +274,9 @@ void Uri::clear()
     _path.clear();
     _query.clear();
     _fragment.clear();
+}
+
+void Uri::_lowerStringInPlace(std::string& s)
+{
+    std::transform(s.begin(), s.end(), s.begin(), tolower);
 }
