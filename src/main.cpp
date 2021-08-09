@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/30 14:07:41 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/08 14:46:25 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/09 12:09:20 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int main(int ac, char** av)
 	// 		break;
 	// }
 	// std::cout << std::endl;
-	// HttpRequest resquest = parser::http::ParserHttpRequest::create(req);
+	HttpRequest resquest = parser::http::ParserHttpRequest::create(req);
 
 	
 	// server serv;
