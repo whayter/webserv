@@ -204,7 +204,8 @@ std::string				Uri::getAuthority() const
 
 void					Uri::setScheme(const std::string& scheme)
 {
-    _scheme = scheme;   
+    _scheme = scheme;
+    _lowerStringInPlace(_scheme);
 }
 void					Uri::setUserInfo(const std::string& userInfo)
 {
