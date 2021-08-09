@@ -431,3 +431,92 @@ TEST_CASE( "Uri - Parsing", "[class][uri]" ) {
 	REQUIRE( uri.getScheme() == "wss");
 	REQUIRE( uri.getPort() == 443);
 }
+
+TEST_CASE( "Uri - Parsing", "[class][uri]" ) {
+    	URI uri("http://www.appinf.com");
+	REQUIRE( uri.toString() == "http://www.appinf.com");
+
+	uri = "http://www.appinf.com/";
+	REQUIRE( uri.toString() == "http://www.appinf.com/");
+
+	uri = "ftp://anonymous@ftp.appinf.com/pub/";
+	REQUIRE( uri.toString() == "ftp://anonymous@ftp.appinf.com/pub/");
+
+	uri = "https://www.appinf.com/index.html#top";
+	REQUIRE( uri.toString() == "https://www.appinf.com/index.html#top");
+
+	uri = "http://www.appinf.com/search.cgi?keyword=test&scope=all";
+	REQUIRE( uri.toString() == "http://www.appinf.com/search.cgi?keyword=test&scope=all");
+
+	uri = "http://www.appinf.com/search.cgi?keyword=test&scope=all#result";
+	REQUIRE( uri.toString() == "http://www.appinf.com/search.cgi?keyword=test&scope=all#result");
+
+	uri = "http://www.appinf.com/search.cgi?keyword=test%20encoded&scope=all#result";
+	REQUIRE( uri.toString() == "http://www.appinf.com/search.cgi?keyword=test%20encoded&scope=all#result");
+
+	uri = "ldap://[2001:db8::7]/c=GB?objectClass?one";
+	REQUIRE( uri.toString() == "ldap://[2001:db8::7]/c=GB?objectClass?one");
+
+	uri = "mailto:John.Doe@example.com";
+	REQUIRE( uri.toString() == "mailto:John.Doe@example.com");
+
+	uri = "tel:+1-816-555-1212";
+	REQUIRE( uri.toString() == "tel:+1-816-555-1212");
+
+	uri = "telnet://192.0.2.16:80";
+	REQUIRE( uri.toString() == "telnet://192.0.2.16:80");
+
+	uri = "urn:oasis:names:specification:docbook:dtd:xml:4.1.2";
+	REQUIRE( uri.toString() == "urn:oasis:names:specification:docbook:dtd:xml:4.1.2");
+
+	uri = "";
+	REQUIRE( uri.toString() == "");
+
+	// relative references
+
+	uri = "/foo/bar";
+	REQUIRE( uri.toString() == "/foo/bar");
+
+	uri = "./foo/bar";
+	REQUIRE( uri.toString() == "./foo/bar");
+
+	uri = "../foo/bar";
+	REQUIRE( uri.toString() == "../foo/bar");
+
+	uri = "//foo/bar";
+	REQUIRE( uri.toString() == "//foo/bar");
+
+	uri = "index.html";
+	REQUIRE( uri.toString() == "index.html");
+
+	uri = "index.html#frag";
+	REQUIRE( uri.toString() == "index.html#frag");
+
+	uri = "?query=test";
+	REQUIRE( uri.toString() == "?query=test");
+
+	uri = "?query=test#frag";
+	REQUIRE( uri.toString() == "?query=test#frag");
+
+	uri = "#frag";
+	REQUIRE( uri.toString() == "#frag");
+
+	uri = "#";
+	REQUIRE( uri.toString() == "");
+
+	uri = "file:///a/b/c";
+	REQUIRE( uri.toString() == "file:///a/b/c");
+
+	uri = "file://localhost/a/b/c";
+	REQUIRE( uri.toString() == "file://localhost/a/b/c");
+
+	uri = "file:///c:/Windows/system32/";
+	REQUIRE( uri.toString() == "file:///c:/Windows/system32/");
+
+	uri = "./c:/Windows/system32/";
+	REQUIRE( uri.toString() == "./c:/Windows/system32/");
+
+	uri = "http://www.appinf.com";
+	uri.setRawQuery("query=test");
+	REQUIRE( uri.toString() == "http://www.appinf.com/?query=test");
+}

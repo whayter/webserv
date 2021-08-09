@@ -62,10 +62,10 @@ class Uri
 		
 		/// @brief Copy constructor
 		Uri(Uri&);
-		// /// @brief Assignment operator
-		// Uri& operator=(const Uri&);
-		// /// @brief Parse string and assign it
-		// Uri& operator=(const std::string& uri);
+		/// @brief Assignment operator
+		Uri& operator=(const Uri&);
+		/// @brief Parse string and assign it
+		Uri& operator=(const std::string& uri);
 
 		~Uri();
 
