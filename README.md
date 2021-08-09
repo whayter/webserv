@@ -1,4 +1,4 @@
-[![C/C++ CI](https://github.com/Working-From-Home/webserv/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/Working-From-Home/webserv/actions/workflows/ci.yml)
+[![C/C++ CI](https://github.com/Working-From-Home/webserv/actions/workflows/ci.yml/badge.svg)](https://github.com/Working-From-Home/webserv/actions/workflows/ci.yml)
 
 # Webserv - Written in c++98 (The subject force us to use 98)
 
