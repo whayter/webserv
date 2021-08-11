@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/08 12:46:58 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/08 21:59:51 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/11 12:26:07 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 
 # include "Socket.hpp"
 
-namespace client
+# include <poll.h>
+
+namespace clnt
 {
 	/* --- class Client ----------------------------------------------------- */
 
@@ -23,37 +25,37 @@ namespace client
 	{
 		public:
 
-			Client() {}
-			~Client() {}
+		/* --- Member functions --------------------------------------------- */
 
-			inline sckt::fd_type	getFd() { return _socket.getFd(); }
-			inline sckt::addr_type	getAddr() { return _socket.getAddr(); }
 
-			void					setFd(sckt::fd_type fd)
-			{
-				_socket.setFd(fd);
-			}			
-			void					setAddr(sckt::addr_type addr)
-			{
-				_socket.setAddr(addr);
-			}
+			Client();
+			~Client();
+
+			inline sckt::fd_type	getFd() const { return _socket.getFd(); }
+			inline sckt::addr_type	getAddr() const { return _socket.getAddr(); }
+			inline struct pollfd	getPfd() const { return _pfd; }
+
+			void					setFd(sckt::fd_type fd);
+			void					setAddr(sckt::addr_type addr);
+			void					setPfd(sckt::fd_type fd);
 
 		private:
 
-			sckt::Socket	_socket;
+		/* --- Member variables --------------------------------------------- */
+
+			sckt::Socket			_socket;
+			struct pollfd			_pfd;
+			
+		/* --- Disabled default functions ----------------------------------- */
+
+			// Client(const Client &);
+			// Client& operator=(const Client&);
 	};
 	
-	/* --- functions -------------------------------------------------------- */
+	/* --- Namespace functions ---------------------------------------------- */
 
-	void connectClient(sckt::fd_type fd, sckt::addr_type addr)
-	{
-		if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
-		{
-			close(fd);
-			std::cerr << "Error: connect()" << std::endl;
-			exit(EXIT_FAILURE);
-		}
-	}
+	bool	connect(sckt::fd_type fd, sckt::addr_type addr);
+	void	disconnect(const Client& client);
 };
 
 #endif

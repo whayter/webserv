@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/08 12:39:38 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/08 23:40:09 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/11 15:52:13 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "Client.hpp"
 
 # include <vector>
+# include <poll.h>
 
 class Server
 {
@@ -24,61 +25,32 @@ class Server
 
 	/* --- Member types ----------------------------------------------------- */
 
-		typedef std::vector<client::Client>		clients_type;
+		typedef std::vector<clnt::Client>	clients_type;
 
 	/* --- Member functions ------------------------------------------------- */
 
-		Server(int port)
-		{
-			_socket.setFd(AF_INET, SOCK_STREAM);
-			_socket.setAddr(AF_INET, INADDR_ANY, port);
-			sckt::setNonBlocking(_socket.getFd());
-			sckt::bindSocket(_socket.getFd(), _socket.getAddr());
-			sckt::listenSocket(_socket.getFd());
-		}
-		
-		~Server()
-		{
-			sckt::closeSocket(_socket.getFd());
-		}
+		Server(int port);
+		Server(const Server& s);
+		Server& operator=(const Server& s);
+		~Server();
 
-		sckt::fd_type allowLink(sckt::addr_type addr, sckt::addrLen_type len)
-		{
-			sckt::fd_type fd = _socket.getFd();
-			sckt::fd_type newClientFd;
-			newClientFd = accept(fd, (struct sockaddr *)&addr, &len);
-			return newClientFd;
-		}
-	
-		// int getRequest()
-		// {
-			
-		// }
-		
+		bool				start();
+		void				update();
+		void				stop();
 
+		void 				connectClient();		
+		void				manageClient(clients_type::iterator client);
+		bool				getRequest(sckt::fd_type fd, std::string* request);
+		void 				disconnectClient(clients_type::iterator client);
 
-		clients_type getClients()
-		{
-			return _clients;
-		}
-
-		void addNewClient(client::Client client)
-		{
-			_clients.push_back(client);
-		}
-
-		void removeClient(clients_type::iterator client)
-		{
-			sckt::closeSocket(client->getFd());
-			_clients.erase(client);
-		}
-		
 	private:
 
 	/* --- Member variables ------------------------------------------------- */
 
-		sckt::Socket			_socket;
-		clients_type			_clients;
+		int					_port;
+		sckt::Socket		_socket;
+		clients_type		_clients;
+		struct pollfd		_pfd;
 };
 
 #endif
