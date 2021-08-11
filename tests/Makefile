@@ -73,7 +73,7 @@ vpath %.cpp $(SRCS_DIR)
 LDFLAGS = $(foreach lib, $(LIB_DIR),-L$(lib))  $(foreach lib, $(LIB),-l$(lib))
 
 CXX = clang++
-CXXFLAGS  = -Wall -Wextra -Werror -std=c++17 #-g #-fsanitize=address  -fsanitize=undefined -fstack-protector  
+CXXFLAGS  = -Wall -Wextra -Werror -std=c++17 -g #-fsanitize=address  -fsanitize=undefined -fstack-protector  
 IFLAGS  = $(foreach inc, $(INC_DIR),-I$(inc))
 
 #OS specific
@@ -105,7 +105,7 @@ run: $(NAME)
 
 debug:	CFLAGS += -g
 debug: $(NAME)
-	@lldb $(NAME)
+	@lldb $(BUILD_DIR)/$(NAME) $(ARGS)
 
 valgrind: $(NAME)
 	@valgrind --leak-check=full --show-leak-kinds=all --show-reachable=yes --track-origins=yes --log-file=output_valgrind ./$(NAME) $(ARGS)
@@ -140,7 +140,7 @@ fclean: clean
 	@printf "$(_RED)Removed : $(_MAGENTA)./$(NAME), $(NAME).dSYM/$(_R)\n"
 
 check: $(NAME)
-	@$(BUILD_DIR)/$(NAME)
+	@$(BUILD_DIR)/$(NAME) $(ARGS)
 
 re: fclean all
 

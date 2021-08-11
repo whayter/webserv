@@ -157,7 +157,7 @@ TEST_CASE( "Uri - no", "[class][uri]" ) {
 	
 	REQUIRE( uri.getScheme() == "http");
 	REQUIRE( uri.getAuthority() == "www.appinf.com");
-	REQUIRE( uri.getPath().empty());
+	REQUIRE( uri.getPath() == "");
 	REQUIRE( uri.getQuery().empty());
 	REQUIRE( uri.getFragment().empty());
 	REQUIRE( !uri.isRelative());

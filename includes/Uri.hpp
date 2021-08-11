@@ -121,13 +121,13 @@ class Uri
 
 	/* --- Private functions ------------------------------------------------ */
 
-		void						_parseUri(const std::string& uri);
-		void						_parsePathEtc(const std::string& pathEtc);
-		std::string::const_iterator _parseAuthority(const std::string& authority);
-		std::string::const_iterator _parseHostAndPort(const std::string& hostAndPort);
+		void	_parseUri(const std::string& uri);
+		void	_parsePathEtc(const std::string& pathEtc);
+		void	_parseAuthority(const std::string& authority);
+		void	_parseHostAndPort(const std::string& hostAndPort);
 
 
-		void _lowerStringInPlace(std::string& s);
+		void	_lowerStringInPlace(std::string& s);
 
 	/* --- Exception -------------------------------------------------------- */
 	
