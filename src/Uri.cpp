@@ -196,11 +196,10 @@ void Uri::_parseHostAndPort(std::string::const_iterator& it, const std::string::
             port = port * 10 + *it - '0';
             it++;
         }
-        if (it != end)
-        {
-        std::cout << "|2|" << std::string(it, end) << std::endl;
-           }   throw Uri::SyntaxError();
-
+        // if (it != end)
+        // {
+        // throw Uri::SyntaxError();
+        // }
     }
     _host =  host;
     _lowerStringInPlace(_host);
@@ -327,6 +326,7 @@ u_short                 Uri::getWellKnownPort() const
     m["ws"]     = 80;
     m["https"]  = 443;
     m["wss"]    = 443;
+    m["ldap"]    = 389;
     
     if (m.find(_scheme) != m.end())
         return m[_scheme];

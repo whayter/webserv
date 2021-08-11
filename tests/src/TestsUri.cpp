@@ -219,14 +219,25 @@ TEST_CASE( "Uri - no", "[class][uri]" ) {
 	REQUIRE( uri.getFragment() == "result");
 	REQUIRE( !uri.isRelative());
 
-	uri = "ldap://[2001:db8::7]/c=GB?objectClass?one";
+	uri = "ldap://127.0.0.1/c=GB?objectClass?one";
 	REQUIRE( uri.getScheme() == "ldap");
 	REQUIRE( uri.getUserInfo().empty());
-	REQUIRE( uri.getHost() == "2001:db8::7");
+	REQUIRE( uri.getHost() == "127.0.0.1");
 	REQUIRE( uri.getPort() == 389);
-	REQUIRE( uri.getAuthority() == "[2001:db8::7]");
+	REQUIRE( uri.getAuthority() == "127.0.0.1");
 	REQUIRE( uri.getPath() == "/c=GB");
 	REQUIRE( uri.getQuery() == "objectClass?one");
+	REQUIRE( uri.getFragment().empty());
+
+
+	uri = "urn:oasis:names:specification:docbook:dtd:xml:4.1.2";
+	REQUIRE( uri.getScheme() == "urn");
+	REQUIRE( uri.getUserInfo().empty());
+	REQUIRE( uri.getHost().empty());
+	REQUIRE( uri.getPort() == 0);
+	REQUIRE( uri.getAuthority().empty());
+	REQUIRE( uri.getPath() == "oasis:names:specification:docbook:dtd:xml:4.1.2");
+	REQUIRE( uri.getQuery().empty());
 	REQUIRE( uri.getFragment().empty());
 
 	uri = "mailto:John.Doe@example.com";
@@ -259,15 +270,6 @@ TEST_CASE( "Uri - no", "[class][uri]" ) {
 	REQUIRE( uri.getQuery().empty());
 	REQUIRE( uri.getFragment().empty());
 
-	uri = "urn:oasis:names:specification:docbook:dtd:xml:4.1.2";
-	REQUIRE( uri.getScheme() == "urn");
-	REQUIRE( uri.getUserInfo().empty());
-	REQUIRE( uri.getHost().empty());
-	REQUIRE( uri.getPort() == 0);
-	REQUIRE( uri.getAuthority().empty());
-	REQUIRE( uri.getPath() == "oasis:names:specification:docbook:dtd:xml:4.1.2");
-	REQUIRE( uri.getQuery().empty());
-	REQUIRE( uri.getFragment().empty());
 
 	uri = "";
 	REQUIRE( uri.getScheme().empty());
