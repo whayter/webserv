@@ -98,13 +98,14 @@ class Uri
 		void					setAuthority(const std::string&);
 	
 		std::string			decode(std::string s);
+		std::string			toString();
 
 		void 					clear();
 
 		u_short		getWellKnownPort() const ;
 		bool		isWellKnownPort() const ;
-
-		//bool operator==(const Uri& obj) const {}
+		bool		isRelative() const ;
+		bool		empty() const ;
 
 	private:
 
@@ -120,10 +121,10 @@ class Uri
 
 	/* --- Private functions ------------------------------------------------ */
 
-		void _parseUri(const std::string& uri);
-		void _parsePathEtc(const std::string& pathEtc);
-		void _parseAuthority(const std::string& authority);
-		void _parseHostAndPort(const std::string& hostAndPort);
+		void						_parseUri(const std::string& uri);
+		void						_parsePathEtc(const std::string& pathEtc);
+		std::string::const_iterator _parseAuthority(const std::string& authority);
+		std::string::const_iterator _parseHostAndPort(const std::string& hostAndPort);
 
 
 		void _lowerStringInPlace(std::string& s);

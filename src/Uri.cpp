@@ -59,18 +59,38 @@ Uri::Uri(Uri& other):
     _fragment(other._fragment)
 {}
 
-// Uri& operator=(const Uri& other)
-// {
-    
-// }
-// Uri& operator=(const std::string& uri)
-// {
-    
-// }
+Uri& Uri::operator=(const Uri& other)
+{
+    if (this == &other)
+        return *this;
+    _scheme = other._scheme;
+    _userInfo = other._userInfo;
+    _host = other._host;
+    _port = other._port;
+    _path = other._path;
+    _query = other._query;
+    _fragment = other._fragment;
+    return *this;
+}
+Uri& Uri::operator=(const std::string& uri)
+{
+    clear();
+    _parseUri(uri);
+    return *this;
+}
 
 void Uri::_parseUri(const std::string& uri){
-    (void)uri;
-    throw "Not implemented";
+    std::string scheme;
+    std::string::const_iterator it = uri.cbegin();
+    std::string::const_iterator end = uri.cend();
+    std::cout << "PARRRRRr"
+    while(it != end && *it != ':')
+    {
+        scheme += *it;
+        it++;
+    }
+    it = _parseAuthority(uri.substr(it - uri.cbegin()));
+    // _parsePathEtc(uri.substr(it - uri.cbegin()));
 }
 
 void Uri::_parsePathEtc(const std::string& pathEtc)
@@ -107,7 +127,7 @@ void Uri::_parsePathEtc(const std::string& pathEtc)
 
 
 //       authority   = [ userinfo "@" ] host [ ":" port ]
-void Uri::_parseAuthority(const std::string& authority){
+std::string::const_iterator Uri::_parseAuthority(const std::string& authority){
  
     std::string tmp;
 
@@ -125,10 +145,10 @@ void Uri::_parseAuthority(const std::string& authority){
             tmp += *it;
         it++;
     }
-    _parseHostAndPort(tmp);
+    return _parseHostAndPort(tmp);
 }
 
-void Uri::_parseHostAndPort(const std::string& hostAndPort)
+std::string::const_iterator Uri::_parseHostAndPort(const std::string& hostAndPort)
 {
     std::string host;
     u_short port = 0;
@@ -153,6 +173,7 @@ void Uri::_parseHostAndPort(const std::string& hostAndPort)
     _host =  host;
     _lowerStringInPlace(_host);
     _port = port;
+    return it;
 }
 
 
@@ -282,6 +303,18 @@ bool Uri::isWellKnownPort() const
     return _port == getWellKnownPort();
 }
 
+bool Uri::isRelative() const
+{
+    return false;
+}
+
+bool Uri::empty() const
+{
+    return _scheme.empty() && _userInfo.empty() && _port == 0
+        && _path.empty() && _query.empty() && _fragment.empty()
+    ;
+}
+
 std::string Uri::decode(std::string s)
 {
     std::string decoded, sub;
@@ -306,6 +339,17 @@ std::string Uri::decode(std::string s)
     }
     return decoded;
 }
+
+std::string			Uri::toString()
+{
+    std::string result;
+    if (!_scheme.empty())
+        result += _scheme + ':';
+    result += getAuthority();
+    result += getPathEtc();
+    return result;
+}
+
 
 void Uri::clear()
 {
