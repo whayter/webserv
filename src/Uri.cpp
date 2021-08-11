@@ -24,29 +24,39 @@ Uri::Uri(const std::string& scheme, const std::string& pathEtc):
     _scheme(scheme), _port(0)
 {
     _lowerStringInPlace(_scheme);
-    _parsePathEtc(pathEtc);
+    std::string::const_iterator it = pathEtc.cbegin();
+    std::string::const_iterator end = pathEtc.cend();
+    _parsePathEtc(it, end);   
 }
 
 Uri::Uri(const std::string& scheme, const std::string& authority, const std::string& pathEtc)
     : _scheme(scheme)
 {
     _lowerStringInPlace(_scheme);
-    _parseAuthority(authority);
-    _parsePathEtc(pathEtc);   
+    std::string::const_iterator it = authority.cbegin();
+    std::string::const_iterator end = authority.cend();
+    _parseAuthority(it, end);
+    it = pathEtc.cbegin();
+    end = pathEtc.cend();
+    _parsePathEtc(it, end);   
 }
 
 Uri::Uri(const std::string& scheme, const std::string& authority, const std::string& path, const std::string& query)
     : _scheme(scheme), _path(path), _query(query)
 {
     _lowerStringInPlace(_scheme);
-    _parseAuthority(authority);
+    std::string::const_iterator it = authority.cbegin();
+    std::string::const_iterator end = authority.cend();
+    _parseAuthority(it, end);
 }
 
 Uri::Uri(const std::string& scheme, const std::string& authority, const std::string& path, const std::string& query, const std::string& fragment)
     : _scheme(scheme), _path(path), _query(query), _fragment(fragment)
 {
     _lowerStringInPlace(_scheme);
-    _parseAuthority(authority);
+    std::string::const_iterator it = authority.cbegin();
+    std::string::const_iterator end = authority.cend();
+    _parseAuthority(it, end);
 }
 
 Uri::Uri(Uri& other):
@@ -83,61 +93,72 @@ void Uri::_parseUri(const std::string& uri){
     std::string scheme;
     std::string::const_iterator it = uri.cbegin();
     std::string::const_iterator end = uri.cend();
+
     while(it != end && *it != ':')
     {
         scheme += *it;
         it++;
     }
-    if (it != end)
+    if (it != end && *it == ':')
         it++;
     _scheme = scheme;
+                std::cout << "---1>" << std::string(it, end) << std::endl;
     _parseAuthority(it, end);
+                std::cout << "---3>" << std::string(it, end) << std::endl;
     _parsePathEtc(it, end);
+                std::cout << "---3>" << std::string(it, end) << std::endl;
 }
 
-void Uri::_parsePathEtc(const std::string& pathEtc)
+void Uri::_parsePathEtc(std::string::const_iterator& it, const std::string::const_iterator& end)
 {
-    std::string path = "";
-    std::string query = "";
-    std::string fragment = "";
-    (void)pathEtc;
-    std::string::const_iterator it = pathEtc.cbegin();
-    std::string::const_iterator end = pathEtc.cend();
+    std::string path;
+    std::string query;
+    std::string fragment;
+    bool isFragment = false;
+    // (void)pathEtc;
+    // std::string::const_iterator it = pathEtc.cbegin();
+    // std::string::const_iterator end = pathEtc.cend();
   
-    while(it != end && *it != '?' && *it != '#')
+    std::cout << "---4>" << std::string(it, end) << std::endl;
+
+    while (it != end && *it != '?' && *it != '#')
     {
         path += *it;
         it++;
     }
+    if (*it == '#')
+        isFragment = true;
     if (it != end)
         it++;
-    while(it != end && *it != '#')
-    {
-        query += *it;
+    while (it != end && *it != '#' && !isFragment)
+        {
+            query += *it;
+            it++;
+        }
+    if (it != end && !isFragment)
         it++;
-    }
-    if (it != end)
-        it++;
-    while(it != end && *it != '#')
+    while (it != end)
     {
         fragment += *it;
         it++;
     }
     _path = path;
-    _query = query;
+    _query = query; 
     _fragment = fragment;
 }
 
 
 //       authority   = [ userinfo "@" ] host [ ":" port ]
-void Uri::_parseAuthority(const std::string& authority){
+void Uri::_parseAuthority(std::string::const_iterator& it, const std::string::const_iterator& end){
  
     std::string tmp;
-    std::string::const_iterator it = authority.cbegin();
-    std::string::const_iterator end = authority.cend();
+
+
+    std::cout << "|2|" << std::string(it, end) << std::endl;
 
     while (it != end && *it == '/')
         it++;
+    std::cout << "|2|" << std::string(it, end) << std::endl;
     while(it != end && *it != '/' && *it != '?' && *it != '#')
     {
         if (*it == '@')
@@ -149,18 +170,22 @@ void Uri::_parseAuthority(const std::string& authority){
             tmp += *it;
         it++;
     }
-    return _parseHostAndPort(tmp);
+    std::cout << "|2|" << std::string(it, end) << std::endl;
+
+    std::string::const_iterator ite = tmp.cbegin();
+    std::string::const_iterator ende = tmp.cend();
+    return _parseHostAndPort(ite, ende);
 }
 
-void Uri::_parseHostAndPort(const std::string& hostAndPort)
+void Uri::_parseHostAndPort(std::string::const_iterator& it, const std::string::const_iterator & end)
 {
     std::string host;
     u_short port = 0;
 
-    std::string::const_iterator it = hostAndPort.cbegin();
-    std::string::const_iterator end = hostAndPort.cend();
+    // std::string::const_iterator it = hostAndPort.cbegin();
+    // std::string::const_iterator end = hostAndPort.cend();
 
-    while(it != end && *it != ':')
+    while(it != end && *it != ':' && *it != '/')
         host += *it++;
     
     if (it != end && *it == ':')
@@ -172,12 +197,14 @@ void Uri::_parseHostAndPort(const std::string& hostAndPort)
             it++;
         }
         if (it != end)
-            throw Uri::SyntaxError();
+        {
+        std::cout << "|2|" << std::string(it, end) << std::endl;
+           }   throw Uri::SyntaxError();
+
     }
     _host =  host;
     _lowerStringInPlace(_host);
     _port = port;
-    return it;
 }
 
 
@@ -194,7 +221,7 @@ u_short					Uri::getPort() const
 
 std::string				Uri::getQuery() const
 {
-    return _query;
+    return decode(_query);
 }
 
 std::string				Uri::getPathEtc() const
@@ -250,7 +277,9 @@ void					Uri::setPathEtc(const std::string& pathEtc)
     _path.clear();
     _query.clear();
     _fragment.clear();
-    _parsePathEtc(pathEtc);
+    std::string::const_iterator it = pathEtc.cbegin();
+    std::string::const_iterator end = pathEtc.cend();
+    _parsePathEtc(it ,end);
 }
 
 void					Uri::setSpecifiedPort(u_short port)
@@ -281,7 +310,9 @@ void					Uri::setAuthority(const std::string& authority)
     _userInfo.clear();
     _host.clear();
     _port = 0;
-    _parseAuthority(authority);
+    std::string::const_iterator it = authority.cbegin();
+    std::string::const_iterator end = authority.cend();
+    _parseAuthority(it, end);
 }
 
 
@@ -319,7 +350,7 @@ bool Uri::empty() const
     ;
 }
 
-std::string Uri::decode(std::string s)
+std::string Uri::decode(std::string s) const
 {
     std::string decoded, sub;
     std::string::iterator cursor;

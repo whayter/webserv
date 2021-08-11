@@ -22,7 +22,10 @@ public:
 	Scanner(std::istream &inputStream);
 	~Scanner();
 
-	/// Peek the next character
+	/** Peek the next character
+	* @details
+	* @depre
+	*/
 	inline char	peek(void)		{ return _inStream.peek(); }
 	inline int	getLine(void)	{ return _line; }
 	inline int	getColumn(void)	{ return _column; }
