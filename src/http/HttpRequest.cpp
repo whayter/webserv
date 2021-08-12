@@ -26,17 +26,14 @@ HttpRequest::~HttpRequest() {}
 // }
 
 
-std::string HttpRequest::getMethod()
+std::string& HttpRequest::getMethod()
 {
 	return _method;
 }
 
-std::string HttpRequest::getRequestURI()
+Uri&	HttpRequest::getUri()
 {
-	if (_uri.getPath().empty())
-		return "index.html";
-	else
-		return _uri.getPath();
+	return _uri;
 }
 
 
@@ -62,7 +59,7 @@ std::string HttpRequest::toString()
 	map_type::iterator it;
 
 	s = "Method:\n\t" + getMethod() + "\n";
-	s += "URI:\n\t" + getRequestURI() + "\n";
+	s += "URI:\n\t" + _uri.toString() + "\n";
 	// s += "Parameters:\n\t" + _queryString + "\n";
 	s += "Headers:\n";
 	header = this->getHeaders();
@@ -105,7 +102,7 @@ void HttpRequest::write(std::ostream os)
 	map_type::iterator it;
 
 	os << _method << " ";
-	os << this->getRequestURI() << " ";
+	os << _uri.getPathEtc() << " ";
 	os << _version << "\n";
 	for (it = header.begin(); it != header.end(); it++)
 		os << it->first << ": " << it->second + "\n";

@@ -23,22 +23,28 @@ ScannerHttpRequest::ScannerHttpRequest(std::istream &inputStream)
 
 ScannerHttpRequest::~ScannerHttpRequest(){}
 
-Token ScannerHttpRequest::getToken()
+Token ScannerHttpRequest::getToken(bool skipLWS)
 {
 	char c = 0;
 
-	do
-	{
-		c = _scan.get();
-	} while (c != '\n' && isspace(c));
-
+	(void)skipLWS;
+	if (skipLWS)
+		do
+		{
+			c = _scan.get();
+		} while (c != '\n' && isspace(c));
+	else
+			c = _scan.get();
+	
 	switch (c)
 	{
 		case  -1:
 		case  0 :	return _makeToken(ScopedEnum::kEndOfInput, "");
 		case ':':	return _makeToken(ScopedEnum::kColon, ":");
 		case ',':	return _makeToken(ScopedEnum::kComma, ",");
-		case '\n':	return _makeToken(ScopedEnum::kNewLine, ",");
+		case '\n':	return _makeToken(ScopedEnum::kNewLine, "\n");
+		case ' ':	return _makeToken(ScopedEnum::kLWS, " ");
+		case '\t':	return _makeToken(ScopedEnum::kLWS, "\t");
 		default:
 			std::string lexeme = "";
 			if (_charIsString(c))
@@ -52,7 +58,8 @@ Token ScannerHttpRequest::getToken()
 					_scan.unget();
 				return _makeToken(ScopedEnum::kString, lexeme);
 			}
-			return _makeToken(ScopedEnum::kError, "Cant parse lexeme");
+			return _makeToken(ScopedEnum::kError,
+						std::string("Cant parse lexeme:\"" + lexeme +"\", char:'" + c+ "'  "));
 	}
 }
 
@@ -94,7 +101,7 @@ const char* TokenKindToCstring(TokenKind type)
 		"kEnfOfInput", "kError",
 		"kString", "kNewLine",
 		"kLeftBrace", "kRightBrace",
-		"kComma", "kColon",
+		"kComma", "kColon", "kLWS"
 	};
 	return str[type];
 }

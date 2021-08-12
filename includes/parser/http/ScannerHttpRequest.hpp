@@ -19,6 +19,8 @@
 namespace parser{
 namespace http{
 
+// LWS = " " | "\t"
+
 struct ScopedEnum
 {
 	enum TokenKind
@@ -26,7 +28,7 @@ struct ScopedEnum
 		kEndOfInput = 0, kError,
 		kString, kNewLine,
 		kLeftBrace, kRightBrace,
-		kComma, kColon,
+		kComma, kColon, kLWS
 	};
 };
 typedef ScopedEnum::TokenKind TokenKind;
@@ -45,7 +47,7 @@ public:
 	ScannerHttpRequest(std::istream &inputStream);
 	~ScannerHttpRequest();
 
-	Token getToken();
+	Token getToken(bool skipLWS = false);
 	inline Token peekToken() { return _actualToken; };
 private:
 

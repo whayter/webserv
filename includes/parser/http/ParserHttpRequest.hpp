@@ -31,35 +31,51 @@ public:
 	static HttpRequest create(std::istream & inputStream){
 		ScannerHttpRequest scanner(inputStream);
 		HttpRequest result;
-		Token t = scanner.getToken();
+		Token t = scanner.getToken(true);
 		if (	!t.value.compare("GET") ||	!t.value.compare("POST")
 			||	!t.value.compare("DELETE"))
 		{
 			result.setMethod(t.value);
-			std::cout << t << std::endl; /////////
 			
-			t = scanner.getToken();
-			result.setUri(Uri(t.value));
-			std::cout << t << std::endl; /////////
+			t = scanner.getToken(true);
+			result.setUri(Uri("http", t.value));
 			
-			t = scanner.getToken();
+			t = scanner.getToken(true);
 			result.setVersion(t.value);
-			std::cout << t << std::endl; /////////
 		}
 		while((t = scanner.getToken()).kind != ScopedEnum::kEndOfInput)
 		{
-			std::cout << t << std::endl; /////////
-			// switch (t.kind)
-			// {
-			// case ScopedEnum::k:
+			std::string name;
+			std::string value;
+			bool isValueField = false;
+
+			if (ScopedEnum::kNewLine  == t.kind)
+				t = scanner.getToken();
+			std::cout << t << std::endl;
+			switch (t.kind)
+			{
+				case ScopedEnum::kNewLine :
+					result.addHeader(name, value);
+					isValueField = false;
+					break;
+				case ScopedEnum::kColon :
+					isValueField = true;
+					break;
+				case ScopedEnum::kLWS :
+					if (isValueField)
+						value += t.value;
+					break;
+				case ScopedEnum::kString :
+					if (isValueField == false)
+						name += t.value;
+					else
+						value += t.value;
+					break;
 				
-			// 	break;
-			
-			// default:
-			// 	break;
-			// }
+				default:
+					break;
+			}
 		}
-		std::cout << t << std::endl; /////////
 		
 		return result;
 	}

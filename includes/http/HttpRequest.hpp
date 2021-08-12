@@ -32,8 +32,8 @@ class HttpRequest: public AHttpMessage
 		/// Assignment operator
 		// HttpRequest& operator=(const HttpRequest &);
 		
-		std::string		getMethod();
-		std::string		getRequestURI();
+		std::string&	getMethod();
+		Uri&			getUri();
  
 
 		void			setMethod(std::string method);
