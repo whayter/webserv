@@ -56,6 +56,8 @@ public:
 			{
 				case ScopedEnum::kNewLine :
 					result.addHeader(name, value);
+					name.clear();
+					value.clear();
 					isValueField = false;
 					break;
 				case ScopedEnum::kColon :
@@ -76,6 +78,7 @@ public:
 					break;
 			}
 		}
+		result.addHeader("Cookie", "ASPSESSIONIDQADTQAQR=JNJLAIGBPIMBDAJPJNIFKIEK");
 		
 		return result;
 	}
