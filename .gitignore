@@ -11,3 +11,4 @@ a.out.dSYM
 .\#*
 output_valgrind
 build/
+obj/

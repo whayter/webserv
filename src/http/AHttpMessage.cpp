@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 13:20:58 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/12 22:02:13 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/12 23:32:14 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,10 @@ std::string AHttpMessage::getContent()
 	return _content;
 }
 
-// AHttpMessage::size_type AHttpMessage::getContentLength()
-// {
-// 	size_type result;
-// 	std::istringstream(getHeader("Content-Length")) >> result;
-// 	return result;
-// }
+size_t AHttpMessage::getContentLength()
+{
+	return _content.size();
+}
 
 AHttpMessage::map_type AHttpMessage::getHeaders()
 {
@@ -44,7 +42,6 @@ void AHttpMessage::readContent(std::istream is)
 
 void AHttpMessage::setContent(std::string content)
 {
-	// this->setContentLength(content.size());
 	_content = content;
 }
 

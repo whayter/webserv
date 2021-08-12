@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 14:55:33 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/12 23:15:30 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/12 23:31:47 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ public:
 		std::cout << "||||"<< t << std::endl;
 		if (ScopedEnum::kNewLine != t.kind)
 			throw std::invalid_argument("GET line not separated by new line");
+		bool isContent = false;
 		while((t = scanner.getToken()).kind != ScopedEnum::kEndOfInput)
 		{
 			std::string name;
@@ -58,7 +59,9 @@ public:
 			switch (t.kind)
 			{
 				case ScopedEnum::kNewLine :
-					if (!name.empty())
+					if (name.empty())
+						isContent = true;
+					else
 						result.addHeader(name, value);
 					name.clear();
 					value.clear();

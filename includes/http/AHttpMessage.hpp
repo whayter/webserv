@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 14:47:44 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/12 22:20:26 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/12 23:27:31 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class AHttpMessage
 
 		std::string		getContent();
 		std::string 	getHeader(std::string name);
-		// size_t		getContentLength();
+		size_t			getContentLength();
 		map_type		getHeaders();
 
 
