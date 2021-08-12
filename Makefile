@@ -127,7 +127,7 @@ show:
 	@printf "$(_CYAN)OBJ     :$(_RED)  $(OBJ)$(_END)\n"
 
 check:
-	@$(MAKE) check -C tests
+	@$(MAKE) check -C tests ARGS="$(ARGS)"
 
 clean:
 	@rm -rf $(OBJ_DIR) output_valgrind

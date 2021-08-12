@@ -18,9 +18,12 @@ TEST_CASE( "Uri - Construction", "[class][uri]" ) {
 	REQUIRE( uri.getScheme() == "ftp");
 	REQUIRE( uri.getPort() == 21);
 
+	uri.setScheme("HTTP");
+	REQUIRE (uri.getScheme() == "http");
+
     uri.setAuthority("www.42.com");
 	REQUIRE( uri.getAuthority() == "www.42.com");
-	// REQUIRE( uri.getPort() == 80);
+	REQUIRE( uri.getPort() == 80);
 	REQUIRE( uri.getSpecifiedPort() == 0);
 
 	uri.setAuthority("user@intrA.42.com:8000");
@@ -149,4 +152,432 @@ TEST_CASE( "Uri - Construction", "[class][uri]" ) {
     }
 } /* TEST_CASE Uri - Construction */
 
+TEST_CASE( "Uri - Parser 2", "[class][uri]" ) {
+    Uri uri("http://www.appinf.com");
 
+	REQUIRE( uri.getScheme() == "http");
+	REQUIRE( uri.getAuthority() == "www.appinf.com");
+	REQUIRE( uri.getPath() == "");
+	REQUIRE( uri.getQuery().empty());
+	REQUIRE( uri.getFragment().empty());
+	REQUIRE( !uri.isRelative());
+
+	uri = "http://www.appinf.com/";
+	REQUIRE( uri.getScheme() == "http");
+	REQUIRE( uri.getAuthority() == "www.appinf.com");
+	REQUIRE( uri.getPath() == "/");
+	REQUIRE( uri.getQuery().empty());
+	REQUIRE( uri.getFragment().empty());
+	REQUIRE( !uri.isRelative());
+
+	uri = "ftp://anonymous@ftp.appinf.com/pub/";
+	REQUIRE( uri.getScheme() == "ftp");
+	REQUIRE( uri.getUserInfo() == "anonymous");
+	REQUIRE( uri.getHost() == "ftp.appinf.com");
+	REQUIRE( uri.getPort() == 21);
+	REQUIRE( uri.getAuthority() == "anonymous@ftp.appinf.com");
+	REQUIRE( uri.getPath() == "/pub/");
+	REQUIRE( uri.getQuery().empty());
+	REQUIRE( uri.getFragment().empty());
+	REQUIRE( !uri.isRelative());
+	REQUIRE( !uri.isRelative());
+
+	uri = "https://www.appinf.com/index.html#top";
+	REQUIRE( uri.getScheme() == "https");
+	REQUIRE( uri.getHost() == "www.appinf.com");
+	REQUIRE( uri.getPort() == 443);
+	REQUIRE( uri.getPath() == "/index.html");
+	REQUIRE( uri.getQuery() == "");
+	REQUIRE( uri.getQuery().empty());
+	REQUIRE( uri.getFragment() == "top");
+	REQUIRE( !uri.isRelative());
+
+	uri = "http://www.appinf.com/search.cgi?keyword=test&scope=all";
+	REQUIRE( uri.getScheme() == "http");
+	REQUIRE( uri.getHost() == "www.appinf.com");
+	REQUIRE( uri.getPort() == 80);
+	REQUIRE( uri.getPath() == "/search.cgi");
+	REQUIRE( uri.getQuery() == "keyword=test&scope=all");
+	REQUIRE( uri.getFragment().empty());
+	REQUIRE( !uri.isRelative());
+
+	uri = "http://www.appinf.com/search.cgi?keyword=test&scope=all#result";
+	REQUIRE( uri.getScheme() == "http");
+	REQUIRE( uri.getHost() == "www.appinf.com");
+	REQUIRE( uri.getPort() == 80);
+	REQUIRE( uri.getPath() == "/search.cgi");
+	REQUIRE( uri.getQuery() == "keyword=test&scope=all");
+	REQUIRE( uri.getFragment() == "result");
+	REQUIRE( !uri.isRelative());
+
+	uri = "http://www.appinf.com/search.cgi?keyword=test%20encoded&scope=all#result";
+	REQUIRE( uri.getScheme() == "http");
+	REQUIRE( uri.getHost() == "www.appinf.com");
+	REQUIRE( uri.getPort() == 80);
+	REQUIRE( uri.getPath() == "/search.cgi");
+	REQUIRE( uri.getQuery() == "keyword=test encoded&scope=all");
+	REQUIRE( uri.getFragment() == "result");
+	REQUIRE( !uri.isRelative());
+
+	uri = "ldap://127.0.0.1/c=GB?objectClass?one";
+	REQUIRE( uri.getScheme() == "ldap");
+	REQUIRE( uri.getUserInfo().empty());
+	REQUIRE( uri.getHost() == "127.0.0.1");
+	REQUIRE( uri.getPort() == 389);
+	REQUIRE( uri.getAuthority() == "127.0.0.1");
+	REQUIRE( uri.getPath() == "/c=GB");
+	REQUIRE( uri.getQuery() == "objectClass?one");
+	REQUIRE( uri.getFragment().empty());
+
+
+	uri = "urn:oasis:names:specification:docbook:dtd:xml:4.1.2";
+	REQUIRE( uri.getScheme() == "urn");
+	REQUIRE( uri.getUserInfo().empty());
+	REQUIRE( uri.getHost().empty());
+	REQUIRE( uri.getPort() == 0);
+	REQUIRE( uri.getAuthority().empty());
+	REQUIRE( uri.getPath() == "oasis:names:specification:docbook:dtd:xml:4.1.2");
+	REQUIRE( uri.getQuery().empty());
+	REQUIRE( uri.getFragment().empty());
+
+	uri = "mailto:John.Doe@example.com";
+	REQUIRE( uri.getScheme() == "mailto");
+	REQUIRE( uri.getUserInfo().empty());
+	REQUIRE( uri.getHost().empty());
+	REQUIRE( uri.getPort() == 0);
+	REQUIRE( uri.getAuthority().empty());
+	REQUIRE( uri.getPath() == "John.Doe@example.com");
+	REQUIRE( uri.getQuery().empty());
+	REQUIRE( uri.getFragment().empty());
+
+	uri = "tel:+1-816-555-1212";
+	REQUIRE (uri.getScheme() == "tel");
+	REQUIRE (uri.getUserInfo().empty());
+	REQUIRE (uri.getHost().empty());
+	REQUIRE (uri.getPort() == 0);
+	REQUIRE (uri.getAuthority().empty());
+	REQUIRE (uri.getPath() == "+1-816-555-1212");
+	REQUIRE (uri.getQuery().empty());
+	REQUIRE (uri.getFragment().empty());
+
+	uri = "telnet://192.0.2.16:80";
+	REQUIRE( uri.getScheme() == "telnet");
+	REQUIRE( uri.getUserInfo().empty());
+	REQUIRE( uri.getHost() == "192.0.2.16");
+	REQUIRE( uri.getPort() == 80);
+	REQUIRE( uri.getAuthority() == "192.0.2.16:80");
+	REQUIRE( uri.getPath().empty());
+	REQUIRE( uri.getQuery().empty());
+	REQUIRE( uri.getFragment().empty());
+
+
+	uri = "";
+	REQUIRE( uri.getScheme().empty());
+	REQUIRE( uri.getAuthority().empty());
+	REQUIRE( uri.getUserInfo().empty());
+	REQUIRE( uri.getHost().empty());
+	REQUIRE( uri.getPort() == 0);
+	REQUIRE( uri.getPath().empty());
+	REQUIRE( uri.getQuery().empty());
+	REQUIRE( uri.getFragment().empty());
+	REQUIRE( uri.empty());
+
+	// relative references
+
+	uri = "/foo/bar";
+	REQUIRE( uri.getScheme() == "");
+	REQUIRE( uri.getScheme().empty());
+	REQUIRE( uri.getAuthority().empty());
+	REQUIRE( uri.getUserInfo().empty());
+	REQUIRE( uri.getHost().empty());
+	REQUIRE( uri.getPort() == 0);
+	REQUIRE( uri.getPath() == "/foo/bar");
+	REQUIRE( uri.getQuery().empty());
+	REQUIRE( uri.getFragment().empty());
+	REQUIRE( uri.isRelative());
+
+	uri = "./foo/bar";
+	REQUIRE( uri.getScheme().empty());
+	REQUIRE( uri.getAuthority().empty());
+	REQUIRE( uri.getUserInfo().empty());
+	REQUIRE( uri.getHost().empty());
+	REQUIRE( uri.getPort() == 0);
+	REQUIRE( uri.getPath() == "./foo/bar");
+	REQUIRE( uri.getQuery().empty());
+	REQUIRE( uri.getFragment().empty());
+	REQUIRE( uri.isRelative());
+
+	uri = "../foo/bar";
+	REQUIRE( uri.getScheme().empty());
+	REQUIRE( uri.getAuthority().empty());
+	REQUIRE( uri.getUserInfo().empty());
+	REQUIRE( uri.getHost().empty());
+	REQUIRE( uri.getPort() == 0);
+	REQUIRE( uri.getPath() == "../foo/bar");
+	REQUIRE( uri.getQuery().empty());
+	REQUIRE( uri.getFragment().empty());
+	REQUIRE( uri.isRelative());
+
+	uri = "index.html";
+	REQUIRE( uri.getScheme().empty());
+	REQUIRE( uri.getAuthority().empty());
+	REQUIRE( uri.getUserInfo().empty());
+	REQUIRE( uri.getHost().empty());
+	REQUIRE( uri.getPort() == 0);
+	REQUIRE( uri.getPath() == "index.html");
+	REQUIRE( uri.getQuery().empty());
+	REQUIRE( uri.getFragment().empty());
+	REQUIRE( uri.isRelative());
+
+	uri = "index.html#frag";
+	REQUIRE( uri.getScheme().empty());
+	REQUIRE( uri.getAuthority().empty());
+	REQUIRE( uri.getUserInfo().empty());
+	REQUIRE( uri.getHost().empty());
+	REQUIRE( uri.getPort() == 0);
+	REQUIRE( uri.getPath() == "index.html");
+	REQUIRE( uri.getQuery().empty());
+	REQUIRE( uri.getFragment() == "frag");
+	REQUIRE( uri.isRelative());
+
+	uri = "?query=test";
+	REQUIRE( uri.getScheme().empty());
+	REQUIRE( uri.getAuthority().empty());
+	REQUIRE( uri.getUserInfo().empty());
+	REQUIRE( uri.getHost().empty());
+	REQUIRE( uri.getPort() == 0);
+	REQUIRE( uri.getPath().empty());
+	REQUIRE( uri.getQuery() == "query=test");
+	REQUIRE( uri.getFragment().empty());
+	REQUIRE( uri.isRelative());
+
+	uri = "?query=test#frag";
+	REQUIRE( uri.getScheme().empty());
+	REQUIRE( uri.getAuthority().empty());
+	REQUIRE( uri.getUserInfo().empty());
+	REQUIRE( uri.getHost().empty());
+	REQUIRE( uri.getPort() == 0);
+	REQUIRE( uri.getPath().empty());
+	REQUIRE( uri.getQuery() == "query=test");
+	REQUIRE( uri.getFragment() == "frag");
+	REQUIRE( uri.isRelative());
+
+	uri = "#frag";
+	REQUIRE( uri.getScheme().empty());
+	REQUIRE( uri.getAuthority().empty());
+	REQUIRE( uri.getUserInfo().empty());
+	REQUIRE( uri.getHost().empty());
+	REQUIRE( uri.getPort() == 0);
+	REQUIRE( uri.getPath().empty());
+	REQUIRE( uri.getQuery().empty());
+	REQUIRE( uri.getFragment() == "frag");
+	REQUIRE( uri.isRelative());
+
+	uri = "#";
+	REQUIRE( uri.getScheme().empty());
+	REQUIRE( uri.getAuthority().empty());
+	REQUIRE( uri.getUserInfo().empty());
+	REQUIRE( uri.getHost().empty());
+	REQUIRE( uri.getPort() == 0);
+	REQUIRE( uri.getPath().empty());
+	REQUIRE( uri.getQuery().empty());
+	REQUIRE( uri.getFragment().empty());
+	REQUIRE( uri.isRelative());
+
+	uri = "file:///a/b/c";
+	REQUIRE( uri.getScheme() == "file");
+	REQUIRE( uri.getAuthority() == "" );
+	REQUIRE( uri.getAuthority().empty());
+	REQUIRE( uri.getUserInfo().empty());
+	REQUIRE( uri.getHost().empty());
+	REQUIRE( uri.getPort() == 0);
+	REQUIRE( uri.getPath() == "/a/b/c");
+	REQUIRE( uri.getQuery().empty());
+	REQUIRE( uri.getFragment().empty());
+	REQUIRE( !uri.isRelative());
+
+	uri = "file://localhost/a/b/c";
+	REQUIRE( uri.getScheme() == "file");
+	REQUIRE( uri.getAuthority() == "localhost");
+	REQUIRE( uri.getUserInfo().empty());
+	REQUIRE( uri.getHost() == "localhost");
+	REQUIRE( uri.getPort() == 0);
+	REQUIRE( uri.getPath() == "/a/b/c");
+	REQUIRE( uri.getQuery().empty());
+	REQUIRE( uri.getFragment().empty());
+	REQUIRE( !uri.isRelative());
+
+	uri = "file:///c:/Windows/system32/";
+	REQUIRE( uri.getScheme() == "file");
+	REQUIRE( uri.getAuthority().empty());
+	REQUIRE( uri.getUserInfo().empty());
+	REQUIRE( uri.getHost().empty());
+	REQUIRE( uri.getPort() == 0);
+	REQUIRE( uri.getPath() == "/c:/Windows/system32/");
+	REQUIRE( uri.getQuery().empty());
+	REQUIRE( uri.getFragment().empty());
+	REQUIRE( !uri.isRelative());
+
+	uri = "./c:/Windows/system32/";
+	REQUIRE( uri.getScheme().empty());
+	REQUIRE( uri.getAuthority().empty());
+	REQUIRE( uri.getUserInfo().empty());
+	REQUIRE( uri.getHost().empty());
+	REQUIRE( uri.getPort() == 0);
+	REQUIRE( uri.getPath() == "./c:/Windows/system32/");
+	REQUIRE( uri.getQuery().empty());
+	REQUIRE( uri.getFragment().empty());
+	REQUIRE( uri.isRelative());
+
+	uri = "ws://www.appinf.com/ws";
+	REQUIRE( uri.getScheme() == "ws");
+	REQUIRE( uri.getPort() == 80);
+
+	uri = "wss://www.appinf.com/ws";
+	REQUIRE( uri.getScheme() == "wss");
+	REQUIRE( uri.getPort() == 443);
+}
+
+TEST_CASE( "Uri - ToString() ", "[class][uri]" ) {
+	Uri uri("http://www.appinf.com");
+	REQUIRE( uri.toString() == "http://www.appinf.com");
+
+	uri = "http://www.appinf.com/";
+	REQUIRE( uri.toString() == "http://www.appinf.com/");
+
+	uri = "ftp://anonymous@ftp.appinf.com/pub/";
+	REQUIRE( uri.toString() == "ftp://anonymous@ftp.appinf.com/pub/");
+
+	uri = "https://www.appinf.com/index.html#top";
+	REQUIRE( uri.toString() == "https://www.appinf.com/index.html#top");
+
+	uri = "http://www.appinf.com/search.cgi?keyword=test&scope=all";
+	REQUIRE( uri.toString() == "http://www.appinf.com/search.cgi?keyword=test&scope=all");
+
+	uri = "http://www.appinf.com/search.cgi?keyword=test&scope=all#result";
+	REQUIRE( uri.toString() == "http://www.appinf.com/search.cgi?keyword=test&scope=all#result");
+
+	uri = "http://www.appinf.com/search.cgi?keyword=test%20encoded&scope=all#result";
+	REQUIRE( uri.toString() == "http://www.appinf.com/search.cgi?keyword=test%20encoded&scope=all#result");
+
+	uri = "mailto:John.Doe@example.com";
+	REQUIRE( uri.toString() == "mailto:John.Doe@example.com");
+
+	uri = "tel:+1-816-555-1212";
+	REQUIRE( uri.toString() == "tel:+1-816-555-1212");
+
+	uri = "telnet://192.0.2.16:80";
+	REQUIRE( uri.toString() == "telnet://192.0.2.16:80");
+
+	uri = "urn:oasis:names:specification:docbook:dtd:xml:4.1.2";
+	REQUIRE( uri.toString() == "urn:oasis:names:specification:docbook:dtd:xml:4.1.2");
+
+	uri = "";
+	REQUIRE( uri.toString() == "");
+
+	// relative references
+
+	uri = "/foo/bar";
+	REQUIRE( uri.toString() == "/foo/bar");
+
+	uri = "./foo/bar";
+	REQUIRE( uri.toString() == "./foo/bar");
+
+	uri = "../foo/bar";
+	REQUIRE( uri.toString() == "../foo/bar");
+
+	uri = "//foo/bar";
+	REQUIRE( uri.toString() == "//foo/bar");
+
+	uri = "index.html";
+	REQUIRE( uri.toString() == "index.html");
+
+	uri = "index.html#frag";
+	REQUIRE( uri.toString() == "index.html#frag");
+
+	uri = "?query=test";
+	REQUIRE( uri.toString() == "?query=test");
+
+	uri = "?query=test#frag";
+	REQUIRE( uri.toString() == "?query=test#frag");
+
+	uri = "#frag";
+	REQUIRE( uri.toString() == "#frag");
+
+	uri = "#";
+	REQUIRE( uri.toString() == "");
+
+	uri = "file:///a/b/c";
+	REQUIRE( uri.toString() == "file:///a/b/c");
+
+	uri = "file://localhost/a/b/c";
+	REQUIRE( uri.toString() == "file://localhost/a/b/c");
+
+	uri = "file:///c:/Windows/system32/";
+	REQUIRE( uri.toString() == "file:///c:/Windows/system32/");
+
+	uri = "./c:/Windows/system32/";
+	REQUIRE( uri.toString() == "./c:/Windows/system32/");
+
+	uri = "http://www.appinf.com";
+	uri.setRawQuery("query=test");
+	REQUIRE( uri.toString() == "http://www.appinf.com/?query=test");
+}
+
+TEST_CASE( "Uri - Others ", "[class][uri]" )
+{
+	// The search string is "hello%world"; google happens to ignore the '%'
+	// character, so it finds lots of hits for "hello world" programs. This is
+	// a convenient reproduction case, and a URL that actually works.
+	Uri uri("http://google.com/search?q=hello%25world#frag%20ment");
+
+	REQUIRE( uri.getHost() == "google.com");
+	REQUIRE( uri.getPath() == "/search");
+	REQUIRE( uri.getQuery() == "q=hello%world");
+	REQUIRE( uri.getRawQuery() == "q=hello%25world");
+	REQUIRE( uri.getFragment() == "frag ment");
+	REQUIRE( uri.toString() == "http://google.com/search?q=hello%25world#frag%20ment");
+	REQUIRE( uri.getPathEtc() == "/search?q=hello%25world#frag%20ment");
+
+	uri.setQuery("q=foo&bar");
+	REQUIRE( uri.getQuery() == "q=foo&bar");
+	REQUIRE( uri.getRawQuery() == "q=foo&bar");
+	REQUIRE( uri.toString() == "http://google.com/search?q=foo&bar#frag%20ment");
+	REQUIRE( uri.getPathEtc() == "/search?q=foo&bar#frag%20ment");
+
+	// uri.setQuery("q=foo/bar");
+	// REQUIRE( uri.getQuery() == "q=foo/bar");
+	// REQUIRE( uri.getRawQuery() == "q=foo%2Fbar");
+	// REQUIRE( uri.toString() == "http://google.com/search?q=foo%2Fbar#frag%20ment");
+	// REQUIRE( uri.getPathEtc() == "/search?q=foo%2Fbar#frag%20ment");
+
+	// uri.setQuery("q=goodbye cruel world");
+	// REQUIRE( uri.getQuery() == "q=goodbye cruel world");
+	// REQUIRE( uri.getRawQuery() == "q=goodbye%20cruel%20world");
+	// REQUIRE( uri.toString() == "http://google.com/search?q=goodbye%20cruel%20world#frag%20ment");
+	// REQUIRE( uri.getPathEtc() == "/search?q=goodbye%20cruel%20world#frag%20ment");
+
+	uri.setRawQuery("q=pony%7eride");
+	REQUIRE( uri.getQuery() == "q=pony~ride");
+	REQUIRE( uri.getRawQuery() == "q=pony%7eride");
+	REQUIRE( uri.toString() == "http://google.com/search?q=pony%7eride#frag%20ment");
+	REQUIRE( uri.getPathEtc() == "/search?q=pony%7eride#frag%20ment");
+
+	// uri.addQueryParameter("pa=ra&m1");
+	// REQUIRE( uri.getRawQuery() == "q=pony%7eride&pa%3Dra%26m1=");
+	// REQUIRE( uri.getQuery() == "q=pony~ride&pa=ra&m1=");
+	// uri.addQueryParameter("pa=ra&m2", "val&ue");
+	// REQUIRE( uri.getRawQuery() == "q=pony%7eride&pa%3Dra%26m1=&pa%3Dra%26m2=val%26ue");
+	// REQUIRE( uri.getQuery() == "q=pony~ride&pa=ra&m1=&pa=ra&m2=val&ue");
+
+	uri = "http://google.com/search?q=hello+world#frag%20ment";
+	REQUIRE( uri.getHost() == "google.com");
+	REQUIRE( uri.getPath() == "/search");
+	REQUIRE( uri.getQuery() == "q=hello+world");
+	REQUIRE( uri.getRawQuery() == "q=hello+world");
+	REQUIRE( uri.getFragment() == "frag ment");
+	REQUIRE( uri.toString() == "http://google.com/search?q=hello+world#frag%20ment");
+	REQUIRE( uri.getPathEtc() == "/search?q=hello+world#frag%20ment");
+}
+
+ // Compare tests ?
