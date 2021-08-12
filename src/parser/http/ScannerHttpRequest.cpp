@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:39:02 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/12 21:51:30 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/12 23:42:52 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,12 @@ Token ScannerHttpRequest::getToken(bool skipLWS)
 						std::string("Cant parse lexeme:\"" + lexeme +"\", char:'" + c+ "'  "));
 	}
 }
+
+char ScannerHttpRequest::getChar()
+{
+	return _scan.get();
+}
+
 
 /// Must only be called in the switch statement
 bool ScannerHttpRequest::_charIsString(char c){

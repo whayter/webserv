@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:36:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/07 10:46:58 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/12 23:42:45 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ public:
 	~ScannerHttpRequest();
 
 	Token getToken(bool skipLWS = false);
+	char getChar();
 	inline Token peekToken() { return _actualToken; };
 private:
 

@@ -26,4 +26,6 @@ TEST_CASE( "ParserHttpRequest - Create() - Get ", "[class][ParserHttpRequest][ge
 	CHECK( req.getHeader("Connection")		== "keep-alive");
 	CHECK( req.getHeader("Cookie")			== "ASPSESSIONIDQADTQAQR=JNJLAIGBPIMBDAJPJNIFKIEK");
 
+	CHECK( req.getContent() == "Test");
+
 }
