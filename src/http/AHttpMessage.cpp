@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 13:20:58 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/08 14:34:07 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/12 22:02:13 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ AHttpMessage::map_type AHttpMessage::getHeaders()
 
 std::string AHttpMessage::getHeader(std::string name)
 {
-	return _headers.at(name);
+	return _headers[name];
 }
 
 void AHttpMessage::readContent(std::istream is)

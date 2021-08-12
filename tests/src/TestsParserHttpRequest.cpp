@@ -16,6 +16,8 @@ TEST_CASE( "ParserHttpRequest - Create() - Get ", "[class][ParserHttpRequest][ge
 	CHECK( req.getMethod() == "GET" );
 	CHECK( req.getUri().getPathEtc() == "/getip");
 
+	CHECK( req.getHeaders().size() == 7);
+	
 	CHECK( req.getHeader("User-Agent")		== "PostmanRuntime/7.26.10");
 	CHECK( req.getHeader("Accept")			== "*/*");
 	CHECK( req.getHeader("Postman-Token")	== "ec250329-5eb0-4d4b-8150-39f294b6aea2");
@@ -24,5 +26,4 @@ TEST_CASE( "ParserHttpRequest - Create() - Get ", "[class][ParserHttpRequest][ge
 	CHECK( req.getHeader("Connection")		== "keep-alive");
 	CHECK( req.getHeader("Cookie")			== "ASPSESSIONIDQADTQAQR=JNJLAIGBPIMBDAJPJNIFKIEK");
 
-	CHECK( req.getHeaders().size() == 7);
 }

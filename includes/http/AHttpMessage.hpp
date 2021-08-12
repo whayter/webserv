@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 14:47:44 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/07 13:01:26 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/12 22:20:26 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #define AHTTP_MESSAGE_HPP
 
 #include <map>
-#include <vector>
 #include <sstream>
 #include <algorithm>
 
@@ -24,7 +23,6 @@ class AHttpMessage
 
 	/* --- Member types ----------------------------------------------------- */
 
-        typedef size_t                              size_type;
 		typedef std::map<std::string, std::string>	map_type;
 
 	/* --- Member functions ------------------------------------------------- */
@@ -34,7 +32,7 @@ class AHttpMessage
 
 		std::string		getContent();
 		std::string 	getHeader(std::string name);
-		// size_type		getContentLength();
+		// size_t		getContentLength();
 		map_type		getHeaders();
 
 

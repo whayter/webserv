@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:39:02 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/07 11:23:20 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/12 21:51:30 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,13 @@ Token ScannerHttpRequest::getToken(bool skipLWS)
 {
 	char c = 0;
 
-	(void)skipLWS;
 	if (skipLWS)
 		do
 		{
 			c = _scan.get();
 		} while (c != '\n' && isspace(c));
 	else
-			c = _scan.get();
+		c = _scan.get();
 	
 	switch (c)
 	{

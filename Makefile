@@ -136,6 +136,7 @@ clean:
 fclean: clean
 	@rm -fr $(NAME) $(DEBUG_EXEC) $(NAME).dSYM/
 	@printf "$(_RED)Removed : $(_MAGENTA)./$(NAME), $(NAME).dSYM/$(_R)\n"
+	@$(MAKE) fclean -C tests
 
 re: fclean all
 

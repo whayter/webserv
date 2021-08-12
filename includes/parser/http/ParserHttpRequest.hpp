@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 14:55:33 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/07 17:29:17 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/12 23:15:30 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 
 #include <iostream>
+#include <stdexcept>
 
 namespace parser
 {
@@ -43,19 +44,22 @@ public:
 			t = scanner.getToken(true);
 			result.setVersion(t.value);
 		}
+		t = scanner.getToken();
+		std::cout << "||||"<< t << std::endl;
+		if (ScopedEnum::kNewLine != t.kind)
+			throw std::invalid_argument("GET line not separated by new line");
 		while((t = scanner.getToken()).kind != ScopedEnum::kEndOfInput)
 		{
 			std::string name;
 			std::string value;
 			bool isValueField = false;
 
-			if (ScopedEnum::kNewLine  == t.kind)
-				t = scanner.getToken();
 			std::cout << t << std::endl;
 			switch (t.kind)
 			{
 				case ScopedEnum::kNewLine :
-					result.addHeader(name, value);
+					if (!name.empty())
+						result.addHeader(name, value);
 					name.clear();
 					value.clear();
 					isValueField = false;
@@ -75,10 +79,11 @@ public:
 					break;
 				
 				default:
+					throw "Ho shit";
 					break;
 			}
 		}
-		result.addHeader("Cookie", "ASPSESSIONIDQADTQAQR=JNJLAIGBPIMBDAJPJNIFKIEK");
+			std::cout << t << std::endl;
 		
 		return result;
 	}
