@@ -76,13 +76,13 @@ public:
 	inline std::string		getPath()			{ return _path;		}
 	inline u_short			getSpecifiedPort()	{ return _port;		}
 	inline std::string		getRawQuery()		{ return _query;	}
-	inline std::string		getFragment()		{ return _fragment;	}
 	
 	ushort					getPort() const;
 	std::string				getQuery() const;
 	std::string				getPathEtc() const;
 	std::string				getPathAndQuery() const;
 	std::string				getAuthority() const;
+	std::string				getFragment();
 
 	void					setScheme(const std::string&);
 	void					setUserInfo(const std::string&);

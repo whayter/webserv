@@ -249,6 +249,10 @@ std::string				Uri::getAuthority() const
     return result;
 }
 
+std::string		Uri::getFragment()
+{
+    return decode(_fragment);
+}
 
 void					Uri::setScheme(const std::string& scheme)
 {
@@ -288,7 +292,7 @@ void					Uri::setRawQuery(const std::string& query)
 }
 void					Uri::setFragment(const std::string& fragment)
 {
-    _fragment = fragment;
+    _fragment = decode(fragment);
 }
 
 void					Uri::setPort(u_short port)

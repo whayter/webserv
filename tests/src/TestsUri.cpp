@@ -523,4 +523,61 @@ TEST_CASE( "Uri - ToString() ", "[class][uri]" ) {
 	uri.setRawQuery("query=test");
 	REQUIRE( uri.toString() == "http://www.appinf.com/?query=test");
 }
+
+TEST_CASE( "Uri - Others ", "[class][uri]" )
+{
+	// The search string is "hello%world"; google happens to ignore the '%'
+	// character, so it finds lots of hits for "hello world" programs. This is
+	// a convenient reproduction case, and a URL that actually works.
+	Uri uri("http://google.com/search?q=hello%25world#frag%20ment");
+
+	REQUIRE( uri.getHost() == "google.com");
+	REQUIRE( uri.getPath() == "/search");
+	REQUIRE( uri.getQuery() == "q=hello%world");
+	REQUIRE( uri.getRawQuery() == "q=hello%25world");
+	REQUIRE( uri.getFragment() == "frag ment");
+	REQUIRE( uri.toString() == "http://google.com/search?q=hello%25world#frag%20ment");
+	REQUIRE( uri.getPathEtc() == "/search?q=hello%25world#frag%20ment");
+
+	uri.setQuery("q=foo&bar");
+	REQUIRE( uri.getQuery() == "q=foo&bar");
+	REQUIRE( uri.getRawQuery() == "q=foo&bar");
+	REQUIRE( uri.toString() == "http://google.com/search?q=foo&bar#frag%20ment");
+	REQUIRE( uri.getPathEtc() == "/search?q=foo&bar#frag%20ment");
+
+	// uri.setQuery("q=foo/bar");
+	// REQUIRE( uri.getQuery() == "q=foo/bar");
+	// REQUIRE( uri.getRawQuery() == "q=foo%2Fbar");
+	// REQUIRE( uri.toString() == "http://google.com/search?q=foo%2Fbar#frag%20ment");
+	// REQUIRE( uri.getPathEtc() == "/search?q=foo%2Fbar#frag%20ment");
+
+	// uri.setQuery("q=goodbye cruel world");
+	// REQUIRE( uri.getQuery() == "q=goodbye cruel world");
+	// REQUIRE( uri.getRawQuery() == "q=goodbye%20cruel%20world");
+	// REQUIRE( uri.toString() == "http://google.com/search?q=goodbye%20cruel%20world#frag%20ment");
+	// REQUIRE( uri.getPathEtc() == "/search?q=goodbye%20cruel%20world#frag%20ment");
+
+	uri.setRawQuery("q=pony%7eride");
+	REQUIRE( uri.getQuery() == "q=pony~ride");
+	REQUIRE( uri.getRawQuery() == "q=pony%7eride");
+	REQUIRE( uri.toString() == "http://google.com/search?q=pony%7eride#frag%20ment");
+	REQUIRE( uri.getPathEtc() == "/search?q=pony%7eride#frag%20ment");
+
+	// uri.addQueryParameter("pa=ra&m1");
+	// REQUIRE( uri.getRawQuery() == "q=pony%7eride&pa%3Dra%26m1=");
+	// REQUIRE( uri.getQuery() == "q=pony~ride&pa=ra&m1=");
+	// uri.addQueryParameter("pa=ra&m2", "val&ue");
+	// REQUIRE( uri.getRawQuery() == "q=pony%7eride&pa%3Dra%26m1=&pa%3Dra%26m2=val%26ue");
+	// REQUIRE( uri.getQuery() == "q=pony~ride&pa=ra&m1=&pa=ra&m2=val&ue");
+
+	uri = "http://google.com/search?q=hello+world#frag%20ment";
+	REQUIRE( uri.getHost() == "google.com");
+	REQUIRE( uri.getPath() == "/search");
+	REQUIRE( uri.getQuery() == "q=hello+world");
+	REQUIRE( uri.getRawQuery() == "q=hello+world");
+	REQUIRE( uri.getFragment() == "frag ment");
+	REQUIRE( uri.toString() == "http://google.com/search?q=hello+world#frag%20ment");
+	REQUIRE( uri.getPathEtc() == "/search?q=hello+world#frag%20ment");
+}
+
  // Compare tests ?
