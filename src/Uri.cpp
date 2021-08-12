@@ -94,19 +94,61 @@ void Uri::_parseUri(const std::string& uri){
     std::string::const_iterator it = uri.cbegin();
     std::string::const_iterator end = uri.cend();
 
-    while(it != end && *it != ':')
+    if (it == end)
+        return;
+    if (*it != '.' && *it != '/' && *it != '?' && *it != '#')
     {
-        scheme += *it;
+        while(it != end && *it != ':' && *it != '/' && *it != '?' && *it != '#')
+            scheme += *it++;
+        if (it != end && *it == ':')
+        {
+            it++;
+            if (it == end)
+                throw SyntaxError();
+            _scheme = scheme;
+            _lowerStringInPlace(_scheme);
+            if (*it == '/')
+            {
+                it++;
+                if (it != end && *it == '/')
+                {
+                    it++;
+                    _parseAuthority(it, end);
+                }
+                else
+                    it--;
+            }
+            _parsePathEtc(it,end);
+        }
+        else
+        {
+            it = uri.begin();
+            _parsePathEtc(it, end);
+        }
+    }
+    else
+        _parsePathEtc(it, end);
+}
+
+//       authority   = [ userinfo "@" ] host [ ":" port ]
+void Uri::_parseAuthority(std::string::const_iterator& it, const std::string::const_iterator& end)
+{
+    std::string tmp;
+
+    while(it != end && *it != '/' && *it != '?' && *it != '#')
+    {
+        if (*it == '@')
+        {   
+            _userInfo = tmp;
+            tmp.clear();
+        }
+        else
+            tmp += *it;
         it++;
     }
-    if (it != end && *it == ':')
-        it++;
-    _scheme = scheme;
-                std::cout << "---1>" << std::string(it, end) << std::endl;
-    _parseAuthority(it, end);
-                std::cout << "---3>" << std::string(it, end) << std::endl;
-    _parsePathEtc(it, end);
-                std::cout << "---3>" << std::string(it, end) << std::endl;
+    std::string::const_iterator ite = tmp.cbegin();
+    std::string::const_iterator ende = tmp.cend();
+    _parseHostAndPort(ite, ende);
 }
 
 void Uri::_parsePathEtc(std::string::const_iterator& it, const std::string::const_iterator& end)
@@ -115,12 +157,7 @@ void Uri::_parsePathEtc(std::string::const_iterator& it, const std::string::cons
     std::string query;
     std::string fragment;
     bool isFragment = false;
-    // (void)pathEtc;
-    // std::string::const_iterator it = pathEtc.cbegin();
-    // std::string::const_iterator end = pathEtc.cend();
   
-    std::cout << "---4>" << std::string(it, end) << std::endl;
-
     while (it != end && *it != '?' && *it != '#')
     {
         path += *it;
@@ -147,43 +184,10 @@ void Uri::_parsePathEtc(std::string::const_iterator& it, const std::string::cons
     _fragment = fragment;
 }
 
-
-//       authority   = [ userinfo "@" ] host [ ":" port ]
-void Uri::_parseAuthority(std::string::const_iterator& it, const std::string::const_iterator& end){
- 
-    std::string tmp;
-
-
-    std::cout << "|2|" << std::string(it, end) << std::endl;
-
-    while (it != end && *it == '/')
-        it++;
-    std::cout << "|2|" << std::string(it, end) << std::endl;
-    while(it != end && *it != '/' && *it != '?' && *it != '#')
-    {
-        if (*it == '@')
-        {   
-            _userInfo = tmp;
-            tmp.clear();
-        }
-        else
-            tmp += *it;
-        it++;
-    }
-    std::cout << "|2|" << std::string(it, end) << std::endl;
-
-    std::string::const_iterator ite = tmp.cbegin();
-    std::string::const_iterator ende = tmp.cend();
-    return _parseHostAndPort(ite, ende);
-}
-
 void Uri::_parseHostAndPort(std::string::const_iterator& it, const std::string::const_iterator & end)
 {
     std::string host;
     u_short port = 0;
-
-    // std::string::const_iterator it = hostAndPort.cbegin();
-    // std::string::const_iterator end = hostAndPort.cend();
 
     while(it != end && *it != ':' && *it != '/')
         host += *it++;
@@ -196,20 +200,13 @@ void Uri::_parseHostAndPort(std::string::const_iterator& it, const std::string::
             port = port * 10 + *it - '0';
             it++;
         }
-        // if (it != end)
-        // {
-        // throw Uri::SyntaxError();
-        // }
     }
     _host =  host;
     _lowerStringInPlace(_host);
     _port = port;
 }
 
-
-
 Uri::~Uri() {}
-
 
 u_short					Uri::getPort() const
 {
@@ -340,7 +337,7 @@ bool Uri::isWellKnownPort() const
 
 bool Uri::isRelative() const
 {
-    return false;
+    return _scheme.empty();
 }
 
 bool Uri::empty() const
@@ -375,13 +372,30 @@ std::string Uri::decode(std::string s) const
     return decoded;
 }
 
+// https://en.wikipedia.org/wiki/File:URI_syntax_diagram.svg
+
 std::string			Uri::toString()
 {
     std::string result;
-    if (!_scheme.empty())
+
+    if (isRelative())
+    {
+        result = _path;
+        if (!_query.empty())
+            result += '?' + _query;
+        if (!_fragment.empty())
+            result += '#' + _fragment;
+    }
+    else
+    {
         result += _scheme + ':';
-    result += getAuthority();
-    result += getPathEtc();
+        if (!_host.empty() || _scheme == "file")
+            result += "//";
+        result += getAuthority();
+        if (!_query.empty() && _path[0] != '/')
+                result += "/";
+        result += getPathEtc();
+    }
     return result;
 }
 
