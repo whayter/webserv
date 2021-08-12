@@ -55,7 +55,7 @@ void AHttpMessage::setContent(std::string content)
 
 void AHttpMessage::addHeader(std::string name, std::string value)
 {
-	_headers.insert(std::make_pair<std::string, std::string>(name, value));
+	_headers[name] = value;
 }
 
 // void AHttpMessage::setHeaders(map_type headers)

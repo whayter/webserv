@@ -11,12 +11,12 @@
 /* ************************************************************************** */
 
 #ifndef AHTTP_MESSAGE_HPP
-# define AHTTP_MESSAGE_HPP
+#define AHTTP_MESSAGE_HPP
 
-# include <map>
-# include <vector>
-# include <sstream>
-# include <algorithm>
+#include <map>
+#include <vector>
+#include <sstream>
+#include <algorithm>
 
 class AHttpMessage
 {
