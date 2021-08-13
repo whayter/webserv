@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/13 15:10:58 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/13 15:13:31 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,24 +19,27 @@
 
 namespace config
 {
-	struct Listen
-	{
-		std::string host;
-		int port;
-	};
-	
-	struct Location
-	{
-		bool autoindex;
-	};
 	
 	struct Server
 	{
-		std::vector<listen>  listens;		
+		struct Listen
+		{
+			std::string host;
+			int port;
+		};
+		
+		struct Location
+		{
+			bool autoindex;
+		};
+		
+		std::vector<Listen> 	listens;
+		std::string				root;		
+		std::string				serverName;		
 	};
 	
 
-	std::vector<>	
+	std::vector<Server> servers;	
 };
 
 }
