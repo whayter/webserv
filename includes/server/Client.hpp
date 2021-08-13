@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/08 12:46:58 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/11 12:26:07 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/13 15:16:06 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ namespace clnt
 
 			void					setFd(sckt::fd_type fd);
 			void					setAddr(sckt::addr_type addr);
-			void					setPfd(sckt::fd_type fd);
+			void					setPfd();
 
 		private:
 
