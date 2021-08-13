@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:47:59 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/07 13:13:51 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/12 22:22:44 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void HttpResponse::setContentLength(int contentLength)
 void HttpResponse::read(std::istream is)
 {
 	std::string line, s;
-	size_type pos;
+	size_t pos;
 	
 	try
 	{

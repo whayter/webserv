@@ -53,11 +53,12 @@ SRC_DIR = ./src ../src
 BUILD_DIR = ./build
 INC_DIR = $(shell find . -type d -name "includes")
 INC_DIR+= ../includes
+INC_DIR+= $(shell find ../includes -type d)
 OBJ_DIR = obj
 
-SRCS_DIR = $(shell find $(SRC_DIR) -type d)
+SRCS_DIR = $(shell find ./src -type d)
+SRCS_DIR+= $(shell find ../src -type d)
 
-INC = 
 vpath %.hpp $(INC_DIR)
 
 # Unit test framework source code
@@ -65,6 +66,10 @@ SRC = main.cpp catch_amalgamated.cpp
 
 # Our tests
 SRC+= TestsUri.cpp Uri.cpp
+SRC+= TestsParserHttpRequest.cpp ParserHttpRequest.cpp
+
+SRC+= AHttpMessage.cpp HttpRequest.cpp HttpResponse.cpp HttpStatus.cpp
+SRC+= Scanner.cpp ScannerHttpRequest.cpp
 
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))

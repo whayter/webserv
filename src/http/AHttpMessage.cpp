@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 13:20:58 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/08 14:34:07 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/12 23:32:14 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,10 @@ std::string AHttpMessage::getContent()
 	return _content;
 }
 
-// AHttpMessage::size_type AHttpMessage::getContentLength()
-// {
-// 	size_type result;
-// 	std::istringstream(getHeader("Content-Length")) >> result;
-// 	return result;
-// }
+size_t AHttpMessage::getContentLength()
+{
+	return _content.size();
+}
 
 AHttpMessage::map_type AHttpMessage::getHeaders()
 {
@@ -34,7 +32,7 @@ AHttpMessage::map_type AHttpMessage::getHeaders()
 
 std::string AHttpMessage::getHeader(std::string name)
 {
-	return _headers.at(name);
+	return _headers[name];
 }
 
 void AHttpMessage::readContent(std::istream is)
@@ -44,7 +42,6 @@ void AHttpMessage::readContent(std::istream is)
 
 void AHttpMessage::setContent(std::string content)
 {
-	// this->setContentLength(content.size());
 	_content = content;
 }
 
@@ -55,7 +52,7 @@ void AHttpMessage::setContent(std::string content)
 
 void AHttpMessage::addHeader(std::string name, std::string value)
 {
-	_headers.insert(std::make_pair<std::string, std::string>(name, value));
+	_headers[name] = value;
 }
 
 // void AHttpMessage::setHeaders(map_type headers)

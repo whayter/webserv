@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:36:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/07 10:46:58 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/12 23:42:45 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 namespace parser{
 namespace http{
 
+// LWS = " " | "\t"
+
 struct ScopedEnum
 {
 	enum TokenKind
@@ -26,7 +28,7 @@ struct ScopedEnum
 		kEndOfInput = 0, kError,
 		kString, kNewLine,
 		kLeftBrace, kRightBrace,
-		kComma, kColon,
+		kComma, kColon, kLWS
 	};
 };
 typedef ScopedEnum::TokenKind TokenKind;
@@ -45,7 +47,8 @@ public:
 	ScannerHttpRequest(std::istream &inputStream);
 	~ScannerHttpRequest();
 
-	Token getToken();
+	Token getToken(bool skipLWS = false);
+	char getChar();
 	inline Token peekToken() { return _actualToken; };
 private:
 
