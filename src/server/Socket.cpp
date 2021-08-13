@@ -6,11 +6,11 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/11 11:26:26 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/11 12:27:58 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/13 15:13:31 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/server/Socket.hpp"				// temporary path
+#include "server/Socket.hpp"
 
 /* --- Socket class - member functions -------------------------------------- */
 
