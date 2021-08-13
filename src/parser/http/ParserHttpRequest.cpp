@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 14:55:33 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/13 00:39:47 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/13 12:06:26 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,8 @@ HttpRequest ParserHttpRequest::create(std::istream & inputStream)
 	if (ScopedEnum::kNewLine != t.kind)
 		throw std::invalid_argument("Method line not separated by new line");
 	std::cout << "|||" << t << std::endl;
-	t = scanner.getToken();
-	std::cout << "|||" << t << std::endl;
-	bool isHeader = true;
-	while (isHeader && (t = scanner.getToken()).kind != ScopedEnum::kEndOfInput)
+	// bool isHeader = true;
+	while ( (t = scanner.getToken()).kind != ScopedEnum::kEndOfInput)
 	{
 		std::string name;
 		std::string value;
@@ -55,10 +53,12 @@ HttpRequest ParserHttpRequest::create(std::istream & inputStream)
 		switch (t.kind)
 		{
 			case ScopedEnum::kNewLine :
-				if (name.empty())
-					isHeader = false;
-				else
+				// if (name.empty())
+				// 	isHeader = false;
+				if (!name.empty())
 					result.addHeader(name, value);
+				// else
+				// 	isHeader = false;
 				name.clear();
 				value.clear();
 				isValueField = false;
@@ -78,13 +78,13 @@ HttpRequest ParserHttpRequest::create(std::istream & inputStream)
 				break;
 			
 			default:
-				throw "Ho shit";
+				// throw "Ho shit";
 				break;
 		}
 	}
 	std::string content;
 	char c;
-	std::cout << t << std::endl;
+	std::cout << "||||" << t << std::endl;
 	std::cout << "CONTENT:" << std::endl;
 	while ((c = scanner.getChar()) != -1)
 	{
