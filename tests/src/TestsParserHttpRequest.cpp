@@ -29,3 +29,29 @@ TEST_CASE( "ParserHttpRequest - Create() - Get ", "[class][ParserHttpRequest][ge
 	CHECK( req.getContent() == "Test");
 
 }
+
+TEST_CASE( "ParserHttpRequest - Create() - Post ", "[class][ParserHttpRequest][post]" )
+{
+	std::ifstream file;
+
+	file.open("./http_requests/req2", std::ifstream::in);
+	HttpRequest req = parser::http::ParserHttpRequest::create(file);
+
+	CHECK( req.getMethod() == "POST" );
+	CHECK( req.getUri().getPathEtc() == "/getip");
+
+	CHECK( req.getHeaders().size() == 9);
+	
+	CHECK( req.getHeader("Content-Type")		== "text/plain");
+	CHECK( req.getHeader("User-Agent")		== "PostmanRuntime/7.26.10");
+	CHECK( req.getHeader("Accept")		== "*/*");
+	CHECK( req.getHeader("Postman-Token")		== "969ffb76-2d3a-42cd-9b1b-701aca68ecdf");
+	CHECK( req.getHeader("Host")		== "dynamicdns.park-your-domain.com");
+	CHECK( req.getHeader("Accept-Encoding")		== "gzip, deflate, br");
+	CHECK( req.getHeader("Connection")		== "keep-alive");
+	CHECK( req.getHeader("Content-Length")		== "9");
+	CHECK( req.getHeader("Cookie")		== "ASPSESSIONIDQADTQAQR=JNJLAIGBPIMBDAJPJNIFKIEK");
+
+	CHECK( req.getContent() == "test test\n");
+
+}
