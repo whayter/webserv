@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/13 16:16:47 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/13 17:02:04 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,33 +18,53 @@
 #include <string>
 #include <cctype>
 
+#include "Uri.hpp"
 
-namespace config
+namespace parser{
+
+// Singleton
+class ServerConfig
 {
-struct Server
-{
-	struct Host
+	struct ServerBlock
 	{
-		std::string host;
-		int			port;
+		struct Host
+		{
+			std::string host;
+			int			port;
+		};
+
+		struct Location
+		{
+			Uri	path;
+
+			/// Syntax:	 autoindex on | off;
+			/// Default: autoindex off;
+			/// Context: http, server, location
+			/// http://nginx.org/en/docs/http/ngx_http_autoindex_module.html
+			bool	autoindex;
+			Host	fastCgiPass;
+			///	Syntax:	client_max_body_size size;
+			/// Default: client_max_body_size 1m;
+			/// Context:	http, server, location
+			/// http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size
+			size_t	client_max_body_size;
+			std::map<std::string, std::string> 	fatsCgiParam;
+		};
+
+		std::vector<Host> 					listens;
+		std::string							serverName;
+		std::string							root;	
+		std::vector<std::string> 			indexes;
+		std::map<u_short, std::string> 		errors;
+
 	};
-
-	struct Location
-	{
-		bool	autoindex;
-		Host	fastCgiPass;
-		
-	};
-
-	std::vector<Host> 					listens;
-	std::string							serverName;
-	std::string							root;		
-	std::vector<std::string> 			indexes;
-	std::vector<u_short, std::string> 	errors;
-};
-
-std::vector<Server> servers;	
-
+	
+	std::vector<ServerBlock> servers;
+	
+private:
+	ServerConfig();
+	ServerConfig(ServerConfig&);
+	ServerConfig& operator=(const ServerConfig&);};
 
 }; /* namespace config */
 
