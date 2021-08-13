@@ -6,11 +6,11 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/11 16:05:35 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/11 16:54:33 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/13 15:13:36 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/server/ServerHandler.hpp" 								// temporary path
+#include "server/ServerHandler.hpp"
 
 ServerHandler::ServerHandler(std::vector<int> ports)
 {

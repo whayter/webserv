@@ -6,11 +6,11 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/11 11:37:05 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/11 16:18:15 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/13 15:18:14 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/server/Server.hpp"				// temporary path
+#include "server/Server.hpp"
 
 Server::Server(int port): _port(port) {}
 
@@ -88,7 +88,7 @@ void Server::stop()
 void Server::connectClient()
 {
 	sckt::fd_type fd;
-	sckt::addr_type addr = {0};
+	sckt::addr_type addr;
 	sckt::addrLen_type len = sizeof(addr);
 	fd = accept(_socket.getFd(), (struct sockaddr *)&addr, &len);
 	if (fd == INVALID_FD)
@@ -96,7 +96,7 @@ void Server::connectClient()
 	clnt::Client newClient;
 	newClient.setFd(fd);
 	newClient.setAddr(addr);
-	newClient.setPfd(fd);
+	newClient.setPfd();
 	_clients.push_back(newClient);
 }
 

@@ -6,11 +6,11 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/11 11:47:10 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/11 12:28:03 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/13 15:15:39 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/server/Client.hpp"				// temporary path
+#include "server/Client.hpp"
 
 /* --- Client class - Member functions -------------------------------------- */
 
@@ -28,7 +28,7 @@ void	clnt::Client::setAddr(sckt::addr_type addr)
 	_socket.setAddr(addr);
 }
 
-void	clnt::Client::setPfd(sckt::fd_type fd)
+void	clnt::Client::setPfd()
 {
 	_pfd.fd = _socket.getFd();
 	_pfd.events = POLLIN;

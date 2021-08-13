@@ -6,11 +6,12 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/30 14:07:41 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/13 15:07:44 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/13 15:11:26 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server/ServerHandler.hpp"
+#include <vector>
 
 int main(int ac, char** av)
 {
@@ -36,6 +37,9 @@ int main(int ac, char** av)
 	// return 0;
 
 	/* temporary */
+
+	(void)ac;
+	(void)av;
 
 	std::vector<int> ports;
 	ports.push_back(8080);
