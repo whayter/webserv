@@ -42,20 +42,21 @@ HttpRequest ParserHttpRequest::create(std::istream & inputStream)
 	if (ScopedEnum::kNewLine != t.kind)
 		throw std::invalid_argument("Method line not separated by new line");
 	std::cout << "|||" << t << std::endl;
-	// bool isHeader = true;
-	while ( (t = scanner.getToken()).kind != ScopedEnum::kEndOfInput)
+
+	std::string name;
+	std::string value;
+	bool isValueField = false;
+	bool isHeader = true;
+	while (isHeader && (t = scanner.getToken()).kind != ScopedEnum::kEndOfInput)
 	{
-		std::string name;
-		std::string value;
-		bool isValueField = false;
 
 		std::cout << t << std::endl;
 		switch (t.kind)
 		{
 			case ScopedEnum::kNewLine :
-				// if (name.empty())
-				// 	isHeader = false;
-				if (!name.empty())
+				if (name.empty())
+					isHeader = false;
+				else
 					result.addHeader(name, value);
 				// else
 				// 	isHeader = false;
@@ -67,7 +68,7 @@ HttpRequest ParserHttpRequest::create(std::istream & inputStream)
 				isValueField = true;
 				break;
 			case ScopedEnum::kLWS :
-				if (isValueField)
+				if (isValueField && !value.empty())
 					value += t.value;
 				break;
 			case ScopedEnum::kString :
