@@ -3,16 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/11 11:37:05 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/14 16:58:01 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/14 17:49:44 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server/Server.hpp"
 #include "http/HttpRequest.hpp"
 #include "http/ParserHttpRequest.hpp"
+
+#include <cerrno>
 
 Server::Server(int port): _port(port) {}
 
