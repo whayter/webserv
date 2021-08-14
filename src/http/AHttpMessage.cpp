@@ -6,11 +6,12 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 13:20:58 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/12 23:32:14 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/14 12:22:12 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "http/AHttpMessage.hpp"
+#include <cstdlib>
 
 AHttpMessage::AHttpMessage() {}
 AHttpMessage::~AHttpMessage() {}
@@ -22,7 +23,11 @@ std::string AHttpMessage::getContent()
 
 size_t AHttpMessage::getContentLength()
 {
-	return _content.size();
+	const char* key = "Content-Length";
+
+    if (_headers.find(key) != _headers.end())
+		return strtoul(_headers[key].c_str(), 0, 10);	
+	return 0;
 }
 
 AHttpMessage::map_type AHttpMessage::getHeaders()

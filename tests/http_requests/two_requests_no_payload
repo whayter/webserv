@@ -1,0 +1,18 @@
+GET /getip HTTP/1.1
+Content-Type: text/plain
+User-Agent: PostmanRuntime/7.26.8
+Accept: */*
+Postman-Token: ea45c23e-da12-465a-808b-fa9de79bd675
+Host: dynamicdns.park-your-domain.com
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Cookie: ASPSESSIONIDQACCRAQT=MOOMNKOCMFKECOHGBEDGOEDP
+
+GET / HTTP/1.1
+Content-Type: text/plain
+User-Agent: PostmanRuntime/7.26.8
+Accept: */*
+Postman-Token: 533c1ccd-2255-444a-88df-a2c82b126eee
+Host: google.com
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive

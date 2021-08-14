@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/03 13:01:23 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/09 11:34:06 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/13 16:15:26 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ public:
 	inline u_short			getSpecifiedPort()	{ return _port;		}
 	inline std::string		getRawQuery()		{ return _query;	}
 	
-	ushort					getPort() const;
+	u_short					getPort() const;
 	std::string				getQuery() const;
 	std::string				getPathEtc() const;
 	std::string				getPathAndQuery() const;
