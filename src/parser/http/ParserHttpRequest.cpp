@@ -73,10 +73,7 @@ HttpRequest ParserHttpRequest::create(std::istream & inputStream)
 				break;
 			case ScopedEnum::kColon :
 				lastIsCariage = false;
-				if (isValueField)
-					value += t.value;
-				else
-					isValueField = true;
+				isValueField = true;
 				break;
 			case ScopedEnum::kLWS :
 				lastIsCariage = false;
@@ -96,8 +93,6 @@ HttpRequest ParserHttpRequest::create(std::istream & inputStream)
 				break;
 		}
 	}
-	result.getUri().setAuthority(result.getHeader("Host"));
-
 	std::string content;
 	char c;
 	size_t contentLength = result.getContentLength();
