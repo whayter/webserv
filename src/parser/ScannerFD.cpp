@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 01:06:24 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/13 18:31:43 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/14 12:50:04 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void parser::ScannerFD::moveForward()
 	if (_idx >= bufferSize)
 	{
 		recv(_fd, &_buffer, bufferSize, 0);
-		idx = 0;
+		_idx = 0;
 	}
 	else
 		_c = _buffer[_idx++];

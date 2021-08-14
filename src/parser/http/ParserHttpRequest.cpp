@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 14:55:33 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/13 12:06:26 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/14 13:57:09 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ HttpRequest ParserHttpRequest::create(std::istream & inputStream)
 		t = scanner.getToken(true);
 		result.setVersion(t.value);
 	}
+	else
+		throw std::invalid_argument("Bad http request, No method specified");
 	t = scanner.getToken();
 	if (ScopedEnum::kNewLine != t.kind)
 		throw std::invalid_argument("Method line not separated by new line");
@@ -78,7 +80,8 @@ HttpRequest ParserHttpRequest::create(std::istream & inputStream)
 	}
 	std::string content;
 	char c;
-	while ((c = scanner.getChar()) != -1)
+	size_t contentLength = result.getContentLength();
+	while (contentLength-- && (c = scanner.getChar()) != -1)
 		content += c;
 	result.setContent(content);
 	return result;
