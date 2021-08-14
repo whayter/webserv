@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ParserHttpRequest.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 14:55:33 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/14 17:10:21 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/14 18:11:05 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,42 +39,49 @@ HttpRequest ParserHttpRequest::create(std::istream & inputStream)
 	}
 	else
 		throw std::invalid_argument("Bad http request, No method specified");
+
 	t = scanner.getToken();
 	if (ScopedEnum::kCarriage != t.kind)
-	{
-		std::cout << "token = " << t << std::endl;
-		throw std::invalid_argument("Method line not separated by new line");
-	}
+		throw std::invalid_argument("Method line not separated by return carriage");
+	t = scanner.getToken();
 	if (ScopedEnum::kNewLine != t.kind)
-	{
-		std::cout << "token = " << t << std::endl;
 		throw std::invalid_argument("Method line not separated by new line");
-	}
+
 	std::string name;
 	std::string value;
 	bool isValueField = false;
 	bool isHeader = true;
+	bool lastIsCariage = false;
 	while (isHeader && (t = scanner.getToken()).kind != ScopedEnum::kEndOfInput)
 	{
 		switch (t.kind)
 		{
+			case ScopedEnum::kCarriage:
+				lastIsCariage = true;
+				break;
 			case ScopedEnum::kNewLine :
+				if (lastIsCariage == false)
+					throw std::invalid_argument("MISSING carriage before new line !!!");
 				if (!name.empty())
 					result.addHeader(name, value);
 				else
 					isHeader = false;
 				name.clear();
 				value.clear();
+				lastIsCariage = false;
 				isValueField = false;
 				break;
 			case ScopedEnum::kColon :
+				lastIsCariage = false;
 				isValueField = true;
 				break;
 			case ScopedEnum::kLWS :
+				lastIsCariage = false;
 				if (isValueField && !value.empty())
 					value += t.value;
 				break;
 			case ScopedEnum::kString :
+				lastIsCariage = false;
 				if (isValueField == false)
 					name += t.value;
 				else
