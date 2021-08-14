@@ -45,6 +45,9 @@ class HttpRequest: public AHttpMessage
 		// void			read(std::istream is);
 		void			write(std::ostream os);
 
+		static HttpRequest create(std::istream & inputStream);
+
+
 	private:
 
 	/* --- Member variables ------------------------------------------------- */

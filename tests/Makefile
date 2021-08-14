@@ -66,7 +66,7 @@ SRC = main.cpp catch_amalgamated.cpp
 
 # Our tests
 SRC+= TestsUri.cpp Uri.cpp
-SRC+= TestsParserHttpRequest.cpp ParserHttpRequest.cpp
+SRC+= TestsHttpRequestCreate.cpp
 
 SRC+= AHttpMessage.cpp HttpRequest.cpp HttpResponse.cpp HttpStatus.cpp
 SRC+= Scanner.cpp ScannerHttpRequest.cpp

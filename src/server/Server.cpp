@@ -12,7 +12,6 @@
 
 #include "server/Server.hpp"
 #include "http/HttpRequest.hpp"
-#include "http/ParserHttpRequest.hpp"
 
 #include <cerrno>
 
@@ -139,7 +138,7 @@ bool Server::getReq(sckt::fd_type fd)
 
 	HttpRequest request;
 	std::stringstream streamRequest(buffer);
-	request = parser::http::ParserHttpRequest::create(streamRequest);
+	request = HttpRequest::create(streamRequest);
 
 	std::cout << "REQUEST:" << std::endl;
 	std::cout << request.toString() << std::endl;
