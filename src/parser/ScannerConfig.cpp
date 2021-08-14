@@ -25,13 +25,11 @@ Token ScannerConfig::getToken()
 {
 	char c = 0;
 
-	// if (skipLWS)
-		do
-		{
-			c = _scan.get();
-		} while (c != '\n' && isspace(c));
-	// else
-		// c = _scan.get();
+	do
+	{
+		c = _scan.get();
+	} while (c != '\n' && isspace(c));
+
 	
 	switch (c)
 	{
@@ -98,7 +96,7 @@ std::ostream & operator <<(std::ostream& os, const Token &t)
 	os << "<" << TokenKindToCstring(t.kind);
 	switch (t.kind)
 	{
-		case (ScopedEnum::kString)		:	os << "=\"" << t.value << "\"> ";	break;
+		case (ScopedEnum::kString)		:
 		case (ScopedEnum::kError)		:	os << "=\"" << t.value << "\"> ";	break;
 		default							:	os << "> "; break;
 	}
