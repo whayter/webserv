@@ -13,7 +13,7 @@
 #include "parser/Scanner.hpp"
 
 parser::Scanner::Scanner (std::istream &inputStream):
-	_line(0), _column(0), _inStream(inputStream), _c(0) {}
+	_line(1), _column(0), _inStream(inputStream), _c(0) {}
 parser::Scanner::~Scanner(){};
 
 void parser::Scanner::moveForward()
