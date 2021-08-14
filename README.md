@@ -18,6 +18,8 @@
 
 [RFC 7235 (authentication)](https://www.rfc-editor.org/rfc/pdfrfc/rfc7235.txt.pdf)
 
+[The Common Gateway Interface (CGI) Version 1.1 ](https://datatracker.ietf.org/doc/html/rfc3875)
+
 ## To do list / check list from subject:
 
 #### General 
