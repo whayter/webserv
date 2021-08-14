@@ -20,8 +20,6 @@
 
 #include "Uri.hpp"
 
-namespace parser{
-
 // Singleton
 class ServerConfig
 {
@@ -48,7 +46,7 @@ class ServerConfig
 			/// Context:	http, server, location
 			/// http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size
 			size_t	client_max_body_size;
-			std::map<std::string, std::string> 	fatsCgiParam;
+			// std::map<std::string, std::string> 	fatsCgiParam;
 		};
 
 		std::vector<Host> 					listens;
@@ -58,14 +56,22 @@ class ServerConfig
 		std::map<u_short, std::string> 		errors;
 
 	};
+
+
+	ServerConfig& getInstance(std::string filepath);
 	
-	std::vector<ServerBlock> servers;
-	
+	inline std::string getFilepath() const { return _filepath;}
+
 private:
-	ServerConfig();
+	ServerConfig(std::string filepath);
 	ServerConfig(ServerConfig&);
-	ServerConfig& operator=(const ServerConfig&);};
+	ServerConfig& operator=(const ServerConfig&);
+	
 
-}; /* namespace config */
+	static ServerConfig* _singleton;
 
-#endif
+	std::vector<ServerBlock> _servers;
+	std::string _filepath;
+};
+
+#endif /* SERVER_CONFIG_HPP */
