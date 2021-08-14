@@ -6,11 +6,13 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/11 11:37:05 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/13 15:18:14 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/14 16:58:01 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server/Server.hpp"
+#include "http/HttpRequest.hpp"
+#include "http/ParserHttpRequest.hpp"
 
 Server::Server(int port): _port(port) {}
 
@@ -52,7 +54,7 @@ bool Server::start()
 		return false;
 	}
 	if (!sckt::listenSocket(_socket.getFd()))
-	if (!sckt::bindSocket(_socket.getFd(), _socket.getAddr()))
+	//if (!sckt::bindSocket(_socket.getFd(), _socket.getAddr()))
 	{
 		stop();
 		return false;
@@ -103,34 +105,66 @@ void Server::connectClient()
 void Server::manageClient(clients_type::iterator client)
 {
 	bool disconnect = false;
-	
-	std::string request;
-	if (!getRequest(client->getFd(), &request))
+
+	if (!getReq(client->getFd()))
 		disconnect = true;
+
+	// std::string stringRequest;
+	// if (!getRequest(client->getFd(), &stringRequest))
+	// 	disconnect = true;
+
 	else
 	{
 		// parse request here
 		// send resonse
 		// in the meantime, return a static page
 
-		std::cout << request << std::endl;
-		const char* hello = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 7\n\nYo man!";
+		//std::cout << stringRequest << std::endl;
+		const char* hello = "HTTP/1.1 200 OK\nContent-Type: text/html; charset=UTF-8\nContent-Length: 133\n\n<style>html{background-color:black;color:white;text-align:center}</style><html><body><h1>Webserv</h1><h2>Yeah man!</h2></body></html>";
 		if (send(client->getFd(), hello, strlen(hello), 0) <= 0)
 			disconnect = true; 
-		if (disconnect)
+		if (disconnect)		// sortir du else ?
 			disconnectClient(client);
 	}
 }
 
-bool Server::getRequest(sckt::fd_type fd, std::string* request)
+bool Server::getReq(sckt::fd_type fd)
 {
-	char buffer[30000] = {0};
-
-	int ret = recv(fd, buffer, 30000 - 1, 0);
-	if (ret <= 0 && ret != EWOULDBLOCK)
+	char buffer[64000] = {0};
+	int nbytes = recv(fd, buffer, 64000 - 1, 0);
+	if (nbytes <= 0 && nbytes != EWOULDBLOCK)
 		return false;
-	*request = buffer;
+
+	HttpRequest request;
+	std::stringstream streamRequest(buffer);
+	request = parser::http::ParserHttpRequest::create(streamRequest);
+
+	std::cout << "REQUEST:" << std::endl;
+	std::cout << request.toString() << std::endl;
+
 	return true;
+}
+
+bool Server::getRequest(sckt::fd_type fd, std::string* stringRequest)
+{
+	char buffer[64000] = {0};
+	int nbytes = 0;
+
+	while (nbytes == 0)
+	{
+		nbytes = recv(fd, buffer, 64000 - 1, 0);
+		if (nbytes <= 0 && nbytes != EWOULDBLOCK)
+			return false;
+		*stringRequest += buffer;
+	}
+	return true;
+
+	// char buffer[10000] = {0};
+	// int ret = recv(fd, buffer, 10000 - 1, 0);
+	// if (ret <= 0 && ret != EWOULDBLOCK)
+	// 	return false;
+	// *stringRequest = buffer;
+	// return true;
 }
 
 void Server::disconnectClient(clients_type::iterator client)

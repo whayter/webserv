@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/08 12:39:38 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/11 15:52:13 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/14 16:36:20 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,10 @@ class Server
 
 		void 				connectClient();		
 		void				manageClient(clients_type::iterator client);
+
 		bool				getRequest(sckt::fd_type fd, std::string* request);
+		bool getReq(sckt::fd_type fd);
+
 		void 				disconnectClient(clients_type::iterator client);
 
 	private:

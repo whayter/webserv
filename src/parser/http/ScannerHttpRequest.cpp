@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ScannerHttpRequest.cpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:39:02 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/12 23:42:52 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/14 17:05:53 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ Token ScannerHttpRequest::getToken(bool skipLWS)
 		case ':':	return _makeToken(ScopedEnum::kColon, ":");
 		case ',':	return _makeToken(ScopedEnum::kComma, ",");
 		case '\n':	return _makeToken(ScopedEnum::kNewLine, "\n");
+		case '\r':	return _makeToken(ScopedEnum::kCarriage, "\r");
 		case ' ':	return _makeToken(ScopedEnum::kLWS, " ");
 		case '\t':	return _makeToken(ScopedEnum::kLWS, "\t");
 		default:
@@ -104,7 +105,7 @@ const char* TokenKindToCstring(TokenKind type)
 {
 	static const char* str[] = {
 		"kEnfOfInput", "kError",
-		"kString", "kNewLine",
+		"kString", "kNewLine", "kCarriage",
 		"kLeftBrace", "kRightBrace",
 		"kComma", "kColon", "kLWS"
 	};
