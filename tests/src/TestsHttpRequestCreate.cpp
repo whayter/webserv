@@ -1,17 +1,17 @@
 #include "catch_amalgamated.hpp"
 
-#include "ParserHttpRequest.hpp"
 #include "HttpRequest.hpp"
 
 #include <iostream>
 #include <fstream>
 
-TEST_CASE( "ParserHttpRequest - Create() - Get ", "[class][ParserHttpRequest][get]" )
+/// simple get
+TEST_CASE( "HttpRequest::Create1", "[class][ParserHttpRequest][get]" )
 {
 	std::ifstream file;
 
 	file.open("./http_requests/req1", std::ifstream::in);
-	HttpRequest req = parser::http::ParserHttpRequest::create(file);
+	HttpRequest req = HttpRequest::create(file);
 
 	CHECK( req.getMethod() == "GET" );
 	CHECK( req.getUri().getPathEtc() == "/getip");
@@ -31,12 +31,13 @@ TEST_CASE( "ParserHttpRequest - Create() - Get ", "[class][ParserHttpRequest][ge
 
 }
 
-TEST_CASE( "ParserHttpRequest - Create() - Post ", "[class][ParserHttpRequest][post]" )
+/// simple post
+TEST_CASE( "HttpRequest::Create2", "[class][ParserHttpRequest][post]" )
 {
 	std::ifstream file;
 
 	file.open("./http_requests/req2", std::ifstream::in);
-	HttpRequest req = parser::http::ParserHttpRequest::create(file);
+	HttpRequest req = HttpRequest::create(file);
 
 	CHECK( req.getMethod() == "POST" );
 	CHECK( req.getUri().getPathEtc() == "/getip");
@@ -57,12 +58,13 @@ TEST_CASE( "ParserHttpRequest - Create() - Post ", "[class][ParserHttpRequest][p
 
 }
 
-TEST_CASE( "ParserHttpRequest - Create() - two get in a row", "[class][ParserHttpRequest][get][two]" )
+// two get in a row with payload
+TEST_CASE( "HttpRequest::Create3", "[class][ParserHttpRequest][get][two]" )
 {
 	std::ifstream file;
 
 	file.open("./http_requests/two_requests", std::ifstream::in);
-	HttpRequest req = parser::http::ParserHttpRequest::create(file);
+	HttpRequest req = HttpRequest::create(file);
 
 	CHECK( req.getMethod() == "GET" );
 	CHECK( req.getUri().getPathEtc() == "/getip");
@@ -82,7 +84,7 @@ TEST_CASE( "ParserHttpRequest - Create() - two get in a row", "[class][ParserHtt
 
 	CHECK( req.getContent() == "hi\nhow\nare\nu ?");
 
-	req = parser::http::ParserHttpRequest::create(file);
+	req = HttpRequest::create(file);
 
 	CHECK( req.getMethod() == "GET" );
 	CHECK( req.getUri().getPathEtc() == "/");
@@ -104,12 +106,13 @@ TEST_CASE( "ParserHttpRequest - Create() - two get in a row", "[class][ParserHtt
 
 }
 
-TEST_CASE( "ParserHttpRequest::create two get no payload", "[class][ParserHttpRequest][get][two]" )
+/// two get in a row without payload
+TEST_CASE( "HttpRequest::Create", "[class][ParserHttpRequest][get][two]" )
 {
 	std::ifstream file;
 
 	file.open("./http_requests/two_requests_no_payload", std::ifstream::in);
-	HttpRequest req = parser::http::ParserHttpRequest::create(file);
+	HttpRequest req = HttpRequest::create(file);
 
 	CHECK( req.getMethod() == "GET" );
 	CHECK( req.getUri().getPathEtc() == "/getip");
@@ -128,7 +131,7 @@ TEST_CASE( "ParserHttpRequest::create two get no payload", "[class][ParserHttpRe
 
 	CHECK( req.getContent().empty());
 
-	req = parser::http::ParserHttpRequest::create(file);
+	req = HttpRequest::create(file);
 
 	CHECK( req.getMethod() == "GET" );
 	CHECK( req.getUri().getPathEtc() == "/");
@@ -144,6 +147,4 @@ TEST_CASE( "ParserHttpRequest::create two get no payload", "[class][ParserHttpRe
 	CHECK( req.getHeader("Connection")		== "keep-alive");
 
 	CHECK( req.getContent().empty());
-
-
 }
