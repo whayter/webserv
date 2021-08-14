@@ -68,10 +68,11 @@ SRC = main.cpp catch_amalgamated.cpp
 SRC+= TestsUri.cpp Uri.cpp
 SRC+= TestsHttpRequestCreate.cpp
 SRC+= TestsScannerConfig.cpp
+SRC+= TestsServerConfig.cpp
 
 SRC+= AHttpMessage.cpp HttpRequest.cpp HttpResponse.cpp HttpStatus.cpp
 SRC+= Scanner.cpp ScannerHttpRequest.cpp
-SRC+= ScannerConfig.cpp
+SRC+= ScannerConfig.cpp ServerConfig.cpp
 
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))

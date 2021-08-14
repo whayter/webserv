@@ -23,6 +23,7 @@
 // Singleton
 class ServerConfig
 {
+public:
 	struct ServerBlock
 	{
 		struct Host
@@ -58,15 +59,17 @@ class ServerConfig
 	};
 
 
-	ServerConfig& getInstance(std::string filepath);
+	static ServerConfig* getInstance(std::string filepath);
 	
+
 	inline std::string getFilepath() const { return _filepath;}
 
 private:
-	ServerConfig(std::string filepath);
+	ServerConfig(const std::string & filepath);
 	ServerConfig(ServerConfig&);
 	ServerConfig& operator=(const ServerConfig&);
 	
+	void _parse(std::istream &);
 
 	static ServerConfig* _singleton;
 
