@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ScannerHttpRequest.hpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:36:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/12 23:42:45 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/14 17:05:35 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ struct ScopedEnum
 	enum TokenKind
 	{
 		kEndOfInput = 0, kError,
-		kString, kNewLine,
+		kString, kNewLine, kCarriage,
 		kLeftBrace, kRightBrace,
 		kComma, kColon, kLWS
 	};

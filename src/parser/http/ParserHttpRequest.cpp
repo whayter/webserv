@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ParserHttpRequest.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 14:55:33 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/14 13:57:09 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/14 17:10:21 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,16 @@ HttpRequest ParserHttpRequest::create(std::istream & inputStream)
 	else
 		throw std::invalid_argument("Bad http request, No method specified");
 	t = scanner.getToken();
-	if (ScopedEnum::kNewLine != t.kind)
+	if (ScopedEnum::kCarriage != t.kind)
+	{
+		std::cout << "token = " << t << std::endl;
 		throw std::invalid_argument("Method line not separated by new line");
+	}
+	if (ScopedEnum::kNewLine != t.kind)
+	{
+		std::cout << "token = " << t << std::endl;
+		throw std::invalid_argument("Method line not separated by new line");
+	}
 	std::string name;
 	std::string value;
 	bool isValueField = false;
