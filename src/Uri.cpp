@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/05 13:06:01 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/09 11:57:23 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/14 17:52:31 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ Uri::Uri(const std::string& scheme, const std::string& pathEtc):
     _scheme(scheme), _port(0)
 {
     _lowerStringInPlace(_scheme);
-    std::string::const_iterator it = pathEtc.cbegin();
-    std::string::const_iterator end = pathEtc.cend();
+    std::string::const_iterator it = pathEtc.begin();
+    std::string::const_iterator end = pathEtc.end();
     _parsePathEtc(it, end);   
 }
 
@@ -33,11 +33,11 @@ Uri::Uri(const std::string& scheme, const std::string& authority, const std::str
     : _scheme(scheme)
 {
     _lowerStringInPlace(_scheme);
-    std::string::const_iterator it = authority.cbegin();
-    std::string::const_iterator end = authority.cend();
+    std::string::const_iterator it = authority.begin();
+    std::string::const_iterator end = authority.end();
     _parseAuthority(it, end);
-    it = pathEtc.cbegin();
-    end = pathEtc.cend();
+    it = pathEtc.begin();
+    end = pathEtc.end();
     _parsePathEtc(it, end);   
 }
 
@@ -45,8 +45,8 @@ Uri::Uri(const std::string& scheme, const std::string& authority, const std::str
     : _scheme(scheme), _path(path), _query(query)
 {
     _lowerStringInPlace(_scheme);
-    std::string::const_iterator it = authority.cbegin();
-    std::string::const_iterator end = authority.cend();
+    std::string::const_iterator it = authority.begin();
+    std::string::const_iterator end = authority.end();
     _parseAuthority(it, end);
 }
 
@@ -54,8 +54,8 @@ Uri::Uri(const std::string& scheme, const std::string& authority, const std::str
     : _scheme(scheme), _path(path), _query(query), _fragment(fragment)
 {
     _lowerStringInPlace(_scheme);
-    std::string::const_iterator it = authority.cbegin();
-    std::string::const_iterator end = authority.cend();
+    std::string::const_iterator it = authority.begin();
+    std::string::const_iterator end = authority.end();
     _parseAuthority(it, end);
 }
 
@@ -91,8 +91,8 @@ Uri& Uri::operator=(const std::string& uri)
 
 void Uri::_parseUri(const std::string& uri){
     std::string scheme;
-    std::string::const_iterator it = uri.cbegin();
-    std::string::const_iterator end = uri.cend();
+    std::string::const_iterator it = uri.begin();
+    std::string::const_iterator end = uri.end();
 
     if (it == end)
         return;
@@ -146,8 +146,8 @@ void Uri::_parseAuthority(std::string::const_iterator& it, const std::string::co
             tmp += *it;
         it++;
     }
-    std::string::const_iterator ite = tmp.cbegin();
-    std::string::const_iterator ende = tmp.cend();
+    std::string::const_iterator ite = tmp.begin();
+    std::string::const_iterator ende = tmp.end();
     _parseHostAndPort(ite, ende);
 }
 
@@ -237,15 +237,23 @@ std::string				Uri::getPathAndQuery() const
         return _path + '?' + _query;
     return _path;
 }
+
+
 std::string				Uri::getAuthority() const
 {
     std::string result;
-
+    std::string port;
+    
+    {
+        std::ostringstream ss;
+        ss << _port;
+        port = ss.str();
+    }
     if (!_userInfo.empty())
         result += _userInfo + "@";
     result += _host;
     if (_port != 0 && !isWellKnownPort())
-        result += ':' + std::to_string(_port);
+        result += ':' + port;
     return result;
 }
 
@@ -277,8 +285,8 @@ void					Uri::setPathEtc(const std::string& pathEtc)
     _path.clear();
     _query.clear();
     _fragment.clear();
-    std::string::const_iterator it = pathEtc.cbegin();
-    std::string::const_iterator end = pathEtc.cend();
+    std::string::const_iterator it = pathEtc.begin();
+    std::string::const_iterator end = pathEtc.end();
     _parsePathEtc(it ,end);
 }
 
@@ -310,8 +318,8 @@ void					Uri::setAuthority(const std::string& authority)
     _userInfo.clear();
     _host.clear();
     _port = 0;
-    std::string::const_iterator it = authority.cbegin();
-    std::string::const_iterator end = authority.cend();
+    std::string::const_iterator it = authority.begin();
+    std::string::const_iterator end = authority.end();
     _parseAuthority(it, end);
 }
 
