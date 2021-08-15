@@ -1,0 +1,13 @@
+@startuml
+abstract HttpMessage {
+	+string getContent()
+	+string getHeader(string name)
+	+size_t getContentLength()
+	+map_type getHeaders()
+	-map_type getHeader()
+}
+
+class HttpRequest: extends HttpMessage {
+	+testww()
+}
+@enduml
