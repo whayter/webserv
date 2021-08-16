@@ -3,16 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   ScannerConfig.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:39:02 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/14 17:05:53 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/16 15:40:17 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/ScannerConfig.hpp"
+#include "parser/config/ScannerConfig.hpp"
 
 namespace parser
+{
+namespace config
 {
 
 ScannerConfig::ScannerConfig(std::istream &inputStream)
@@ -21,15 +23,17 @@ ScannerConfig::ScannerConfig(std::istream &inputStream)
 
 ScannerConfig::~ScannerConfig(){}
 
-Token ScannerConfig::getToken()
+Token ScannerConfig::getToken(bool skipLWS)
 {
 	char c = 0;
 
-	do
-	{
+	if (skipLWS)
+		do
+		{
+			c = _scan.get();
+		} while (c != '\n' && isspace(c));
+	else
 		c = _scan.get();
-	} while (c != '\n' && isspace(c));
-
 	
 	switch (c)
 	{
@@ -115,5 +119,7 @@ const char* TokenKindToCstring(TokenKind type)
 	};
 	return str[type];
 }
+
+} /* namespace config */
 
 } /* namespace parser */

@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/13 17:02:04 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/16 15:59:58 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <cctype>
 
 #include "Uri.hpp"
+#include "parser/config/ScannerConfig.hpp"
 
 // Singleton
 class ServerConfig
@@ -62,7 +63,8 @@ public:
 	static ServerConfig* getInstance(std::string filepath);
 	
 
-	inline std::string getFilepath() const { return _filepath;}
+	inline std::string getConfigFilePath() const { return _configFilePath;}
+
 
 private:
 	ServerConfig(const std::string & filepath);
@@ -70,11 +72,34 @@ private:
 	ServerConfig& operator=(const ServerConfig&);
 	
 	void _parse(std::istream &);
+	void _parseServer(parser::config::ScannerConfig &);
+
+	void _thow_SyntaxError(parser::config::Token t, const std::string &error_str);
 
 	static ServerConfig* _singleton;
 
 	std::vector<ServerBlock> _servers;
-	std::string _filepath;
-};
+	std::string _configFilePath;
+
+public:
+
+	class SyntaxError: public std::exception
+	{
+		public:
+			SyntaxError(const char * message)
+				: _message(message) {}
+			SyntaxError(const std::string& message)
+				: _message(message) {}
+			virtual ~SyntaxError() {}
+
+			virtual const char* what() const throw() {
+				return _message.c_str();
+			}
+
+		protected:
+			std::string _message;
+	};
+
+}; /* class ServerConfig */
 
 #endif /* SERVER_CONFIG_HPP */

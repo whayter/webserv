@@ -5,7 +5,7 @@
 #include <iostream>
 #include <fstream>
 
-using namespace parser;
+using namespace parser::config;
 
 TEST_CASE( "ScannerConfig1", "[class][ScannerConfig]" )
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ScannerConfig.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:36:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/14 17:05:35 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/16 15:39:31 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include <parser/Scanner.hpp>
 
 namespace parser{
+
+namespace config{
 
 struct ScopedEnum
 {
@@ -47,7 +49,7 @@ public:
 	ScannerConfig(std::istream &inputStream);
 	~ScannerConfig();
 
-	Token getToken();
+	Token getToken(bool skipLWS = false);
 	inline Token peekToken() { return _actualToken; };
 
 private:
@@ -63,6 +65,7 @@ private:
 const char* TokenKindToCstring(TokenKind type);
 std::ostream & operator <<(std::ostream& os, const Token &t);
 
+} /* namespace config */
 } /* namespace parser */
 
 #endif /* SCANNER_CONFIG_HPP */
