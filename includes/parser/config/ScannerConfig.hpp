@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:36:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/16 15:39:31 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/16 16:41:54 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ struct ScopedEnum
 		kEndOfInput = 0, kError,
 		kString,
 		kLeftBrace, kRightBrace,
-		kComma, kColon,
+		kComma, kColon, kSemiColon,
 		kNewLine,
 		kIdentifier
 	};
@@ -49,7 +49,7 @@ public:
 	ScannerConfig(std::istream &inputStream);
 	~ScannerConfig();
 
-	Token getToken(bool skipLWS = false);
+	Token getToken(bool skipNL = false);
 	inline Token peekToken() { return _actualToken; };
 
 private:

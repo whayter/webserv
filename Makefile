@@ -59,6 +59,8 @@ INCS_DIR = $(shell find $(INC_DIR) -type d)
 vpath %.hpp $(INCS_DIR)
 
 SRC = main.cpp
+SRC+= utility.cpp
+
 SRC+= Scanner.cpp ScannerHttpRequest.cpp
 SRC+= AHttpMessage.cpp HttpRequest.cpp HttpResponse.cpp HttpStatus.cpp
 SRC+= Uri.cpp

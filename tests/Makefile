@@ -74,6 +74,8 @@ SRC+= AHttpMessage.cpp HttpRequest.cpp HttpResponse.cpp HttpStatus.cpp
 SRC+= Scanner.cpp ScannerHttpRequest.cpp
 SRC+= ScannerConfig.cpp ServerConfig.cpp
 
+SRC+= utility.cpp
+
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))
 vpath %.cpp $(SRCS_DIR)

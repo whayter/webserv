@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 16:06:58 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/16 16:10:53 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/16 16:23:31 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,6 @@
 #include <string>
 #include <sstream>
 
-std::string IntToString(int i);
+std::string intToString(int i);
 
 #endif

@@ -50,23 +50,14 @@ TEST_CASE( "ScannerConfig1", "[class][ScannerConfig]" )
 	CHECK( t.line == 2);
 
 	t = scanner.getToken();
-	CHECK( t.kind == TokenKind::kComma);
+	CHECK( t.kind == TokenKind::kSemiColon);
 	CHECK( t.value == ";");
 	CHECK( t.column == 22);
 	CHECK( t.line == 2);
 
-	t = scanner.getToken();
-	CHECK( t.kind == TokenKind::kNewLine);
-	CHECK( t.column == 23);
-	CHECK( t.line == 2);
-
-	t = scanner.getToken();
-	CHECK( t.kind == TokenKind::kNewLine);
-	CHECK( t.column == 1);
-	CHECK( t.line == 3);
-
+	//skiping two new lines by setting true to next call to scanner.getToken(true)
 	// root /var/www/app;\n
-	t = scanner.getToken();
+	t = scanner.getToken(true);
 	CHECK( t.kind == TokenKind::kString);
 	CHECK( t.value == "root");
 	CHECK( t.column == 5);
@@ -79,7 +70,7 @@ TEST_CASE( "ScannerConfig1", "[class][ScannerConfig]" )
 	CHECK( t.line == 4);
 
 	t = scanner.getToken();
-	CHECK( t.kind == TokenKind::kComma);
+	CHECK( t.kind == TokenKind::kSemiColon);
 	CHECK( t.value == ";");
 	CHECK( t.column == 22);
 	CHECK( t.line == 4);
@@ -109,7 +100,7 @@ TEST_CASE( "ScannerConfig1", "[class][ScannerConfig]" )
 	CHECK( t.line == 5);
 
 	t = scanner.getToken();
-	CHECK( t.kind == TokenKind::kComma);
+	CHECK( t.kind == TokenKind::kSemiColon);
 	CHECK( t.value == ";");
 	CHECK( t.column == 31);
 	CHECK( t.line == 5);

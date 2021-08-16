@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/16 15:59:58 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/16 17:12:49 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 class ServerConfig
 {
 public:
+
 	struct ServerBlock
 	{
 		struct Host
@@ -32,6 +33,7 @@ public:
 			std::string host;
 			int			port;
 		};
+	
 
 		struct Location
 		{
@@ -51,7 +53,7 @@ public:
 			// std::map<std::string, std::string> 	fatsCgiParam;
 		};
 
-		std::vector<Host> 					listens;
+		std::vector<Host>					listens;
 		std::string							serverName;
 		std::string							root;	
 		std::vector<std::string> 			indexes;
@@ -72,7 +74,16 @@ private:
 	ServerConfig& operator=(const ServerConfig&);
 	
 	void _parse(std::istream &);
+
 	void _parseServer(parser::config::ScannerConfig &);
+	void _parseListen(parser::config::ScannerConfig &);
+	void _parseRoot(parser::config::ScannerConfig &);
+	void _parseIndex(parser::config::ScannerConfig &);
+	void _parseServerName(parser::config::ScannerConfig &);
+	void _parseErrorPage(parser::config::ScannerConfig &);
+	void _parseLocation(parser::config::ScannerConfig &);
+	
+	static Host _parserr(std::string host);
 
 	void _thow_SyntaxError(parser::config::Token t, const std::string &error_str);
 

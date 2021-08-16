@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:39:02 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/16 15:40:17 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/16 16:43:09 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,27 +23,30 @@ ScannerConfig::ScannerConfig(std::istream &inputStream)
 
 ScannerConfig::~ScannerConfig(){}
 
-Token ScannerConfig::getToken(bool skipLWS)
+Token ScannerConfig::getToken(bool skipNL)
 {
 	char c = 0;
 
-	if (skipLWS)
+	if (skipNL)
+		do
+		{
+			c = _scan.get();
+		} while (isspace(c));
+	else
 		do
 		{
 			c = _scan.get();
 		} while (c != '\n' && isspace(c));
-	else
-		c = _scan.get();
 	
 	switch (c)
 	{
 		case  -1:
 		case  0 :	return _makeToken(ScopedEnum::kEndOfInput, "");
 		// case ':':	return _makeToken(ScopedEnum::kColon, ":");
-		case ';':	return _makeToken(ScopedEnum::kComma, ";");
+		// case ',':	return _makeToken(ScopedEnum::kComma, ",");
+		case ';':	return _makeToken(ScopedEnum::kSemiColon, ";");
 		case '{':	return _makeToken(ScopedEnum::kLeftBrace, "{");
 		case '}':	return _makeToken(ScopedEnum::kRightBrace, "}");
-		// case ',':	return _makeToken(ScopedEnum::kComma, ",");
 		case '\n':	return _makeToken(ScopedEnum::kNewLine, "\n");
 		default:
 			std::string lexeme = "";
@@ -113,7 +116,7 @@ const char* TokenKindToCstring(TokenKind type)
 		"kEnfOfInput", "kError",
 		"kString",
 		"kLeftBrace", "kRightBrace",
-		"kComma", "kColon",
+		"kComma", "kColon", "kSemiColon",
 		"kNewLine",
 		"kIdentifier"
 	};
