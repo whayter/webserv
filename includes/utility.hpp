@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 16:06:58 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/16 16:23:31 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/16 18:00:43 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,5 +17,6 @@
 #include <sstream>
 
 std::string intToString(int i);
+void		lowerStringInPlace(std::string& s);
 
 #endif

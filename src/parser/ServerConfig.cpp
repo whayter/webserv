@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/16 17:04:32 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/16 18:13:34 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,20 +63,18 @@ void ServerConfig::_parse(std::istream & in)
 		if (t.kind== pr::ScopedEnum::kString && t.value == "server")
 			_parseServer(scanner);
 
+		std::cout << t ;
 	}
 
 	
-	std::cout << t ;
 }
 
 void ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 {
-	pr::Token previous_t;
 	pr::Token t;
 
 	if ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kLeftBrace)
 		_thow_SyntaxError(t, "Missing open brace at server block.");
-	previous_t = t;
 	while ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kEndOfInput
 	 && t.kind != pr::ScopedEnum::kRightBrace)
 	{
@@ -111,38 +109,72 @@ void ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 				_thow_SyntaxError(t, "Ho shit 2");
 				break;
 		}
-		std::cout << "       >> " <<   t << std::endl;
+		std::cout << "	>> " <<  t << std::endl;
 	}
 
 }
 
 
-void ServerConfig::_parseListen(parser::config::ScannerConfig &)
+void ServerConfig::_parseListen(parser::config::ScannerConfig & scanner)
 {
+	pr::Token t;
+
+	if ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kLeftBrace)
+		_thow_SyntaxError(t, "Missing open brace at server block.");
+	std::cout << "	>> " <<  t << std::endl;
+
+}
+
+void ServerConfig::_parseRoot(parser::config::ScannerConfig & scanner)
+{
+	(void)scanner;
+}
+
+void ServerConfig::_parseIndex(parser::config::ScannerConfig & scanner)
+{
+	(void)scanner;
 	
 }
 
-void ServerConfig::_parseRoot(parser::config::ScannerConfig &)
+void ServerConfig::_parseServerName(parser::config::ScannerConfig & scanner)
 {
+	(void)scanner;
 	
 }
 
-void ServerConfig::_parseIndex(parser::config::ScannerConfig &)
+void ServerConfig::_parseErrorPage(parser::config::ScannerConfig & scanner)
 {
+	(void)scanner;
 	
 }
 
-void ServerConfig::_parseServerName(parser::config::ScannerConfig &)
+void ServerConfig::_parseLocation(parser::config::ScannerConfig & scanner)
 {
+	(void)scanner;
 	
 }
 
-void ServerConfig::_parseErrorPage(parser::config::ScannerConfig &)
+ServerConfig::ServerBlock::Host ServerConfig::_parseHost(const std::string& host)
 {
-	
-}
+	ServerConfig::ServerBlock::Host result;
+	u_short port = 0;
 
-void ServerConfig::_parseLocation(parser::config::ScannerConfig &)
-{
-	
+    std::string::const_iterator it = host.begin();
+    std::string::const_iterator end = host.end();
+
+    while(it != end && *it != ':')
+        result.host += *it++;
+    
+    if (it != end && *it == ':')
+    {
+        it++;
+        while (it != end && isdigit(*it))
+        {
+            port = port * 10 + *it - '0';
+            it++;
+        }
+    }
+    lowerStringInPlace(result.host);
+	result.port = port;
+	return result;
 }

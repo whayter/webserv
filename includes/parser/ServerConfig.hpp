@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/16 17:12:49 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/16 18:13:03 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,15 +75,16 @@ private:
 	
 	void _parse(std::istream &);
 
-	void _parseServer(parser::config::ScannerConfig &);
-	void _parseListen(parser::config::ScannerConfig &);
-	void _parseRoot(parser::config::ScannerConfig &);
-	void _parseIndex(parser::config::ScannerConfig &);
-	void _parseServerName(parser::config::ScannerConfig &);
-	void _parseErrorPage(parser::config::ScannerConfig &);
-	void _parseLocation(parser::config::ScannerConfig &);
+	void _parseServer(parser::config::ScannerConfig & scanner);
+	void _parseListen(parser::config::ScannerConfig & scanner);
+	void _parseRoot(parser::config::ScannerConfig & scanner);
+	void _parseIndex(parser::config::ScannerConfig & scanner);
+	void _parseServerName(parser::config::ScannerConfig & scanner);
+	void _parseErrorPage(parser::config::ScannerConfig & scanner);
+	void _parseLocation(parser::config::ScannerConfig & scanner);
 	
-	static Host _parserr(std::string host);
+	ServerBlock::Host _parseHost(const std::string& host);
+
 
 	void _thow_SyntaxError(parser::config::Token t, const std::string &error_str);
 
