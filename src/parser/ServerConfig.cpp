@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/16 20:06:28 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/16 20:20:01 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,22 +141,23 @@ Host ServerConfig::_parseListen(parser::config::ScannerConfig & scanner)
 
 std::string ServerConfig::_parseRoot(parser::config::ScannerConfig & scanner)
 {
-	std::string result;
 	pr::Token t;
 
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
 		_throw_SyntaxError(t, "Bad token in root context");
 	_skipSemiColonNewLine(scanner);
-	std::cout << "	>root> " <<  t << std::endl;
-	return result;
+	return t.value;
 }
 
 std::string ServerConfig::_parseIndex(parser::config::ScannerConfig & scanner)
 {
-	std::string result;
-	(void)scanner;
+	pr::Token t;
+
+	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
+		_throw_SyntaxError(t, "Bad token in index context");
+	_skipSemiColonNewLine(scanner);
 	
-	return result;
+	return t.value;
 }
 
 void ServerConfig::_parseServerName(parser::config::ScannerConfig & scanner)
@@ -168,6 +169,11 @@ void ServerConfig::_parseServerName(parser::config::ScannerConfig & scanner)
 
 void ServerConfig::_parseErrorPage(parser::config::ScannerConfig & scanner)
 {
+	std::string result;
+	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
+		_throw_SyntaxError(t, "Bad token in index context");
+	_skipSemiColonNewLine(scanner);
+
 	(void)scanner;
 	return;
 	
