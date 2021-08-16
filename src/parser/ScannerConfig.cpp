@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:39:02 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/16 16:43:09 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/16 18:29:50 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ Token ScannerConfig::_makeToken(TokenKind kind, std::string value)
 
 std::ostream & operator <<(std::ostream& os, const Token &t)
 {
-	os << "<" << TokenKindToCstring(t.kind);
+	os << "<" << tokenKindToCstring(t.kind);
 	switch (t.kind)
 	{
 		case (ScopedEnum::kString)		:
@@ -110,7 +110,7 @@ std::ostream & operator <<(std::ostream& os, const Token &t)
 	return os;
 }
 
-const char* TokenKindToCstring(TokenKind type)
+const char* tokenKindToCstring(TokenKind kind)
 {
 	static const char* str[] = {
 		"kEnfOfInput", "kError",
@@ -120,7 +120,25 @@ const char* TokenKindToCstring(TokenKind type)
 		"kNewLine",
 		"kIdentifier"
 	};
-	return str[type];
+	return str[kind];
+}
+
+std::string tokenToString(Token token)
+{
+	std::string result("<");
+	
+	result += tokenKindToCstring(token.kind);
+	switch (token.kind)
+	{
+		case (ScopedEnum::kString)		:
+		case (ScopedEnum::kError)		:
+			result += "=\"" + token.value + "\"> ";
+			break;
+		default							:
+			result += ">";
+			break;
+	}
+	return result;
 }
 
 } /* namespace config */

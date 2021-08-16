@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/16 18:13:34 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/16 20:06:28 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ ServerConfig* ServerConfig::getInstance(std::string filepath){
 	return _singleton;
 }
 
-void ServerConfig::_thow_SyntaxError(parser::config::Token t, const std::string &error_str)
+void ServerConfig::_throw_SyntaxError(parser::config::Token t, const std::string &error_str)
 {
 	std::string error;
 
@@ -52,6 +52,17 @@ void ServerConfig::_thow_SyntaxError(parser::config::Token t, const std::string 
 	throw ServerConfig::SyntaxError(error);
 }
 
+void ServerConfig::_skipSemiColonNewLine(parser::config::ScannerConfig & scanner)
+{
+	pr::Token t;
+
+	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kSemiColon)
+		_throw_SyntaxError(t, "Missing semi-colon.");
+	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kNewLine)
+		_throw_SyntaxError(t, "Missing new line after semi-colon.");
+}
+
+
 void ServerConfig::_parse(std::istream & in)
 {
 	pr::ScannerConfig scanner(in);
@@ -61,7 +72,10 @@ void ServerConfig::_parse(std::istream & in)
 	{
 		std::cout<< t << std::endl;
 		if (t.kind== pr::ScopedEnum::kString && t.value == "server")
-			_parseServer(scanner);
+			_servers.push_back(_parseServer(scanner));
+		else
+			_throw_SyntaxError(t,
+				"Unknown identifier \"" + t.value + "\" at root context");
 
 		std::cout << t ;
 	}
@@ -69,22 +83,24 @@ void ServerConfig::_parse(std::istream & in)
 	
 }
 
-void ServerConfig::_parseServer(pr::ScannerConfig & scanner)
+ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 {
+	ServerBlock result;
 	pr::Token t;
 
 	if ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kLeftBrace)
-		_thow_SyntaxError(t, "Missing open brace at server block.");
+		_throw_SyntaxError(t, "Missing open brace at server block.");
 	while ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kEndOfInput
 	 && t.kind != pr::ScopedEnum::kRightBrace)
 	{
+		std::cout << t << std::endl;
 		switch (t.kind)
 		{
 			case pr::ScopedEnum::kString :
 				if (t.value == "listen")
-					_parseListen(scanner);
+					result.listens.push_back(_parseListen(scanner));
 				else if (t.value == "root")
-					_parseRoot(scanner);
+					result.root = _parseRoot(scanner);
 				else if (t.value == "index")
 					_parseIndex(scanner);
 				else if (t.value == "server_name")
@@ -94,57 +110,66 @@ void ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 				else if (t.value == "location")
 					_parseLocation(scanner);
 				else
-					_thow_SyntaxError(t,
+					_throw_SyntaxError(t,
 						"Unknown identifier \"" + t.value + "\" in context 'server'");
 				break;
 			case pr::ScopedEnum::kNewLine :
-				if ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kLeftBrace)
-				_thow_SyntaxError(t, "New Line");
+					continue;
 				break;
-			case pr::ScopedEnum::kColon :
-					_thow_SyntaxError(t, "");
+			case pr::ScopedEnum::kSemiColon :
+				_throw_SyntaxError(t, "Unexpected semi-colon.");
 				break;
-			
 			default:
-				_thow_SyntaxError(t, "Ho shit 2");
+				_throw_SyntaxError(t, "Ho shit, not expected:  " + pr::tokenToString(t));
 				break;
 		}
-		std::cout << "	>> " <<  t << std::endl;
 	}
-
+	return result;
 }
 
-
-void ServerConfig::_parseListen(parser::config::ScannerConfig & scanner)
+Host ServerConfig::_parseListen(parser::config::ScannerConfig & scanner)
 {
+	Host result;
 	pr::Token t;
 
-	if ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kLeftBrace)
-		_thow_SyntaxError(t, "Missing open brace at server block.");
-	std::cout << "	>> " <<  t << std::endl;
-
+	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
+		_throw_SyntaxError(t, "Bad character in \"listen\" context.");
+	result = _parseHost(t.value);
+	_skipSemiColonNewLine(scanner);
+	return result;
 }
 
-void ServerConfig::_parseRoot(parser::config::ScannerConfig & scanner)
+std::string ServerConfig::_parseRoot(parser::config::ScannerConfig & scanner)
 {
-	(void)scanner;
+	std::string result;
+	pr::Token t;
+
+	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
+		_throw_SyntaxError(t, "Bad token in root context");
+	_skipSemiColonNewLine(scanner);
+	std::cout << "	>root> " <<  t << std::endl;
+	return result;
 }
 
-void ServerConfig::_parseIndex(parser::config::ScannerConfig & scanner)
+std::string ServerConfig::_parseIndex(parser::config::ScannerConfig & scanner)
 {
+	std::string result;
 	(void)scanner;
 	
+	return result;
 }
 
 void ServerConfig::_parseServerName(parser::config::ScannerConfig & scanner)
 {
 	(void)scanner;
+	return;
 	
 }
 
 void ServerConfig::_parseErrorPage(parser::config::ScannerConfig & scanner)
 {
 	(void)scanner;
+	return;
 	
 }
 
@@ -154,9 +179,9 @@ void ServerConfig::_parseLocation(parser::config::ScannerConfig & scanner)
 	
 }
 
-ServerConfig::ServerBlock::Host ServerConfig::_parseHost(const std::string& host)
+Host ServerConfig::_parseHost(const std::string& host)
 {
-	ServerConfig::ServerBlock::Host result;
+	Host result;
 	u_short port = 0;
 
     std::string::const_iterator it = host.begin();

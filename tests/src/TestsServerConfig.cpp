@@ -8,8 +8,8 @@
 
 TEST_CASE( "ServerConfig1", "[class][ServerConfig]" )
 {
-	ServerConfig* config = ServerConfig::getInstance("./config_files/default.conf");
+	ServerConfig* config = ServerConfig::getInstance("./config_files/testParser.conf");
 	(void)config;
 
-	
+
 }

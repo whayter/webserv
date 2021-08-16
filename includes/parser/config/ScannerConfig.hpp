@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:36:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/16 16:41:54 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/16 18:29:03 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,8 @@ private:
 	Token	_actualToken;
 }; /* class ScannerConfig */
 
-const char* TokenKindToCstring(TokenKind type);
+const char* tokenKindToCstring(TokenKind kind);
+std::string tokenToString(Token token);
 std::ostream & operator <<(std::ostream& os, const Token &t);
 
 } /* namespace config */
