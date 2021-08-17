@@ -18,3 +18,7 @@ jobs:
     - name: Install dependencies
       run: pip3 install hpp2plantuml
 
+    - name: Do do job
+      run: |
+        echo ok
+
