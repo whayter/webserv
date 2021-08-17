@@ -92,13 +92,33 @@ class Server {
 class ServerConfig {
 	-ServerConfig(const std::string& filepath)
 	-ServerConfig(ServerConfig &)
+	-_parseHost(const std::string& host) : Host
+	-_parseListen(parser::config::ScannerConfig& scanner) : Host
+	-_parseServer(parser::config::ScannerConfig& scanner) : ServerBlock
 	-operator=(const ServerConfig &) : ServerConfig&
 	+{static} getInstance(std::string filepath) : ServerConfig*
+	-_scanner : pr::ScannerConfig
 	-{static} _singleton : static ServerConfig*
-	-_filepath : std::string
-	+getFilepath() : std::string {query}
+	-_configFilePath : std::string
+	-_parseIndex(parser::config::ScannerConfig& scanner) : std::string
+	-_parseRoot(parser::config::ScannerConfig& scanner) : std::string
+	+getConfigFilePath() : std::string {query}
 	-_servers : std::vector<ServerBlock>
 	-_parse(std::istream &) : void
+	-_parseErrorPage(parser::config::ScannerConfig& scanner) : void
+	-_parseLocation(parser::config::ScannerConfig& scanner) : void
+	-_parseServerName(parser::config::ScannerConfig& scanner) : void
+	-_skipSemiColonNewLine(parser::config::ScannerConfig& scanner) : void
+	-_throw_SyntaxError(parser::config::Token t, const std::string& error_str) : void
+}
+
+
+class ServerConfig::SyntaxError {
+	+SyntaxError(const char* message)
+	+SyntaxError(const std::string& message)
+	+~SyntaxError()
+	+what() : char*
+	#_message : std::string
 }
 
 
@@ -146,7 +166,6 @@ class Uri {
 	+getPort() : u_short {query}
 	+getSpecifiedPort() : u_short
 	+getWellKnownPort() : u_short {query}
-	-_lowerStringInPlace(std::string& s) : void
 	-_parseAuthority(std::string::const_iterator& it, const std::string::const_iterator& end) : void
 	-_parseHostAndPort(std::string::const_iterator& it, const std::string::const_iterator& end) : void
 	-_parsePathEtc(std::string::const_iterator& it, const std::string::const_iterator& end) : void
@@ -235,7 +254,13 @@ enum HttpStatus::Code {
 }
 
 
-class ServerConfig::ServerBlock {
+class Host {
+	+port : int
+	+host : std::string
+}
+
+
+class ServerBlock {
 	+errors : std::map<u_short, std::string>
 	+root : std::string
 	+serverName : std::string
@@ -244,13 +269,7 @@ class ServerConfig::ServerBlock {
 }
 
 
-class ServerConfig::ServerBlock::Host {
-	+port : int
-	+host : std::string
-}
-
-
-class ServerConfig::ServerBlock::Location {
+class ServerBlock::Location {
 	+fastCgiPass : Host
 	+path : Uri
 	+autoindex : bool
@@ -304,18 +323,6 @@ namespace parser {
 		-moveForward() : void
 	}
 
-	class ScannerConfig {
-		+ScannerConfig(std::istream& inputStream)
-		+~ScannerConfig()
-		-_scan : Scanner
-		-_actualToken : Token
-		-_makeToken(ScopedEnum ::TokenKind kind, std::string value) : Token
-		-_makeToken(ScopedEnum ::TokenKind kind, std::string value, int column, int line) : Token
-		+getToken() : Token
-		+peekToken() : Token
-		-_charIsString(char c) : bool
-	}
-
 	class ScannerFD {
 		-ScannerFD()
 		+ScannerFD(int fd)
@@ -338,26 +345,41 @@ namespace parser {
 		-moveForward() : void
 	}
 
-	enum ScopedEnum::TokenKind {
-		kColon
-		kComma
-		kEndOfInput
-		kError
-		kIdentifier
-		kLeftBrace
-		kNewLine
-		kRightBrace
-		kString
-	}
+	namespace parser::config {
+		class ScannerConfig {
+			+ScannerConfig(std::istream& inputStream)
+			+~ScannerConfig()
+			-_scan : Scanner
+			-_actualToken : Token
+			-_makeToken(ScopedEnum ::TokenKind kind, std::string value) : Token
+			-_makeToken(ScopedEnum ::TokenKind kind, std::string value, int column, int line) : Token
+			+getToken(bool skipNL) : Token
+			+peekToken() : Token
+			-_charIsString(char c) : bool
+		}
 
-	class ScopedEnum {
-	}
+		enum ScopedEnum::TokenKind {
+			kColon
+			kComma
+			kEndOfInput
+			kError
+			kIdentifier
+			kLeftBrace
+			kNewLine
+			kRightBrace
+			kSemiColon
+			kString
+		}
 
-	class Token {
-		+kind : ScopedEnum ::TokenKind
-		+column : int
-		+line : int
-		+value : std::string
+		class ScopedEnum {
+		}
+
+		class Token {
+			+kind : ScopedEnum ::TokenKind
+			+column : int
+			+line : int
+			+value : std::string
+		}
 	}
 
 	namespace parser::http {
@@ -448,31 +470,43 @@ clnt.Client *-- sckt.Socket
 .HttpResponse *-- .HttpStatus
 
 
-parser.ScannerConfig *-- parser.Scanner
+parser.parser::config.ScannerConfig *-- parser.Scanner
 
 
-parser.ScannerConfig "2" *-- parser.Token
+parser.parser::config.ScannerConfig "2" *-- parser.parser::http.Token
 
 
 parser.parser::http.ScannerHttpRequest *-- parser.Scanner
 
 
-parser.parser::http.ScannerHttpRequest "2" *-- parser.Token
+parser.parser::http.ScannerHttpRequest "2" *-- parser.parser::http.Token
 
 
 .Server *-- sckt.Socket
 
 
+.ServerBlock *-- .Host
+
+
+.ServerBlock::Location *-- .Host
+
+
+.ServerBlock::Location *-- .Uri
+
+
+.ServerConfig *-- parser.parser::config.ScannerConfig
+
+
+.ServerConfig *-- .ServerBlock
+
+
 .ServerConfig o-- .ServerConfig
-
-
-.ServerConfig::ServerBlock::Location *-- .Uri
 
 
 .ServerHandler *-- .Server
 
 
-parser.Token "4" *-- parser.ScopedEnum
+parser.parser::http.Token "4" *-- parser.parser::http.ScopedEnum
 
 
 
@@ -484,19 +518,16 @@ parser.Token "4" *-- parser.ScopedEnum
 .HttpStatus +-- .HttpStatus::Code
 
 
-parser.ScopedEnum +-- parser.ScopedEnum::TokenKind
+parser.parser::http.ScopedEnum +-- parser.parser::http.ScopedEnum::TokenKind
 
 
-parser.ScopedEnum +-- parser.parser::http.ScopedEnum::TokenKind
+parser.parser::http.ScopedEnum +-- parser.parser::config.ScopedEnum::TokenKind
 
 
-.ServerConfig +-- .ServerConfig::ServerBlock
+.ServerBlock +-- .ServerBlock::Location
 
 
-.ServerConfig::ServerBlock +-- .ServerConfig::ServerBlock::Host
-
-
-.ServerConfig::ServerBlock +-- .ServerConfig::ServerBlock::Location
+.ServerConfig +-- .ServerConfig::SyntaxError
 
 
 .Uri +-- .Uri::SyntaxError
