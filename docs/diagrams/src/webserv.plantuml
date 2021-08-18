@@ -97,7 +97,6 @@ class ServerConfig {
 	-_parseServer(parser::config::ScannerConfig& scanner) : ServerBlock
 	-operator=(const ServerConfig &) : ServerConfig&
 	+{static} getInstance(std::string filepath) : ServerConfig*
-	-_scanner : pr::ScannerConfig
 	-{static} _singleton : static ServerConfig*
 	-_configFilePath : std::string
 	-_parseIndex(parser::config::ScannerConfig& scanner) : std::string
@@ -473,13 +472,13 @@ clnt.Client *-- sckt.Socket
 parser.parser::config.ScannerConfig *-- parser.Scanner
 
 
-parser.parser::config.ScannerConfig "2" *-- parser.parser::http.Token
+parser.parser::config.ScannerConfig "2" *-- parser.parser::config.Token
 
 
 parser.parser::http.ScannerHttpRequest *-- parser.Scanner
 
 
-parser.parser::http.ScannerHttpRequest "2" *-- parser.parser::http.Token
+parser.parser::http.ScannerHttpRequest "2" *-- parser.parser::config.Token
 
 
 .Server *-- sckt.Socket
@@ -494,9 +493,6 @@ parser.parser::http.ScannerHttpRequest "2" *-- parser.parser::http.Token
 .ServerBlock::Location *-- .Uri
 
 
-.ServerConfig *-- parser.parser::config.ScannerConfig
-
-
 .ServerConfig *-- .ServerBlock
 
 
@@ -506,7 +502,7 @@ parser.parser::http.ScannerHttpRequest "2" *-- parser.parser::http.Token
 .ServerHandler *-- .Server
 
 
-parser.parser::http.Token "4" *-- parser.parser::http.ScopedEnum
+parser.parser::config.Token "4" *-- parser.parser::config.ScopedEnum
 
 
 
@@ -518,10 +514,10 @@ parser.parser::http.Token "4" *-- parser.parser::http.ScopedEnum
 .HttpStatus +-- .HttpStatus::Code
 
 
-parser.parser::http.ScopedEnum +-- parser.parser::http.ScopedEnum::TokenKind
+parser.parser::config.ScopedEnum +-- parser.parser::config.ScopedEnum::TokenKind
 
 
-parser.parser::http.ScopedEnum +-- parser.parser::config.ScopedEnum::TokenKind
+parser.parser::config.ScopedEnum +-- parser.parser::http.ScopedEnum::TokenKind
 
 
 .ServerBlock +-- .ServerBlock::Location
