@@ -472,13 +472,13 @@ clnt.Client *-- sckt.Socket
 parser.parser::config.ScannerConfig *-- parser.Scanner
 
 
-parser.parser::config.ScannerConfig "2" *-- parser.parser::config.Token
+parser.parser::config.ScannerConfig "2" *-- parser.parser::http.Token
 
 
 parser.parser::http.ScannerHttpRequest *-- parser.Scanner
 
 
-parser.parser::http.ScannerHttpRequest "2" *-- parser.parser::config.Token
+parser.parser::http.ScannerHttpRequest "2" *-- parser.parser::http.Token
 
 
 .Server *-- sckt.Socket
@@ -502,7 +502,7 @@ parser.parser::http.ScannerHttpRequest "2" *-- parser.parser::config.Token
 .ServerHandler *-- .Server
 
 
-parser.parser::config.Token "4" *-- parser.parser::config.ScopedEnum
+parser.parser::http.Token "4" *-- parser.parser::http.ScopedEnum
 
 
 
@@ -514,10 +514,10 @@ parser.parser::config.Token "4" *-- parser.parser::config.ScopedEnum
 .HttpStatus +-- .HttpStatus::Code
 
 
-parser.parser::config.ScopedEnum +-- parser.parser::config.ScopedEnum::TokenKind
+parser.parser::http.ScopedEnum +-- parser.parser::http.ScopedEnum::TokenKind
 
 
-parser.parser::config.ScopedEnum +-- parser.parser::http.ScopedEnum::TokenKind
+parser.parser::http.ScopedEnum +-- parser.parser::config.ScopedEnum::TokenKind
 
 
 .ServerBlock +-- .ServerBlock::Location

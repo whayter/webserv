@@ -33,8 +33,10 @@ jobs:
         git config user.name github-actions
         git config user.email github-actions@github.com
         hpp2plantuml  -i "./includes/**/*.hpp" -o docs/diagrams/src/webserv.puml
-        java -jar ../plantuml.jar -o ./docs/diagrams/out/webserv/webserv.png
-        java -jar ../plantuml.jar -tsvg -o ./docs/diagrams/out/webserv/webserv.svg
+        
+        java -jar plantuml.jar "docs/diagrams/src/webserv.puml" -o ../out
+        java -jar plantuml.jar "docs/diagrams/src/webserv.puml" -o ../out -tsvg
+
         git add docs/diagrams/src/webserv.plantuml
         git commit -m "github action: updating UML diagram"
         git push --set-upstream origin uml
