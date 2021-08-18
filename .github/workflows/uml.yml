@@ -14,17 +14,27 @@ jobs:
     - uses: actions/setup-python@v2
       with:
         python-version: '3.9'
+    - uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '11'
 
     - name: Install dependencies
-      run: pip3 install hpp2plantuml
+      run: |
+        pip3 install hpp2plantuml
+        wget https://sourceforge.net/projects/plantuml/files/1.2021.9/plantuml.1.2021.9.jar -O ../plantuml.jar
 
     - name: Generate new ump
       run: |
+        ls -l ..
         git checkout -b uml
         git push --set-upstream origin uml
         git config user.name github-actions
         git config user.email github-actions@github.com
         hpp2plantuml  -i "./includes/**/*.hpp" -o docs/diagrams/src/webserv.plantuml
+        java -jar ../plantuml.jar -o ./docs/diagrams/out/webserv/webserv.png
+        java -jar ../plantuml.jar -tsvg -o ./docs/diagrams/out/webserv/webserv.svg
         git add docs/diagrams/src/webserv.plantuml
         git commit -m "github action: updating UML diagram"
         git push
+
