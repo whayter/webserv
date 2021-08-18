@@ -20,5 +20,7 @@ jobs:
 
     - name: Do do job
       run: |
-        echo ok
+        pwd;
+        ls;
+        hpp2plantuml  -i "./includes/**/*.hpp" -o docs/diagrams/src/webserv.plantuml
 
