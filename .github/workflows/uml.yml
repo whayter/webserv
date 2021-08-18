@@ -38,7 +38,7 @@ jobs:
         java -jar ../plantuml.jar "docs/diagrams/src/webserv.puml" -o ../out
         java -jar ../plantuml.jar "docs/diagrams/src/webserv.puml" -o ../out -tsvg
 
-        git add docs/diagrams/src/webserv.plantuml
+        git add docs/
         git commit -m "github action: updating UML diagram"
         git push --set-upstream origin uml
         git push
