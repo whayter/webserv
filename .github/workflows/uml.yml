@@ -21,6 +21,7 @@ jobs:
     - name: Generate new ump
       run: |
         git checkout -b uml
+        git push --set-upstream origin uml
         git config user.name github-actions
         git config user.email github-actions@github.com
         hpp2plantuml  -i "./includes/**/*.hpp" -o docs/diagrams/src/webserv.plantuml
