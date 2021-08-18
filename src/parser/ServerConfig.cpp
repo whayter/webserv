@@ -169,9 +169,15 @@ void ServerConfig::_parseServerName(parser::config::ScannerConfig & scanner)
 
 void ServerConfig::_parseErrorPage(parser::config::ScannerConfig & scanner)
 {
+	std::map<u_short, std::string> errors;
 	std::string result;
-	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
-		_throw_SyntaxError(t, "Bad token in index context");
+	pr::Token tCode;
+	pr::Token tValue;
+
+	if ((tCode = scanner.getToken()).kind != pr::ScopedEnum::kString)
+		_throw_SyntaxError(tCode, "Bad token in index context");
+	if ((tValue = scanner.getToken()).kind != pr::ScopedEnum::kString)
+		_throw_SyntaxError(tValue, "Bad token in index context");
 	_skipSemiColonNewLine(scanner);
 
 	(void)scanner;

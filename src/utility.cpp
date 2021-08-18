@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "utility.hpp"
+#include <algorithm>
 
 std::string intToString(int i)
 {
