@@ -26,6 +26,7 @@ jobs:
 
     - name: Generate new ump
       run: |
+        set -x
         ls -l ..
         git checkout -b uml
         git config user.name github-actions
