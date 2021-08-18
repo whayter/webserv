@@ -72,6 +72,9 @@
 ## Our todo list :
 - [ ] ?
 
+## generated uml diagram webserv :
+![image2](https://raw.githubusercontent.com/ggjulio/webserv/uml/docs/diagrams/out/webserv.svg)
+
 ## Refs :
 
 - [Design pattern helper](https://refactoring.guru/design-patterns)

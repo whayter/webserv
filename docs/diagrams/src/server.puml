@@ -1,0 +1,13 @@
+@startuml
+
+Client -> webserv : connect
+webserv -> Client : accept 
+Client -> webserv : Http Request
+webserv -> webserv : if no cgi 
+webserv -> Client : Http Response
+Client -> webserv : Http Request
+webserv -> "Common gateway Interface" : CGI Request
+webserv <- "Common gateway Interface"   : CGI Response
+webserv -> Client : Http Response
+
+@enduml

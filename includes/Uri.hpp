@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/03 13:01:23 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/13 16:15:26 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/16 18:00:59 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,8 +130,6 @@ private:
 	void 	_parseAuthority(std::string::const_iterator& it, const std::string::const_iterator & end);
 	void 	_parsePathEtc(std::string::const_iterator& it, const std::string::const_iterator& end);
 
-
-	void	_lowerStringInPlace(std::string& s);
 
 /* --- Exception -------------------------------------------------------- */
 

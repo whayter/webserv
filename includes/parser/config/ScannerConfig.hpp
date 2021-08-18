@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:36:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/06 14:09:25 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/16 18:29:03 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,54 +16,57 @@
 #include <istream>
 #include <parser/Scanner.hpp>
 
-// namespace parser{
-// namespace http{
+namespace parser{
 
-// struct ScopedEnum
-// {
-// 	enum TokenKind
-// 	{
-// 		kEndOfInput = 0, kError,
-// 		kString, kInteger,
-// 		kLeftBrace, kRightBrace,
-// 		kComma, kColon,
-// 		kNewLine,
-// 		kIdentifier
-// 	};
-// };
-// typedef ScopedEnum::TokenKind TokenKind;
+namespace config{
 
-// struct Token
-// {
-// 	TokenKind	kind;
-// 	std::string	valueString;
-// 	// int			valueInt; 	// stupid union that doesn't work under
-// 	// 						// c++98 with complex type like strings
-// 	int			line;
-// 	int			column;
-// };
+struct ScopedEnum
+{
+	enum TokenKind
+	{
+		kEndOfInput = 0, kError,
+		kString,
+		kLeftBrace, kRightBrace,
+		kComma, kColon, kSemiColon,
+		kNewLine,
+		kIdentifier
+	};
+};
+typedef ScopedEnum::TokenKind TokenKind;
 
-// class ScannerHttpRequest
-// {
-// public:
-// 	ScannerHttpRequest(std::istream &inputStream);
-// 	~ScannerHttpRequest();
+struct Token
+{
+	TokenKind	kind;
+	std::string	value;
+	int			line;
+	int			column;
+};
 
-// 	Token getToken();
-// 	inline Token peekToken() { return _actualToken; };
-// private:
 
-// 	bool _charIsString(char c);
-// 	Token _makeToken(TokenKind kind, std::string value);
+class ScannerConfig
+{
+public:
+	ScannerConfig(std::istream &inputStream);
+	~ScannerConfig();
 
-// 	Scanner _scan;
-// 	Token	_actualToken;
-// }; /* class Scanner */
+	Token getToken(bool skipNL = false);
+	inline Token peekToken() { return _actualToken; };
 
-// const char* TokenKindToCstring(TokenKind type);
-// std::ostream & operator <<(std::ostream& os, const Token &t);
+private:
 
-// } /* namespace http */
-// } /* namespace parser */
+	bool _charIsString(char c);
+	Token _makeToken(TokenKind kind, std::string value);
+	Token _makeToken(TokenKind kind, std::string value, int column, int line);
 
-// #endif /* SCANNER_CONFIG_HPP */
+	Scanner _scan;
+	Token	_actualToken;
+}; /* class ScannerConfig */
+
+const char* tokenKindToCstring(TokenKind kind);
+std::string tokenToString(Token token);
+std::ostream & operator <<(std::ostream& os, const Token &t);
+
+} /* namespace config */
+} /* namespace parser */
+
+#endif /* SCANNER_CONFIG_HPP */
