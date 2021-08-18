@@ -18,12 +18,13 @@ jobs:
     - name: Install dependencies
       run: pip3 install hpp2plantuml
 
-    - name: Do do job
+    - name: Generate new ump
       run: |
         pwd;
         ls;
         hpp2plantuml  -i "./includes/**/*.hpp" -o docs/diagrams/src/webserv.plantuml;
-        hpp2plantuml  -i "./includes/**/*.hpp" -o test.puml;
-        echo "#################";
-        ls;
-
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git add docs/diagrams/src/webserv.plantuml
+        git commit -m "github action: updating UML diagram"
+        git push
