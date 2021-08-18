@@ -73,7 +73,7 @@
 - [ ] ?
 
 ## generated uml diagram webserv :
-![image2](https://raw.githubusercontent.com/ggjulio/webserv/uml/docs/diagrams/out/webserv/webserv.svg)
+![image2](https://raw.githubusercontent.com/ggjulio/webserv/uml/docs/diagrams/out/webserv.svg)
 
 ## Refs :
 
