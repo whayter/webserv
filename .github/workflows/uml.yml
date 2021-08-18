@@ -40,5 +40,4 @@ jobs:
 
         git add docs/
         git commit -m "github action: updating UML diagram"
-        git push
-
+        git push -u origin uml
