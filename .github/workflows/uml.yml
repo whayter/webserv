@@ -22,5 +22,8 @@ jobs:
       run: |
         pwd;
         ls;
-        hpp2plantuml  -i "./includes/**/*.hpp" -o docs/diagrams/src/webserv.plantuml
+        hpp2plantuml  -i "./includes/**/*.hpp" -o docs/diagrams/src/webserv.plantuml;
+        hpp2plantuml  -i "./includes/**/*.hpp" -o test.puml;
+        echo "#################";
+        ls;
 
