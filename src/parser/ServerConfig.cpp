@@ -59,6 +59,7 @@ void ServerConfig::_skipSemiColonNewLine(parser::config::ScannerConfig & scanner
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kSemiColon)
 		_throw_SyntaxError(t, "Missing semi-colon.");
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kNewLine)
+		if (t.kind != pr::ScopedEnum::kComment)
 		_throw_SyntaxError(t, "Missing new line after semi-colon.");
 }
 
@@ -75,7 +76,7 @@ void ServerConfig::_parse(std::istream & in)
 			_servers.push_back(_parseServer(scanner));
 		else
 			_throw_SyntaxError(t,
-				"Unknown identifier \"" + t.value + "\" at root context");
+				"Unknown directive \"" + t.value + "\" at root context");
 
 		std::cout << t ;
 	}
@@ -111,8 +112,9 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 					_parseLocation(scanner);
 				else
 					_throw_SyntaxError(t,
-						"Unknown identifier \"" + t.value + "\" in context 'server'");
+						"Unknown directive \"" + t.value + "\" in context 'server'");
 				break;
+			case pr::ScopedEnum::kComment :
 			case pr::ScopedEnum::kNewLine :
 					continue;
 				break;
@@ -130,9 +132,9 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 Host ServerConfig::_parseListen(parser::config::ScannerConfig & scanner)
 {
 	Host result;
-	pr::Token t;
+	pr::Token t =  scanner.getToken();
 
-	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
+	if (t.kind != pr::ScopedEnum::kString && t.kind != pr::ScopedEnum::kInteger)
 		_throw_SyntaxError(t, "Bad character in \"listen\" context.");
 	result = _parseHost(t.value);
 	_skipSemiColonNewLine(scanner);
@@ -174,10 +176,10 @@ void ServerConfig::_parseErrorPage(parser::config::ScannerConfig & scanner)
 	pr::Token tCode;
 	pr::Token tValue;
 
-	if ((tCode = scanner.getToken()).kind != pr::ScopedEnum::kString)
-		_throw_SyntaxError(tCode, "Bad token in index context");
+	if ((tCode = scanner.getToken()).kind != pr::ScopedEnum::kInteger)
+		_throw_SyntaxError(tCode, "Error code is not an integer.");
 	if ((tValue = scanner.getToken()).kind != pr::ScopedEnum::kString)
-		_throw_SyntaxError(tValue, "Bad token in index context");
+		_throw_SyntaxError(tValue, "Bad token in index context.");
 	_skipSemiColonNewLine(scanner);
 
 	(void)scanner;
@@ -187,8 +189,43 @@ void ServerConfig::_parseErrorPage(parser::config::ScannerConfig & scanner)
 
 void ServerConfig::_parseLocation(parser::config::ScannerConfig & scanner)
 {
-	(void)scanner;
+	pr::Token	t;
+	ServerBlock::Location result;
 	
+	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
+		_throw_SyntaxError(t, "Location directive: invalid uri");
+	result.name = t.value;
+	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kLeftBrace)
+		_throw_SyntaxError(t, "Location directive: No scope defined. Add braces...");
+
+	while ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kEndOfInput
+		&& t.kind != pr::ScopedEnum::kRightBrace)
+	{
+		switch (t.kind)
+		{
+			case pr::ScopedEnum::kString :
+				if (t.value == "include")
+					continue;
+				else if (t.value == "fastcgi_pass")
+					continue;
+				else if (t.value == "fastcgi_param")
+					continue;
+				else
+					_throw_SyntaxError(t,
+						"Unknown directive \"" + t.value + "\" in location context");
+				
+				break;
+			case pr::ScopedEnum::kComment :
+				continue;
+				
+				break;
+			default:
+				_throw_SyntaxError(t,
+					"Unknown token in context location.");
+		std::cout << t ;
+		}
+	}
+
 }
 
 Host ServerConfig::_parseHost(const std::string& host)

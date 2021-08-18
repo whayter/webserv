@@ -25,7 +25,7 @@ struct ScopedEnum
 	enum TokenKind
 	{
 		kEndOfInput = 0, kError,
-		kString,
+		kString, kInteger, kComment,
 		kLeftBrace, kRightBrace,
 		kComma, kColon, kSemiColon,
 		kNewLine,
@@ -50,7 +50,7 @@ public:
 	~ScannerConfig();
 
 	Token getToken(bool skipNL = false);
-	inline Token peekToken() { return _actualToken; };
+	// inline Token peekToken() { return _actualToken; };
 
 private:
 
@@ -59,7 +59,7 @@ private:
 	Token _makeToken(TokenKind kind, std::string value, int column, int line);
 
 	Scanner _scan;
-	Token	_actualToken;
+	// Token	_actualToken;
 }; /* class ScannerConfig */
 
 const char* tokenKindToCstring(TokenKind kind);

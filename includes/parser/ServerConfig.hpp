@@ -45,10 +45,10 @@ struct ServerBlock
 {
 	struct Location
 	{
-		Uri		path;
-		bool	autoindex;
-		Host	fastCgiPass;
-		size_t	client_max_body_size;
+		std::string	name;
+		bool		autoindex;
+		Host		fastCgiPass;
+		size_t		client_max_body_size;
 		// std::map<std::string, std::string> 	fatsCgiParam;
 	};
 
