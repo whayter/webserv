@@ -42,4 +42,4 @@ jobs:
         git merge origin/master
         git add docs/
         git commit -m "github action: updating UML diagram"
-        git push -u origin uml
+        git push -f -u origin uml
