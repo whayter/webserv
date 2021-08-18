@@ -26,7 +26,7 @@ jobs:
         pip3 install hpp2plantuml
         wget https://sourceforge.net/projects/plantuml/files/1.2021.9/plantuml.1.2021.9.jar -O ../plantuml.jar
 
-    - name: Generate new ump
+    - name: Generate new uml
       run: |
         set -x
         ls -l ..
@@ -40,6 +40,5 @@ jobs:
 
         git add docs/
         git commit -m "github action: updating UML diagram"
-        git push --set-upstream origin uml
         git push
 
