@@ -69,19 +69,25 @@ void ServerConfig::_parse(std::istream & in)
 	pr::ScannerConfig scanner(in);
 
 	pr::Token t;
-	while ((t = scanner.getToken()).kind != pr::ScopedEnum::kEndOfInput)
+	while ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kEndOfInput)
 	{
 		std::cout<< t << std::endl;
-		if (t.kind== pr::ScopedEnum::kString && t.value == "server")
-			_servers.push_back(_parseServer(scanner));
-		else
-			_throw_SyntaxError(t,
-				"Unknown directive \"" + t.value + "\" at root context");
-
-		std::cout << t ;
-	}
-
+		switch (t.kind)
+		{
+			case pr::ScopedEnum::kComment:
+				continue;
+			case pr::ScopedEnum::kString:
+				if (t.kind== pr::ScopedEnum::kString && t.value == "server")
+					_servers.push_back(_parseServer(scanner));
+				else
+				_throw_SyntaxError(t,
+					"Unknown directive \"" + t.value + "\" at root context");
 	
+				break;
+			default:
+				_throw_SyntaxError(t, "Unexpected token: " + pr::tokenToString(t));
+		}
+	}
 }
 
 ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
@@ -97,6 +103,8 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 		std::cout << t << std::endl;
 		switch (t.kind)
 		{
+			case pr::ScopedEnum::kComment :
+				continue;
 			case pr::ScopedEnum::kString :
 				if (t.value == "listen")
 					result.listens.push_back(_parseListen(scanner));
@@ -114,15 +122,11 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in context 'server'");
 				break;
-			case pr::ScopedEnum::kComment :
-			case pr::ScopedEnum::kNewLine :
-					continue;
-				break;
 			case pr::ScopedEnum::kSemiColon :
 				_throw_SyntaxError(t, "Unexpected semi-colon.");
 				break;
 			default:
-				_throw_SyntaxError(t, "Ho shit, not expected:  " + pr::tokenToString(t));
+				_throw_SyntaxError(t, "Unexpected token:  " + pr::tokenToString(t));
 				break;
 		}
 	}
@@ -203,26 +207,30 @@ void ServerConfig::_parseLocation(parser::config::ScannerConfig & scanner)
 	{
 		switch (t.kind)
 		{
+			case pr::ScopedEnum::kComment :
+				continue;
 			case pr::ScopedEnum::kString :
-				if (t.value == "include")
-					continue;
-				else if (t.value == "fastcgi_pass")
-					continue;
+				if (t.value == "include"){
+					scanner.getToken();
+					_skipSemiColonNewLine(scanner);
+				}
+				else if (t.value == "fastcgi_pass")	{
+					scanner.getToken();
+					_skipSemiColonNewLine(scanner);
+				}
 				else if (t.value == "fastcgi_param")
-					continue;
+				{
+					scanner.getToken();
+					scanner.getToken();
+					_skipSemiColonNewLine(scanner);
+				}
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in location context");
 				
 				break;
-			case pr::ScopedEnum::kComment :
-				continue;
-				
-				break;
 			default:
-				_throw_SyntaxError(t,
-					"Unknown token in context location.");
-		std::cout << t ;
+					_throw_SyntaxError(t, "Unexpected token: " + pr::tokenToString(t));
 		}
 	}
 
