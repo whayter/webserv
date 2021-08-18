@@ -72,8 +72,8 @@
 ## Our todo list :
 - [ ] ?
 
-### generated uml diagram webserv :
-![image](https://raw.githubusercontent.com/ggjulio/webserv/uml/docs/diagrams/out/webserv/webserv.svg)
+## generated uml diagram webserv :
+![image2](https://raw.githubusercontent.com/ggjulio/webserv/uml/docs/diagrams/out/webserv/webserv.svg)
 
 ## Refs :
 
