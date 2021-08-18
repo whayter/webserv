@@ -83,7 +83,7 @@ vpath %.cpp $(SRCS_DIR)
 LDFLAGS = $(foreach lib, $(LIB_DIR),-L$(lib))  $(foreach lib, $(LIB),-l$(lib))
 
 CXX = clang++
-CXXFLAGS  = -Wall -Wextra -Werror -std=c++17 -g #-fsanitize=address  -fsanitize=undefined -fstack-protector  
+CXXFLAGS  = -Wall -Wextra -Werror -std=c++17 -g -fstandalone-debug #-fsanitize=address  -fsanitize=undefined -fstack-protector  
 IFLAGS  = $(foreach inc, $(INC_DIR),-I$(inc))
 
 #OS specific

@@ -33,11 +33,36 @@ ServerConfig::ServerConfig(const std::string& filepath)
 	file.close();
 }
 
-ServerConfig* ServerConfig::getInstance(std::string filepath){
+ServerConfig& ServerConfig::getInstance(std::string filepath){
 	if (_singleton == NULL)
 		_singleton = new ServerConfig(filepath);
-	return _singleton;
+	return *_singleton;
 }
+
+ServerBlock& ServerConfig::findServer(uint32_t port)
+{
+	std::vector<ServerBlock>::iterator itServer;
+
+	itServer = _servers.begin();
+	while (itServer != _servers.end())
+	{
+		ServerBlock& serv = *itServer;
+		std::vector<ServerBlock::Host>::iterator itListen = serv.listens.begin();
+		while (itListen != serv.listens.end())
+		{
+			ServerBlock::Host& listen = *itListen;
+			if (listen.port == port)
+				return serv;
+			itListen++;
+		}
+		
+		itServer++;
+	}
+	
+	return _servers[0];
+}
+
+
 
 void ServerConfig::_throw_SyntaxError(parser::config::Token t, const std::string &error_str)
 {
@@ -133,14 +158,14 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 	return result;
 }
 
-Host ServerConfig::_parseListen(parser::config::ScannerConfig & scanner)
+ServerBlock::Host ServerConfig::_parseListen(parser::config::ScannerConfig & scanner)
 {
-	Host result;
+	ServerBlock::Host result;
 	pr::Token t =  scanner.getToken();
 
 	if (t.kind != pr::ScopedEnum::kString && t.kind != pr::ScopedEnum::kInteger)
 		_throw_SyntaxError(t, "Bad character in \"listen\" context.");
-	result = _parseHost(t.value);
+	result = _parseListenValue(t);
 	_skipSemiColonNewLine(scanner);
 	return result;
 }
@@ -236,18 +261,25 @@ void ServerConfig::_parseLocation(parser::config::ScannerConfig & scanner)
 
 }
 
-Host ServerConfig::_parseHost(const std::string& host)
+
+ServerBlock::Host ServerConfig::_parseHost(const pr::Token& host)
 {
-	Host result;
+	ServerBlock::Host result;
+	std::string tmp;
 	u_short port = 0;
 
-    std::string::const_iterator it = host.begin();
-    std::string::const_iterator end = host.end();
+    std::string::const_iterator it = host.value.begin();
+    std::string::const_iterator end = host.value.end();
 
     while(it != end && *it != ':')
-        result.host += *it++;
+        tmp += *it++;
     
-    if (it != end && *it == ':')
+	if (it == end && !isInteger(tmp))
+		_throw_SyntaxError(host, "No port defined in listen directive.");
+
+    else if (!isInteger(tmp))
+		result.host = tmp;
+    if (*it == ':')
     {
         it++;
         while (it != end && isdigit(*it))

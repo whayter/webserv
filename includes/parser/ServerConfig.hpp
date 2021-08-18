@@ -36,20 +36,20 @@
  *
  */
 	
-struct Host
-{
-	std::string host;
-	int			port;
-};
 struct ServerBlock
 {
+	struct Host
+	{
+		std::string host;
+		uint32_t	port;
+	};
 	struct Location
 	{
-		std::string	name;
-		bool		autoindex;
-		Host		fastCgiPass;
-		size_t		client_max_body_size;
-		// std::map<std::string, std::string> 	fatsCgiParam;
+		std::string						name;
+		bool							autoindex;
+		Host							fastCgiPass;
+		size_t								client_max_body_size;
+		std::map<std::string, std::string> 	fatsCgiParam;
 	};
 
 	std::vector<Host>					listens;
@@ -65,8 +65,13 @@ public:
 
 
 
-	static ServerConfig* getInstance(std::string filepath);
+	static ServerConfig& getInstance(std::string filepath);
 	inline std::string getConfigFilePath() const { return _configFilePath;}
+
+
+	inline std::vector<ServerBlock>	getServers()				{ return _servers;}
+	inline ServerBlock&				getServer(uint32_t index)	{ return _servers[index];}
+	ServerBlock&					findServer(uint32_t port);
 
 
 private:
@@ -76,15 +81,16 @@ private:
 	
 	void _parse(std::istream &);
 
-	ServerBlock _parseServer(parser::config::ScannerConfig & scanner);
-	Host 		_parseListen(parser::config::ScannerConfig & scanner);
+	ServerBlock			_parseServer(parser::config::ScannerConfig & scanner);
+	ServerBlock::Host	_parseListen(parser::config::ScannerConfig & scanner);
 	std::string _parseRoot(parser::config::ScannerConfig & scanner);
 	std::string _parseIndex(parser::config::ScannerConfig & scanner);
 	void _parseServerName(parser::config::ScannerConfig & scanner);
 	void _parseErrorPage(parser::config::ScannerConfig & scanner);
 	void _parseLocation(parser::config::ScannerConfig & scanner);
 	
-	Host _parseHost(const std::string& host);
+	ServerBlock::Host _parseListenValue(const parser::config::Token& host);
+	ServerBlock::Host _parseHost(const parser::config::Token& host);
 
 	void _skipSemiColonNewLine(parser::config::ScannerConfig & scanner);
 
