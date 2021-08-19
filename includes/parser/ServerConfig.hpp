@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 18:44:04 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 19:20:14 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ struct ServerBlock
 		std::map<std::string, std::string> 	fatsCgiParam;
 		std::string							root;
 		std::string							index;
+
 	};
 
 	std::vector<Host>					listens;

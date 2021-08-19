@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 19:01:39 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 19:10:06 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,7 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 	ServerBlock result;
 	pr::Token t;
 
+	result.autoindex = false;
 	if ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kLeftBrace)
 		_throw_SyntaxError(t, "Missing open brace at server block.");
 	while ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kEndOfInput
@@ -262,6 +263,7 @@ ServerBlock::Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
 		_throw_SyntaxError(t, "Location directive: invalid uri");
 	result.uri = t.value;
+	result.autoindex = false;
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kLeftBrace)
 		_throw_SyntaxError(t, "Location directive: No scope defined. Add braces...");
 
