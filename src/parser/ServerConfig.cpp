@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 14:00:04 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 14:08:49 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ ServerBlock::Host ServerConfig::_parseListen(parser::config::ScannerConfig & sca
 
 	if (t.kind != pr::ScopedEnum::kString && t.kind != pr::ScopedEnum::kInteger)
 		_throw_SyntaxError(t, "Bad character in \"listen\" context.");
-	result = _parseHost(t);
+	result = _parseListenValue(t);
 	_skipSemiColonNewLine(scanner);
 	return result;
 }
@@ -176,6 +176,7 @@ std::string ServerConfig::_parseRoot(parser::config::ScannerConfig & scanner)
 
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
 		_throw_SyntaxError(t, "Bad token in root context");
+	
 	_skipSemiColonNewLine(scanner);
 	return t.value;
 }
@@ -263,7 +264,7 @@ void ServerConfig::_parseLocation(parser::config::ScannerConfig & scanner)
 }
 
 
-ServerBlock::Host ServerConfig::_parseHost(const pr::Token& host)
+ServerBlock::Host ServerConfig::_parseListenValue(const pr::Token& host)
 {
 	ServerBlock::Host result;
 	std::string tmp;
@@ -294,5 +295,13 @@ ServerBlock::Host ServerConfig::_parseHost(const pr::Token& host)
 	}
     lowerStringInPlace(result.host);
 	result.port = port;
+	return result;
+}
+
+ServerBlock::Host ServerConfig::_parseHost(const pr::Token& host)
+{
+	ServerBlock::Host result;
+	(void)result;
+
 	return result;
 }

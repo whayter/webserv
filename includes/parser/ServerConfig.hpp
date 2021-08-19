@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 13:56:25 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 14:08:05 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,16 +45,17 @@ struct ServerBlock
 	};
 	struct Location
 	{
-		std::string						uri;
-		bool							autoindex;
-		Host							fastCgiPass;
+		std::string							uri;
+		bool								autoindex;
+		Host								fastCgiPass;
 		size_t								client_max_body_size;
 		std::map<std::string, std::string> 	fatsCgiParam;
+		std::string							root;
 	};
 
 	std::vector<Host>					listens;
 	std::string							serverName;
-	std::string							root;	
+	std::string							root;
 	std::vector<std::string> 			indexes;
 	std::map<u_short, std::string> 		errors;
 };
@@ -89,7 +90,7 @@ private:
 	void _parseErrorPage(parser::config::ScannerConfig & scanner);
 	void _parseLocation(parser::config::ScannerConfig & scanner);
 	
-	// ServerBlock::Host _parseListenValue(const parser::config::Token& host);
+	ServerBlock::Host _parseListenValue(const parser::config::Token& host);
 	ServerBlock::Host _parseHost(const parser::config::Token& host);
 
 	void _skipSemiColonNewLine(parser::config::ScannerConfig & scanner);
