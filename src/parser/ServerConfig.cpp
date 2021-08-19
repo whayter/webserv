@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 15:28:02 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 15:30:46 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,6 @@ void ServerConfig::_parse(std::istream & in)
 	pr::Token t;
 	while ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kEndOfInput)
 	{
-		std::cout<< t << std::endl;
 		switch (t.kind)
 		{
 			case pr::ScopedEnum::kComment:
@@ -126,7 +125,6 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 	while ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kEndOfInput
 	 && t.kind != pr::ScopedEnum::kRightBrace)
 	{
-		std::cout << "   " << t << std::endl;
 		switch (t.kind)
 		{
 			case pr::ScopedEnum::kComment :
@@ -247,7 +245,6 @@ ServerBlock::Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 	while ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kEndOfInput
 		&& t.kind != pr::ScopedEnum::kRightBrace)
 	{
-		std::cout << "        " << t << std::endl;
 		switch (t.kind)
 		{
 			case pr::ScopedEnum::kComment :
