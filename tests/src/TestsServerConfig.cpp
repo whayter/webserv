@@ -40,6 +40,7 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 	CHECK( config.getServer(0).locations[1].root  == "/var/www/media" );
 	CHECK( config.getServer(0).locations[2].root.empty() );
 	
+	CHECK( config.getServer(1).root == "/var/www/app" );
 	CHECK( config.getServer(1).locations[0].root.empty() );
 	CHECK( config.getServer(1).locations[1].root.empty() );
 
