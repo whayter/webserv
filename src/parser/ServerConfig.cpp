@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 13:52:15 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 13:57:04 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ ServerBlock::Host ServerConfig::_parseListen(parser::config::ScannerConfig & sca
 
 	if (t.kind != pr::ScopedEnum::kString && t.kind != pr::ScopedEnum::kInteger)
 		_throw_SyntaxError(t, "Bad character in \"listen\" context.");
-	result = _parseListenValue(t);
+	result = _parseHost(t);
 	_skipSemiColonNewLine(scanner);
 	return result;
 }
@@ -276,35 +276,21 @@ ServerBlock::Host ServerConfig::_parseHost(const pr::Token& host)
 
 	if (it == end)
 	{
-		if (!isInteger(tmp))
-			_throw_SyntaxError(host, "No port defined in listen directive.");
 		it = tmp.begin();
 		end = tmp.end();
 	}
-	
-        while (it != end && isdigit(*it))
-        {
-            port = port * 10 + *it - '0';
-            it++;
-    
-    // if (it != end && *it == ':')
-    // {
-    //     it++;
-    //     while (it != end && isdigit(*it))
-    //     {
-    //         port = port * 10 + *it - '0';
-    //         it++;
-    //     }
-    // }
-	// else if (!isInteger(tmp))
-	// 	_throw_SyntaxError(host, "No port defined in listen directive.");
-	// else
-	// {
-
-	// }
-    // else if (!isInteger(tmp))
-	// 	result.host = tmp;
-
+	else
+	{
+		result.host = tmp;
+		it++;
+	}
+	while (it != end)
+	{
+		if (!isdigit(*it))
+			_throw_SyntaxError(host, "No port defined in listen directive.");
+		port = port * 10 + *it - '0';
+		it++;
+	}
     lowerStringInPlace(result.host);
 	result.port = port;
 	return result;
