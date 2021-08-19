@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 18:00:56 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 18:14:21 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,7 +231,7 @@ std::map<u_short, std::string> ServerConfig::_parseErrorPage(parser::config::Sca
 	pr::Token			t;
 	
 	t = scanner.getToken();
-	if (t.kind != pr::TokenKind::kInteger)
+	if (t.kind != pr::ScopedEnum::kInteger)
 		_throw_SyntaxError(t, "No error code specified.");
 	do {
 		codes.push_back(strtoul(t.value.c_str(), 0, 10));

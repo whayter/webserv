@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerConfig.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 16:43:02 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/19 18:19:15 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ public:
 				: _message(message) {}
 			SyntaxError(const std::string& message)
 				: _message(message) {}
-			virtual ~SyntaxError() {}
+			virtual ~SyntaxError() throw() {}
 
 			virtual const char* what() const throw() {
 				return _message.c_str();
