@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 19:20:14 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 19:36:37 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,9 +97,9 @@ private:
 	std::string 					_parseServerName(parser::config::ScannerConfig & scanner);
 	std::map<u_short, std::string> _parseErrorPage(parser::config::ScannerConfig & scanner);
 	ServerBlock::Location			_parseLocation(parser::config::ScannerConfig & scanner);
-
+	ServerBlock::Host 				_parseHost(parser::config::ScannerConfig & scanner);
+	
 	ServerBlock::Host _parseListenValue(const parser::config::Token& host);
-	ServerBlock::Host _parseHost(const parser::config::Token& host);
 
 	void _skipSemiColonNewLine(parser::config::ScannerConfig & scanner);
 

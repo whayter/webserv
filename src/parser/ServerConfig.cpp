@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 19:10:06 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 19:50:43 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -279,10 +279,8 @@ ServerBlock::Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 					scanner.getToken();
 					_skipSemiColonNewLine(scanner);
 				}
-				else if (t.value == "fastcgi_pass")	{
-					scanner.getToken();
-					_skipSemiColonNewLine(scanner);
-				}
+				else if (t.value == "fastcgi_pass")
+					result.fastCgiPass = _parseHost(scanner);
 				else if (t.value == "fastcgi_param")
 				{
 					scanner.getToken();
@@ -343,6 +341,7 @@ ServerBlock::Host ServerConfig::_parseListenValue(const pr::Token& host)
 	else
 	{
 		result.host = tmp;
+	    lowerStringInPlace(result.host);
 		it++;
 	}
 	while (it != end)
@@ -352,15 +351,36 @@ ServerBlock::Host ServerConfig::_parseListenValue(const pr::Token& host)
 		port = port * 10 + *it - '0';
 		it++;
 	}
-    lowerStringInPlace(result.host);
 	result.port = port;
 	return result;
 }
 
-ServerBlock::Host ServerConfig::_parseHost(const pr::Token& host)
+ServerBlock::Host ServerConfig::_parseHost(parser::config::ScannerConfig & scanner)
 {
-	ServerBlock::Host result;
-	(void)host;
+	ServerBlock::Host	result;
+	std::string			tmp;
+	pr::Token			t;
 
+	result.port = 0;
+	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
+		_throw_SyntaxError(t, "Invalid value host.");
+
+    std::string::const_iterator it = t.value.begin();
+    std::string::const_iterator end = t.value.end();
+
+    while(it != end && *it != ':')
+        result.host += *it++;
+    
+    if (it != end && *it == ':')
+    {
+        it++;
+        while (it != end && isdigit(*it))
+        {
+            result.port = result.port * 10 + *it - '0';
+            it++;
+        }
+    }
+    lowerStringInPlace(result.host);
+	_skipSemiColonNewLine(scanner);
 	return result;
 }
