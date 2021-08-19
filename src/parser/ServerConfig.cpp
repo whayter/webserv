@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerConfig.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 16:21:46 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/19 18:00:56 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ void ServerConfig::_throw_SyntaxError(parser::config::Token t, const std::string
 	error += intToString(t.column);
 	error += ": error: ";
 	error += error_str;
+	error += '\n';
 	throw ServerConfig::SyntaxError(error);
 }
 
