@@ -61,5 +61,10 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 	CHECK( config.getServer(1).errors.size() == 1);
 	CHECK( config.getServer(1).errors[497] == "https://$host:443$request_uri");
 
-	//
+	// autoindex directive
+	CHECK( config.getServer(0).autoindex == false );
+	CHECK( config.getServer(0).locations[0].autoindex == false);
+	CHECK( config.getServer(0).locations[1].autoindex == false);
+	CHECK( config.getServer(0).locations[2].autoindex == false);
+
 }

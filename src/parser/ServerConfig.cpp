@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 18:14:21 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 18:55:36 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,6 +166,8 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 				}
 				else if (t.value == "location")
 					result.locations.push_back(_parseLocation(scanner));
+				else if (t.value == "autoindex")
+					result.autoindex = _parseAutoindex(scanner);
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in context 'server'");
@@ -289,6 +291,8 @@ ServerBlock::Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 					result.root = _parseRoot(scanner);
 				else if (t.value == "index")
 					result.index = _parseIndex(scanner);
+				else if (t.value == "autoindex")
+					result.autoindex = _parseAutoindex(scanner);
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in location context");
@@ -299,6 +303,21 @@ ServerBlock::Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 		}
 	}
 	return result;
+}
+
+bool	ServerConfig::_parseAutoindex(parser::config::ScannerConfig & scanner)
+{
+	pr::Token t;
+
+	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
+		_throw_SyntaxError(t, "Bad token in context \"autoindex\".");
+	_skipSemiColonNewLine(scanner);
+	if (t.value == "on")
+		return true;
+	if (t.value == "off")
+		return false;
+	_throw_SyntaxError(t, "Invalid value in \"autoindex\", must be either \"on\" or \"off\".");
+	return false;
 }
 
 
