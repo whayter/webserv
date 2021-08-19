@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 14:31:35 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 14:50:11 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 				else if (t.value == "root")
 					result.root = _parseRoot(scanner);
 				else if (t.value == "index")
-					_parseIndex(scanner);
+					result.index = _parseIndex(scanner);
 				else if (t.value == "server_name")
 					_parseServerName(scanner);
 				else if (t.value == "error_page")
@@ -187,7 +187,6 @@ std::string ServerConfig::_parseIndex(parser::config::ScannerConfig & scanner)
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
 		_throw_SyntaxError(t, "Bad token in index context");
 	_skipSemiColonNewLine(scanner);
-	
 	return t.value;
 }
 
@@ -216,7 +215,7 @@ void ServerConfig::_parseErrorPage(parser::config::ScannerConfig & scanner)
 	
 }
 
-ServerBlock::Location ServerConfig::_parseLocation(parser::config::ScannerConfig & scanner)
+ServerBlock::Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 {
 	pr::Token	t;
 	ServerBlock::Location result;
@@ -252,6 +251,8 @@ ServerBlock::Location ServerConfig::_parseLocation(parser::config::ScannerConfig
 				}
 				else if (t.value == "root")
 					result.root = _parseRoot(scanner);
+				else if (t.value == "index")
+					result.index = _parseIndex(scanner);
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in location context");

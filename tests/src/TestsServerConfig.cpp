@@ -44,4 +44,10 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 	CHECK( config.getServer(1).locations[0].root.empty() );
 	CHECK( config.getServer(1).locations[1].root.empty() );
 
+	//index directive
+	CHECK( config.getServer(0).index == "server1.php" );
+	CHECK( config.getServer(0).locations[0].index.empty());
+	CHECK( config.getServer(1).index == "server2.php" );
+	CHECK( config.getServer(1).locations[0].index == "server2Location.php");
+
 }

@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 14:30:32 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 14:50:07 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,14 @@ struct ServerBlock
 		size_t								client_max_body_size;
 		std::map<std::string, std::string> 	fatsCgiParam;
 		std::string							root;
+		std::string							index;
 	};
 
 	std::vector<Host>					listens;
 	std::vector<Location>				locations;
 	std::string							serverName;
 	std::string							root;
-	std::vector<std::string> 			indexes;
+	std::string							index;
 	std::map<u_short, std::string> 		errors;
 };
 
@@ -90,7 +91,7 @@ private:
 	void _parseServerName(parser::config::ScannerConfig & scanner);
 	void _parseErrorPage(parser::config::ScannerConfig & scanner);
 	ServerBlock::Location _parseLocation(parser::config::ScannerConfig & scanner);
-	
+
 	ServerBlock::Host _parseListenValue(const parser::config::Token& host);
 	ServerBlock::Host _parseHost(const parser::config::Token& host);
 
