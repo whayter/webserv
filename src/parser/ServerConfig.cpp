@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 19:50:43 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 20:14:09 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -381,6 +381,22 @@ ServerBlock::Host ServerConfig::_parseHost(parser::config::ScannerConfig & scann
         }
     }
     lowerStringInPlace(result.host);
+	_skipSemiColonNewLine(scanner);
+	return result;
+}
+
+std::pair<std::string, std::string>	ServerConfig::_parseFastCgiParam(parser::config::ScannerConfig & scanner)
+{
+	pr::Token tName;
+	pr::Token tValue;
+	std::pair<std::string, std::string> result;
+
+	if ((tName = scanner.getToken()).kind != pr::ScopedEnum::kString)
+		_throw_SyntaxError(tName, "Bad fastcgi parameter name");
+	if ((tValue = scanner.getToken()).kind != pr::ScopedEnum::kString)
+		_throw_SyntaxError(tValue, "Bad fastcgi parameter value");
+	result.first = tName.value;
+	result.second = tValue.value;
 	_skipSemiColonNewLine(scanner);
 	return result;
 }
