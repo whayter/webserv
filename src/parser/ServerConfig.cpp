@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/16 20:20:01 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 13:52:15 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -273,24 +273,37 @@ ServerBlock::Host ServerConfig::_parseHost(const pr::Token& host)
 
     while(it != end && *it != ':')
         tmp += *it++;
-    
-    if (it != end && *it == ':')
-    {
-        it++;
+
+	if (it == end)
+	{
+		if (!isInteger(tmp))
+			_throw_SyntaxError(host, "No port defined in listen directive.");
+		it = tmp.begin();
+		end = tmp.end();
+	}
+	
         while (it != end && isdigit(*it))
         {
             port = port * 10 + *it - '0';
             it++;
-        }
-    }
-	else if (!isInteger(tmp))
-		_throw_SyntaxError(host, "No port defined in listen directive.");
-	else
-	{
+    
+    // if (it != end && *it == ':')
+    // {
+    //     it++;
+    //     while (it != end && isdigit(*it))
+    //     {
+    //         port = port * 10 + *it - '0';
+    //         it++;
+    //     }
+    // }
+	// else if (!isInteger(tmp))
+	// 	_throw_SyntaxError(host, "No port defined in listen directive.");
+	// else
+	// {
 
-	}
-    else if (!isInteger(tmp))
-		result.host = tmp;
+	// }
+    // else if (!isInteger(tmp))
+	// 	result.host = tmp;
 
     lowerStringInPlace(result.host);
 	result.port = port;
