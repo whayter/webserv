@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/11 11:37:05 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/14 17:49:44 by juligonz         ###   ########.fr       */
+/*   Created: 2021/08/15 19:22:37 by hwinston          #+#    #+#             */
+/*   Updated: 2021/08/16 15:33:02 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,12 @@
 #include "http/HttpRequest.hpp"
 
 #include <cerrno>
+#include <vector>
+
+/* --- Public functions ----------------------------------------------------- */
 
 Server::Server(int port): _port(port) {}
 
-Server::Server(const Server& s)
-{
-	*this = s;
-}
-
-Server& Server::operator=(const Server& s)
-{
-	_port = s._port;
-	_socket = s._socket;
-	_clients = s._clients;
-	_pfd = s._pfd;
-	return *this;
-}
-		
 Server::~Server()
 {
 	stop();
@@ -40,136 +29,115 @@ bool Server::start()
 {
 	if (!_socket.setFd(AF_INET, SOCK_STREAM))
 		return false;
-	if (!sckt::setNonBlocking(_socket.getFd())
-	|| !sckt::setReusableAddr(_socket.getFd()))
-	{
-		stop();
-		return false;
-	}
 	_socket.setAddr(AF_INET, INADDR_ANY, _port);
-	_pfd.fd = _socket.getFd();
-	_pfd.events = POLLIN;
-	if (!sckt::bindSocket(_socket.getFd(), _socket.getAddr()))
+	if (!sckt::setNonBlocking(_socket.getFd())
+	|| !sckt::setReusableAddr(_socket.getFd())
+	|| !sckt::bindSocket(_socket.getFd(), _socket.getAddr())
+	|| !sckt::listenSocket(_socket.getFd()))
 	{
 		stop();
 		return false;
 	}
-	if (!sckt::listenSocket(_socket.getFd()))
-	//if (!sckt::bindSocket(_socket.getFd(), _socket.getAddr()))
-	{
-		stop();
-		return false;
-	}
+	memset(_fds, 0, sizeof(_fds));
+	_fds[0].fd = _socket.getFd();
+	_fds[0].events = POLLIN;
+	_nfds = 1;
 	return true;
 }
 
 void Server::update()
 {
+	_upToDateFds = true;
 	int pollStatus;
-	if ((pollStatus = poll(&_pfd, 1, 0)) == -1)
+	if ((pollStatus = poll(_fds, _nfds, 0)) == -1)
 		stop();
-	else if (pollStatus > 0)
-		connectClient();
-	clients_type::iterator it;
-	for (it = _clients.begin(); it != _clients.end(); it++)
+	for (int i = 0, s = _nfds; i < s; i++)
 	{
-		struct pollfd clientPfd = it->getPfd();
-		if ((pollStatus = poll(&clientPfd, 1, 0)) > 0)
-			manageClient(it);
+		if (_fds[i].revents == 0)
+			continue;
+		if (_fds[i].revents != POLLIN)
+			stop();
+		if (_fds[i].fd == _socket.getFd())
+			while (_connectClient())
+				continue;
+		else
+			_manageClient(i);
 	}
+	if (!_upToDateFds)
+		_updateFds();
 }
 
 void Server::stop()
 {
-	clients_type::iterator it = _clients.begin();
-	for (it = _clients.begin(); it != _clients.end(); it++)
-		clnt::disconnect(*it);
-	_clients.clear();
-	sckt::closeSocket(_socket.getFd());
+	for (int i = 0; i < _nfds; i++)
+		sckt::closeSocket(_fds[i].fd);
 }
 
-void Server::connectClient()
+/* --- Private functions ---------------------------------------------------- */
+
+void Server::_updateFds()
 {
-	sckt::fd_type fd;
-	sckt::addr_type addr;
-	sckt::addrLen_type len = sizeof(addr);
-	fd = accept(_socket.getFd(), (struct sockaddr *)&addr, &len);
-	if (fd == INVALID_FD)
-		return ;
-	clnt::Client newClient;
-	newClient.setFd(fd);
-	newClient.setAddr(addr);
-	newClient.setPfd();
-	_clients.push_back(newClient);
+	for (int i = 0; i < _nfds; i++)
+	{
+		if (_fds[i].fd == -1)
+		{
+			for (int j = i; j < _nfds; j++)
+				_fds[j].fd = _fds[j + 1].fd;
+			_nfds--;
+			i--;
+		}
+	}
+	_upToDateFds = true;
 }
 
-void Server::manageClient(clients_type::iterator client)
+void Server::_manageClient(int index)
 {
 	bool disconnect = false;
-
-	if (!getReq(client->getFd()))
+	if (!_getRequest(_fds[index].fd))
 		disconnect = true;
-
-	// std::string stringRequest;
-	// if (!getRequest(client->getFd(), &stringRequest))
-	// 	disconnect = true;
-
 	else
 	{
-		// parse request here
-		// send resonse
-		// in the meantime, return a static page
-
-		//std::cout << stringRequest << std::endl;
-		const char* hello = "HTTP/1.1 200 OK\nContent-Type: text/html; charset=UTF-8\nContent-Length: 133\n\n<style>html{background-color:black;color:white;text-align:center}</style><html><body><h1>Webserv</h1><h2>Yeah man!</h2></body></html>";
-		if (send(client->getFd(), hello, strlen(hello), 0) <= 0)
+		const char* hello = "HTTP/1.1 200 OK\nContent-Type: text/html;charset=UTF-8\nContent-Length: 133\n\n<style>html{background-color:black;color:white;text-align:center}</style><html><body><h1>Webserv</h1><h2>Yeah man!</h2></body></html>";
+		if (send(_fds[index].fd, hello, strlen(hello), 0) <= 0)
 			disconnect = true; 
-		if (disconnect)		// sortir du else ?
-			disconnectClient(client);
+		if (disconnect)
+			_disconnectClient(index);
 	}
 }
 
-bool Server::getReq(sckt::fd_type fd)
+bool Server::_getRequest(int fd)
 {
-	char buffer[64000] = {0};
-	int nbytes = recv(fd, buffer, 64000 - 1, 0);
+	char buffer[32000] = {0};
+	int nbytes = recv(fd, buffer, 32000 - 1, 0);
 	if (nbytes <= 0 && nbytes != EWOULDBLOCK)
 		return false;
-
 	HttpRequest request;
 	std::stringstream streamRequest(buffer);
 	request = HttpRequest::create(streamRequest);
-
-	std::cout << "REQUEST:" << std::endl;
-	std::cout << request.toString() << std::endl;
-
+	std::cout << request.toString() << std::endl;		// tmp
+	std::cout << std::endl << std::endl;				// tmp
 	return true;
 }
 
-bool Server::getRequest(sckt::fd_type fd, std::string* stringRequest)
+bool Server::_connectClient()
 {
-	char buffer[64000] = {0};
-	int nbytes = 0;
+	sckt::fd_type fd;
+	fd = accept(_socket.getFd(), NULL, NULL);
+	if (fd == INVALID_FD)
+		return false;
+	_fds[_nfds].fd = fd;
+	_fds[_nfds].events = POLLIN;
+	_nfds++;
 
-	while (nbytes == 0)
-	{
-		nbytes = recv(fd, buffer, 64000 - 1, 0);
-		if (nbytes <= 0 && nbytes != EWOULDBLOCK)
-			return false;
-		*stringRequest += buffer;
-	}
+	std::cout << "New connection [" << fd << "]" << std::endl;
 	return true;
-
-	// char buffer[10000] = {0};
-	// int ret = recv(fd, buffer, 10000 - 1, 0);
-	// if (ret <= 0 && ret != EWOULDBLOCK)
-	// 	return false;
-	// *stringRequest = buffer;
-	// return true;
 }
 
-void Server::disconnectClient(clients_type::iterator client)
+void Server::_disconnectClient(int index)
 {
-	clnt::disconnect(*client);
-	_clients.erase(client);
+	std::cout << "Disconnection [" << _fds[index].fd << "]" << std::endl;
+
+	sckt::closeSocket(_fds[index].fd);
+	_fds[index].fd = -1;
+	_upToDateFds = true;
 }

@@ -64,7 +64,7 @@ SRC+= utility.cpp
 SRC+= Scanner.cpp ScannerHttpRequest.cpp
 SRC+= AHttpMessage.cpp HttpRequest.cpp HttpResponse.cpp HttpStatus.cpp
 SRC+= Uri.cpp
-SRC+= Socket.cpp Server.cpp ServerHandler.cpp Client.cpp
+SRC+= Socket.cpp Server.cpp Client.cpp
 
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))

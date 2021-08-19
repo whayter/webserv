@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/08 12:39:38 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/14 16:36:20 by hwinston         ###   ########.fr       */
+/*   Created: 2021/08/15 17:50:07 by hwinston          #+#    #+#             */
+/*   Updated: 2021/08/16 15:33:45 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,46 +14,42 @@
 # define SERVER_HPP
 
 # include "Socket.hpp"
-# include "Client.hpp"
+#include "http/HttpRequest.hpp"
 
-# include <vector>
 # include <poll.h>
+
+# define BACKLOG 32
 
 class Server
 {
 	public:
 
-	/* --- Member types ----------------------------------------------------- */
-
-		typedef std::vector<clnt::Client>	clients_type;
-
 	/* --- Member functions ------------------------------------------------- */
 
 		Server(int port);
-		Server(const Server& s);
-		Server& operator=(const Server& s);
 		~Server();
 
-		bool				start();
-		void				update();
-		void				stop();
-
-		void 				connectClient();		
-		void				manageClient(clients_type::iterator client);
-
-		bool				getRequest(sckt::fd_type fd, std::string* request);
-		bool getReq(sckt::fd_type fd);
-
-		void 				disconnectClient(clients_type::iterator client);
+		bool start();
+		void update();
+		void stop();
 
 	private:
+
+	/* --- Private functions ------------------------------------------------ */
+
+		void _manageClient(int index);
+		bool _getRequest(int fd);
+		bool _connectClient();
+		void _disconnectClient(int index);
+		void _updateFds();
 
 	/* --- Member variables ------------------------------------------------- */
 
 		int					_port;
 		sckt::Socket		_socket;
-		clients_type		_clients;
-		struct pollfd		_pfd;
+		struct pollfd		_fds[BACKLOG];
+		int					_nfds;
+		bool				_upToDateFds;
 };
 
 #endif
