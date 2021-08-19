@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 15:14:40 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 15:28:02 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -294,8 +294,8 @@ ServerBlock::Host ServerConfig::_parseListenValue(const pr::Token& host)
     std::string::const_iterator end = host.value.end();
 
     while(it != end && *it != ':')
-        tmp += *it++;
-
+		tmp += *it++;
+	
 	if (it == end)
 	{
 		it = tmp.begin();
