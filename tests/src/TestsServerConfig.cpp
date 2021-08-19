@@ -50,4 +50,14 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 	CHECK( config.getServer(1).index == "server2.php" );
 	CHECK( config.getServer(1).locations[0].index == "server2Location.php");
 
+	//error directive
+	CHECK( config.getServer(0).errors.size() == 4);
+
+	CHECK( config.getServer(0).errors[497] == "https://$host:443$request_uri");
+	CHECK( config.getServer(0).errors[500] == "50x.html");
+	CHECK( config.getServer(0).errors[501] == "50x.html");
+	CHECK( config.getServer(0).errors[502] == "50x.html");
+	
+	CHECK( config.getServer(1).errors.size() == 1);
+	CHECK( config.getServer(1).errors[497] == "https://$host:443$request_uri");
 }

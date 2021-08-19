@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 14:50:11 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 15:14:40 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 #include <fstream>
 #include <exception>
+#include <cstdlib>
 
 ServerConfig* ServerConfig::_singleton = nullptr;
 
@@ -140,7 +141,10 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 				else if (t.value == "server_name")
 					_parseServerName(scanner);
 				else if (t.value == "error_page")
-					_parseErrorPage(scanner);
+				{
+					std::map<u_short, std::string> m = _parseErrorPage(scanner);
+					result.errors.insert(m.begin(), m.end());
+				}
 				else if (t.value == "location")
 					result.locations.push_back(_parseLocation(scanner));
 				else
@@ -190,28 +194,42 @@ std::string ServerConfig::_parseIndex(parser::config::ScannerConfig & scanner)
 	return t.value;
 }
 
-void ServerConfig::_parseServerName(parser::config::ScannerConfig & scanner)
+std::string ServerConfig::_parseServerName(parser::config::ScannerConfig & scanner)
 {
-	(void)scanner;
-	return;
-	
+	pr::Token t;
+
+	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
+		_throw_SyntaxError(t, "Bad token in server_name context");
+	_skipSemiColonNewLine(scanner);
+	return t.value;	
 }
 
-void ServerConfig::_parseErrorPage(parser::config::ScannerConfig & scanner)
+std::map<u_short, std::string> ServerConfig::_parseErrorPage(parser::config::ScannerConfig & scanner)
 {
-	std::map<u_short, std::string> errors;
-	std::string result;
-	pr::Token tCode;
-	pr::Token tValue;
-
-	if ((tCode = scanner.getToken()).kind != pr::ScopedEnum::kInteger)
-		_throw_SyntaxError(tCode, "Error code is not an integer.");
-	if ((tValue = scanner.getToken()).kind != pr::ScopedEnum::kString)
-		_throw_SyntaxError(tValue, "Bad token in index context.");
+	std::map<u_short, std::string> result;
+	std::vector<u_short> codes;
+	std::string			path;
+	pr::Token			t;
+	
+	t = scanner.getToken();
+	if (t.kind != pr::TokenKind::kInteger)
+		_throw_SyntaxError(t, "No error code specified.");
+	do {
+		codes.push_back(strtoul(t.value.c_str(), 0, 10));
+	} while ((t = scanner.getToken()).kind == pr::ScopedEnum::kInteger);
+	
+	if (t.kind == pr::ScopedEnum::kString)
+		path = t.value;
+	else
+		_throw_SyntaxError(t, "Bad token in context \"error\".");
+	std::vector<u_short>::iterator it = codes.begin();
+	while (it != codes.end())
+	{
+		result[*it] = path;
+		it++;	
+	}
 	_skipSemiColonNewLine(scanner);
-
-	(void)scanner;
-	return;
+	return result;
 	
 }
 

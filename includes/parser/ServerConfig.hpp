@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 14:50:07 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 14:54:51 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,13 +84,13 @@ private:
 	
 	void _parse(std::istream &);
 
-	ServerBlock			_parseServer(parser::config::ScannerConfig & scanner);
-	ServerBlock::Host	_parseListen(parser::config::ScannerConfig & scanner);
-	std::string _parseRoot(parser::config::ScannerConfig & scanner);
-	std::string _parseIndex(parser::config::ScannerConfig & scanner);
-	void _parseServerName(parser::config::ScannerConfig & scanner);
-	void _parseErrorPage(parser::config::ScannerConfig & scanner);
-	ServerBlock::Location _parseLocation(parser::config::ScannerConfig & scanner);
+	ServerBlock						_parseServer(parser::config::ScannerConfig & scanner);
+	ServerBlock::Host				_parseListen(parser::config::ScannerConfig & scanner);
+	std::string 					_parseRoot(parser::config::ScannerConfig & scanner);
+	std::string 					_parseIndex(parser::config::ScannerConfig & scanner);
+	std::string 					_parseServerName(parser::config::ScannerConfig & scanner);
+	std::map<u_short, std::string> _parseErrorPage(parser::config::ScannerConfig & scanner);
+	ServerBlock::Location			_parseLocation(parser::config::ScannerConfig & scanner);
 
 	ServerBlock::Host _parseListenValue(const parser::config::Token& host);
 	ServerBlock::Host _parseHost(const parser::config::Token& host);
