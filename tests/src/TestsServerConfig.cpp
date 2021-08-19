@@ -12,7 +12,7 @@ TEST_CASE( "ServerConfig1", "[class][ServerConfig]" )
 	(void)config;
 
 
-	CHECK( &config == &ServerConfig::getInstance("testing singleton identity"));
+	CHECK( &config == &ServerConfig::getInstance("testing singleton identity, must override first call"));
 	CHECK( config.getServers().size() == 2);
 
 	CHECK( config.getServer(0).listens[0].port == 80 );
