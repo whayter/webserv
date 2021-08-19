@@ -63,8 +63,11 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 
 	// autoindex directive
 	CHECK( config.getServer(0).autoindex == false );
-	CHECK( config.getServer(0).locations[0].autoindex == false);
+	CHECK( config.getServer(0).locations[0].autoindex == true);
 	CHECK( config.getServer(0).locations[1].autoindex == false);
-	CHECK( config.getServer(0).locations[2].autoindex == false);
+	CHECK( config.getServer(0).locations[2].autoindex == true);
 
+	CHECK( config.getServer(1).autoindex == true );
+	CHECK( config.getServer(1).locations[0].autoindex == true);
+	CHECK( config.getServer(1).locations[1].autoindex == false);
 }
