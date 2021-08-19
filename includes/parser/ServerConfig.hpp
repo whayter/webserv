@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerConfig.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 14:54:51 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 16:43:02 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,12 +69,15 @@ public:
 
 
 	static ServerConfig& getInstance(std::string filepath);
+	static ServerConfig& getInstance();
 	inline std::string getConfigFilePath() const { return _configFilePath;}
 
 
 	inline std::vector<ServerBlock>	getServers()				{ return _servers;}
 	inline ServerBlock&				getServer(uint32_t index)	{ return _servers[index];}
 	ServerBlock&					findServer(uint32_t port);
+
+	std::vector<uint32_t>			getPorts();
 
 
 private:

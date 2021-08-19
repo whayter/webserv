@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerConfig.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 15:30:46 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 16:21:46 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,12 @@ ServerConfig& ServerConfig::getInstance(std::string filepath){
 	return *_singleton;
 }
 
+ServerConfig& ServerConfig::getInstance(){
+	if (_singleton == NULL)
+		throw std::invalid_argument("Singleton is not instanciated.");
+	return *_singleton;
+}
+
 ServerBlock& ServerConfig::findServer(uint32_t port)
 {
 	std::vector<ServerBlock>::iterator itServer;
@@ -61,6 +67,20 @@ ServerBlock& ServerConfig::findServer(uint32_t port)
 	}
 	
 	return _servers[0];
+}
+
+std::vector<uint32_t> ServerConfig::getPorts()
+{
+	std::vector<uint32_t> ports;
+	std::vector<ServerBlock>::iterator itServer;
+
+	for (itServer = _servers.begin(); itServer != _servers.end(); itServer++)
+	{
+		std::vector<ServerBlock::Host>::iterator itListen;
+		for (itListen = itServer->listens.begin(); itListen != itServer->listens.end(); itListen++)
+			ports.push_back(itListen->port);
+	}
+	return ports;
 }
 
 
