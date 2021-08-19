@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 13:57:04 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 14:00:04 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 	while ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kEndOfInput
 	 && t.kind != pr::ScopedEnum::kRightBrace)
 	{
-		std::cout << t << std::endl;
+		std::cout << "   " << t << std::endl;
 		switch (t.kind)
 		{
 			case pr::ScopedEnum::kComment :
@@ -230,6 +230,7 @@ void ServerConfig::_parseLocation(parser::config::ScannerConfig & scanner)
 	while ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kEndOfInput
 		&& t.kind != pr::ScopedEnum::kRightBrace)
 	{
+		std::cout << "        " << t << std::endl;
 		switch (t.kind)
 		{
 			case pr::ScopedEnum::kComment :
