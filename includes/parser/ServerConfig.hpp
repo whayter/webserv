@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 14:08:05 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 14:30:32 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ struct ServerBlock
 	};
 
 	std::vector<Host>					listens;
+	std::vector<Location>				locations;
 	std::string							serverName;
 	std::string							root;
 	std::vector<std::string> 			indexes;
@@ -88,7 +89,7 @@ private:
 	std::string _parseIndex(parser::config::ScannerConfig & scanner);
 	void _parseServerName(parser::config::ScannerConfig & scanner);
 	void _parseErrorPage(parser::config::ScannerConfig & scanner);
-	void _parseLocation(parser::config::ScannerConfig & scanner);
+	ServerBlock::Location _parseLocation(parser::config::ScannerConfig & scanner);
 	
 	ServerBlock::Host _parseListenValue(const parser::config::Token& host);
 	ServerBlock::Host _parseHost(const parser::config::Token& host);

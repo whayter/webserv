@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 14:08:49 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 14:31:35 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 				else if (t.value == "error_page")
 					_parseErrorPage(scanner);
 				else if (t.value == "location")
-					_parseLocation(scanner);
+					result.locations.push_back(_parseLocation(scanner));
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in context 'server'");
@@ -176,7 +176,6 @@ std::string ServerConfig::_parseRoot(parser::config::ScannerConfig & scanner)
 
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
 		_throw_SyntaxError(t, "Bad token in root context");
-	
 	_skipSemiColonNewLine(scanner);
 	return t.value;
 }
@@ -217,7 +216,7 @@ void ServerConfig::_parseErrorPage(parser::config::ScannerConfig & scanner)
 	
 }
 
-void ServerConfig::_parseLocation(parser::config::ScannerConfig & scanner)
+ServerBlock::Location ServerConfig::_parseLocation(parser::config::ScannerConfig & scanner)
 {
 	pr::Token	t;
 	ServerBlock::Location result;
@@ -251,6 +250,8 @@ void ServerConfig::_parseLocation(parser::config::ScannerConfig & scanner)
 					scanner.getToken();
 					_skipSemiColonNewLine(scanner);
 				}
+				else if (t.value == "root")
+					result.root = _parseRoot(scanner);
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in location context");
@@ -260,7 +261,7 @@ void ServerConfig::_parseLocation(parser::config::ScannerConfig & scanner)
 					_throw_SyntaxError(t, "Unexpected token: " + pr::tokenToString(t));
 		}
 	}
-
+	return result;
 }
 
 
@@ -301,7 +302,7 @@ ServerBlock::Host ServerConfig::_parseListenValue(const pr::Token& host)
 ServerBlock::Host ServerConfig::_parseHost(const pr::Token& host)
 {
 	ServerBlock::Host result;
-	(void)result;
+	(void)host;
 
 	return result;
 }
