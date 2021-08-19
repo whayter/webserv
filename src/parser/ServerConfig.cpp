@@ -223,7 +223,7 @@ void ServerConfig::_parseLocation(parser::config::ScannerConfig & scanner)
 	
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
 		_throw_SyntaxError(t, "Location directive: invalid uri");
-	result.name = t.value;
+	result.uri = t.value;
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kLeftBrace)
 		_throw_SyntaxError(t, "Location directive: No scope defined. Add braces...");
 
@@ -274,12 +274,7 @@ ServerBlock::Host ServerConfig::_parseHost(const pr::Token& host)
     while(it != end && *it != ':')
         tmp += *it++;
     
-	if (it == end && !isInteger(tmp))
-		_throw_SyntaxError(host, "No port defined in listen directive.");
-
-    else if (!isInteger(tmp))
-		result.host = tmp;
-    if (*it == ':')
+    if (it != end && *it == ':')
     {
         it++;
         while (it != end && isdigit(*it))
@@ -288,6 +283,15 @@ ServerBlock::Host ServerConfig::_parseHost(const pr::Token& host)
             it++;
         }
     }
+	else if (!isInteger(tmp))
+		_throw_SyntaxError(host, "No port defined in listen directive.");
+	else
+	{
+
+	}
+    else if (!isInteger(tmp))
+		result.host = tmp;
+
     lowerStringInPlace(result.host);
 	result.port = port;
 	return result;

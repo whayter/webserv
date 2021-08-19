@@ -45,7 +45,7 @@ struct ServerBlock
 	};
 	struct Location
 	{
-		std::string						name;
+		std::string						uri;
 		bool							autoindex;
 		Host							fastCgiPass;
 		size_t								client_max_body_size;
