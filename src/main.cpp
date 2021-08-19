@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/30 14:07:41 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/19 17:00:25 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/19 18:02:06 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,12 @@
 
 #include <vector>
 
-void getConfigFile(char* path)
+void parseArgs(int ac, char **av)
 {
+	std::string path = "config/webserv.conf";
+
+	if (ac == 2)
+		path = av[1];
 	try
 	{
 		ServerConfig::getInstance(path);
@@ -24,17 +28,13 @@ void getConfigFile(char* path)
 	catch(const std::exception& e)
 	{
 		std::cerr << e.what();
+		exit(1);
 	}
 }
 
 int main(int ac, char** av)
 {
-	if (ac < 2)
-		getConfigFile("config/webserv.conf");
-	else if (ac == 2)
-		getConfigFile(av[1]);
-	else
-		return -1;
+	parseArgs(ac, av);
 	ServerConfig& config = ServerConfig::getInstance();
 	std::vector<uint32_t> serverPorts = config.getPorts();
 	return 0;
