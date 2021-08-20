@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/20 16:54:18 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/20 17:35:11 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,15 @@
 class Host
 {
 public:
-	inline std::string	gethostname() const	{ return _hostname; }
+	Host() :  _port(0) {} 
+	Host(std::string hostname, uint32_t port) : _hostname(hostname), _port(port) {} 
+	Host(uint32_t port) : _port(port) {} 
+	Host(std::string hostname) : _hostname(hostname), _port(0) {} 
+
+	inline std::string	getHostname() const	{ return _hostname; }
 	inline uint32_t		getPort() const		{ return _port; }
 
-	void sethostname(std::string hostname)	{ _hostname = hostname; }
+	void setHostname(std::string hostname)	{ _hostname = hostname; }
 	void setPort(uint32_t port) 			{ _port = port; }
 
 private:
@@ -54,9 +59,9 @@ class Location
 {
 public:
 	inline std::string	getUri() const				{ return _uri; }
-	inline bool		getAutoIndex() const			{ return _autoindex; }
-	inline Host		getFastCgiPass() const			{ return _fastCgiPass; }
-	inline size_t	getClientMaxBodySize() const	{ return _clientMaxBodySize; }
+	inline bool			getAutoIndex() const		{ return _autoindex; }
+	inline Host			getFastCgiPass() const		{ return _fastCgiPass; }
+	inline size_t		getClientMaxBodySize() const{ return _clientMaxBodySize; }
 	inline std::string	getRoot() const				{ return _root; }
 	inline std::string	getIndex() const			{ return _index; }
 
@@ -85,10 +90,22 @@ public:
 	inline std::string	getRoot() const				{ return _root; }
 	inline std::string	getServerName() const			{ return _serverName; }
 
-	// return listen from given server (usefull for testing purpose)
-	inline const Host&			getListen(uint32_t index) const	{ return _listens[index];}
-	inline std::vector<Host>&	getListens() 			{ return _listens;}
+	// return listen from given index (usefull for testing purpose)
+	inline const Host&				getListen(uint32_t index) const	{ return _listens[index];}
+	
+	// return the vector of listens (usefull for testing purpose)
+	inline std::vector<Host>&		getListens() 			{ return _listens;}
+	// return the vector of locations (usefull for testing purpose)
+	inline std::vector<Location>&	getLocations() 			{ return _locations;}
 
+	// return the map of errors (usefull for testing purpose)
+	inline std::map<u_short, std::string>&	getErrors() 	{ return _errors;}
+
+	void	addListen(Host listen) {_listens.push_back(listen);}
+	void	addLocation(Location location) {_locations.push_back(location);}
+	void	addError(u_short code, const std::string& path) {_errors[code] = path;}
+	void	addErrors(const std::map<u_short, std::string>& errors) { _errors.insert(errors.begin(), errors.end());}
+	
 	void 	setAutoIndex(bool autoindex)			{ _autoindex = autoindex;}
 	void 	setIndex(std::string index)				{ _index = index;}
 	void 	setRoot(std::string root)				{ _root = root;}
@@ -96,12 +113,12 @@ public:
 
 
 
-	std::vector<Location>				locations;
-	std::map<u_short, std::string> 		errors;
 
 private:
 	
 	std::vector<Host>					_listens;
+	std::vector<Location>				_locations;
+	std::map<u_short, std::string> 		_errors;
 	std::string							_index;
 	bool								_autoindex;
 	std::string							_serverName;

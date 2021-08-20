@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/20 16:54:09 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/20 17:33:55 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ ServerBlock& ServerConfig::findServer(uint32_t port)
 	while (itServer != _servers.end())
 	{
 		ServerBlock& serv = *itServer;
-		std::vector<Host>::iterator itListen = serv._listens.begin();
-		while (itListen != serv._listens.end())
+		std::vector<Host>::iterator itListen = serv.getListens().begin();
+		while (itListen != serv.getListens().end())
 		{
 			Host& listen = *itListen;
 			if (listen.getPort() == port)
@@ -77,7 +77,7 @@ std::vector<uint32_t> ServerConfig::getPorts()
 	for (itServer = _servers.begin(); itServer != _servers.end(); itServer++)
 	{
 		std::vector<Host>::iterator itListen;
-		for (itListen = itServer->_getListens().begin(); itListen != itServer->getListens().end(); itListen++)
+		for (itListen = itServer->getListens().begin(); itListen != itServer->getListens().end(); itListen++)
 			ports.push_back(itListen->getPort());
 	}
 	return ports;
@@ -152,7 +152,7 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 				continue;
 			case pr::ScopedEnum::kString :
 				if (t.value == "listen")
-					result.listens.push_back(_parseListen(scanner));
+					result.addListen(_parseListen(scanner));
 				else if (t.value == "root")
 					result.setRoot(_parseRoot(scanner));
 				else if (t.value == "index")
@@ -160,12 +160,9 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 				else if (t.value == "server_name")
 					_parseServerName(scanner);
 				else if (t.value == "error_page")
-				{
-					std::map<u_short, std::string> m = _parseErrorPage(scanner);
-					result.errors.insert(m.begin(), m.end());
-				}
+					result.addErrors(_parseErrorPage(scanner));
 				else if (t.value == "location")
-					result.locations.push_back(_parseLocation(scanner));
+					result.addLocation(_parseLocation(scanner));
 				else if (t.value == "autoindex")
 					result.setAutoIndex(_parseAutoindex(scanner));
 				else
@@ -338,8 +335,8 @@ Host ServerConfig::_parseListenValue(const pr::Token& host)
 	}
 	else
 	{
-		result.host = tmp;
-	    lowerStringInPlace(result.host);
+	    lowerStringInPlace(tmp);
+		result.setHostname(tmp);
 		it++;
 	}
 	while (it != end)
@@ -349,17 +346,16 @@ Host ServerConfig::_parseListenValue(const pr::Token& host)
 		port = port * 10 + *it - '0';
 		it++;
 	}
-	result.port = port;
+	result.setPort(port);
 	return result;
 }
 
 Host ServerConfig::_parseHost(parser::config::ScannerConfig & scanner)
 {
-	Host	result;
-	std::string			tmp;
-	pr::Token			t;
-
-	result.port = 0;
+	std::string	host;
+	pr::Token	t;
+	uint32_t 	port = 0;
+	
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
 		_throw_SyntaxError(t, "Invalid value host.");
 
@@ -367,20 +363,20 @@ Host ServerConfig::_parseHost(parser::config::ScannerConfig & scanner)
     std::string::const_iterator end = t.value.end();
 
     while(it != end && *it != ':')
-        result.host += *it++;
+        host += *it++;
     
     if (it != end && *it == ':')
     {
         it++;
         while (it != end && isdigit(*it))
         {
-            result.port = result.port * 10 + *it - '0';
+            port = port * 10 + *it - '0';
             it++;
         }
     }
-    lowerStringInPlace(result.host);
+    lowerStringInPlace(host);
 	_skipSemiColonNewLine(scanner);
-	return result;
+	return Host(host, port);
 }
 
 std::pair<std::string, std::string>	ServerConfig::_parseFastCgiParam(parser::config::ScannerConfig & scanner)
