@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 18:19:15 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 20:10:16 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ struct ServerBlock
 		std::map<std::string, std::string> 	fatsCgiParam;
 		std::string							root;
 		std::string							index;
+
 	};
 
 	std::vector<Host>					listens;
@@ -59,6 +60,7 @@ struct ServerBlock
 	std::string							serverName;
 	std::string							root;
 	std::string							index;
+	bool								autoindex;
 	std::map<u_short, std::string> 		errors;
 };
 
@@ -91,12 +93,14 @@ private:
 	ServerBlock::Host				_parseListen(parser::config::ScannerConfig & scanner);
 	std::string 					_parseRoot(parser::config::ScannerConfig & scanner);
 	std::string 					_parseIndex(parser::config::ScannerConfig & scanner);
+	bool							_parseAutoindex(parser::config::ScannerConfig & scanner);
 	std::string 					_parseServerName(parser::config::ScannerConfig & scanner);
 	std::map<u_short, std::string> _parseErrorPage(parser::config::ScannerConfig & scanner);
 	ServerBlock::Location			_parseLocation(parser::config::ScannerConfig & scanner);
-
+	ServerBlock::Host 				_parseHost(parser::config::ScannerConfig & scanner);
+	std::pair<std::string, std::string>	_parseFastCgiParam(parser::config::ScannerConfig & scanner);
+	
 	ServerBlock::Host _parseListenValue(const parser::config::Token& host);
-	ServerBlock::Host _parseHost(const parser::config::Token& host);
 
 	void _skipSemiColonNewLine(parser::config::ScannerConfig & scanner);
 

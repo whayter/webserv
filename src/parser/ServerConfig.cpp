@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 18:14:21 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/19 20:14:09 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,7 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 	ServerBlock result;
 	pr::Token t;
 
+	result.autoindex = false;
 	if ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kLeftBrace)
 		_throw_SyntaxError(t, "Missing open brace at server block.");
 	while ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kEndOfInput
@@ -166,6 +167,8 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 				}
 				else if (t.value == "location")
 					result.locations.push_back(_parseLocation(scanner));
+				else if (t.value == "autoindex")
+					result.autoindex = _parseAutoindex(scanner);
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in context 'server'");
@@ -260,6 +263,7 @@ ServerBlock::Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
 		_throw_SyntaxError(t, "Location directive: invalid uri");
 	result.uri = t.value;
+	result.autoindex = false;
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kLeftBrace)
 		_throw_SyntaxError(t, "Location directive: No scope defined. Add braces...");
 
@@ -275,10 +279,8 @@ ServerBlock::Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 					scanner.getToken();
 					_skipSemiColonNewLine(scanner);
 				}
-				else if (t.value == "fastcgi_pass")	{
-					scanner.getToken();
-					_skipSemiColonNewLine(scanner);
-				}
+				else if (t.value == "fastcgi_pass")
+					result.fastCgiPass = _parseHost(scanner);
 				else if (t.value == "fastcgi_param")
 				{
 					scanner.getToken();
@@ -289,6 +291,8 @@ ServerBlock::Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 					result.root = _parseRoot(scanner);
 				else if (t.value == "index")
 					result.index = _parseIndex(scanner);
+				else if (t.value == "autoindex")
+					result.autoindex = _parseAutoindex(scanner);
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in location context");
@@ -299,6 +303,21 @@ ServerBlock::Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 		}
 	}
 	return result;
+}
+
+bool	ServerConfig::_parseAutoindex(parser::config::ScannerConfig & scanner)
+{
+	pr::Token t;
+
+	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
+		_throw_SyntaxError(t, "Bad token in context \"autoindex\".");
+	_skipSemiColonNewLine(scanner);
+	if (t.value == "on")
+		return true;
+	if (t.value == "off")
+		return false;
+	_throw_SyntaxError(t, "Invalid value in \"autoindex\", must be either \"on\" or \"off\".");
+	return false;
 }
 
 
@@ -322,6 +341,7 @@ ServerBlock::Host ServerConfig::_parseListenValue(const pr::Token& host)
 	else
 	{
 		result.host = tmp;
+	    lowerStringInPlace(result.host);
 		it++;
 	}
 	while (it != end)
@@ -331,15 +351,52 @@ ServerBlock::Host ServerConfig::_parseListenValue(const pr::Token& host)
 		port = port * 10 + *it - '0';
 		it++;
 	}
-    lowerStringInPlace(result.host);
 	result.port = port;
 	return result;
 }
 
-ServerBlock::Host ServerConfig::_parseHost(const pr::Token& host)
+ServerBlock::Host ServerConfig::_parseHost(parser::config::ScannerConfig & scanner)
 {
-	ServerBlock::Host result;
-	(void)host;
+	ServerBlock::Host	result;
+	std::string			tmp;
+	pr::Token			t;
 
+	result.port = 0;
+	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
+		_throw_SyntaxError(t, "Invalid value host.");
+
+    std::string::const_iterator it = t.value.begin();
+    std::string::const_iterator end = t.value.end();
+
+    while(it != end && *it != ':')
+        result.host += *it++;
+    
+    if (it != end && *it == ':')
+    {
+        it++;
+        while (it != end && isdigit(*it))
+        {
+            result.port = result.port * 10 + *it - '0';
+            it++;
+        }
+    }
+    lowerStringInPlace(result.host);
+	_skipSemiColonNewLine(scanner);
+	return result;
+}
+
+std::pair<std::string, std::string>	ServerConfig::_parseFastCgiParam(parser::config::ScannerConfig & scanner)
+{
+	pr::Token tName;
+	pr::Token tValue;
+	std::pair<std::string, std::string> result;
+
+	if ((tName = scanner.getToken()).kind != pr::ScopedEnum::kString)
+		_throw_SyntaxError(tName, "Bad fastcgi parameter name");
+	if ((tValue = scanner.getToken()).kind != pr::ScopedEnum::kString)
+		_throw_SyntaxError(tValue, "Bad fastcgi parameter value");
+	result.first = tName.value;
+	result.second = tValue.value;
+	_skipSemiColonNewLine(scanner);
 	return result;
 }

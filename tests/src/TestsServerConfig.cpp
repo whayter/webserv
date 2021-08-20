@@ -34,6 +34,14 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 	CHECK( &config.findServer(82) == &config.getServer(1) );
 	CHECK( &config.findServer(83) == &config.getServer(1) );
 
+	// location directive
+	CHECK( config.getServer(0).locations[0].uri == "/" );
+	CHECK( config.getServer(0).locations[1].uri == "/media" );
+	CHECK( config.getServer(0).locations[2].uri == ".php$" );
+
+	CHECK( config.getServer(1).locations[0].uri == "/" );
+	CHECK( config.getServer(1).locations[1].uri == "\\.php$" );
+
 	//root directive
 	CHECK( config.getServer(0).root == "/var/www/app" );
 	CHECK( config.getServer(0).locations[0].root.empty() );
@@ -61,5 +69,21 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 	CHECK( config.getServer(1).errors.size() == 1);
 	CHECK( config.getServer(1).errors[497] == "https://$host:443$request_uri");
 
-	//
+	// autoindex directive
+	CHECK( config.getServer(0).autoindex == false );
+	CHECK( config.getServer(0).locations[0].autoindex == true);
+	CHECK( config.getServer(0).locations[1].autoindex == false);
+	CHECK( config.getServer(0).locations[2].autoindex == true);
+
+	CHECK( config.getServer(1).autoindex == true );
+	CHECK( config.getServer(1).locations[0].autoindex == false);
+	CHECK( config.getServer(1).locations[1].autoindex == false);
+
+	// fastcgi_pass directive
+	CHECK( config.getServer(0).locations[2].fastCgiPass.host == "wordpress");
+	CHECK( config.getServer(0).locations[2].fastCgiPass.port == 9000);
+
+	CHECK( config.getServer(1).locations[1].fastCgiPass.host == "rails");
+	CHECK( config.getServer(1).locations[1].fastCgiPass.port == 3000);
+
 }
