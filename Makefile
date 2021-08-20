@@ -64,7 +64,7 @@ SRC+= utility.cpp
 SRC+= Scanner.cpp ScannerHttpRequest.cpp ScannerConfig.cpp ServerConfig.cpp
 SRC+= AHttpMessage.cpp HttpRequest.cpp HttpResponse.cpp HttpStatus.cpp
 SRC+= Uri.cpp
-SRC+= Socket.cpp Server.cpp
+SRC+= Socket.cpp ServerHandler.cpp
 
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))
@@ -73,7 +73,7 @@ vpath %.cpp $(SRCS_DIR)
 LDFLAGS = $(foreach lib, $(LIB_DIR),-L$(lib))  $(foreach lib, $(LIB),-l$(lib))
 
 CXX = clang++
-CXXFLAGS  = -Wall -Wextra -Werror -std=c++98 #-g #-fsanitize=address  -fsanitize=undefined -fstack-protector  
+CXXFLAGS  = -Wall -Wextra -Werror -std=c++98 -g #-fsanitize=address  -fsanitize=undefined -fstack-protector  
 IFLAGS  = $(foreach inc, $(INCS_DIR),-I$(inc))
 
 #OS specific
