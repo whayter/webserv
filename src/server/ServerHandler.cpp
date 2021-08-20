@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 19:22:37 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/20 16:41:50 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/20 19:49:41 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,9 +96,11 @@ void server::ServerHandler::stop(int status)
 	if (status == -1)
 	{
 		std::cout << "An error has occurred. " << std::endl;
-		std::cout << "The server is shutting down..." << std::endl;
+		std::cout << "Shutting down..." << std::endl;
 		exit(EXIT_FAILURE);
 	}
+	else
+		std::cout << "Shutting down..." << std::endl;
 }
 
 /* --- Private functions ---------------------------------------------------- */

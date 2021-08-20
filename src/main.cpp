@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/30 14:07:41 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/20 19:39:57 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/20 19:50:15 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,8 @@ void textLine(int width, char ornament, std::string text)
 
 void prompt()
 {
-	int		width = 80;
-	char	ornament = '*';
+	int		width = 60;
+	char	ornament = '+';
 
 	std::cout << std::endl;
 	solidLine(width, ornament);
@@ -79,13 +79,20 @@ void prompt()
 
 int main(int ac, char** av)
 {
+	std::string input;
 	parseArgs(ac, av);
 	ServerConfig& config = ServerConfig::getInstance();
 	server::ServerHandler sh(config.getPorts());
 	sh.start();
 	prompt();
 	while (true)
+	{
 		sh.update();
-	sh.stop(0);
+		std::cin >> input;
+		if (input == "quit")
+			break;
+		else
+			std::cin.clear();
+	}
 	return 0;
 }
