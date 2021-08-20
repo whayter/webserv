@@ -76,7 +76,7 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 	CHECK( config.getServer(0).getLocations()[2].getAutoindex() == true);
 
 	CHECK( config.getServer(1).getAutoindex() == true );
-	CHECK( config.getServer(1).getLocations()[0].getAutoindex() == false);
+	CHECK( config.getServer(1).getLocations()[0].getAutoindex() == true);
 	CHECK( config.getServer(1).getLocations()[1].getAutoindex() == false);
 
 	// fastcgi_pass directive
