@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/20 18:05:54 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/20 19:34:05 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,13 +75,21 @@ public:
 	void 	setRoot(std::string root)			{_root = root;}
 	void 	setIndex(std::string index)			{_index = index;}
 
+	void	addFastCgiParam(const std::string& name, const std::string& value) { _fastCgiParams[name] = value;}
+	void	addFastCgiParam(const std::pair<std::string,std::string> pair) 	{ _fastCgiParams[pair.first] = pair.second;}
+
+	/// return the map of fastcgiParam (usefull for testing purpose)
+	inline std::map<std::string, std::string>&	getFastCgiParams() 	{ return _fastCgiParams;}
+	inline std::string	getFastCgiParam(std::string param) 			{ return _fastCgiParams[param];}
+
+
 private:
 	std::string							_uri;
 	bool								_autoindex;
 	bool								_hasAutoindex;
 	Host								_fastCgiPass;
 	size_t								_clientMaxBodySize;
-	std::map<std::string, std::string> 	_fatsCgiParam;
+	std::map<std::string, std::string> 	_fastCgiParams;
 	std::string							_root;
 	std::string							_index;
 }; /* class Location */

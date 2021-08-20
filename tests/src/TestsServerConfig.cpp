@@ -86,4 +86,15 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 	CHECK( config.getServer(1).getLocations()[1].getFastCgiPass().getHostname() == "rails");
 	CHECK( config.getServer(1).getLocations()[1].getFastCgiPass().getPort() == 3000);
 
+	// fastcgi_param directive
+	CHECK( config.getServer(0).getLocations()[0].getFastCgiParams().size() == 0);
+	CHECK( config.getServer(0).getLocations()[1].getFastCgiParams().size() == 0);
+	CHECK( config.getServer(0).getLocations()[2].getFastCgiParams().size() == 1);
+	CHECK( config.getServer(0).getLocations()[2].getFastCgiParam("SCRIPT_FILENAME") == "$document_root$fastcgi_script_name");
+
+	CHECK( config.getServer(1).getLocations()[0].getFastCgiParams().size() == 0);
+	CHECK( config.getServer(1).getLocations()[1].getFastCgiParams().size() == 2);
+	CHECK( config.getServer(1).getLocations()[1].getFastCgiParam("SCRIPT_FILENAME") == "$document_root$fastcgi_script_name");
+	CHECK( config.getServer(1).getLocations()[1].getFastCgiParam("SERVER_NAME") == "$server_name");
+
 }
