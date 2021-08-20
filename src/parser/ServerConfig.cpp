@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/20 18:09:13 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/20 19:30:29 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -291,11 +291,7 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 				else if (t.value == "fastcgi_pass")
 					result.setFastCgiPass(_parseHost(scanner));
 				else if (t.value == "fastcgi_param")
-				{
-					scanner.getToken();
-					scanner.getToken();
-					_skipSemiColonNewLine(scanner);
-				}
+					result.addFastCgiParam(_parseFastCgiParam(scanner));
 				else if (t.value == "root")
 					result.setRoot(_parseRoot(scanner));
 				else if (t.value == "index")
