@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/20 17:45:32 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/20 18:09:13 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ ServerConfig::ServerConfig(const std::string& filepath)
 	if (!file.is_open())
 		throw std::invalid_argument("Can't open file");
 	_parse(file);
+	_postParser();
 	file.close();
 }
 
@@ -110,6 +111,19 @@ void ServerConfig::_skipSemiColonNewLine(parser::config::ScannerConfig & scanner
 		_throw_SyntaxError(t, "Missing new line after semi-colon.");
 }
 
+void ServerConfig::_postParser(){
+	std::vector<ServerBlock>::iterator itServer;
+
+	for (itServer = _servers.begin(); itServer != _servers.end(); itServer++)
+	{
+		if (itServer->hasAutoindex() == false)
+			continue;
+		std::vector<Location>::iterator itLocation;
+		for (itLocation = itServer->getLocations().begin(); itLocation != itServer->getLocations().end(); itLocation++)
+			if (itLocation->hasAutoindex() == false)
+				itLocation->setAutoindex(itServer->getAutoindex());
+	}
+}
 
 void ServerConfig::_parse(std::istream & in)
 {

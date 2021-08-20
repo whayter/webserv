@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/20 17:58:33 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/20 18:05:54 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ public:
 
 	inline std::string	getUri() const				{ return _uri; }
 	inline bool			getAutoindex() const		{ return _autoindex; }
+	inline bool			hasAutoindex() const		{ return _hasAutoindex; }
 	inline Host			getFastCgiPass() const		{ return _fastCgiPass; }
 	inline size_t		getClientMaxBodySize() const{ return _clientMaxBodySize; }
 	inline std::string	getRoot() const				{ return _root; }
@@ -92,8 +93,9 @@ public:
 
 	inline std::string	getIndex() const			{ return _index; }
 	inline bool			getAutoindex() const		{ return _autoindex; }
+	inline bool			hasAutoindex() const		{ return _hasAutoindex; }
 	inline std::string	getRoot() const				{ return _root; }
-	inline std::string	getServerName() const			{ return _serverName; }
+	inline std::string	getServerName() const		{ return _serverName; }
 
 	/// return listen from given index (usefull for testing purpose)
 	inline const Host&				getListen(uint32_t index) const	{ return _listens[index];}
@@ -169,6 +171,8 @@ private:
 	std::pair<std::string, std::string>	_parseFastCgiParam(parser::config::ScannerConfig & scanner);
 	
 	Host _parseListenValue(const parser::config::Token& host);
+
+	void _postParser();
 
 	void _skipSemiColonNewLine(parser::config::ScannerConfig & scanner);
 	void _throw_SyntaxError(parser::config::Token t, const std::string &error_str);
