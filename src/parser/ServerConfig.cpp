@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/20 17:33:55 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/20 17:45:32 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 				else if (t.value == "location")
 					result.addLocation(_parseLocation(scanner));
 				else if (t.value == "autoindex")
-					result.setAutoIndex(_parseAutoindex(scanner));
+					result.setAutoindex(_parseAutoindex(scanner));
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in context 'server'");
@@ -287,7 +287,7 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 				else if (t.value == "index")
 					result.setIndex(_parseIndex(scanner));
 				else if (t.value == "autoindex")
-					result.setAutoIndex(_parseAutoindex(scanner));
+					result.setAutoindex(_parseAutoindex(scanner));
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in location context");

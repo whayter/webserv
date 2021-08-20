@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/20 17:35:11 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/20 17:45:15 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,6 @@
 
 #include "Uri.hpp"
 #include "parser/config/ScannerConfig.hpp"
-
-// Singleton
-
 
 /* Syntax:	 autoindex on | off;
  * Default: autoindex off;
@@ -58,15 +55,17 @@ private:
 class Location
 {
 public:
+	Location(): _autoindex(false), _clientMaxBodySize(0) {}
+
 	inline std::string	getUri() const				{ return _uri; }
-	inline bool			getAutoIndex() const		{ return _autoindex; }
+	inline bool			getAutoindex() const		{ return _autoindex; }
 	inline Host			getFastCgiPass() const		{ return _fastCgiPass; }
 	inline size_t		getClientMaxBodySize() const{ return _clientMaxBodySize; }
 	inline std::string	getRoot() const				{ return _root; }
 	inline std::string	getIndex() const			{ return _index; }
 
 	void 	setUri(std::string uri)				{ _uri = uri; }
-	void 	setAutoIndex(bool autoindex)		{_autoindex = autoindex;}
+	void 	setAutoindex(bool autoindex)		{_autoindex = autoindex;}
 	void 	setFastCgiPass(Host host)			{ _fastCgiPass = host;}
 	void 	setClientMaxBodySize(size_t size)	{_clientMaxBodySize = size;}
 	void 	setRoot(std::string root)			{_root = root;}
@@ -85,20 +84,20 @@ private:
 struct ServerBlock
 {
 public:
+	ServerBlock(): _autoindex(false) {}
+
 	inline std::string	getIndex() const			{ return _index; }
-	inline bool			getAutoIndex() const		{ return _autoindex; }
+	inline bool			getAutoindex() const		{ return _autoindex; }
 	inline std::string	getRoot() const				{ return _root; }
 	inline std::string	getServerName() const			{ return _serverName; }
 
-	// return listen from given index (usefull for testing purpose)
+	/// return listen from given index (usefull for testing purpose)
 	inline const Host&				getListen(uint32_t index) const	{ return _listens[index];}
-	
-	// return the vector of listens (usefull for testing purpose)
+	/// return the vector of listens (usefull for testing purpose)
 	inline std::vector<Host>&		getListens() 			{ return _listens;}
-	// return the vector of locations (usefull for testing purpose)
+	/// return the vector of locations (usefull for testing purpose)
 	inline std::vector<Location>&	getLocations() 			{ return _locations;}
-
-	// return the map of errors (usefull for testing purpose)
+	/// return the map of errors (usefull for testing purpose)
 	inline std::map<u_short, std::string>&	getErrors() 	{ return _errors;}
 
 	void	addListen(Host listen) {_listens.push_back(listen);}
@@ -106,13 +105,10 @@ public:
 	void	addError(u_short code, const std::string& path) {_errors[code] = path;}
 	void	addErrors(const std::map<u_short, std::string>& errors) { _errors.insert(errors.begin(), errors.end());}
 	
-	void 	setAutoIndex(bool autoindex)			{ _autoindex = autoindex;}
+	void 	setAutoindex(bool autoindex)			{ _autoindex = autoindex;}
 	void 	setIndex(std::string index)				{ _index = index;}
 	void 	setRoot(std::string root)				{ _root = root;}
 	void 	setServerName(std::string serverName)	{ _serverName = serverName;}
-
-
-
 
 private:
 	
@@ -125,22 +121,25 @@ private:
 	std::string							_root;
 }; /* class ServerBlock */
 
+/// @brief Singleton Class
 class ServerConfig
 {
 public:
 
+	/// Instanciate the singleton instance at first call with given file
 	static ServerConfig&	getInstance(std::string filepath);
+	/// Must instanciate the class before using this function.
 	static ServerConfig&	getInstance();
 	inline std::string		getConfigFilePath() const { return _configFilePath;}
 
-	// return the vector of servers (usefull for testing)
-	inline std::vector<ServerBlock>	getServers() const				{ return _servers;}
-	// return server from given index (usefull for testing purpose)
-	inline ServerBlock&		getServer(uint32_t index) 	{ return _servers[index];}
-	// return the server who own the given port
+	/// return the vector of servers (usefull for testing)
+	inline std::vector<ServerBlock>	getServers() const			{ return _servers;}
+	/// return server from given index (usefull for testing purpose)
+	inline ServerBlock&				getServer(uint32_t index) 	{ return _servers[index];}
+	/// return the server who own the given port
 	ServerBlock&					findServer(uint32_t port);
 
-	// return all ports defined in listen directives.
+	/// return all ports defined in listen directives.
 	std::vector<uint32_t>			getPorts();
 
 private:
