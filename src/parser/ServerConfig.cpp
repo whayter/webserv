@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/20 19:30:29 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/20 19:50:35 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -301,7 +301,6 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in location context");
-				
 				break;
 			default:
 				_throw_SyntaxError(t, "Unexpected token: " + pr::tokenToString(t));
