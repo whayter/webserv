@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/20 17:53:03 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/20 17:58:33 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ private:
 class Location
 {
 public:
-	Location(): _autoindex(false), _clientMaxBodySize(0) {}
+	Location(): _autoindex(false), _hasAutoindex(false), _clientMaxBodySize(0) {}
 
 	inline std::string	getUri() const				{ return _uri; }
 	inline bool			getAutoindex() const		{ return _autoindex; }
@@ -65,7 +65,10 @@ public:
 	inline std::string	getIndex() const			{ return _index; }
 
 	void 	setUri(std::string uri)				{ _uri = uri; }
-	void 	setAutoindex(bool autoindex)		{_autoindex = autoindex;}
+	void 	setAutoindex(bool autoindex) {
+		 _autoindex = autoindex;
+		 _hasAutoindex = true;
+	}
 	void 	setFastCgiPass(Host host)			{ _fastCgiPass = host;}
 	void 	setClientMaxBodySize(size_t size)	{_clientMaxBodySize = size;}
 	void 	setRoot(std::string root)			{_root = root;}
@@ -74,6 +77,7 @@ public:
 private:
 	std::string							_uri;
 	bool								_autoindex;
+	bool								_hasAutoindex;
 	Host								_fastCgiPass;
 	size_t								_clientMaxBodySize;
 	std::map<std::string, std::string> 	_fatsCgiParam;
@@ -84,7 +88,7 @@ private:
 struct ServerBlock
 {
 public:
-	ServerBlock(): _autoindex(false) {}
+	ServerBlock(): _autoindex(false), _hasAutoindex(false) {}
 
 	inline std::string	getIndex() const			{ return _index; }
 	inline bool			getAutoindex() const		{ return _autoindex; }
@@ -105,7 +109,10 @@ public:
 	void	addError(u_short code, const std::string& path) {_errors[code] = path;}
 	void	addErrors(const std::map<u_short, std::string>& errors) { _errors.insert(errors.begin(), errors.end());}
 	
-	void 	setAutoindex(bool autoindex)			{ _autoindex = autoindex;}
+	void 	setAutoindex(bool autoindex) {
+		 _autoindex = autoindex;
+		 _hasAutoindex = true;
+	}
 	void 	setIndex(std::string index)				{ _index = index;}
 	void 	setRoot(std::string root)				{ _root = root;}
 	void 	setServerName(std::string serverName)	{ _serverName = serverName;}
@@ -117,6 +124,7 @@ private:
 	std::map<u_short, std::string> 		_errors;
 	std::string							_index;
 	bool								_autoindex;
+	bool								_hasAutoindex;
 	std::string							_serverName;
 	std::string							_root;
 }; /* class ServerBlock */
