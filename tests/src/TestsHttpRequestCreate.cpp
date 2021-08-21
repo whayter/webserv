@@ -151,12 +151,15 @@ TEST_CASE( "HttpRequest::Create", "[class][ParserHttpRequest][get][two]" )
 
 
 
-TEST_CASE( "HttpRequest::read1", "[class][ParserHttpRequest][get][read]" )
+TEST_CASE( "HttpRequest::read1", "[class][ParserHttpRequest][get]" )
 {
 	std::ifstream file;
 
 	file.open("./http_requests/req1", std::ifstream::in);
-	HttpRequest req = HttpRequest::create(file);
+	HttpRequest req;
+	// std::string str((std::istreambuf_iterator<char>(file)),
+    //              std::istreambuf_iterator<char>());
+	req.read(file);
 
 	CHECK( req.getMethod() == "GET" );
 	CHECK( req.getUri().getPathEtc() == "/getip");
@@ -176,13 +179,14 @@ TEST_CASE( "HttpRequest::read1", "[class][ParserHttpRequest][get][read]" )
 
 }
 
-/// simple post
-// TEST_CASE( "HttpRequest::Create2", "[class][ParserHttpRequest][post]" )
+// // simple post
+// TEST_CASE( "HttpRequest::read2", "[class][ParserHttpRequest][post]" )
 // {
 // 	std::ifstream file;
 
 // 	file.open("./http_requests/req2", std::ifstream::in);
-// 	HttpRequest req = HttpRequest::create(file);
+// 	HttpRequest req;
+// 	req.read(file);
 
 // 	CHECK( req.getMethod() == "POST" );
 // 	CHECK( req.getUri().getPathEtc() == "/getip");
@@ -204,13 +208,14 @@ TEST_CASE( "HttpRequest::read1", "[class][ParserHttpRequest][get][read]" )
 // }
 
 // // two get in a row with payload
-// TEST_CASE( "HttpRequest::Create3", "[class][ParserHttpRequest][get][two]" )
+// TEST_CASE( "HttpRequest::read3", "[class][ParserHttpRequest][get][two]" )
 // {
 // 	std::ifstream file;
 
 // 	file.open("./http_requests/two_requests", std::ifstream::in);
-// 	HttpRequest req = HttpRequest::create(file);
-
+// 	HttpRequest req;
+// 	req.read(file);
+	
 // 	CHECK( req.getMethod() == "GET" );
 // 	CHECK( req.getUri().getPathEtc() == "/getip");
 
@@ -252,7 +257,7 @@ TEST_CASE( "HttpRequest::read1", "[class][ParserHttpRequest][get][read]" )
 // }
 
 // /// two get in a row without payload
-// TEST_CASE( "HttpRequest::Create", "[class][ParserHttpRequest][get][two]" )
+// TEST_CASE( "HttpRequest::read", "[class][ParserHttpRequest][get][two]" )
 // {
 // 	std::ifstream file;
 
