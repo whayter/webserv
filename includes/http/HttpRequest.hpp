@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 11:04:34 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/08 14:46:35 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 17:50:03 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,10 @@ class HttpRequest: public AHttpMessage
 
 		std::string 	toString();
 
-		// void			read(std::istream is);
+		void			read(std::istream & inputStream);
 		void			write(std::ostream os);
+		void			clear(void);
+		bool			isComplete(void) {return true;} // en dur pour le moment
 
 		static HttpRequest create(std::istream & inputStream);
 
@@ -55,6 +57,9 @@ class HttpRequest: public AHttpMessage
 		// map_type		_queryParameters;
 		std::string		_method, _version; // _queryString;
 		Uri				_uri;
+
+		bool	_isHeaderParsed;
+		bool	_isContentParsed;
 };
 
 #endif
