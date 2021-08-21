@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 19:22:37 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/20 19:49:41 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/21 22:13:13 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,27 @@
 
 #include <cerrno>
 #include <vector>
+
+#include <ctime>
+#include <iomanip>
+
+
+void output(int index, std::string message)
+{
+	time_t now = time(0);
+	tm *ltm = localtime(&now);
+	std::cout << "	[";
+	std::cout << std::setw(2) << std::setfill('0');
+	std::cout << ltm->tm_hour << ":";
+	std::cout << std::setw(2) << std::setfill('0');
+	std::cout << ltm->tm_min << ":";
+	std::cout << std::setw(2) << std::setfill('0');
+	std::cout << ltm->tm_sec << "]";
+	std::cout << "	";
+	std::cout << "[#" << index << "]";
+	std::cout << "	";
+	std::cout << message << std::endl;
+}
 
 #define BUF_SIZE 4096
 #define HELLO "HTTP/1.1 200 OK\nContent-Type: text/html;charset=UTF-8\nContent-Length: 133\n\n<style>html{background-color:black;color:white;text-align:center}</style><html><body><h1>Webserv</h1><h2>Yeah man!</h2></body></html>"
@@ -113,8 +134,7 @@ void server::ServerHandler::_connectClients(int serverSocket)
 		newFd = accept(serverSocket, NULL, NULL);
 		if (newFd == INVALID_FD)
 			break;
-		std::cout << "[" << _nfds << "]	";
-		std::cout << "Connection." << std::endl;
+		output(_nfds, "Connection.");
 		_fds[_nfds].fd = newFd;
 		_fds[_nfds].events = POLLIN;
 		_nfds++;
@@ -123,8 +143,7 @@ void server::ServerHandler::_connectClients(int serverSocket)
 
 void server::ServerHandler::_disconnectClient(int index)
 {
-	std::cout << "[" << index << "]	";
-	std::cout << "Disconnection." << std::endl;
+	output(index, "Disconnection.");
 	sckt::closeSocket(_fds[index].fd);
 	_fds[index].fd = -1;
 	_upToDateFds = false;
@@ -133,13 +152,8 @@ void server::ServerHandler::_disconnectClient(int index)
 void server::ServerHandler::_serveClient(int index)
 {
 	bool disconnect = false;
-	std::cout << "[" << index << "]	";
-	std::cout << "Getting request: ";
-	if (!_getRequest(_fds[index].fd))
-	{
-		std::cout << "failure." << std::endl;
+	if (!_getRequest(index))
 		disconnect = true;
-	}
 	else
 	{
 		if (send(_fds[index].fd, HELLO, strlen(HELLO), 0) <= 0)
@@ -149,22 +163,23 @@ void server::ServerHandler::_serveClient(int index)
 	}
 }
 
-bool server::ServerHandler::_getRequest(int fd)
+bool server::ServerHandler::_getRequest(int index)
 {
+	output(index, "Getting request.");
 	char buffer[BUF_SIZE] = {0};
-	int nbytes = recv(fd, buffer, BUF_SIZE - 1, 0);
+	int nbytes = recv(_fds[index].fd, buffer, BUF_SIZE - 1, 0);
 	if (nbytes == -1)
 		stop(-1);
 	else if (nbytes == 0)
+	{
+		output(index, "recv error.");
 		return false;
-
-	std::cout << "success (" << nbytes;
-	std::cout << " bytes received)." << std::endl;
-
-	// HttpRequest request;
-	// std::stringstream streamRequest(buffer);
-	// request = HttpRequest::create(streamRequest);
-	// std::cout << request.getUri().toString() << std::endl;
+	}
+	output(index, "Request complete.");
+	HttpRequest request;
+	std::stringstream streamRequest(buffer);
+	request = HttpRequest::create(streamRequest);
+	output(index, "Requested uri: " + request.getUri().toString());
 	return true;
 }
 
