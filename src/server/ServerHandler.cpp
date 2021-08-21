@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 19:22:37 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/21 22:13:13 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/21 22:47:32 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void output(int index, std::string message)
 {
 	time_t now = time(0);
 	tm *ltm = localtime(&now);
-	std::cout << "	[";
+	std::cout << "  [";
 	std::cout << std::setw(2) << std::setfill('0');
 	std::cout << ltm->tm_hour << ":";
 	std::cout << std::setw(2) << std::setfill('0');
@@ -137,6 +137,9 @@ void server::ServerHandler::_connectClients(int serverSocket)
 		output(_nfds, "Connection.");
 		_fds[_nfds].fd = newFd;
 		_fds[_nfds].events = POLLIN;
+
+		_requests[_nfds] = new HttpRequest();
+
 		_nfds++;
 	}
 }
@@ -146,6 +149,8 @@ void server::ServerHandler::_disconnectClient(int index)
 	output(index, "Disconnection.");
 	sckt::closeSocket(_fds[index].fd);
 	_fds[index].fd = -1;
+	delete _requests[index];
+	_requests[index] = NULL;
 	_upToDateFds = false;
 }
 
@@ -176,10 +181,9 @@ bool server::ServerHandler::_getRequest(int index)
 		return false;
 	}
 	output(index, "Request complete.");
-	HttpRequest request;
 	std::stringstream streamRequest(buffer);
-	request = HttpRequest::create(streamRequest);
-	output(index, "Requested uri: " + request.getUri().toString());
+	_requests[index]->read(streamRequest);
+	output(index, "Requested uri: " + _requests[index]->getUri().toString());
 	return true;
 }
 

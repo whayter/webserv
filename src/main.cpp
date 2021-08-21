@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/30 14:07:41 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/21 22:06:13 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/21 22:30:21 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,10 +79,16 @@ void prompt()
 
 int main(int ac, char** av)
 {
-	std::string input;
-	parseArgs(ac, av);
-	ServerConfig& config = ServerConfig::getInstance();
-	server::ServerHandler sh(config.getPorts());
+	// parseArgs(ac, av);
+	// ServerConfig& config = ServerConfig::getInstance();
+	// server::ServerHandler sh(config.getPorts());
+
+	(void)ac;
+	(void)av;
+	std::vector<uint32_t> ports;
+	ports.push_back(8080);
+	server::ServerHandler sh(ports);
+
 	sh.start();
 	prompt();
 	while (true)

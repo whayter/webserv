@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 17:50:07 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/21 19:04:22 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/21 22:39:15 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ namespace server
 			int					_nfds;
 			int					_firstClientIndex;
 			bool				_upToDateFds;
-			//HttpRequest			_requests[SOMAXCONN];
+			HttpRequest*		_requests[SOMAXCONN];
 	};
 };
 
