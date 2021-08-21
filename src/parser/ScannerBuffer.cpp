@@ -1,28 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ScannerFD.cpp                                      :+:      :+:    :+:   */
+/*   ScannerBuffer.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 01:06:24 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/14 12:50:04 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 17:30:18 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/ScannerFD.hpp"
+#include "parser/ScannerBuffer.hpp"
 #include <sys/socket.h>
 
 
-parser::ScannerFD::ScannerFD(int fd)
-	: _line(0), _column(0), _fd(fd), _idx(0), _c(0)
-{
-	recv(_fd, &_buffer, bufferSize, 0);
-}
+parser::ScannerBuffer::ScannerBuffer(const char *buffer)
+	: _line(1), _column(0), _c(0), _buffer(buffer), _idx(0) {}
 
-parser::ScannerFD::~ScannerFD(){};
+parser::ScannerBuffer::~ScannerBuffer() {}
 
-void parser::ScannerFD::moveForward()
+void parser::ScannerBuffer::moveForward()
 {
 	if (_c == '\n')
 	{
@@ -32,37 +29,36 @@ void parser::ScannerFD::moveForward()
 	}
 	else
 		_column++;
-	if (_idx >= bufferSize)
+
+	if (!_charsPutback.empty())
 	{
-		recv(_fd, &_buffer, bufferSize, 0);
-		_idx = 0;
+		_c =  _charsPutback[_charsPutback.size() - 1];
+		_charsPutback.erase(_charsPutback.size() - 1);
 	}
 	else
 		_c = _buffer[_idx++];
-	// _c = _inStream.get();
 }
 
-void parser::ScannerFD::moveBackward()
+void parser::ScannerBuffer::moveBackward(char charToPutBack)
 {
-	if (_c == '\n')
+	if (charToPutBack == '\n')
 	{
 		_line--;
 		_column = _lastColumn;
 	}
 	else
 		_column--;
-	_idx--;
-	// _inStream.unget();
+	_charsPutback.push_back(charToPutBack);
 }
 
-char parser::ScannerFD::get()
+char parser::ScannerBuffer::get()
 {
 	moveForward();
 	return _c;
 }
 
-char parser::ScannerFD::unget()
+char parser::ScannerBuffer::putback(char c)
 {
-	moveBackward();
+	moveBackward(c);
 	return _c;
 }

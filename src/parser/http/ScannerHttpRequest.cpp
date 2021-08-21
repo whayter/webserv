@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ScannerHttpRequest.cpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:39:02 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/14 17:05:53 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/21 17:07:32 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,19 @@ namespace http
 {
 	
 ScannerHttpRequest::ScannerHttpRequest(std::istream &inputStream)
-	: _scan(inputStream)
-{}
+{
+	_scan = new ScannerStream(inputStream);
+}
 
-ScannerHttpRequest::~ScannerHttpRequest(){}
+ScannerHttpRequest::ScannerHttpRequest(const char *buffer)
+{
+	_scan = new ScannerBuffer(buffer);
+}
+
+ScannerHttpRequest::~ScannerHttpRequest()
+{
+	delete _scan;
+}
 
 Token ScannerHttpRequest::getToken(bool skipLWS)
 {
@@ -30,10 +39,10 @@ Token ScannerHttpRequest::getToken(bool skipLWS)
 	if (skipLWS)
 		do
 		{
-			c = _scan.get();
+			c = _scan->get();
 		} while (c != '\n' && isspace(c));
 	else
-		c = _scan.get();
+		c = _scan->get();
 	
 	switch (c)
 	{
@@ -52,10 +61,10 @@ Token ScannerHttpRequest::getToken(bool skipLWS)
 				while (_charIsString(c))
 				{
 					lexeme += c;
-					c = _scan.get();
+					c = _scan->get();
 				}
 				if (!_charIsString(c))
-					_scan.unget();
+					_scan->putback(c);
 				return _makeToken(ScopedEnum::kString, lexeme);
 			}
 			return _makeToken(ScopedEnum::kError,
@@ -65,7 +74,7 @@ Token ScannerHttpRequest::getToken(bool skipLWS)
 
 char ScannerHttpRequest::getChar()
 {
-	return _scan.get();
+	return _scan->get();
 }
 
 
@@ -84,8 +93,8 @@ Token ScannerHttpRequest::_makeToken(TokenKind kind, std::string value)
 
 	t.kind = kind;
 	t.value = value;
-	t.column = _scan.getColumn();
-	t.line = _scan.getLine();
+	t.column = _scan->getColumn();
+	t.line = _scan->getLine();
 	return t;
 }
 

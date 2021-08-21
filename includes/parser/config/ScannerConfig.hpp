@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:36:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/16 18:29:03 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 17:07:08 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 #define SCANNER_CONFIG_HPP
 
 #include <istream>
-#include <parser/Scanner.hpp>
+#include "parser/IScanner.hpp"
+#include "parser/ScannerStream.hpp"
+#include "parser/ScannerBuffer.hpp"
 
 namespace parser{
 
@@ -47,6 +49,7 @@ class ScannerConfig
 {
 public:
 	ScannerConfig(std::istream &inputStream);
+	ScannerConfig(const char *buffer);
 	~ScannerConfig();
 
 	Token getToken(bool skipNL = false);
@@ -58,7 +61,7 @@ private:
 	Token _makeToken(TokenKind kind, std::string value);
 	Token _makeToken(TokenKind kind, std::string value, int column, int line);
 
-	Scanner _scan;
+	IScanner* _scan;
 	// Token	_actualToken;
 }; /* class ScannerConfig */
 

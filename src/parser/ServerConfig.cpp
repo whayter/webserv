@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 20:14:09 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/20 19:50:35 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ ServerConfig::ServerConfig(const std::string& filepath)
 	if (!file.is_open())
 		throw std::invalid_argument("Can't open file");
 	_parse(file);
+	_postParser();
 	file.close();
 }
 
@@ -42,7 +43,7 @@ ServerConfig& ServerConfig::getInstance(std::string filepath){
 
 ServerConfig& ServerConfig::getInstance(){
 	if (_singleton == NULL)
-		throw std::invalid_argument("Singleton is not instanciated.");
+		throw std::invalid_argument("ServerConfig singleton is not instanciated. Must give filepath.");
 	return *_singleton;
 }
 
@@ -54,11 +55,11 @@ ServerBlock& ServerConfig::findServer(uint32_t port)
 	while (itServer != _servers.end())
 	{
 		ServerBlock& serv = *itServer;
-		std::vector<ServerBlock::Host>::iterator itListen = serv.listens.begin();
-		while (itListen != serv.listens.end())
+		std::vector<Host>::iterator itListen = serv.getListens().begin();
+		while (itListen != serv.getListens().end())
 		{
-			ServerBlock::Host& listen = *itListen;
-			if (listen.port == port)
+			Host& listen = *itListen;
+			if (listen.getPort() == port)
 				return serv;
 			itListen++;
 		}
@@ -76,9 +77,9 @@ std::vector<uint32_t> ServerConfig::getPorts()
 
 	for (itServer = _servers.begin(); itServer != _servers.end(); itServer++)
 	{
-		std::vector<ServerBlock::Host>::iterator itListen;
-		for (itListen = itServer->listens.begin(); itListen != itServer->listens.end(); itListen++)
-			ports.push_back(itListen->port);
+		std::vector<Host>::iterator itListen;
+		for (itListen = itServer->getListens().begin(); itListen != itServer->getListens().end(); itListen++)
+			ports.push_back(itListen->getPort());
 	}
 	return ports;
 }
@@ -110,6 +111,19 @@ void ServerConfig::_skipSemiColonNewLine(parser::config::ScannerConfig & scanner
 		_throw_SyntaxError(t, "Missing new line after semi-colon.");
 }
 
+void ServerConfig::_postParser(){
+	std::vector<ServerBlock>::iterator itServer;
+
+	for (itServer = _servers.begin(); itServer != _servers.end(); itServer++)
+	{
+		if (itServer->hasAutoindex() == false)
+			continue;
+		std::vector<Location>::iterator itLocation;
+		for (itLocation = itServer->getLocations().begin(); itLocation != itServer->getLocations().end(); itLocation++)
+			if (itLocation->hasAutoindex() == false)
+				itLocation->setAutoindex(itServer->getAutoindex());
+	}
+}
 
 void ServerConfig::_parse(std::istream & in)
 {
@@ -141,7 +155,6 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 	ServerBlock result;
 	pr::Token t;
 
-	result.autoindex = false;
 	if ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kLeftBrace)
 		_throw_SyntaxError(t, "Missing open brace at server block.");
 	while ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kEndOfInput
@@ -153,22 +166,19 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 				continue;
 			case pr::ScopedEnum::kString :
 				if (t.value == "listen")
-					result.listens.push_back(_parseListen(scanner));
+					result.addListen(_parseListen(scanner));
 				else if (t.value == "root")
-					result.root = _parseRoot(scanner);
+					result.setRoot(_parseRoot(scanner));
 				else if (t.value == "index")
-					result.index = _parseIndex(scanner);
+					result.setIndex(_parseIndex(scanner));
 				else if (t.value == "server_name")
 					_parseServerName(scanner);
 				else if (t.value == "error_page")
-				{
-					std::map<u_short, std::string> m = _parseErrorPage(scanner);
-					result.errors.insert(m.begin(), m.end());
-				}
+					result.addErrors(_parseErrorPage(scanner));
 				else if (t.value == "location")
-					result.locations.push_back(_parseLocation(scanner));
+					result.addLocation(_parseLocation(scanner));
 				else if (t.value == "autoindex")
-					result.autoindex = _parseAutoindex(scanner);
+					result.setAutoindex(_parseAutoindex(scanner));
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in context 'server'");
@@ -184,9 +194,9 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 	return result;
 }
 
-ServerBlock::Host ServerConfig::_parseListen(parser::config::ScannerConfig & scanner)
+Host ServerConfig::_parseListen(parser::config::ScannerConfig & scanner)
 {
-	ServerBlock::Host result;
+	Host result;
 	pr::Token t =  scanner.getToken();
 
 	if (t.kind != pr::ScopedEnum::kString && t.kind != pr::ScopedEnum::kInteger)
@@ -255,15 +265,14 @@ std::map<u_short, std::string> ServerConfig::_parseErrorPage(parser::config::Sca
 	
 }
 
-ServerBlock::Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
+Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 {
 	pr::Token	t;
-	ServerBlock::Location result;
+	Location result;
 	
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
 		_throw_SyntaxError(t, "Location directive: invalid uri");
-	result.uri = t.value;
-	result.autoindex = false;
+	result.setUri(t.value);
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kLeftBrace)
 		_throw_SyntaxError(t, "Location directive: No scope defined. Add braces...");
 
@@ -280,26 +289,21 @@ ServerBlock::Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 					_skipSemiColonNewLine(scanner);
 				}
 				else if (t.value == "fastcgi_pass")
-					result.fastCgiPass = _parseHost(scanner);
+					result.setFastCgiPass(_parseHost(scanner));
 				else if (t.value == "fastcgi_param")
-				{
-					scanner.getToken();
-					scanner.getToken();
-					_skipSemiColonNewLine(scanner);
-				}
+					result.addFastCgiParam(_parseFastCgiParam(scanner));
 				else if (t.value == "root")
-					result.root = _parseRoot(scanner);
+					result.setRoot(_parseRoot(scanner));
 				else if (t.value == "index")
-					result.index = _parseIndex(scanner);
+					result.setIndex(_parseIndex(scanner));
 				else if (t.value == "autoindex")
-					result.autoindex = _parseAutoindex(scanner);
+					result.setAutoindex(_parseAutoindex(scanner));
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in location context");
-				
 				break;
 			default:
-					_throw_SyntaxError(t, "Unexpected token: " + pr::tokenToString(t));
+				_throw_SyntaxError(t, "Unexpected token: " + pr::tokenToString(t));
 		}
 	}
 	return result;
@@ -321,9 +325,9 @@ bool	ServerConfig::_parseAutoindex(parser::config::ScannerConfig & scanner)
 }
 
 
-ServerBlock::Host ServerConfig::_parseListenValue(const pr::Token& host)
+Host ServerConfig::_parseListenValue(const pr::Token& host)
 {
-	ServerBlock::Host result;
+	Host result;
 	std::string tmp;
 	u_short port = 0;
 
@@ -340,8 +344,8 @@ ServerBlock::Host ServerConfig::_parseListenValue(const pr::Token& host)
 	}
 	else
 	{
-		result.host = tmp;
-	    lowerStringInPlace(result.host);
+	    lowerStringInPlace(tmp);
+		result.setHostname(tmp);
 		it++;
 	}
 	while (it != end)
@@ -351,17 +355,16 @@ ServerBlock::Host ServerConfig::_parseListenValue(const pr::Token& host)
 		port = port * 10 + *it - '0';
 		it++;
 	}
-	result.port = port;
+	result.setPort(port);
 	return result;
 }
 
-ServerBlock::Host ServerConfig::_parseHost(parser::config::ScannerConfig & scanner)
+Host ServerConfig::_parseHost(parser::config::ScannerConfig & scanner)
 {
-	ServerBlock::Host	result;
-	std::string			tmp;
-	pr::Token			t;
-
-	result.port = 0;
+	std::string	host;
+	pr::Token	t;
+	uint32_t 	port = 0;
+	
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
 		_throw_SyntaxError(t, "Invalid value host.");
 
@@ -369,20 +372,20 @@ ServerBlock::Host ServerConfig::_parseHost(parser::config::ScannerConfig & scann
     std::string::const_iterator end = t.value.end();
 
     while(it != end && *it != ':')
-        result.host += *it++;
+        host += *it++;
     
     if (it != end && *it == ':')
     {
         it++;
         while (it != end && isdigit(*it))
         {
-            result.port = result.port * 10 + *it - '0';
+            port = port * 10 + *it - '0';
             it++;
         }
     }
-    lowerStringInPlace(result.host);
+    lowerStringInPlace(host);
 	_skipSemiColonNewLine(scanner);
-	return result;
+	return Host(host, port);
 }
 
 std::pair<std::string, std::string>	ServerConfig::_parseFastCgiParam(parser::config::ScannerConfig & scanner)

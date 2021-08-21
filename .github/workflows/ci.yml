@@ -7,18 +7,29 @@ on:
     branches: [ master ]
 
 jobs:
+
   build:
-  
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-
     steps:
     - uses: actions/checkout@v2
 
     - name: make
+      run: make
+
+  unit-tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: make -C tests
       run: make -C tests
     - name: make check
       run: make check -C tests

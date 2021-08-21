@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ScannerHttpRequest.hpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:36:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/14 17:05:35 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/21 17:07:38 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 #define SCANNER_HTTP_REQUEST_HPP
 
 #include <istream>
-#include <parser/Scanner.hpp>
+#include <parser/ScannerStream.hpp>
+#include <parser/ScannerBuffer.hpp>
 
 namespace parser{
 namespace http{
@@ -45,6 +46,7 @@ class ScannerHttpRequest
 {
 public:
 	ScannerHttpRequest(std::istream &inputStream);
+	ScannerHttpRequest(const char *buffer);
 	~ScannerHttpRequest();
 
 	Token getToken(bool skipLWS = false);
@@ -55,7 +57,7 @@ private:
 	bool _charIsString(char c);
 	Token _makeToken(TokenKind kind, std::string value);
 
-	Scanner _scan;
+	IScanner* _scan;
 	Token	_actualToken;
 }; /* class Scanner */
 
