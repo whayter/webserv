@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/30 14:07:41 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/21 11:20:35 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/21 22:06:13 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void textLine(int width, char ornament, std::string text)
 
 void prompt()
 {
-	int		width = 60;
+	int		width = 70;
 	char	ornament = '*';
 
 	std::cout << std::endl;
