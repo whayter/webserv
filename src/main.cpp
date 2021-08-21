@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/30 14:07:41 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/20 19:50:15 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/21 11:20:35 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,15 +63,15 @@ void textLine(int width, char ornament, std::string text)
 void prompt()
 {
 	int		width = 60;
-	char	ornament = '+';
+	char	ornament = '*';
 
 	std::cout << std::endl;
 	solidLine(width, ornament);
 	emptyLine(width, ornament);
 	textLine(width, ornament, "Webserv - another 42 project");
 	emptyLine(width, ornament);
-	textLine(width, ornament, "V 1.0 | August 2020");
-	textLine(width, ornament, "Authors: Juligonz, Hwinston");
+	textLine(width, ornament, "v 1.0 | august 2020");
+	textLine(width, ornament, "authors: hwinston, juligonz");
 	emptyLine(width, ornament);
 	solidLine(width, ornament);
 	std::cout << std::endl;
@@ -86,13 +86,6 @@ int main(int ac, char** av)
 	sh.start();
 	prompt();
 	while (true)
-	{
 		sh.update();
-		std::cin >> input;
-		if (input == "quit")
-			break;
-		else
-			std::cin.clear();
-	}
 	return 0;
 }
