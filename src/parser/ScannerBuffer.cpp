@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 01:06:24 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/21 17:30:18 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 18:59:12 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 #include <sys/socket.h>
 
 
-parser::ScannerBuffer::ScannerBuffer(const char *buffer)
-	: _line(1), _column(0), _c(0), _buffer(buffer), _idx(0) {}
+parser::ScannerBuffer::ScannerBuffer(const char *buffer, std::string & remainingChars)
+	: _line(1), _column(0), _c(0), _buffer(buffer), _idx(0), _remainingChars(remainingChars)
+{}
 
 parser::ScannerBuffer::~ScannerBuffer() {}
 
@@ -30,10 +31,10 @@ void parser::ScannerBuffer::moveForward()
 	else
 		_column++;
 
-	if (!_charsPutback.empty())
+	if (!_remainingChars.empty())
 	{
-		_c =  _charsPutback[_charsPutback.size() - 1];
-		_charsPutback.erase(_charsPutback.size() - 1);
+		_c =  _remainingChars[_remainingChars.size() - 1];
+		_remainingChars.erase(_remainingChars.size() - 1);
 	}
 	else
 		_c = _buffer[_idx++];
@@ -48,7 +49,7 @@ void parser::ScannerBuffer::moveBackward(char charToPutBack)
 	}
 	else
 		_column--;
-	_charsPutback.push_back(charToPutBack);
+	_remainingChars.push_back(charToPutBack);
 }
 
 char parser::ScannerBuffer::get()

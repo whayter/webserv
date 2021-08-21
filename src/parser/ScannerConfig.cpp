@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:39:02 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/21 17:07:24 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 19:06:03 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ ScannerConfig::ScannerConfig(std::istream &inputStream)
 
 ScannerConfig::ScannerConfig(const char *buffer)
 {
-	_scan = new ScannerBuffer(buffer);
+	_scan = new ScannerBuffer(buffer, _remainingChars);
 }
 
 ScannerConfig::~ScannerConfig()

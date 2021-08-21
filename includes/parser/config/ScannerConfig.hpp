@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:36:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/21 17:07:08 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 19:06:58 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ private:
 	Token _makeToken(TokenKind kind, std::string value, int column, int line);
 
 	IScanner* _scan;
-	// Token	_actualToken;
+	std::string	_remainingChars;
 }; /* class ScannerConfig */
 
 const char* tokenKindToCstring(TokenKind kind);

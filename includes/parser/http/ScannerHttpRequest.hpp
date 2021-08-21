@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:36:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/21 17:07:38 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 18:54:22 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ class ScannerHttpRequest
 {
 public:
 	ScannerHttpRequest(std::istream &inputStream);
-	ScannerHttpRequest(const char *buffer);
+	ScannerHttpRequest(const char *buffer, std::string &remainingChars);
 	~ScannerHttpRequest();
 
 	Token getToken(bool skipLWS = false);

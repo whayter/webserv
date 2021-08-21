@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 21:45:53 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/21 17:08:42 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 18:55:56 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ namespace parser {
 class ScannerBuffer:  public IScanner
 {
 public:
-	ScannerBuffer(const char *buffer);
+	ScannerBuffer(const char *buffer, std::string &remainingChars);
 	~ScannerBuffer();
 
 	inline int	getLine(void)	{ return _line; }
@@ -52,7 +52,7 @@ private:
 	
 	const char*		_buffer;
 	size_t			_idx;
-	std::string		_charsPutback;
+	std::string&	_remainingChars;
 }; /* class ScannerBuffer */
 
 } /* namespace parser */

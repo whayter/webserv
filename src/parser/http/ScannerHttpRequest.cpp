@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:39:02 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/21 17:07:32 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 18:55:09 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ ScannerHttpRequest::ScannerHttpRequest(std::istream &inputStream)
 	_scan = new ScannerStream(inputStream);
 }
 
-ScannerHttpRequest::ScannerHttpRequest(const char *buffer)
+ScannerHttpRequest::ScannerHttpRequest(const char *buffer, std::string & remainingChars)
 {
-	_scan = new ScannerBuffer(buffer);
+	_scan = new ScannerBuffer(buffer, remainingChars);
 }
 
 ScannerHttpRequest::~ScannerHttpRequest()

@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 11:04:34 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/21 17:50:03 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 19:22:38 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 # include "AHttpMessage.hpp"
 # include "Uri.hpp"
+# include "parser/http/ScannerHttpRequest.hpp"
 
 class HttpRequest: public AHttpMessage
 {
@@ -42,15 +43,18 @@ class HttpRequest: public AHttpMessage
 
 		std::string 	toString();
 
-		void			read(std::istream & inputStream);
+		// void			read(std::istream & inputStream);
+		void			read(const char *buffer);
 		void			write(std::ostream os);
 		void			clear(void);
-		bool			isComplete(void) {return true;} // en dur pour le moment
+		bool			isComplete(void);
 
 		static HttpRequest create(std::istream & inputStream);
 
 
 	private:
+
+
 
 	/* --- Member variables ------------------------------------------------- */
 
@@ -60,6 +64,10 @@ class HttpRequest: public AHttpMessage
 
 		bool	_isHeaderParsed;
 		bool	_isContentParsed;
+
+		// parser::http::ScannerHttpRequest _scanner;
+		std::string _remainingChars;
+
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:36:30 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/21 17:47:19 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 19:24:42 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,10 @@
 #include "parser/http/ScannerHttpRequest.hpp"
 
 HttpRequest::HttpRequest()
-	: AHttpMessage(), _isHeaderParsed(false), _isContentParsed(false) {}
+	: AHttpMessage(), _isHeaderParsed(false), _isContentParsed(false)
+{
+	
+}
 
 HttpRequest::~HttpRequest() {}
 
@@ -72,29 +75,37 @@ std::string HttpRequest::toString()
 
 
 namespace ph = parser::http;
-void HttpRequest::read(std::istream & inputStream)
-{
-	ph::ScannerHttpRequest scanner(inputStream);
 
+void HttpRequest::read(const char *buffer)
+{
+	ph::ScannerHttpRequest scanner(buffer, _remainingChars);
+	
+// std::cout << "read():" << std::endl;
+	
 	ph::Token t = scanner.getToken(true);
+std::cout << t << std::endl;
 	if (!t.value.compare("GET") ||	!t.value.compare("POST")
 		||	!t.value.compare("DELETE"))
 	{
 		this->setMethod(t.value);
 		
 		t = scanner.getToken(true);
+std::cout << t << std::endl;
 		this->setUri(Uri("http", t.value));
 		
 		t = scanner.getToken(true);
+std::cout << t << std::endl;
 		this->setVersion(t.value);
 	}
 	else
 		throw std::invalid_argument("Bad http request, No method specified");
 
 	t = scanner.getToken();
+std::cout << t << std::endl;
 	if (ph::ScopedEnum::kCarriage != t.kind)
 		throw std::invalid_argument("Method line not separated by return carriage");
 	t = scanner.getToken();
+// std::cout << t << std::endl;
 	if (ph::ScopedEnum::kNewLine != t.kind)
 		throw std::invalid_argument("Method line not separated by new line");
 
@@ -105,6 +116,7 @@ void HttpRequest::read(std::istream & inputStream)
 	bool lastIsCariage = false;
 	while (isHeader && (t = scanner.getToken()).kind != ph::ScopedEnum::kEndOfInput)
 	{
+// std::cout << t << std::endl;
 		switch (t.kind)
 		{
 			case ph::ScopedEnum::kCarriage:
@@ -147,6 +159,7 @@ void HttpRequest::read(std::istream & inputStream)
 				break;
 		}
 	}
+	_isHeaderParsed = true;
 	this->getUri().setAuthority(this->getHeader("Host"));
 
 	std::string content;
@@ -154,6 +167,7 @@ void HttpRequest::read(std::istream & inputStream)
 	size_t contentLength = this->getContentLength();
 	while (contentLength-- && (c = scanner.getChar()) != -1)
 		content += c;
+	_isContentParsed = true;
 	this->setContent(content);
 }
 
@@ -177,6 +191,11 @@ void	HttpRequest::clear(void)
 	_version.clear();
 	_isHeaderParsed = false;
 	_isContentParsed = false;
+}
+
+bool		HttpRequest::isComplete(void)
+{
+	return _isHeaderParsed && _isContentParsed;
 }
 
 
