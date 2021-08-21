@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 21:45:53 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/13 18:19:02 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 15:22:48 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ public:
 	/// @brief Get the next character
 	char		get();
 	/// @brief Decrease stream index by one character.
-	char		unget();
+	char		putback(char c);
 
 private:
 	Scanner();
@@ -41,7 +41,7 @@ private:
 	/// @brief Increment to next character, and increment line/column count 
 	void		moveForward();
 	/// @brief Decrement to previous character, and decrement line/column count 
-	void		moveBackward();
+	void		moveBackward(char charToPutBack);
 
 	int				_line;
 	int				_column;

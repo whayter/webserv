@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ScannerHttpRequest.cpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
+/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:39:02 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/14 17:05:53 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/21 15:26:15 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ Token ScannerHttpRequest::getToken(bool skipLWS)
 					c = _scan.get();
 				}
 				if (!_charIsString(c))
-					_scan.unget();
+					_scan.putback(c);
 				return _makeToken(ScopedEnum::kString, lexeme);
 			}
 			return _makeToken(ScopedEnum::kError,

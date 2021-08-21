@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 11:04:34 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/08 14:46:35 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 15:25:26 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ class HttpRequest: public AHttpMessage
 
 		std::string 	toString();
 
-		// void			read(std::istream is);
+		void			read(char *buffer);
 		void			write(std::ostream os);
 
 		static HttpRequest create(std::istream & inputStream);

@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:39:02 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/16 18:29:50 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 15:26:37 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ Token ScannerConfig::getToken(bool skipNL)
 				c = _scan.get();
 			}
 			if (c == '\n')
-				_scan.unget();
+				_scan.putback(c);
 			return _makeToken(ScopedEnum::kComment, lexeme, column, line);
 		}
 		default:
@@ -78,7 +78,7 @@ Token ScannerConfig::getToken(bool skipNL)
 					c = _scan.get();
 				}
 				if (!_charIsString(c))
-					_scan.unget();
+					_scan.putback(c);
 				if (isInteger)
 					return _makeToken(ScopedEnum::kInteger, lexeme, column, line);
 				return _makeToken(ScopedEnum::kString, lexeme, column, line);

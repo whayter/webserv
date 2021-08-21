@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 18:01:37 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/13 18:07:15 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 15:19:04 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ public:
 	virtual bool	eof(void)		= 0;
 	
 	virtual char	get() = 0;
-	virtual char	unget() = 0;
+	virtual char	putback(char c) = 0;
 
 }; /* Interface IScanner */
 

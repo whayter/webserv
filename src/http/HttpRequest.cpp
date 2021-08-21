@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:36:30 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/14 19:46:58 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 15:25:46 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,32 +70,10 @@ std::string HttpRequest::toString()
 }
 
 
-// void HttpRequest::read(std::istream is)
-// {
-// 	std::string line, request, s;
-// 	size_type pos;
-
-// 	std::getline(is, line);
-// 	std::stringstream ss(line);
-// 	std::getline(ss, _method, ' ');
-// 	std::getline(ss, request, ' ');
-// 	if (!ss.eof())
-// 		std::getline(ss, _version);
-// 	else
-// 		_version = "HTTP/0.9";
-// 	_uri = Uri(request);
-// 	_queryString = _uri.getQueryString();
-// 	_queryParameters = _uri.getQueries(_queryString);
-// 	while (!is.eof())
-// 	{
-// 		std::getline(is, line);
-// 		pos = line.find(":");
-// 		s = line.substr(0, pos);
-// 		line.erase(0, pos + 1);
-// 		this->setHeader(s, line);
-// 	}
-// 	this->setContentLength(this->getContentLength());
-// }
+void HttpRequest::read(char* buffer)
+{
+	(void)buffer;
+}
 
 void HttpRequest::write(std::ostream os)
 {

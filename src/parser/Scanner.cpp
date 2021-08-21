@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 01:06:24 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/06 13:49:12 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 15:25:58 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void parser::Scanner::moveForward()
 	_c = _inStream.get();
 }
 
-void parser::Scanner::moveBackward()
+void parser::Scanner::moveBackward(char charToPutBack)
 {
 	if (_c == '\n')
 	{
@@ -38,7 +38,7 @@ void parser::Scanner::moveBackward()
 	}
 	else
 		_column--;
-	_inStream.unget();
+	_inStream.putback(charToPutBack);
 }
 
 char parser::Scanner::get()
@@ -47,8 +47,8 @@ char parser::Scanner::get()
 	return _c;
 }
 
-char parser::Scanner::unget()
+char parser::Scanner::putback(char c)
 {
-	moveBackward();
+	moveBackward(c);
 	return _c;
 }
