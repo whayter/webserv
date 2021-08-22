@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SEREVER_CONFIG_HPP
-#define SEREVER_CONFIG_HPP
+#ifndef SERVER_CONFIG_HPP
+#define SERVER_CONFIG_HPP
 
 #include <vector>
 #include <map>
