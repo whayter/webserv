@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/30 14:07:41 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/22 11:49:57 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/22 12:15:32 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,20 +87,10 @@ void signalCallback(int signum) {
 
 int main(int ac, char** av)
 {
-	// parseArgs(ac, av);
-	// ServerConfig& config = ServerConfig::getInstance();
-	// server::ServerHandler sh(config.getPorts());
-
-	(void)ac;
-	(void)av;
-	std::vector<uint32_t> ports;
-	ports.push_back(8080);
-	// ports.push_back(8081);
-	// ports.push_back(8082);
-	server::ServerHandler sh(ports);
-
+	parseArgs(ac, av);
+	ServerConfig& config = ServerConfig::getInstance();
+	server::ServerHandler sh(config.getPorts());
 	signal(SIGINT, signalCallback);
-
 	sh.start();
 	run = true;
 	prompt();
