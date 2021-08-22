@@ -16,7 +16,7 @@
 #include <vector>
 #include <map>
 #include <string>
-#include <cctype>
+#include <cstdint>
 
 #include "Uri.hpp"
 #include "parser/config/ScannerConfig.hpp"
