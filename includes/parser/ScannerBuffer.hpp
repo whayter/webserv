@@ -13,48 +13,32 @@
 #ifndef SCANNER_BUFFER_HPP
 #define SCANNER_BUFFER_HPP
 
-#include <istream>
-#include "IScanner.hpp"
+#include <deque>
 
 namespace parser {
 
-class ScannerBuffer:  public IScanner
+class ScannerBuffer
 {
 public:
-	ScannerBuffer(const char *buffer, std::string &remainingChars);
+	ScannerBuffer();
+	ScannerBuffer(const char *buffer);
 	~ScannerBuffer();
-
-	inline int	getLine(void)	{ return _line; }
-	inline int	getColumn(void)	{ return _column; }
-
-	/// Peek the next character
-	// char		peek(void);
-	// bool		eof(void);
 
 	/// @brief Get the next character
 	char		get();
 	/// @brief putback the given character.
-	char		putback(char c);
+	void		putback(char c);
+
+	// spaghetti fix
+	void		pushNewBuffer(const char *buffer);
 
 private:
-	ScannerBuffer();
 
-	/// @brief Increment to next character, and increment line/column count 
-	void		moveForward();
-	/// @brief putback the giver character, and decrement line/column count 
-	void		moveBackward(char c);
-
-
-	int				_line;
-	int				_column;
-	int				_lastColumn;
-	char			_c;
+	char _c;
 	
-	const char*		_buffer;
-	size_t			_idx;
-	std::string&	_remainingChars;
+	std::deque<char> _buffer;
 }; /* class ScannerBuffer */
 
 } /* namespace parser */
 
-#endif /* SCANNER_FD_HPP */
+#endif /* SCANNER_BUFFER_HPP */

@@ -14,7 +14,6 @@
 #define SCANNER_HTTP_REQUEST_HPP
 
 #include <istream>
-#include <parser/ScannerStream.hpp>
 #include <parser/ScannerBuffer.hpp>
 
 namespace parser{
@@ -37,29 +36,29 @@ struct Token
 {
 	TokenKind	kind;
 	std::string	value;
-	int			line;
-	int			column;
 };
 
 
 class ScannerHttpRequest
 {
 public:
-	ScannerHttpRequest(std::istream &inputStream);
-	ScannerHttpRequest(const char *buffer, std::string &remainingChars);
+	ScannerHttpRequest(const char *buffer);
 	~ScannerHttpRequest();
 
 	Token getToken(bool skipLWS = false);
 	char getChar();
 	inline Token peekToken() { return _actualToken; };
+
+	// spaghetti fix
+	void pushNewBuffer(const char *buffer);
 private:
 
 	bool _charIsString(char c);
 	Token _makeToken(TokenKind kind, std::string value);
 
-	IScanner* _scan;
+	ScannerBuffer _scan;
 	Token	_actualToken;
-}; /* class Scanner */
+}; /* class ScannerHttpRequest */
 
 const char* TokenKindToCstring(TokenKind type);
 std::ostream & operator <<(std::ostream& os, const Token &t);

@@ -14,26 +14,22 @@
 #define SCANNER_STREAM_HPP
 
 #include <istream>
-#include "IScanner.hpp"
 
 namespace parser {
 
-class ScannerStream:  public IScanner
+class ScannerStream
 {
 public:
 	ScannerStream(std::istream &inputStream);
 	~ScannerStream();
 
-	/// Peek the next character
-	// inline char	peek(void)		{ return _inStream.peek(); }
 	inline int	getLine(void)	{ return _line; }
 	inline int	getColumn(void)	{ return _column; }
-	inline bool	eof(void)		{ return _inStream.eof(); }
 	
 	/// @brief Get the next character
 	char		get();
 	/// @brief Decrease stream index by one character.
-	char		putback(char c);
+	void		putback(char c);
 
 private:
 	ScannerStream();

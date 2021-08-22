@@ -55,19 +55,15 @@ class HttpRequest: public AHttpMessage
 	private:
 
 
-
 	/* --- Member variables ------------------------------------------------- */
 
-		// map_type		_queryParameters;
-		std::string		_method, _version; // _queryString;
+		std::string		_method, _version;
 		Uri				_uri;
 
 		bool	_isHeaderParsed;
 		bool	_isContentParsed;
 
-		// parser::http::ScannerHttpRequest _scanner;
-		std::string _remainingChars;
-
+		parser::http::ScannerHttpRequest _scanner;
 };
 
 #endif
