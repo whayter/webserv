@@ -16,6 +16,7 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <csignal>
 
 bool run;
 
