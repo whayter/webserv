@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 17:50:07 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/21 22:39:15 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/22 11:33:59 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include "Socket.hpp"
 # include "HttpRequest.hpp"
+# include "HttpResponse.hpp"
 
 # include <poll.h>
 # include <vector>
@@ -39,28 +40,37 @@ namespace server
 
 			bool 				start();
 			void 				update();
-			void 				stop(int status);
+			void 				stop(int status = 0);
 
 		private:
 
 		/* --- Private functions -------------------------------------------- */
 
-			void				_serveClient(int index);
 			void				_connectClients(int serverSocket);
 			void				_disconnectClient(int index);
-			bool				_getRequest(int index);		
+			void				_serveClient(int index);
+			
+			bool				_getRequest(int index);
+			void				_processRequest(int index);
+			void				_sendResponse(int index);
 
 			bool				_isServerSocket(int index);
-			void				_updateFds();
+			void				_updateData();
+			void				_cout(int index, std::string message);
+
+		/* --- Disabled functions ------------------------------------------- */
+
+			ServerHandler(const ServerHandler&);
 		
 		/* --- Member variables --------------------------------------------- */
 
 			std::vector<Server> _servers;
 			struct pollfd		_fds[SOMAXCONN];
+			HttpRequest*		_requests[SOMAXCONN];
 			int					_nfds;
 			int					_firstClientIndex;
-			bool				_upToDateFds;
-			HttpRequest*		_requests[SOMAXCONN];
+			bool				_upToDateData;
+			bool 				_disconnect;
 	};
 };
 

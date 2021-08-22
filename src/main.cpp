@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/30 14:07:41 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/21 22:30:21 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/22 11:49:57 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+
+bool run;
 
 void parseArgs(int ac, char **av)
 {
@@ -62,7 +64,7 @@ void textLine(int width, char ornament, std::string text)
 
 void prompt()
 {
-	int		width = 70;
+	int		width = 80;
 	char	ornament = '*';
 
 	std::cout << std::endl;
@@ -70,11 +72,17 @@ void prompt()
 	emptyLine(width, ornament);
 	textLine(width, ornament, "Webserv - another 42 project");
 	emptyLine(width, ornament);
-	textLine(width, ornament, "v 1.0 | august 2020");
+	textLine(width, ornament, "v 1.0 | august 2021");
 	textLine(width, ornament, "authors: hwinston, juligonz");
 	emptyLine(width, ornament);
 	solidLine(width, ornament);
 	std::cout << std::endl;
+}
+
+void signalCallback(int signum) {
+	(void)signum;
+	std::cout << std::endl;
+	run = false;
 }
 
 int main(int ac, char** av)
@@ -87,11 +95,16 @@ int main(int ac, char** av)
 	(void)av;
 	std::vector<uint32_t> ports;
 	ports.push_back(8080);
+	// ports.push_back(8081);
+	// ports.push_back(8082);
 	server::ServerHandler sh(ports);
 
+	signal(SIGINT, signalCallback);
+
 	sh.start();
+	run = true;
 	prompt();
-	while (true)
+	while (run)
 		sh.update();
 	return 0;
 }
