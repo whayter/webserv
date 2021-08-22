@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 19:22:37 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/20 16:41:50 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/22 11:48:30 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 #include "HttpRequest.hpp"
 
 #include <cerrno>
-#include <vector>
+
+#include <ctime>
+#include <iomanip>
 
 #define BUF_SIZE 4096
 #define HELLO "HTTP/1.1 200 OK\nContent-Type: text/html;charset=UTF-8\nContent-Length: 133\n\n<style>html{background-color:black;color:white;text-align:center}</style><html><body><h1>Webserv</h1><h2>Yeah man!</h2></body></html>"
@@ -64,7 +66,7 @@ bool server::ServerHandler::start()
 
 void server::ServerHandler::update()
 {
-	_upToDateFds = true;
+	_upToDateData = true;
 	int pollStatus;
 	if ((pollStatus = poll(_fds, _nfds, 0)) == -1)
 		stop(-1);
@@ -84,35 +86,43 @@ void server::ServerHandler::update()
 		else
 			stop(-1);
 	}
-	if (!_upToDateFds)
-		_updateFds();
+	if (!_upToDateData)
+		_updateData();
 }
 
 void server::ServerHandler::stop(int status)
 {
 	for (int i = 0; i < _nfds; i++)
+	{
 		sckt::closeSocket(_fds[i].fd);
+		delete _requests[i];
+	}
 	_servers.clear();
 	if (status == -1)
 	{
-		std::cout << "An error has occurred. " << std::endl;
-		std::cout << "The server is shutting down..." << std::endl;
+		_cout(2, "An error has occurred. ");
+		_cout (2, "Shutting down...");
+		// std::cout << "An error has occurred. " << std::endl;
+		// std::cout << "Shutting down..." << std::endl;
 		exit(EXIT_FAILURE);
 	}
+	else
+		_cout (2, "Shutting down...");
+		//std::cout << "Shutting down..." << std::endl;
 }
 
 /* --- Private functions ---------------------------------------------------- */
 
 void server::ServerHandler::_connectClients(int serverSocket)
 {
-	while (true)
+	while (_nfds < SOMAXCONN)
 	{
 		sckt::fd_type newFd;
 		newFd = accept(serverSocket, NULL, NULL);
 		if (newFd == INVALID_FD)
 			break;
-		std::cout << "[" << _nfds << "]	";
-		std::cout << "Connection." << std::endl;
+		_cout(newFd, "Connection accepted.");
+		_requests[_nfds] = new HttpRequest();
 		_fds[_nfds].fd = newFd;
 		_fds[_nfds].events = POLLIN;
 		_nfds++;
@@ -121,49 +131,85 @@ void server::ServerHandler::_connectClients(int serverSocket)
 
 void server::ServerHandler::_disconnectClient(int index)
 {
-	std::cout << "[" << index << "]	";
-	std::cout << "Disconnection." << std::endl;
+	_cout(_fds[index].fd, "Connection closed.");
 	sckt::closeSocket(_fds[index].fd);
+	delete _requests[index];
+	_requests[index] = NULL;
 	_fds[index].fd = -1;
-	_upToDateFds = false;
+	_upToDateData = false;
 }
 
-void server::ServerHandler::_serveClient(int index)
+// void server::ServerHandler::_serveClient(int index)			// à uncomment
+// {
+// 	_disconnect = false;
+// 	if (!_requests[index]->isComplete())
+// 		_getRequest(index);
+// 	else
+// 		_processRequest(index);
+// 	if (_responses[index]->isReady())
+// 		_sendResponse(index);
+// 	if (_disconnect)
+// 		_disconnectClient(index);
+// }
+
+// void server::ServerHandler::_getRequest(int index)			// à uncomment
+// {
+// 	char buffer[BUF_SIZE] = {0};
+// 	int nbytes = recv(_fds[index].fd, buffer, BUF_SIZE - 1, 0);
+// 	if (nbytes == -1)
+// 		stop(-1);
+// 	else if (nbytes == 0)
+// 	{
+// 		_cout(index, "recv() error.");
+// 		_disconnect = true;
+// 	}
+// 	_cout(index, "Request received.");
+// 	std::stringstream streamRequest(buffer);
+// 	_requests[index]->read(streamRequest);
+// }
+
+void server::ServerHandler::_serveClient(int index)				// à supprimer
 {
-	bool disconnect = false;
-	std::cout << "[" << index << "]	";
-	std::cout << "Getting request: ";
-	if (!_getRequest(_fds[index].fd))
-	{
-		std::cout << "failure." << std::endl;
-		disconnect = true;
-	}
+	_disconnect = false;
+	if (!_getRequest(index))
+		_disconnect = true;
 	else
-	{
-		if (send(_fds[index].fd, HELLO, strlen(HELLO), 0) <= 0)
-			disconnect = true; 
-		if (disconnect == true)
-			_disconnectClient(index);
-	}
+		_sendResponse(index);
+	if (_disconnect == true)			// a mettre dans le else ?
+		_disconnectClient(index);
 }
 
-bool server::ServerHandler::_getRequest(int fd)
+bool server::ServerHandler::_getRequest(int index)				// à supprimer
 {
 	char buffer[BUF_SIZE] = {0};
-	int nbytes = recv(fd, buffer, BUF_SIZE - 1, 0);
+	int nbytes = recv(_fds[index].fd, buffer, BUF_SIZE - 1, 0);
 	if (nbytes == -1)
 		stop(-1);
 	else if (nbytes == 0)
+	{
+		_cout(_fds[index].fd, "recv() error.");
 		return false;
-
-	std::cout << "success (" << nbytes;
-	std::cout << " bytes received)." << std::endl;
-
-	// HttpRequest request;
-	// std::stringstream streamRequest(buffer);
-	// request = HttpRequest::create(streamRequest);
-	// std::cout << request.getUri().toString() << std::endl;
+	}
+	_cout(_fds[index].fd, "Request received.");
+	std::stringstream streamRequest(buffer);
+	_requests[index]->read(streamRequest);
 	return true;
+}
+
+void server::ServerHandler::_processRequest(int index)
+{
+	_cout(index, "Processing request.");
+	// build response here
+}
+
+void server::ServerHandler::_sendResponse(int index)
+{
+	if (send(_fds[index].fd, HELLO, strlen(HELLO), 0) == -1)
+	{
+		_cout(_fds[index].fd, "send() error.");
+		_disconnect = true;
+	}
+	_cout(_fds[index].fd, "Response sent.");
 }
 
 bool server::ServerHandler::_isServerSocket(int index)
@@ -171,7 +217,7 @@ bool server::ServerHandler::_isServerSocket(int index)
 	return index < _firstClientIndex;
 }
 
-void server::ServerHandler::_updateFds()
+void server::ServerHandler::_updateData()
 {
 	for (int i = 0; i < _nfds; i++)
 	{
@@ -179,14 +225,32 @@ void server::ServerHandler::_updateFds()
 		{
 			for (int j = i; j < _nfds; j++)
 			{
-				_fds[j].fd = _fds[j + 1].fd;
-				_fds[j].events = _fds[j + 1].events;
-				_fds[j].revents = _fds[j + 1].revents;
+				_fds[j] = _fds[j + 1];
+				_requests[j] = _requests[j + 1];
 			}
-				//_fds[j] = _fds[j + 1];
 			_nfds--;
 			i--;
 		}
 	}
-	_upToDateFds = true;
+	_upToDateData = true;
+}
+
+void server::ServerHandler::_cout(int index, std::string message)
+{
+	time_t now = time(0);
+	tm *ltm = localtime(&now);
+	std::cout << std::setw(3) << std::setfill(' ') << ' ';
+	std::cout << "[";
+	std::cout << std::setw(2) << std::setfill('0');
+	std::cout << ltm->tm_hour << ":";
+	std::cout << std::setw(2) << std::setfill('0');
+	std::cout << ltm->tm_min << ":";
+	std::cout << std::setw(2) << std::setfill('0');
+	std::cout << ltm->tm_sec << "]";
+
+	std::cout << std::setw(3) << std::setfill(' ') << ' ';
+	std::cout << std::setw(2) << std::setfill('0');
+	std::cout << index;
+	std::cout << " - ";
+	std::cout << message << std::endl;
 }
