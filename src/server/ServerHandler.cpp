@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 19:22:37 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/23 11:38:43 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/23 16:36:50 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,12 +100,12 @@ void server::ServerHandler::stop(int status)
 	_servers.clear();
 	if (status == -1)
 	{
-		_log(2, "An error has occurred. ");
-		_log (2, "Shutting down...");
+		_log(0, "An error has occurred. ");
+		_log (0, "Shutting down...");
 		exit(EXIT_FAILURE);
 	}
 	else
-		_log (2, "Shutting down...");
+		_log (0, "Shutting down...");
 }
 
 /* --- Private functions ---------------------------------------------------- */
@@ -138,38 +138,36 @@ void server::ServerHandler::_disconnectClient(int index)
 
 void server::ServerHandler::_serveClient(int index)
 {
-	_disconnect = false;
-	if (_getRequest(index) == false)
-		_disconnect = true;
-	else
+	_getRequest(index);
+	if (_requests[index]->isComplete())
 	{
-		//_processRequest(index);
+		_processRequest(index);
 		_sendResponse(index);
-		if (_disconnect == true)
-			_disconnectClient(index);
 	}
 }
 
-bool server::ServerHandler::_getRequest(int index)
+void server::ServerHandler::_getRequest(int index)
 {
 	char buffer[BUF_SIZE] = {0};
 	int nbytes = recv(_fds[index].fd, buffer, BUF_SIZE - 1, 0);
-	if (nbytes == -1)
+	if (nbytes < 0)
 		stop(-1);
-	else if (nbytes == 0)
-	{
-		_log(_fds[index].fd, "recv() error.");
-		return false;
-	}
-	_requests[index]->read(buffer);
+	else if (nbytes > 0)
+		_requests[index]->read(buffer);
 	if (_requests[index]->isComplete())
 		_log(_fds[index].fd, "Request received.");
-	return true;
 }
 
 void server::ServerHandler::_processRequest(int index)
 {
 	_log(_fds[index].fd, "Processing request.");
+
+	std::string method = _requests[index]->getMethod();
+
+	//std::cout << "Method: " << method << std::endl;
+
+	// if (method == "HEAD")
+
 	// build response here
 }
 
@@ -177,8 +175,8 @@ void server::ServerHandler::_sendResponse(int index)
 {
 	if (send(_fds[index].fd, HELLO, strlen(HELLO), 0) == -1)
 	{
-		_log(_fds[index].fd, "send() error.");
-		_disconnect = true;
+		_log(_fds[index].fd, "Could not send the response.");
+		stop(-1);
 	}
 	_log(_fds[index].fd, "Response sent.");
 }
@@ -218,10 +216,12 @@ void server::ServerHandler::_log(int index, std::string message)
 	std::cout << ltm->tm_min << ":";
 	std::cout << std::setw(2) << std::setfill('0');
 	std::cout << ltm->tm_sec << "]";
-
 	std::cout << std::setw(3) << std::setfill(' ') << ' ';
-	std::cout << std::setw(2) << std::setfill('0');
-	std::cout << index;
-	std::cout << " - ";
+	if (index >= _firstClientIndex)
+	{
+		std::cout << std::setw(2) << std::setfill('0');
+		std::cout << index;
+		std::cout << " - ";
+	}
 	std::cout << message << std::endl;
 }
