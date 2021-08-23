@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 19:22:37 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/22 11:48:30 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/23 10:21:58 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ bool server::ServerHandler::start()
 	return true;
 }
 
-void server::ServerHandler::update()
+void server::ServerHandler::run()
 {
 	_upToDateData = true;
 	int pollStatus;
@@ -102,13 +102,10 @@ void server::ServerHandler::stop(int status)
 	{
 		_cout(2, "An error has occurred. ");
 		_cout (2, "Shutting down...");
-		// std::cout << "An error has occurred. " << std::endl;
-		// std::cout << "Shutting down..." << std::endl;
 		exit(EXIT_FAILURE);
 	}
 	else
 		_cout (2, "Shutting down...");
-		//std::cout << "Shutting down..." << std::endl;
 }
 
 /* --- Private functions ---------------------------------------------------- */
