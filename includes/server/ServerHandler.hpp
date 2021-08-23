@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 17:50:07 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/23 11:20:59 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/23 16:36:57 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ namespace server
 			void				_disconnectClient(int index);
 			void				_serveClient(int index);
 			
-			bool				_getRequest(int index);
+			void				_getRequest(int index);
 			void				_processRequest(int index);
 			void				_sendResponse(int index);
 
@@ -70,7 +70,6 @@ namespace server
 			int					_nfds;
 			int					_firstClientIndex;
 			bool				_upToDateData;
-			bool 				_disconnect;
 	};
 };
 
