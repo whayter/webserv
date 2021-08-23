@@ -13,6 +13,8 @@
 #include "http/HttpStatus.hpp"
 
 HttpStatus::HttpStatus() {}
+HttpStatus::HttpStatus(int code)
+	: _value(code) {}
 
 HttpStatus::~HttpStatus() {}
 

@@ -16,6 +16,7 @@
 # include <string>
 
 # include "AHttpMessage.hpp"
+# include "HttpStatus.hpp"
 # include "Uri.hpp"
 # include "parser/http/ScannerHttpRequest.hpp"
 
@@ -27,12 +28,7 @@ class HttpRequest: public AHttpMessage
 
 		HttpRequest();
 		~HttpRequest();
-
-		/// Copy constructor
-		// HttpRequest(HttpRequest &);
-		/// Assignment operator
-		// HttpRequest& operator=(const HttpRequest &);
-		
+	
 		std::string&	getMethod();
 		Uri&			getUri();
  
@@ -43,14 +39,14 @@ class HttpRequest: public AHttpMessage
 
 		std::string 	toString();
 
-		// void			read(std::istream & inputStream);
 		void			read(const char *buffer);
 		void			write(std::ostream os);
+
 		void			clear(void);
 		bool			isComplete(void);
-
-		static HttpRequest create(std::istream & inputStream);
-
+		
+		/// Return 0 if no error during request parsing
+		int				getHttpErrorCode();
 
 	private:
 
@@ -59,6 +55,7 @@ class HttpRequest: public AHttpMessage
 
 		std::string		_method, _version;
 		Uri				_uri;
+		HttpStatus		_code;
 
 		bool	_isHeaderParsed;
 		bool	_isContentParsed;

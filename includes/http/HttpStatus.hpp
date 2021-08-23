@@ -23,6 +23,8 @@ class HttpStatus
 
 		enum Code
 		{
+			None							= 0, 
+		
 			Continue						= 100, 
 			SwitchingProtocols				= 101, 
 			Processing						= 102, 
@@ -93,6 +95,7 @@ class HttpStatus
 	/* --- Member functions ------------------------------------------------- */
 
 		HttpStatus();
+		HttpStatus(int code);
 		~HttpStatus();
 
 		void			setValue(int code);
