@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:39:02 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/21 17:07:24 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 19:06:03 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,17 @@ namespace config
 {
 
 ScannerConfig::ScannerConfig(std::istream &inputStream)
+	: _scan(inputStream)
 {
-	_scan = new	ScannerStream(inputStream);
+	// _scan = new	ScannerStream(inputStream);
 }
 
-ScannerConfig::ScannerConfig(const char *buffer)
-{
-	_scan = new ScannerBuffer(buffer);
-}
+// ScannerConfig::ScannerConfig(const char *buffer)
+// {
+// 	_scan = new ScannerBuffer(buffer);
+// }
 
-ScannerConfig::~ScannerConfig()
-{
-	delete _scan;
-}
+ScannerConfig::~ScannerConfig() {}
 
 Token ScannerConfig::getToken(bool skipNL)
 {
@@ -39,12 +37,12 @@ Token ScannerConfig::getToken(bool skipNL)
 	if (skipNL)
 		do
 		{
-			c = _scan->get();
+			c = _scan.get();
 		} while (isspace(c));
 	else
 		do
 		{
-			c = _scan->get();
+			c = _scan.get();
 		} while (c != '\n' && isspace(c));
 	
 	switch (c)
@@ -60,21 +58,21 @@ Token ScannerConfig::getToken(bool skipNL)
 		case '#': 
 		{
 			std::string lexeme = "";
-			int column = _scan->getColumn(), line = _scan->getLine();
+			int column = _scan.getColumn(), line = _scan.getLine();
 		
 			while (c != '\n')
 			{
 				lexeme += c;
-				c = _scan->get();
+				c = _scan.get();
 			}
 			if (c == '\n')
-				_scan->putback(c);
+				_scan.putback(c);
 			return _makeToken(ScopedEnum::kComment, lexeme, column, line);
 		}
 		default:
 		{
 			std::string lexeme = "";
-			int column = _scan->getColumn(), line = _scan->getLine();
+			int column = _scan.getColumn(), line = _scan.getLine();
 			bool isInteger = true;
 
 			if (_charIsString(c))
@@ -84,10 +82,10 @@ Token ScannerConfig::getToken(bool skipNL)
 					if (isInteger && !isdigit(c))
 						isInteger = false;
 					lexeme += c;
-					c = _scan->get();
+					c = _scan.get();
 				}
 				if (!_charIsString(c))
-					_scan->putback(c);
+					_scan.putback(c);
 				if (isInteger)
 					return _makeToken(ScopedEnum::kInteger, lexeme, column, line);
 				return _makeToken(ScopedEnum::kString, lexeme, column, line);
@@ -123,8 +121,8 @@ Token ScannerConfig::_makeToken(TokenKind kind, std::string value)
 
 	t.kind = kind;
 	t.value = value;
-	t.column = _scan->getColumn();
-	t.line = _scan->getLine();
+	t.column = _scan.getColumn();
+	t.line = _scan.getLine();
 	return t;
 }
 

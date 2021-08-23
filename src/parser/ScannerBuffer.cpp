@@ -6,59 +6,47 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/01 01:06:24 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/21 17:30:18 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 18:59:12 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser/ScannerBuffer.hpp"
-#include <sys/socket.h>
 
+parser::ScannerBuffer::ScannerBuffer() : _c(0) {}
 
 parser::ScannerBuffer::ScannerBuffer(const char *buffer)
-	: _line(1), _column(0), _c(0), _buffer(buffer), _idx(0) {}
+	: _c(0)
+{
+	std::size_t i = 0;
+
+	if (buffer)
+		while (buffer[i])
+			_buffer.push_back(buffer[i++]);
+}
 
 parser::ScannerBuffer::~ScannerBuffer() {}
 
-void parser::ScannerBuffer::moveForward()
-{
-	if (_c == '\n')
-	{
-		_line++;
-		_lastColumn = _column;
-		_column = 1;
-	}
-	else
-		_column++;
-
-	if (!_charsPutback.empty())
-	{
-		_c =  _charsPutback[_charsPutback.size() - 1];
-		_charsPutback.erase(_charsPutback.size() - 1);
-	}
-	else
-		_c = _buffer[_idx++];
-}
-
-void parser::ScannerBuffer::moveBackward(char charToPutBack)
-{
-	if (charToPutBack == '\n')
-	{
-		_line--;
-		_column = _lastColumn;
-	}
-	else
-		_column--;
-	_charsPutback.push_back(charToPutBack);
-}
-
 char parser::ScannerBuffer::get()
 {
-	moveForward();
+	if (_buffer.begin() == _buffer.end())
+		_c = 0;
+	else
+	{
+		_c = _buffer.front();
+		_buffer.pop_front();
+	}
 	return _c;
 }
 
-char parser::ScannerBuffer::putback(char c)
+void parser::ScannerBuffer::putback(char c)
 {
-	moveBackward(c);
-	return _c;
+	_buffer.push_front(c);
+}
+
+void parser::ScannerBuffer::pushNewBuffer(const char *buffer)
+{
+	std::size_t i = 0;
+
+	while (buffer[i])
+		_buffer.push_back(buffer[i++]);
 }

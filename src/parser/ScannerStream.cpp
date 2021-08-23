@@ -47,8 +47,7 @@ char parser::ScannerStream::get()
 	return _c;
 }
 
-char parser::ScannerStream::putback(char c)
+void parser::ScannerStream::putback(char c)
 {
 	moveBackward(c);
-	return _c;
 }

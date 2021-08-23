@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "parser/ServerConfig.hpp"
+
 #include "parser/config/ScannerConfig.hpp"
 #include "utility.hpp"
 
@@ -18,7 +19,7 @@
 #include <exception>
 #include <cstdlib>
 
-ServerConfig* ServerConfig::_singleton = nullptr;
+ServerConfig* ServerConfig::_singleton = NULL;
 
 namespace pr = parser::config;
 
@@ -27,7 +28,7 @@ ServerConfig::ServerConfig(const std::string& filepath)
 {
 	std::ifstream file;
 
-	file.open(filepath, std::ifstream::in);
+	file.open(filepath.c_str(), std::ifstream::in);
 	if (!file.is_open())
 		throw std::invalid_argument("Can't open file");
 	_parse(file);

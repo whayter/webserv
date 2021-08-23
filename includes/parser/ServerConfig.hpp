@@ -10,13 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SEREVER_CONFIG_HPP
-#define SEREVER_CONFIG_HPP
+#ifndef SERVER_CONFIG_HPP
+#define SERVER_CONFIG_HPP
 
 #include <vector>
 #include <map>
 #include <string>
-#include <cctype>
+#include <stdint.h>
 
 #include "Uri.hpp"
 #include "parser/config/ScannerConfig.hpp"

@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:39:02 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/21 17:07:32 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 18:55:09 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,12 @@ namespace parser
 {
 namespace http
 {
-	
-ScannerHttpRequest::ScannerHttpRequest(std::istream &inputStream)
-{
-	_scan = new ScannerStream(inputStream);
-}
 
 ScannerHttpRequest::ScannerHttpRequest(const char *buffer)
-{
-	_scan = new ScannerBuffer(buffer);
-}
+	: _scan(buffer)
+{}
 
-ScannerHttpRequest::~ScannerHttpRequest()
-{
-	delete _scan;
-}
+ScannerHttpRequest::~ScannerHttpRequest() {}
 
 Token ScannerHttpRequest::getToken(bool skipLWS)
 {
@@ -39,10 +30,10 @@ Token ScannerHttpRequest::getToken(bool skipLWS)
 	if (skipLWS)
 		do
 		{
-			c = _scan->get();
+			c = _scan.get();
 		} while (c != '\n' && isspace(c));
 	else
-		c = _scan->get();
+		c = _scan.get();
 	
 	switch (c)
 	{
@@ -61,10 +52,10 @@ Token ScannerHttpRequest::getToken(bool skipLWS)
 				while (_charIsString(c))
 				{
 					lexeme += c;
-					c = _scan->get();
+					c = _scan.get();
 				}
 				if (!_charIsString(c))
-					_scan->putback(c);
+					_scan.putback(c);
 				return _makeToken(ScopedEnum::kString, lexeme);
 			}
 			return _makeToken(ScopedEnum::kError,
@@ -74,9 +65,13 @@ Token ScannerHttpRequest::getToken(bool skipLWS)
 
 char ScannerHttpRequest::getChar()
 {
-	return _scan->get();
+	return _scan.get();
 }
 
+void ScannerHttpRequest::pushNewBuffer(const char* buffer)
+{
+	_scan.pushNewBuffer(buffer);
+}
 
 /// Must only be called in the switch statement
 bool ScannerHttpRequest::_charIsString(char c){
@@ -93,8 +88,6 @@ Token ScannerHttpRequest::_makeToken(TokenKind kind, std::string value)
 
 	t.kind = kind;
 	t.value = value;
-	t.column = _scan->getColumn();
-	t.line = _scan->getLine();
 	return t;
 }
 

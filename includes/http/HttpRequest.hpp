@@ -6,7 +6,7 @@
 /*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 11:04:34 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/21 17:50:03 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/21 19:22:38 by juligonz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,9 @@
 # include <string>
 
 # include "AHttpMessage.hpp"
+# include "HttpStatus.hpp"
 # include "Uri.hpp"
+# include "parser/http/ScannerHttpRequest.hpp"
 
 class HttpRequest: public AHttpMessage
 {
@@ -26,12 +28,7 @@ class HttpRequest: public AHttpMessage
 
 		HttpRequest();
 		~HttpRequest();
-
-		/// Copy constructor
-		// HttpRequest(HttpRequest &);
-		/// Assignment operator
-		// HttpRequest& operator=(const HttpRequest &);
-		
+	
 		std::string&	getMethod();
 		Uri&			getUri();
  
@@ -42,24 +39,28 @@ class HttpRequest: public AHttpMessage
 
 		std::string 	toString();
 
-		void			read(std::istream & inputStream);
+		void			read(const char *buffer);
 		void			write(std::ostream os);
+
 		void			clear(void);
-		bool			isComplete(void) {return true;} // en dur pour le moment
-
-		static HttpRequest create(std::istream & inputStream);
-
+		bool			isComplete(void);
+		
+		/// Return 0 if no error during request parsing
+		int				getHttpErrorCode();
 
 	private:
 
+
 	/* --- Member variables ------------------------------------------------- */
 
-		// map_type		_queryParameters;
-		std::string		_method, _version; // _queryString;
+		std::string		_method, _version;
 		Uri				_uri;
+		HttpStatus		_code;
 
 		bool	_isHeaderParsed;
 		bool	_isContentParsed;
+
+		parser::http::ScannerHttpRequest _scanner;
 };
 
 #endif
