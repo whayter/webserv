@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 17:50:07 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/22 11:33:59 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/23 11:20:59 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ namespace server
 			~ServerHandler();
 
 			bool 				start();
-			void 				update();
+			void 				run();
 			void 				stop(int status = 0);
 
 		private:
@@ -56,7 +56,7 @@ namespace server
 
 			bool				_isServerSocket(int index);
 			void				_updateData();
-			void				_cout(int index, std::string message);
+			void				_log(int index, std::string message);
 
 		/* --- Disabled functions ------------------------------------------- */
 

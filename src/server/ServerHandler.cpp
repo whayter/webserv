@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 19:22:37 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/22 11:48:30 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/23 11:38:43 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <ctime>
 #include <iomanip>
 
-#define BUF_SIZE 4096
+#define BUF_SIZE 2048
 #define HELLO "HTTP/1.1 200 OK\nContent-Type: text/html;charset=UTF-8\nContent-Length: 133\n\n<style>html{background-color:black;color:white;text-align:center}</style><html><body><h1>Webserv</h1><h2>Yeah man!</h2></body></html>"
 
 /* --- Public functions ----------------------------------------------------- */
@@ -64,7 +64,7 @@ bool server::ServerHandler::start()
 	return true;
 }
 
-void server::ServerHandler::update()
+void server::ServerHandler::run()
 {
 	_upToDateData = true;
 	int pollStatus;
@@ -100,15 +100,12 @@ void server::ServerHandler::stop(int status)
 	_servers.clear();
 	if (status == -1)
 	{
-		_cout(2, "An error has occurred. ");
-		_cout (2, "Shutting down...");
-		// std::cout << "An error has occurred. " << std::endl;
-		// std::cout << "Shutting down..." << std::endl;
+		_log(2, "An error has occurred. ");
+		_log (2, "Shutting down...");
 		exit(EXIT_FAILURE);
 	}
 	else
-		_cout (2, "Shutting down...");
-		//std::cout << "Shutting down..." << std::endl;
+		_log (2, "Shutting down...");
 }
 
 /* --- Private functions ---------------------------------------------------- */
@@ -121,7 +118,7 @@ void server::ServerHandler::_connectClients(int serverSocket)
 		newFd = accept(serverSocket, NULL, NULL);
 		if (newFd == INVALID_FD)
 			break;
-		_cout(newFd, "Connection accepted.");
+		_log(newFd, "Connection accepted.");
 		_requests[_nfds] = new HttpRequest();
 		_fds[_nfds].fd = newFd;
 		_fds[_nfds].events = POLLIN;
@@ -131,7 +128,7 @@ void server::ServerHandler::_connectClients(int serverSocket)
 
 void server::ServerHandler::_disconnectClient(int index)
 {
-	_cout(_fds[index].fd, "Connection closed.");
+	_log(_fds[index].fd, "Connection closed.");
 	sckt::closeSocket(_fds[index].fd);
 	delete _requests[index];
 	_requests[index] = NULL;
@@ -139,47 +136,21 @@ void server::ServerHandler::_disconnectClient(int index)
 	_upToDateData = false;
 }
 
-// void server::ServerHandler::_serveClient(int index)			// à uncomment
-// {
-// 	_disconnect = false;
-// 	if (!_requests[index]->isComplete())
-// 		_getRequest(index);
-// 	else
-// 		_processRequest(index);
-// 	if (_responses[index]->isReady())
-// 		_sendResponse(index);
-// 	if (_disconnect)
-// 		_disconnectClient(index);
-// }
-
-// void server::ServerHandler::_getRequest(int index)			// à uncomment
-// {
-// 	char buffer[BUF_SIZE] = {0};
-// 	int nbytes = recv(_fds[index].fd, buffer, BUF_SIZE - 1, 0);
-// 	if (nbytes == -1)
-// 		stop(-1);
-// 	else if (nbytes == 0)
-// 	{
-// 		_cout(index, "recv() error.");
-// 		_disconnect = true;
-// 	}
-// 	_cout(index, "Request received.");
-// 	std::stringstream streamRequest(buffer);
-// 	_requests[index]->read(streamRequest);
-// }
-
-void server::ServerHandler::_serveClient(int index)				// à supprimer
+void server::ServerHandler::_serveClient(int index)
 {
 	_disconnect = false;
-	if (!_getRequest(index))
+	if (_getRequest(index) == false)
 		_disconnect = true;
 	else
+	{
+		//_processRequest(index);
 		_sendResponse(index);
-	if (_disconnect == true)			// a mettre dans le else ?
-		_disconnectClient(index);
+		if (_disconnect == true)
+			_disconnectClient(index);
+	}
 }
 
-bool server::ServerHandler::_getRequest(int index)				// à supprimer
+bool server::ServerHandler::_getRequest(int index)
 {
 	char buffer[BUF_SIZE] = {0};
 	int nbytes = recv(_fds[index].fd, buffer, BUF_SIZE - 1, 0);
@@ -187,18 +158,18 @@ bool server::ServerHandler::_getRequest(int index)				// à supprimer
 		stop(-1);
 	else if (nbytes == 0)
 	{
-		_cout(_fds[index].fd, "recv() error.");
+		_log(_fds[index].fd, "recv() error.");
 		return false;
 	}
-	_cout(_fds[index].fd, "Request received.");
-	std::stringstream streamRequest(buffer);
-	_requests[index]->read(streamRequest);
+	_requests[index]->read(buffer);
+	if (_requests[index]->isComplete())
+		_log(_fds[index].fd, "Request received.");
 	return true;
 }
 
 void server::ServerHandler::_processRequest(int index)
 {
-	_cout(index, "Processing request.");
+	_log(_fds[index].fd, "Processing request.");
 	// build response here
 }
 
@@ -206,10 +177,10 @@ void server::ServerHandler::_sendResponse(int index)
 {
 	if (send(_fds[index].fd, HELLO, strlen(HELLO), 0) == -1)
 	{
-		_cout(_fds[index].fd, "send() error.");
+		_log(_fds[index].fd, "send() error.");
 		_disconnect = true;
 	}
-	_cout(_fds[index].fd, "Response sent.");
+	_log(_fds[index].fd, "Response sent.");
 }
 
 bool server::ServerHandler::_isServerSocket(int index)
@@ -235,7 +206,7 @@ void server::ServerHandler::_updateData()
 	_upToDateData = true;
 }
 
-void server::ServerHandler::_cout(int index, std::string message)
+void server::ServerHandler::_log(int index, std::string message)
 {
 	time_t now = time(0);
 	tm *ltm = localtime(&now);
