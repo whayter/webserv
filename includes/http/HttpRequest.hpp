@@ -49,7 +49,9 @@ class HttpRequest: public AHttpMessage
 		int				getHttpErrorCode();
 
 	private:
-
+		/// return false if following token is kEndOfInput.
+		/// meaning the token may be incomplete
+		bool 			_getCompleteToken(parser::http::Token& placeHolder, bool skipLWS = false);
 
 	/* --- Member variables ------------------------------------------------- */
 
@@ -57,8 +59,9 @@ class HttpRequest: public AHttpMessage
 		Uri				_uri;
 		HttpStatus		_code;
 
+		bool	_isRequestLineParsed;
 		bool	_isHeaderParsed;
-		bool	_isContentParsed;
+		bool	_isComplete;
 
 		parser::http::ScannerHttpRequest _scanner;
 };

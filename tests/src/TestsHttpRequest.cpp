@@ -6,11 +6,11 @@
 #include <fstream>
 
 /// simple get
-TEST_CASE( "HttpRequest::read1", "[class][ParserHttpRequest][get]" )
+TEST_CASE( "HttpRequest::read simple get", "[class][HttpRequest][read]" )
 {
 	std::ifstream file;
 
-	file.open("./http_requests/req1", std::ifstream::in);
+	file.open("./http_requests/simple_get", std::ifstream::in);
 	HttpRequest req;
 	std::string str((std::istreambuf_iterator<char>(file)),
                  std::istreambuf_iterator<char>());
@@ -35,11 +35,11 @@ TEST_CASE( "HttpRequest::read1", "[class][ParserHttpRequest][get]" )
 }
 
 // simple post
-TEST_CASE( "HttpRequest::read2", "[class][ParserHttpRequest][post]" )
+TEST_CASE( "HttpRequest::read simple post", "[class][HttpRequest][read]" )
 {
 	std::ifstream file;
 
-	file.open("./http_requests/req2", std::ifstream::in);
+	file.open("./http_requests/simple_post", std::ifstream::in);
 	HttpRequest req;
 	std::string str((std::istreambuf_iterator<char>(file)),
                  std::istreambuf_iterator<char>());
@@ -65,7 +65,7 @@ TEST_CASE( "HttpRequest::read2", "[class][ParserHttpRequest][post]" )
 }
 
 // two get in a row with payload
-TEST_CASE( "HttpRequest::read3", "[class][ParserHttpRequest][get][two]" )
+TEST_CASE( "HttpRequest::read3", "[class][HttpRequest][read]" )
 {
 	std::ifstream file;
 
@@ -120,7 +120,7 @@ TEST_CASE( "HttpRequest::read3", "[class][ParserHttpRequest][get][two]" )
 }
 
 /// two get in a row without payload
-TEST_CASE( "HttpRequest::read4", "[class][ParserHttpRequest][get][two]" )
+TEST_CASE( "HttpRequest::read4", "[class][HttpRequest][read]" )
 {
 	std::ifstream file;
 
@@ -167,4 +167,45 @@ TEST_CASE( "HttpRequest::read4", "[class][ParserHttpRequest][get][two]" )
 	CHECK( req.getHeader("Connection")		== "keep-alive");
 
 	CHECK( req.getContent().empty());
+}
+
+// simple get cut in half
+TEST_CASE( "HttpRequest::read simple get, but cut in two read", "[class][HttpRequest][read][tt]" )
+{
+	std::ifstream file;
+	file.open("./http_requests/simple_get", std::ifstream::in);
+
+	HttpRequest req;
+	std::string data((std::istreambuf_iterator<char>(file)),
+                 std::istreambuf_iterator<char>());
+	
+	size_t idx = 21; // 30
+	std::string one = data.substr(0,idx);
+	std::string two = data.substr(idx);
+	REQUIRE( one + two == data);
+
+
+	req.read(one.c_str());
+	CHECK( req.isComplete() == false);
+	CHECK( req.getHttpErrorCode() == 0);
+	req.read(two.c_str());
+	CHECK( req.isComplete() == true);
+
+
+	CHECK( req.getMethod() == "GET" );
+	CHECK( req.getUri().getPathEtc() == "/getip");
+	CHECK( req.getUri().toString() == "http://dynamicdns.park-your-domain.com:8080/getip");
+
+	CHECK( req.getHeaders().size() == 8);
+	
+	CHECK( req.getHeader("User-Agent")		== "PostmanRuntime/7.26.10");
+	CHECK( req.getHeader("Accept")			== "*/*");
+	CHECK( req.getHeader("Postman-Token")	== "ec250329-5eb0-4d4b-8150-39f294b6aea2");
+	CHECK( req.getHeader("Host") 			== "dynamicdns.park-your-domain.com:8080");
+	CHECK( req.getHeader("Accept-Encoding")	== "gzip, deflate, br");
+	CHECK( req.getHeader("Connection")		== "keep-alive");
+	CHECK( req.getHeader("Cookie")			== "ASPSESSIONIDQADTQAQR=JNJLAIGBPIMBDAJPJNIFKIEK");
+
+	CHECK( req.getContent() == "Test");
+
 }

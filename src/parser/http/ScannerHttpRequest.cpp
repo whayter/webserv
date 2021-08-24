@@ -31,7 +31,7 @@ Token ScannerHttpRequest::getToken(bool skipLWS)
 		do
 		{
 			c = _scan.get();
-		} while (c != '\n' && isspace(c));
+		} while (c != '\n' && c != '\r' && isspace(c));
 	else
 		c = _scan.get();
 	
@@ -67,11 +67,29 @@ char ScannerHttpRequest::getChar()
 {
 	return _scan.get();
 }
+Token ScannerHttpRequest::peekNextToken(bool skipLWS)
+{
+	Token result = getToken(skipLWS);
+	putback(result);
+	return result;
+}
 
 void ScannerHttpRequest::pushNewBuffer(const char* buffer)
 {
 	_scan.pushNewBuffer(buffer);
 }
+
+void ScannerHttpRequest::putback(Token token)
+{
+	std::string::reverse_iterator it = token.value.rbegin();
+	std::string::reverse_iterator end = token.value.rend();
+	while (it != end)
+	{
+		_scan.putback(*it);
+		it++;
+	}
+}
+
 
 /// Must only be called in the switch statement
 bool ScannerHttpRequest::_charIsString(char c){

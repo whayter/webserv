@@ -14,8 +14,8 @@
 #include "parser/http/ScannerHttpRequest.hpp"
 
 HttpRequest::HttpRequest()
-	: AHttpMessage(), _code(HttpStatus::None), _isHeaderParsed(false),
-		_isContentParsed(false), _scanner(NULL)
+	: AHttpMessage(), _code(HttpStatus::None), _isRequestLineParsed(false),
+		_isHeaderParsed(false),	_isComplete(false), _scanner(NULL)
 {}
 
 HttpRequest::~HttpRequest() {}
@@ -67,32 +67,51 @@ namespace ph = parser::http;
 
 void HttpRequest::read(const char *buffer)
 {
+	ph::Token t;
+	
+	// if (isComplete())
+	// 	throw std::logic_error("Wtf ima complete request already");
 	_scanner.pushNewBuffer(buffer);
 
-	ph::Token t = _scanner.getToken(true);
-	if (!t.value.compare("GET") ||	!t.value.compare("POST")
-		||	!t.value.compare("DELETE"))
-	{
-		this->setMethod(t.value);
-		
-		t = _scanner.getToken(true);
-		this->setUri(Uri("http", t.value));
-		
-		t = _scanner.getToken(true);
-		this->setVersion(t.value);
-	}
-	else
-		_code.setValue(HttpStatus::BadRequest);
-		// throw std::invalid_argument("Bad http request, No method specified");
+	// if (!_getCompleteToken(t, true)) return;
+	// if (!_getCompleteToken(t, true)){std::cout << "TOk" << t << std::endl; return;}
+	// t = _scanner.getToken(true);
 
-	t = _scanner.getToken();
-	if (ph::ScopedEnum::kCarriage != t.kind)
-		_code.setValue(HttpStatus::BadRequest);
-		// throw std::invalid_argument("Method line not separated by return carriage");
-	t = _scanner.getToken();
-	if (ph::ScopedEnum::kNewLine != t.kind)
-		_code.setValue(HttpStatus::BadRequest);
-		// throw std::invalid_argument("Method line not separated by new line");
+	if (_isRequestLineParsed == false)
+	{
+		if (_method.empty())
+		{
+			if (!_getCompleteToken(t, true)) return;
+			if (!t.value.compare("GET") ||	!t.value.compare("POST")
+			||	!t.value.compare("DELETE"))
+				this->setMethod(t.value);
+			else
+				throw std::invalid_argument("Bad http request, No method specified");
+			// _code.setValue(HttpStatus::BadRequest);
+		}
+		if (_uri.empty())
+		{		
+			if (!_getCompleteToken(t, true)) return;
+			this->setUri(Uri("http", t.value));
+				
+		}
+		if (_version.empty())
+		{		
+			if (!_getCompleteToken(t, true)) return;
+			this->setVersion(t.value);
+		}
+		if (!_getCompleteToken(t)) return;
+		if (ph::ScopedEnum::kCarriage != t.kind)
+			throw std::invalid_argument("Method line not separated by return carriage");
+			// _code.setValue(HttpStatus::BadRequest);
+
+		if (!_getCompleteToken(t)) return;
+		if (ph::ScopedEnum::kNewLine != t.kind)
+			throw std::invalid_argument("Method line not separated by new line");
+			// _code.setValue(HttpStatus::BadRequest);
+		
+		_isRequestLineParsed = true;
+	}
 
 	std::string name;
 	std::string value;
@@ -150,7 +169,18 @@ void HttpRequest::read(const char *buffer)
 	size_t contentLength = this->getContentLength();
 	while (contentLength-- && (c = _scanner.getChar()) != -1)
 		_content += c;
-	_isContentParsed = true;
+	_isComplete = true;
+}
+
+bool HttpRequest::_getCompleteToken(ph::Token& placeHolder, bool skipLWS)
+{
+	placeHolder = _scanner.getToken(skipLWS);
+	if (_scanner.peekNextToken().kind == ph::ScopedEnum::kEndOfInput)
+	{
+		_scanner.putback(placeHolder);
+		return false;
+	}
+	return true;
 }
 
 void HttpRequest::write(std::ostream os)
@@ -173,13 +203,14 @@ void	HttpRequest::clear(void)
 	_version.clear();
 	_content.clear();
 	_headers.clear();
+	_isRequestLineParsed = false;
 	_isHeaderParsed = false;
-	_isContentParsed = false;
+	_isComplete = false;
 }
 
 bool	HttpRequest::isComplete(void)
 {
-	return _isHeaderParsed && _isContentParsed;
+	return _isComplete;
 }
 
 int	HttpRequest::getHttpErrorCode()

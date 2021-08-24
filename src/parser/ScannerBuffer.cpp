@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/ScannerBuffer.hpp"
+#include "ScannerBuffer.hpp"
 
 parser::ScannerBuffer::ScannerBuffer() : _c(0) {}
 
@@ -43,10 +43,29 @@ void parser::ScannerBuffer::putback(char c)
 	_buffer.push_front(c);
 }
 
+#include <iostream>
+
 void parser::ScannerBuffer::pushNewBuffer(const char *buffer)
 {
 	std::size_t i = 0;
 
 	while (buffer[i])
 		_buffer.push_back(buffer[i++]);
+
+	std::cout <<">>>>>>" << toString() << "<<<<<<<<<<" << std::endl;
+}
+
+std::string parser::ScannerBuffer::toString()
+{
+	std::string result;
+	std::deque<char>::iterator it = _buffer.begin();
+	std::deque<char>::iterator end = _buffer.end();
+
+	while (it != end)
+	{
+		result += *it;
+		it++;
+	}
+
+	return result;
 }
