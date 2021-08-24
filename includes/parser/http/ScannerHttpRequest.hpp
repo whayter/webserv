@@ -52,6 +52,8 @@ public:
 	// spaghetti fix
 	void pushNewBuffer(const char *buffer);
 	void putback(Token token);
+	void putback(std::string str);
+
 private:
 
 	bool _charIsString(char c);

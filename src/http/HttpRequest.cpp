@@ -77,6 +77,8 @@ void HttpRequest::read(const char *buffer)
 	// if (!_getCompleteToken(t, true)){std::cout << "TOk" << t << std::endl; return;}
 	// t = _scanner.getToken(true);
 
+////////////////First line//////////////////////////
+///////////////////////////////////////////
 	if (_isRequestLineParsed == false)
 	{
 		if (_method.empty())
@@ -100,57 +102,78 @@ void HttpRequest::read(const char *buffer)
 			if (!_getCompleteToken(t, true)) return;
 			this->setVersion(t.value);
 		}
-		if (!_getCompleteToken(t)) return;
-		if (ph::ScopedEnum::kCarriage != t.kind)
-			throw std::invalid_argument("Method line not separated by return carriage");
-			// _code.setValue(HttpStatus::BadRequest);
+		{
+			ph::Token cr;
+			if (!_getCompleteToken(cr)) return;
+			if (cr.kind != ph::ScopedEnum::kCarriage)
+				throw std::invalid_argument("Method line not separated by return carriage");
+				// _code.setValue(HttpStatus::BadRequest);
 
-		if (!_getCompleteToken(t)) return;
-		if (ph::ScopedEnum::kNewLine != t.kind)
-			throw std::invalid_argument("Method line not separated by new line");
-			// _code.setValue(HttpStatus::BadRequest);
-		
+			if (!_getCompleteToken(t)) {
+				_scanner.putback(cr);
+				return;
+			}
+			if (t.kind != ph::ScopedEnum::kNewLine)
+				throw std::invalid_argument("Method line not separated by new line");
+				// _code.setValue(HttpStatus::BadRequest);
+		}
 		_isRequestLineParsed = true;
 	}
+
+//////////////////// Headers //////////////////////
+///////////////////////////////////////////
 
 	std::string name;
 	std::string value;
 	bool isValueField = false;
-	bool isHeader = true;
-	bool lastIsCariage = false;
-	while (isHeader && (t = _scanner.getToken()).kind != ph::ScopedEnum::kEndOfInput)
+
+		// while (isHeader && (t = _scanner.getToken()).kind != ph::ScopedEnum::kEndOfInput)
+	// while (!_isHeaderParsed && _getCompleteToken(t) == true)
+	while (!_isHeaderParsed)
 	{
+		if(!_getCompleteToken(t))
+		{
+			if (!name.empty())
+			{
+				if (isValueField)
+					_scanner.putback(name+ ": " + value);
+				else
+					_scanner.putback(name);
+			}
+			return ;
+		}
 		switch (t.kind)
 		{
 			case ph::ScopedEnum::kCarriage:
-				lastIsCariage = true;
-				break;
-			case ph::ScopedEnum::kNewLine :
-				if (lastIsCariage == false)
-					throw std::invalid_argument("MISSING carriage before new line !!!");
+			{
+				ph::Token nl;
+				nl = _scanner.getToken();
+				if (nl.kind != ph::ScopedEnum::kNewLine)
+					throw std::invalid_argument("new line !>" + nl.value + "|" + ph::TokenKindToCstring(t.kind));
+
 				if (!name.empty())
 					this->addHeader(name, value);
 				else
-					isHeader = false;
+					_isHeaderParsed = true;
 				name.clear();
 				value.clear();
-				lastIsCariage = false;
 				isValueField = false;
 				break;
+			}
+			case ph::ScopedEnum::kNewLine :
+				throw std::invalid_argument("MISSING carriage before new line !!!");
+				break;
 			case ph::ScopedEnum::kColon :
-				lastIsCariage = false;
 				if (isValueField)
 					value += t.value;
 				else
 					isValueField = true;
 				break;
 			case ph::ScopedEnum::kLWS :
-				lastIsCariage = false;
 				if (isValueField && !value.empty())
 					value += t.value;
 				break;
 			case ph::ScopedEnum::kString :
-				lastIsCariage = false;
 				if (isValueField == false)
 					name += t.value;
 				else
@@ -162,7 +185,6 @@ void HttpRequest::read(const char *buffer)
 				break;
 		}
 	}
-	_isHeaderParsed = true;
 	this->getUri().setAuthority(this->getHeader("Host"));
 
 	char c;

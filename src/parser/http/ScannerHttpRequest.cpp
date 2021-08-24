@@ -81,15 +81,19 @@ void ScannerHttpRequest::pushNewBuffer(const char* buffer)
 
 void ScannerHttpRequest::putback(Token token)
 {
-	std::string::reverse_iterator it = token.value.rbegin();
-	std::string::reverse_iterator end = token.value.rend();
+	this->putback(token.value);
+}
+
+void ScannerHttpRequest::putback(std::string str)
+{
+	std::string::reverse_iterator it = str.rbegin();
+	std::string::reverse_iterator end = str.rend();
 	while (it != end)
 	{
 		_scan.putback(*it);
 		it++;
 	}
 }
-
 
 /// Must only be called in the switch statement
 bool ScannerHttpRequest::_charIsString(char c){

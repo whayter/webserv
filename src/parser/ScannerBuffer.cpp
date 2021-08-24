@@ -52,7 +52,9 @@ void parser::ScannerBuffer::pushNewBuffer(const char *buffer)
 	while (buffer[i])
 		_buffer.push_back(buffer[i++]);
 
-	std::cout <<">>>>>>" << toString() << "<<<<<<<<<<" << std::endl;
+	std::cout << ">>>>>|";
+	std::cout << toString();
+	std::cout << "|<<<<<<" << std::endl;
 }
 
 std::string parser::ScannerBuffer::toString()
