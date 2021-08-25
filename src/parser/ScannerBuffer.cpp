@@ -43,18 +43,12 @@ void parser::ScannerBuffer::putback(char c)
 	_buffer.push_front(c);
 }
 
-#include <iostream>
-
 void parser::ScannerBuffer::pushNewBuffer(const char *buffer)
 {
 	std::size_t i = 0;
 
 	while (buffer[i])
 		_buffer.push_back(buffer[i++]);
-
-	std::cout << ">>>>>|";
-	std::cout << toString();
-	std::cout << "|<<<<<<" << std::endl;
 }
 
 std::string parser::ScannerBuffer::toString()

@@ -188,9 +188,10 @@ void HttpRequest::read(const char *buffer)
 	this->getUri().setAuthority(this->getHeader("Host"));
 
 	char c;
-	size_t contentLength = this->getContentLength();
-	while (contentLength-- && (c = _scanner.getChar()) != -1)
+	size_t contentLength = this->getContentLength(); // - _content.size();
+	while (contentLength-- && (c = _scanner.getChar()))
 		_content += c;
+	if (_content.size() != this->getContentLength()) return ;
 	_isComplete = true;
 }
 
