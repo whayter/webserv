@@ -235,7 +235,6 @@ TEST_CASE( "HttpRequest::read simple get, cut in two read - loop", "[class][Http
 			std::string two = data.substr(idx);
 			CHECK( one + two == data);
 
-
 			req.read(one.c_str());
 			CHECK( req.isComplete() == false);
 			CHECK( req.getHttpErrorCode() == 0);
@@ -259,13 +258,6 @@ TEST_CASE( "HttpRequest::read simple get, cut in two read - loop", "[class][Http
 
 			CHECK( req.getContent() == "Test"); 
 
-			req.clear();
-			CHECK( req.getMethod().empty() );
-			CHECK( req.getContentLength() == 0 );
-			CHECK( req.getUri().empty());
-
-			CHECK( req.getHeaders().size() == 0);
-			CHECK( req.getContent().empty());
 		}
     }
 
