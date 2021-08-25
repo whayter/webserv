@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/ScannerBuffer.hpp"
+#include "ScannerBuffer.hpp"
 
 parser::ScannerBuffer::ScannerBuffer() : _c(0) {}
 
@@ -49,4 +49,19 @@ void parser::ScannerBuffer::pushNewBuffer(const char *buffer)
 
 	while (buffer[i])
 		_buffer.push_back(buffer[i++]);
+}
+
+std::string parser::ScannerBuffer::toString()
+{
+	std::string result;
+	std::deque<char>::iterator it = _buffer.begin();
+	std::deque<char>::iterator end = _buffer.end();
+
+	while (it != end)
+	{
+		result += *it;
+		it++;
+	}
+
+	return result;
 }

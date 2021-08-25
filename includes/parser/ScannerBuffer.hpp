@@ -14,6 +14,8 @@
 #define SCANNER_BUFFER_HPP
 
 #include <deque>
+#include <string>
+
 
 namespace parser {
 
@@ -31,6 +33,8 @@ public:
 
 	// spaghetti fix
 	void		pushNewBuffer(const char *buffer);
+
+	std::string toString();
 
 private:
 

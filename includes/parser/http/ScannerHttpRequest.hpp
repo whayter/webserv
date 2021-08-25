@@ -47,17 +47,20 @@ public:
 
 	Token getToken(bool skipLWS = false);
 	char getChar();
-	inline Token peekToken() { return _actualToken; };
+	Token peekNextToken(bool skipLWS = false);
 
 	// spaghetti fix
 	void pushNewBuffer(const char *buffer);
+	void putback(Token token);
+	void putback(std::string str);
+
 private:
 
 	bool _charIsString(char c);
 	Token _makeToken(TokenKind kind, std::string value);
 
 	ScannerBuffer _scan;
-	Token	_actualToken;
+	Token	_nextToken;
 }; /* class ScannerHttpRequest */
 
 const char* TokenKindToCstring(TokenKind type);
