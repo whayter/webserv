@@ -13,7 +13,7 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 
 
 	// listen directive
-	CHECK( &config == &ServerConfig::getInstance("testing singleton identity, must override first call"));
+	CHECK( &config == &ServerConfig::getInstance("testing singleton identity, must not override first call"));
 	CHECK( config.getServers().size() == 2);
 
 	CHECK( config.getServer(0).getListen(0).getHostname().empty() );
