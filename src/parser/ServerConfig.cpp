@@ -113,6 +113,11 @@ void ServerConfig::_skipSemiColonNewLine(parser::config::ScannerConfig & scanner
 }
 
 void ServerConfig::_postParser(){
+	_postParserSetAutoindexInChilds();
+	_postParserSetClientMaxBodySizeInChilds();
+}
+
+void ServerConfig::_postParserSetAutoindexInChilds(){
 	std::vector<ServerBlock>::iterator itServer;
 
 	for (itServer = _servers.begin(); itServer != _servers.end(); itServer++)
@@ -126,6 +131,19 @@ void ServerConfig::_postParser(){
 	}
 }
 
+void ServerConfig::_postParserSetClientMaxBodySizeInChilds(){
+	std::vector<ServerBlock>::iterator itServer;
+
+	for (itServer = _servers.begin(); itServer != _servers.end(); itServer++)
+	{
+		if (itServer->hasClientMaxBodySize() == false)
+			continue;
+		std::vector<Location>::iterator itLocation;
+		for (itLocation = itServer->getLocations().begin(); itLocation != itServer->getLocations().end(); itLocation++)
+			if (itLocation->hasClientMaxBodySize() == false)
+				itLocation->setClientMaxBodySize(itServer->getClientMaxBodySize());
+	}
+}
 void ServerConfig::_parse(std::istream & in)
 {
 	pr::ScannerConfig scanner(in);
@@ -173,13 +191,15 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 				else if (t.value == "index")
 					result.setIndex(_parseIndex(scanner));
 				else if (t.value == "server_name")
-					_parseServerName(scanner);
+					result.setServerName(_parseServerName(scanner));
 				else if (t.value == "error_page")
 					result.addErrors(_parseErrorPage(scanner));
 				else if (t.value == "location")
 					result.addLocation(_parseLocation(scanner));
 				else if (t.value == "autoindex")
 					result.setAutoindex(_parseAutoindex(scanner));
+				else if (t.value == "client_max_body_size")
+					result.setClientMaxBodySize(_parseClientMaxBodySize(scanner));
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in context 'server'");
@@ -299,6 +319,8 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 					result.setIndex(_parseIndex(scanner));
 				else if (t.value == "autoindex")
 					result.setAutoindex(_parseAutoindex(scanner));
+				else if (t.value == "client_max_body_size")
+					result.setClientMaxBodySize(_parseClientMaxBodySize(scanner));
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in location context");
@@ -403,4 +425,51 @@ std::pair<std::string, std::string>	ServerConfig::_parseFastCgiParam(parser::con
 	result.second = tValue.value;
 	_skipSemiColonNewLine(scanner);
 	return result;
+}
+
+size_t	ServerConfig::_parseClientMaxBodySize(parser::config::ScannerConfig & scanner)
+{
+	size_t bytes = 0;
+	char unit = 0;
+	pr::Token t;
+
+	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString && t.kind != pr::ScopedEnum::kInteger)
+		_throw_SyntaxError(t, "Unexpected token: " + pr::tokenToString(t) + " in context \"client_max_body_size\".");
+	_skipSemiColonNewLine(scanner);
+	
+	if (t.kind == pr::ScopedEnum::kInteger)
+		return strtoul(t.value.c_str(), 0, 10);
+	
+    std::string::const_iterator it = t.value.begin();
+    std::string::const_iterator end = t.value.end();
+
+	while (it != end && isdigit(*it))
+	{
+		bytes = bytes * 10 + *it - '0';
+		it++;
+	}
+	unit = *it;
+
+	switch (unit)
+	{
+		case 'k':
+			bytes *= 1000;
+			break;
+		case 'K':
+			bytes *= 1024;
+			break;
+		case 'm':
+			bytes *= 1000;
+			bytes *= 1000;
+			break;
+		case 'M':
+			bytes *= 1024;
+			bytes *= 1024;
+			break;	
+	default:
+		_throw_SyntaxError(t, std::string("Unknown unit '") + std::string(it, end) + std::string("' in context \"client_max_body_size\". RTFM !"));
+		break;
+	}
+
+	return bytes;
 }

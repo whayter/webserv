@@ -21,17 +21,7 @@
 #include "Uri.hpp"
 #include "parser/config/ScannerConfig.hpp"
 
-/* Syntax:	 autoindex on | off;
- * Default: autoindex off;
- * Context: http, server, location
- * http://nginx.org/en/docs/http/ngx_http_autoindex_module.html
- *
- *	Syntax:	client_max_body_size size;
- * Default: client_max_body_size 1m;
- * Context:	http, server, location
- * http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size
- *
- */
+#define DEFAULT_CLIENT_MAX_BODY_SIZE 1000 * 1000 // = 1m
 
 class Host
 {
@@ -55,11 +45,13 @@ private:
 class Location
 {
 public:
-	Location(): _autoindex(false), _hasAutoindex(false), _clientMaxBodySize(0) {}
+	Location(): _autoindex(false), _hasAutoindex(false), _clientMaxBodySize(DEFAULT_CLIENT_MAX_BODY_SIZE), _hasClientMaxBodySize(false) {}
 
 	inline std::string	getUri() const				{ return _uri; }
 	inline bool			getAutoindex() const		{ return _autoindex; }
 	inline bool			hasAutoindex() const		{ return _hasAutoindex; }
+	inline bool			hasClientMaxBodySize() const{ return _hasClientMaxBodySize; }
+
 	inline Host			getFastCgiPass() const		{ return _fastCgiPass; }
 	inline size_t		getClientMaxBodySize() const{ return _clientMaxBodySize; }
 	inline std::string	getRoot() const				{ return _root; }
@@ -71,7 +63,10 @@ public:
 		 _hasAutoindex = true;
 	}
 	void 	setFastCgiPass(Host host)			{ _fastCgiPass = host;}
-	void 	setClientMaxBodySize(size_t size)	{_clientMaxBodySize = size;}
+	void 	setClientMaxBodySize(size_t size)	{
+		_clientMaxBodySize = size;
+		_hasClientMaxBodySize = true;
+		}
 	void 	setRoot(std::string root)			{_root = root;}
 	void 	setIndex(std::string index)			{_index = index;}
 
@@ -85,10 +80,15 @@ public:
 
 private:
 	std::string							_uri;
+	
 	bool								_autoindex;
 	bool								_hasAutoindex;
-	Host								_fastCgiPass;
+	
+
 	size_t								_clientMaxBodySize;
+	bool								_hasClientMaxBodySize;
+
+	Host								_fastCgiPass;
 	std::map<std::string, std::string> 	_fastCgiParams;
 	std::string							_root;
 	std::string							_index;
@@ -97,13 +97,16 @@ private:
 struct ServerBlock
 {
 public:
-	ServerBlock(): _autoindex(false), _hasAutoindex(false) {}
+	ServerBlock(): _autoindex(false), _hasAutoindex(false), _clientMaxBodySize(DEFAULT_CLIENT_MAX_BODY_SIZE), _hasClientMaxBodySize(false) {}
 
 	inline std::string	getIndex() const			{ return _index; }
 	inline bool			getAutoindex() const		{ return _autoindex; }
 	inline bool			hasAutoindex() const		{ return _hasAutoindex; }
+	inline bool			hasClientMaxBodySize() const{ return _hasClientMaxBodySize; }
+
 	inline std::string	getRoot() const				{ return _root; }
 	inline std::string	getServerName() const		{ return _serverName; }
+	inline size_t		getClientMaxBodySize() const{ return _clientMaxBodySize; }
 
 	/// return listen from given index (usefull for testing purpose)
 	inline const Host&				getListen(uint32_t index) const	{ return _listens[index];}
@@ -123,9 +126,14 @@ public:
 		 _autoindex = autoindex;
 		 _hasAutoindex = true;
 	}
+
 	void 	setIndex(std::string index)				{ _index = index;}
 	void 	setRoot(std::string root)				{ _root = root;}
 	void 	setServerName(std::string serverName)	{ _serverName = serverName;}
+	void 	setClientMaxBodySize(size_t size) {
+		_clientMaxBodySize = size;
+		_hasClientMaxBodySize = true;
+	}
 
 private:
 	
@@ -133,8 +141,13 @@ private:
 	std::vector<Location>				_locations;
 	std::map<u_short, std::string> 		_errors;
 	std::string							_index;
+
 	bool								_autoindex;
 	bool								_hasAutoindex;
+	
+	size_t								_clientMaxBodySize;
+	bool								_hasClientMaxBodySize;
+	
 	std::string							_serverName;
 	std::string							_root;
 }; /* class ServerBlock */
@@ -177,10 +190,14 @@ private:
 	Location							_parseLocation(parser::config::ScannerConfig & scanner);
 	Host 								_parseHost(parser::config::ScannerConfig & scanner);
 	std::pair<std::string, std::string>	_parseFastCgiParam(parser::config::ScannerConfig & scanner);
+	size_t								_parseClientMaxBodySize(parser::config::ScannerConfig & scanner);
 	
 	Host _parseListenValue(const parser::config::Token& host);
 
 	void _postParser();
+	void _postParserSetAutoindexInChilds();
+	void _postParserSetClientMaxBodySizeInChilds();
+	void _postParserSet();
 
 	void _skipSemiColonNewLine(parser::config::ScannerConfig & scanner);
 	void _throw_SyntaxError(parser::config::Token t, const std::string &error_str);

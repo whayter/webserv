@@ -97,4 +97,16 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 	CHECK( config.getServer(1).getLocations()[1].getFastCgiParam("SCRIPT_FILENAME") == "$document_root$fastcgi_script_name");
 	CHECK( config.getServer(1).getLocations()[1].getFastCgiParam("SERVER_NAME") == "$server_name");
 
+	// client_max_body_size directive
+	CHECK( config.getServer(0).getClientMaxBodySize() == (1000 * 1000) );
+	CHECK( config.getServer(0).getLocations()[0].getClientMaxBodySize() == 1000);
+	CHECK( config.getServer(0).getLocations()[1].getClientMaxBodySize() == 1024);
+	CHECK( config.getServer(0).getLocations()[2].getClientMaxBodySize() == 1000 * 1000);
+
+
+	CHECK( config.getServer(1).getClientMaxBodySize() == 2 * (1000 * 1000) );
+	CHECK( config.getServer(1).getLocations()[0].getClientMaxBodySize() == 2 * (1000 * 1000));
+	CHECK( config.getServer(1).getLocations()[1].getClientMaxBodySize() == 1024 * 1024);
+
+
 }
