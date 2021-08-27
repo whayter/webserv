@@ -29,7 +29,7 @@ http://nginx.org/en/docs/http/ngx_http_core_module.html#error_page
 
 Syntax:	server { ... }
 Default:	—
-Context:	-
+Context: main
 https://nginx.org/en/docs/http/ngx_http_core_module.html#server
 
 Syntax: **listen** address[:port];

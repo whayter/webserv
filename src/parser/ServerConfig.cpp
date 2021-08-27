@@ -160,7 +160,7 @@ void ServerConfig::_parse(std::istream & in)
 					_servers.push_back(_parseServer(scanner));
 				else
 				_throw_SyntaxError(t,
-					"Unknown directive \"" + t.value + "\" at root context");
+					"Unknown directive \"" + t.value + "\" in main context");
 	
 				break;
 			default:
