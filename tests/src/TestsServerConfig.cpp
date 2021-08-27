@@ -9,7 +9,6 @@
 TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConfig]" )
 {
 	ServerConfig& config = ServerConfig::getInstance("./config_files/testParser.conf");
-	(void)config;
 
 
 	// listen directive
@@ -107,6 +106,45 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 	CHECK( config.getServer(1).getClientMaxBodySize() == 2 * (1000 * 1000) );
 	CHECK( config.getServer(1).getLocations()[0].getClientMaxBodySize() == 2 * (1000 * 1000));
 	CHECK( config.getServer(1).getLocations()[1].getClientMaxBodySize() == 1024 * 1024);
+
+
+}
+
+TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[class][ServerConfig][directive][return]" )
+{
+	ServerConfig& config = ServerConfig::getInstance("./config_files/testParser_directive_return.conf");
+	(void)config;
+
+	//server 0
+	CHECK( config.getServers().size() == 2);
+	CHECK( config.getServer(0).hasAutoindex() == false);
+	CHECK( config.getServer(0).getLocations().size() == 4);
+
+	CHECK( config.getServer(0).getLocations()[0].getUri() == "/" ) ;
+	CHECK( config.getServer(0).getLocations()[0].hasReturnDirective() == false );
+	CHECK( config.getServer(0).getLocations()[0].getReturnDirective().hasCode() == false);
+	CHECK( config.getServer(0).getLocations()[0].getReturnDirective().hasText() == false);
+	CHECK( config.getServer(0).getLocations()[0].getReturnDirective().hasUri() == false);
+	CHECK( config.getServer(0).getLocations()[0].getReturnDirective().getCode() == 0);
+	CHECK( config.getServer(0).getLocations()[0].getReturnDirective().getText().empty());
+	CHECK( config.getServer(0).getLocations()[0].getReturnDirective().getUri().empty());
+	
+	CHECK( config.getServer(0).getLocations()[0].getUri() == "/stack" ) ;
+	CHECK( config.getServer(0).getLocations()[0].hasReturnDirective() == true );
+	CHECK( config.getServer(0).getLocations()[0].getReturnDirective().hasCode() == true);
+	CHECK( config.getServer(0).getLocations()[0].getReturnDirective().hasText() == false);
+	CHECK( config.getServer(0).getLocations()[0].getReturnDirective().hasUri() == true);
+	CHECK( config.getServer(0).getLocations()[0].getReturnDirective().getCode() == 301);
+	CHECK( config.getServer(0).getLocations()[0].getReturnDirective().getText().empty());
+	CHECK( config.getServer(0).getLocations()[0].getReturnDirective().getUri() == "https://stackoverflow.com");
+
+	// CHECK( config.getServer(0).getLocations()[0].getUri() == "/stack" ) ;
+	// CHECK( config.getServer(0).getLocations()[0].hasReturnDirective() == true );
+	// CHECK( config.getServer(0).getLocations()[0].getReturnDirective().getCode() == 301);
+	// CHECK( config.getServer(0).getLocations()[0].getReturnDirective().getText().empty());
+	// CHECK( config.getServer(0).getLocations()[0].getReturnDirective().getUri() == "/stack" );
+	//server 1
+
 
 
 }

@@ -55,6 +55,14 @@ Default:	—
 Context:	location
 https://nginx.org/en/docs/http/ngx_http_core_module.html#limit_except
 
+Syntax:	**return** code [text];
+**return** code URL;
+**return** URL;
+Default: —
+Context: server, location
+http://nginx.org/en/docs/http/ngx_http_rewrite_module.html#return
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections
+
 <!-- Syntax:	default_type mime-type;
 Default:	
 default_type text/plain;

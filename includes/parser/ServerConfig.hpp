@@ -23,6 +23,30 @@
 
 #define DEFAULT_CLIENT_MAX_BODY_SIZE 1000 * 1000 // = 1m
 
+class ReturnDirective
+{
+public:
+	ReturnDirective() : _code(0), _uri() {}
+
+	inline u_short getCode() const		{ return _code; }
+	inline const std::string&		getUri() const	{ return _uri; }
+	inline const std::string& getText() const	{ return _text; }
+
+	void setCode(u_short code)				{ _code = code; }
+	void setUri(const std::string& uri)		{ _uri = uri; }
+	void setText(const std::string& text)	{ _text = text; }
+
+	inline bool hasCode() const	{ return _code != 0; }
+	inline bool hasUri() const	{ return !_uri.empty(); }
+	inline bool hasText() const { return !_text.empty(); }
+
+private:
+	u_short 	_code;
+	// Uri			_uri;
+	std::string	_uri;
+	std::string _text;
+}; /* class ReturnDirective */
+
 class Host
 {
 public:
@@ -45,28 +69,38 @@ private:
 class Location
 {
 public:
-	Location(): _autoindex(false), _hasAutoindex(false), _clientMaxBodySize(DEFAULT_CLIENT_MAX_BODY_SIZE), _hasClientMaxBodySize(false) {}
+	Location(): _autoindex(false), _hasAutoindex(false), 
+		_clientMaxBodySize(DEFAULT_CLIENT_MAX_BODY_SIZE), _hasClientMaxBodySize(false),
+		_hasReturnDirective(false)
+	{}
 
-	inline std::string	getUri() const				{ return _uri; }
-	inline bool			getAutoindex() const		{ return _autoindex; }
-	inline bool			hasAutoindex() const		{ return _hasAutoindex; }
-	inline bool			hasClientMaxBodySize() const{ return _hasClientMaxBodySize; }
+	inline std::string				getUri() const				{ return _uri; }
+	inline bool						getAutoindex() const		{ return _autoindex; }
 
-	inline Host			getFastCgiPass() const		{ return _fastCgiPass; }
-	inline size_t		getClientMaxBodySize() const{ return _clientMaxBodySize; }
-	inline std::string	getRoot() const				{ return _root; }
-	inline std::string	getIndex() const			{ return _index; }
+	inline Host						getFastCgiPass() const		{ return _fastCgiPass; }
+	inline size_t					getClientMaxBodySize() const{ return _clientMaxBodySize; }
+	inline const ReturnDirective&	getReturnDirective() const	{ return _returnDirective; }
+	inline std::string				getRoot() const				{ return _root; }
+	inline std::string				getIndex() const			{ return _index; }
 
-	void 	setUri(std::string uri)				{ _uri = uri; }
+	inline bool						hasAutoindex() const		{ return _hasAutoindex; }
+	inline bool						hasClientMaxBodySize() const{ return _hasClientMaxBodySize; }
+	inline bool						hasReturnDirective() const	{ return _hasReturnDirective; }
+
 	void 	setAutoindex(bool autoindex) {
 		 _autoindex = autoindex;
 		 _hasAutoindex = true;
 	}
-	void 	setFastCgiPass(Host host)			{ _fastCgiPass = host;}
 	void 	setClientMaxBodySize(size_t size)	{
 		_clientMaxBodySize = size;
 		_hasClientMaxBodySize = true;
-		}
+	}
+	void 	setReturnDirective(const ReturnDirective& returnDirective)	{
+		_returnDirective = returnDirective;
+		_hasReturnDirective = true;
+	}
+	void 	setUri(std::string uri)				{ _uri = uri; }
+	void 	setFastCgiPass(Host host)			{ _fastCgiPass = host;}
 	void 	setRoot(std::string root)			{_root = root;}
 	void 	setIndex(std::string index)			{_index = index;}
 
@@ -84,9 +118,11 @@ private:
 	bool								_autoindex;
 	bool								_hasAutoindex;
 	
-
 	size_t								_clientMaxBodySize;
 	bool								_hasClientMaxBodySize;
+
+	ReturnDirective						_returnDirective;
+	bool								_hasReturnDirective;
 
 	Host								_fastCgiPass;
 	std::map<std::string, std::string> 	_fastCgiParams;
@@ -97,16 +133,33 @@ private:
 struct ServerBlock
 {
 public:
-	ServerBlock(): _autoindex(false), _hasAutoindex(false), _clientMaxBodySize(DEFAULT_CLIENT_MAX_BODY_SIZE), _hasClientMaxBodySize(false) {}
+	ServerBlock(): _autoindex(false), _hasAutoindex(false),
+		_clientMaxBodySize(DEFAULT_CLIENT_MAX_BODY_SIZE), _hasClientMaxBodySize(false),
+		_hasReturnDirective(false) {}
 
-	inline std::string	getIndex() const			{ return _index; }
-	inline bool			getAutoindex() const		{ return _autoindex; }
-	inline bool			hasAutoindex() const		{ return _hasAutoindex; }
-	inline bool			hasClientMaxBodySize() const{ return _hasClientMaxBodySize; }
+	inline std::string				getIndex() const			{ return _index; }
+	inline bool						getAutoindex() const		{ return _autoindex; }
+	inline std::string				getRoot() const				{ return _root; }
+	inline std::string				getServerName() const		{ return _serverName; }
+	inline size_t					getClientMaxBodySize() const{ return _clientMaxBodySize; }
+	inline const ReturnDirective&	getReturnDirective() const	{ return _returnDirective; }
 
-	inline std::string	getRoot() const				{ return _root; }
-	inline std::string	getServerName() const		{ return _serverName; }
-	inline size_t		getClientMaxBodySize() const{ return _clientMaxBodySize; }
+	inline bool						hasAutoindex() const		{ return _hasAutoindex; }
+	inline bool						hasClientMaxBodySize() const{ return _hasClientMaxBodySize; }
+	inline bool						hasReturnDirective() const	{ return _hasReturnDirective; }
+
+	void 	setAutoindex(bool autoindex) {
+		 _autoindex = autoindex;
+		 _hasAutoindex = true;
+	}
+	void 	setClientMaxBodySize(size_t size) {
+		_clientMaxBodySize = size;
+		_hasClientMaxBodySize = true;
+	}
+	void 	setReturnDirective(const ReturnDirective& returnDirective)	{
+		_returnDirective = returnDirective;
+		_hasReturnDirective = true;
+	}
 
 	/// return listen from given index (usefull for testing purpose)
 	inline const Host&				getListen(uint32_t index) const	{ return _listens[index];}
@@ -122,18 +175,10 @@ public:
 	void	addError(u_short code, const std::string& path) {_errors[code] = path;}
 	void	addErrors(const std::map<u_short, std::string>& errors) { _errors.insert(errors.begin(), errors.end());}
 	
-	void 	setAutoindex(bool autoindex) {
-		 _autoindex = autoindex;
-		 _hasAutoindex = true;
-	}
 
 	void 	setIndex(std::string index)				{ _index = index;}
 	void 	setRoot(std::string root)				{ _root = root;}
 	void 	setServerName(std::string serverName)	{ _serverName = serverName;}
-	void 	setClientMaxBodySize(size_t size) {
-		_clientMaxBodySize = size;
-		_hasClientMaxBodySize = true;
-	}
 
 private:
 	
@@ -148,6 +193,9 @@ private:
 	size_t								_clientMaxBodySize;
 	bool								_hasClientMaxBodySize;
 	
+	ReturnDirective						_returnDirective;
+	bool								_hasReturnDirective;
+
 	std::string							_serverName;
 	std::string							_root;
 }; /* class ServerBlock */
@@ -191,6 +239,7 @@ private:
 	Host 								_parseHost(parser::config::ScannerConfig & scanner);
 	std::pair<std::string, std::string>	_parseFastCgiParam(parser::config::ScannerConfig & scanner);
 	size_t								_parseClientMaxBodySize(parser::config::ScannerConfig & scanner);
+	ReturnDirective						_parseReturn(parser::config::ScannerConfig & scanner);
 	
 	Host _parseListenValue(const parser::config::Token& host);
 

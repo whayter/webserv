@@ -200,6 +200,8 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 					result.setAutoindex(_parseAutoindex(scanner));
 				else if (t.value == "client_max_body_size")
 					result.setClientMaxBodySize(_parseClientMaxBodySize(scanner));
+				else if (t.value == "return")
+					result.setReturnDirective(_parseReturn(scanner));
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in context 'server'");
@@ -321,6 +323,8 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 					result.setAutoindex(_parseAutoindex(scanner));
 				else if (t.value == "client_max_body_size")
 					result.setClientMaxBodySize(_parseClientMaxBodySize(scanner));
+				else if (t.value == "return")
+					result.setReturnDirective(_parseReturn(scanner));
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in location context");
@@ -472,4 +476,44 @@ size_t	ServerConfig::_parseClientMaxBodySize(parser::config::ScannerConfig & sca
 	}
 
 	return bytes;
+}
+
+ReturnDirective	ServerConfig::_parseReturn(parser::config::ScannerConfig & scanner)
+{
+	ReturnDirective result;
+	pr::Token argOne;
+	pr::Token argTwo;
+	size_t code = 0;
+
+	if ((argOne = scanner.getToken()).kind != pr::ScopedEnum::kString && argOne.kind != pr::ScopedEnum::kInteger)
+		_throw_SyntaxError(argOne, "Unexpected token: " + pr::tokenToString(argOne) + " in context \"return\".");
+
+	if (argOne.kind == pr::ScopedEnum::kInteger)
+	{
+		if ((argTwo = scanner.getToken()).kind != pr::ScopedEnum::kString)
+			_throw_SyntaxError(argTwo, "Unexpected token: " + pr::tokenToString(argTwo) + " in context \"return\".");
+
+		std::string::const_iterator it = argOne.value.begin();
+		std::string::const_iterator end = argOne.value.end();
+
+		while (it != end && isdigit(*it))
+		{
+			code = code * 10 + *it - '0';	
+			it++;
+		}
+		if (code == 301 || code == 302 || code == 303
+		|| code == 307 || code == 308)
+			result.setUri(argTwo.value);
+		else if (code == 204 || code == 400 || code == 402
+		|| code == 406 || code == 408 || code == 410 || code == 411
+		|| code == 413 || code == 416 || code == 500 || code == 504)
+			result.setText(argTwo.value);
+		else
+			_throw_SyntaxError(argOne, "Can't use code " + intToString(code) + " in context \"return\". RTFM !");
+		result.setCode(code);
+	}
+	else
+		result.setUri(argOne.value);
+	_skipSemiColonNewLine(scanner);
+	return result;
 }
