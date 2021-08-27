@@ -24,20 +24,20 @@
 
 #### General 
 
-- [ ] The C++ standard must be C++ 98. Your project must compile with it.
-- [ ] No external library, no Boost, etc...
-- [ ] It must be non-blocking and use only 1 poll (or equivalent) for all the IO between the client and the server (listens includes).
-- [ ] poll (or equivalent) should check read and write at the same time.
+- [x] The C++ standard must be C++ 98. Your project must compile with it.
+- [x] No external library, no Boost, etc...
+- [x] It must be non-blocking and use only 1 poll (or equivalent) for all the IO between the client and the server (listens includes).
+- [x] poll (or equivalent) should check read and write at the same time.
 - [ ] Your server should never block and the client should be bounce properly if necessary.
-- [ ] You should never do a read operation or a write operation without going through poll (or equivalent).
-- [ ] Checking the value of errno is strictly forbidden after a read or a write operation.
+- [x] You should never do a read operation or a write operation without going through poll (or equivalent).
+- [x] Checking the value of errno is strictly forbidden after a read or a write operation.
 - [ ] A request to your server should never hang forever.
 - [ ] You server should have default error pages if none are provided.
 - [ ] Your program should not leak and should never crash, (even when out of memory if all the initialization is done)
-- [ ] You can’t use fork for something else than CGI (like php or python etc...)
-- [ ] You can’t execve another webserver...
-- [ ] Your program should have a config file in argument or use a default path.
-- [ ] You don’t need to use poll (or equivalent) before reading your config file.
+- [x] You can’t use fork for something else than CGI (like php or python etc...)
+- [x] You can’t execve another webserver...
+- [x] Your program should have a config file in argument or use a default path.
+- [x] You don’t need to use poll (or equivalent) before reading your config file.
 - [ ] You should be able to serve a fully static website.
 - [ ] Client should be able to upload files.
 - [ ] Your HTTP response status codes must be accurate.
