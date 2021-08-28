@@ -255,23 +255,6 @@ private:
 	std::vector<ServerBlock>	_servers;
 	std::string					_configFilePath;
 
-public:
-
-	class SyntaxError: public std::exception
-	{
-		public:
-			SyntaxError(const char * message)		: _message(message) {}
-			SyntaxError(const std::string& message)	: _message(message) {}
-			virtual ~SyntaxError() throw() {}
-
-			virtual const char* what() const throw() {
-				return _message.c_str();
-			}
-
-		protected:
-			std::string _message;
-	};
-
 }; /* class ServerConfig */
 
 #endif /* SERVER_CONFIG_HPP */

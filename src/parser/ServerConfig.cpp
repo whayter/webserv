@@ -14,6 +14,8 @@
 
 #include "parser/config/ScannerConfig.hpp"
 #include "utility.hpp"
+#include  "SyntaxError.hpp"
+
 
 #include <fstream>
 #include <exception>
@@ -98,7 +100,7 @@ void ServerConfig::_throw_SyntaxError(parser::config::Token t, const std::string
 	error += ": error: ";
 	error += error_str;
 	error += '\n';
-	throw ServerConfig::SyntaxError(error);
+	throw SyntaxError(error);
 }
 
 void ServerConfig::_skipSemiColonNewLine(parser::config::ScannerConfig & scanner)
@@ -503,7 +505,14 @@ ReturnDirective	ServerConfig::_parseReturn(parser::config::ScannerConfig & scann
 		}
 		if (code == 301 || code == 302 || code == 303
 		|| code == 307 || code == 308)
+		{
 			result.setUri(argTwo.value);
+			try {
+				result.setUri(argTwo.value);}
+			catch(const SyntaxError& e){
+				_throw_SyntaxError(argTwo, "Problem with uri in context \"return\".");
+			}
+		}
 		else if (code == 204 || code == 400 || code == 402
 		|| code == 406 || code == 408 || code == 410 || code == 411
 		|| code == 413 || code == 416 || code == 500 || code == 504)
@@ -513,6 +522,13 @@ ReturnDirective	ServerConfig::_parseReturn(parser::config::ScannerConfig & scann
 		result.setCode(code);
 	}
 	else
+	{	
+		try {
+			result.setUri(argTwo.value); }
+		catch(const SyntaxError& e)	{
+			_throw_SyntaxError(argTwo, "Problem with uri in context \"return\".");
+		}
+	}
 		result.setUri(argOne.value);
 	_skipSemiColonNewLine(scanner);
 	return result;
