@@ -12,7 +12,7 @@ TEST_CASE( "ScannerConfig1 - from stream", "[class][ScannerConfig]" )
 {
 	std::ifstream file;
 
-	file.open("./config_files/default.conf", std::ifstream::in);
+	file.open("./config_files/testScannerConfig.conf", std::ifstream::in);
 
 	ScannerConfig scanner(file);
 	Token t;
