@@ -6,30 +6,32 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 19:22:37 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/23 16:36:50 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/29 15:57:24 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ServerHandler.hpp"
 #include "HttpRequest.hpp"
 
-#include <cerrno>
+#include "HttpResponse.hpp"
 
+#include <cerrno>
 #include <ctime>
 #include <iomanip>
 
 #define BUF_SIZE 2048
-#define HELLO "HTTP/1.1 200 OK\nContent-Type: text/html;charset=UTF-8\nContent-Length: 133\n\n<style>html{background-color:black;color:white;text-align:center}</style><html><body><h1>Webserv</h1><h2>Yeah man!</h2></body></html>"
 
 /* --- Public functions ----------------------------------------------------- */
 
-server::ServerHandler::ServerHandler(std::vector<uint32_t> ports)
+server::ServerHandler::ServerHandler()
 {
+	ServerConfig& config = ServerConfig::getInstance();
+	std::vector<uint32_t> ports = config.getPorts();
 	std::vector<uint32_t>::iterator port;
-
 	for (port = ports.begin(); port != ports.end(); port++)
 	{
 		server::Server newServer;
+		newServer.block = config.findServer(*port);
 		newServer.port = *port;
 		_servers.push_back(newServer);
 	}
@@ -42,7 +44,7 @@ server::ServerHandler::~ServerHandler()
 	stop(0);
 }
 
-bool server::ServerHandler::start()
+bool server::ServerHandler::start(void)
 {
 	std::vector<Server>::iterator server;
 	for (server = _servers.begin(); server != _servers.end(); server++)
@@ -64,7 +66,7 @@ bool server::ServerHandler::start()
 	return true;
 }
 
-void server::ServerHandler::run()
+void server::ServerHandler::run(void)
 {
 	_upToDateData = true;
 	int pollStatus;
@@ -81,7 +83,11 @@ void server::ServerHandler::run()
 			if (_isServerSocket(i))
 				_connectClients(_fds[i].fd);
 			else
-				_serveClient(i);
+			{
+				_getRequest(i);
+				if (_requests[i]->isComplete())
+					_serveClient(i);
+			}
 		}
 		else
 			stop(-1);
@@ -138,12 +144,11 @@ void server::ServerHandler::_disconnectClient(int index)
 
 void server::ServerHandler::_serveClient(int index)
 {
-	_getRequest(index);
-	if (_requests[index]->isComplete())
-	{
-		_processRequest(index);
-		_sendResponse(index);
-	}
+	u_short requestedPort = _requests[index]->getUri().getPort();
+	HttpResponse response(_getServer(requestedPort), *_requests[index]);
+	response.setMandatory();
+	_sendResponse(index, response.toString().c_str());
+	_requests[index]->clear();
 }
 
 void server::ServerHandler::_getRequest(int index)
@@ -158,22 +163,9 @@ void server::ServerHandler::_getRequest(int index)
 		_log(_fds[index].fd, "Request received.");
 }
 
-void server::ServerHandler::_processRequest(int index)
+void server::ServerHandler::_sendResponse(int index, const char* response)
 {
-	_log(_fds[index].fd, "Processing request.");
-
-	std::string method = _requests[index]->getMethod();
-
-	//std::cout << "Method: " << method << std::endl;
-
-	// if (method == "HEAD")
-
-	// build response here
-}
-
-void server::ServerHandler::_sendResponse(int index)
-{
-	if (send(_fds[index].fd, HELLO, strlen(HELLO), 0) == -1)
+	if (send(_fds[index].fd, response, strlen(response), 0) == -1)
 	{
 		_log(_fds[index].fd, "Could not send the response.");
 		stop(-1);
@@ -181,12 +173,21 @@ void server::ServerHandler::_sendResponse(int index)
 	_log(_fds[index].fd, "Response sent.");
 }
 
+server::Server server::ServerHandler::_getServer(u_short port)
+{
+	std::vector<Server>::iterator server;
+	for (server = _servers.begin(); server != _servers.end(); server++)
+		if (server->port == port)
+			break;
+	return *server;
+}
+
 bool server::ServerHandler::_isServerSocket(int index)
 {
 	return index < _firstClientIndex;
 }
 
-void server::ServerHandler::_updateData()
+void server::ServerHandler::_updateData(void)
 {
 	for (int i = 0; i < _nfds; i++)
 	{
@@ -204,7 +205,7 @@ void server::ServerHandler::_updateData()
 	_upToDateData = true;
 }
 
-void server::ServerHandler::_log(int index, std::string message)
+void server::ServerHandler::_log(int fd, std::string message)
 {
 	time_t now = time(0);
 	tm *ltm = localtime(&now);
@@ -217,10 +218,10 @@ void server::ServerHandler::_log(int index, std::string message)
 	std::cout << std::setw(2) << std::setfill('0');
 	std::cout << ltm->tm_sec << "]";
 	std::cout << std::setw(3) << std::setfill(' ') << ' ';
-	if (index >= _firstClientIndex)
+	if (fd >= _firstClientIndex)
 	{
 		std::cout << std::setw(2) << std::setfill('0');
-		std::cout << index;
+		std::cout << fd;
 		std::cout << " - ";
 	}
 	std::cout << message << std::endl;

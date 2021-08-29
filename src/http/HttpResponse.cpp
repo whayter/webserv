@@ -3,108 +3,162 @@
 /*                                                        :::      ::::::::   */
 /*   HttpResponse.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:47:59 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/12 22:22:44 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/29 15:50:09 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "http/HttpResponse.hpp"
+#include "HttpResponse.hpp"
+#include "ServerConfig.hpp"
 
-HttpResponse::HttpResponse()
+/* --- Public functions ----------------------------------------------------- */
+
+HttpResponse::HttpResponse(server::Server server, HttpRequest& request)
+: _server(server), _request(request)
 {
-	_status.setValue(HttpStatus::OK);
+	int code = request.getHttpErrorCode();
+	if (code == 0)
+		_setStatus(HttpStatus::OK);
+	else
+		_setStatus(code);
 }
 
 HttpResponse::~HttpResponse() {}
 
-int HttpResponse::getStatus()
+void HttpResponse::setContent()
 {
-	return _status.getValue();
+	// call cgi here
+	methodGet("www/index.php"); 		// tmp
 }
 
-std::string HttpResponse::getStatusMessage(int code)
+void HttpResponse::setError()
 {
-	return _status.getMessage(code);
+	_content = "<!DOCTYPE html>";
+	_content += "<meta charset=\"utf-8\">";
+	_content += "<html lang=\"en\"><head><title>" + code + "</title>";
+	_content += "<style>body{text-align:center}</style></head>";
+	_content += "<body><h1>" + _getStatus();
+	_content += + " - " + _getStatusMessage() + "</h1></body>";
+	_content += "</html>";
 }
 
-void HttpResponse::setStatus(int code)
+void HttpResponse::setMandatory()
 {
-	_status.setValue(code);
+	_setStatusLine();
+	_setDate();
+	_setServer();
+
+	setContent();	// tmp
+
+	_setContentLength(_content.size());
+
+	_setContentType(_request.getUri());
 }
 
-void HttpResponse::setContentLength(int contentLength)
+
+
+void HttpResponse::methodGet(std::string filename)
+{
+	std::ifstream ifs(filename);
+	if (!ifs)
+		return ;
+	ifs.seekg(0, ifs.end);
+	int len = ifs.tellg();
+	ifs.seekg(0, ifs.beg);
+	char buffer[len];
+	ifs.read(buffer, len);
+	_content = buffer;
+	//std::cout << _content << std::endl;
+}
+
+
+std::string HttpResponse::toString()
+{
+	std::string s;
+	s = _statusLine + "\n";
+	map_type::iterator header;
+	for (header = _headers.begin(); header != _headers.end(); header++)
+		s += header->first + ": " + header->second + "\n";
+	s += "\n" + _content;
+	return s;
+}
+
+/* --- Private functions ---------------------------------------------------- */
+
+std::string	HttpResponse::_getHeader(std::string key)
+{
+	map_type::iterator header = _headers.find(key);
+	return header->first + ": " + header->second;	
+}
+
+int			HttpResponse::_getStatus(void)
+{
+	return _code.getValue();
+}
+
+std::string	HttpResponse::_getStatusMessage(void)
+{
+	return _code.getMessage(_getStatus());
+}
+
+void		HttpResponse::_setStatus(int code)
+{
+	_code.setValue(code);
+}
+
+void		HttpResponse::_setStatusLine(void)
+{
+	_statusLine = "HTTP/1.1 ";
+	std::ostringstream oss;
+	oss << _getStatus();
+	_statusLine += oss.str();
+	_statusLine += " ";
+	_statusLine += _getStatusMessage();
+}
+
+void		HttpResponse::_setDate(void)
+{
+	time_t now = time(0);
+	std::string date = ctime(&now);
+	date.pop_back();
+	this->addHeader("Date", date);
+}
+
+void 		HttpResponse::_setServer(void)
+{
+	this->addHeader("Server", _server.block.getServerName());
+}
+
+void 		HttpResponse::_setContentLength(int contentLength)
 {
 	std::ostringstream os;
 	os << contentLength;
 	this->addHeader("Content-Length", os.str());
 }
 
-void HttpResponse::read(std::istream is)
+void 		HttpResponse::_setContentType(const Uri& uri)
 {
-	std::string line, s;
-	size_t pos;
-	
-	try
-	{
-		std::getline(is, line);
-		pos = line.find(" ");
+	(void)uri;
+	addHeader("Content-Type", "text/html"); // tmp
 
+	// scrapper le content-type dans le content demandé / retourné par cgi ?
 
-
-		while (!is.eof())
-		{
-			std::getline(is, line);
-			pos = line.find(":");
-			s = line.substr(0, pos);
-			line.erase(0, pos + 1);
-			this->addHeader(s, line);
-		}
-	}
-	catch(const std::exception& e)
-	{
-		this->setStatus(HttpStatus::NoContent);
-	}
-}
-
-void HttpResponse::sendError(int code, std::ofstream out)
-{
-	out << "<html><body><p>HTTP Error ";
-	out << code << " - " << this->getStatusMessage(code);
-	out << "</p></body></html>";
-	setStatus(code);
-}
-
-std::string HttpResponse::toString()
-{
-	std::string s;
-	std::ostringstream oss;
-	map_type header;
-	map_type::iterator it;
-
-	s = "Status:\n\t";
-	oss << getStatus();
-	s += oss.str() + "\n";
-	s += "Headers:\n";
-	header = this->getHeaders();
-	for (it = header.begin(); it != header.end(); it++)
-		s += "\t" + it->first + "\t" + it->second + "\n";
-	return s;
-}
-
-void HttpResponse::write(std::ostream os)
-{
-	map_type header;
-	map_type::iterator it;
-
-	setContentLength(_content.length());
-	os << "HTTP/1.1 ";
-	os << this->getStatus() << " ";
-	os << this->getStatusMessage(this->getStatus()) << "\n";
-	header = this->getHeaders();
-	for (it = header.begin(); it != header.end(); it++)
-		os << it->first << ": " << it->second << "\n";
-	os << _content;
-	os.flush();
+	// std::string path = uri.getPathEtc();
+	// if (path == "/")
+	// {
+	// 	path = _server.block.findLocation(uri).getIndex();
+	// 	if (path.empty())
+	// 		path = _server.block.getIndex();
+	// }
+	// int pos = path.find_last_of(".");
+	// if (!path.at(pos) || !path.at(pos + 1))
+	// {
+	// 	addHeader("Content-Type", "text/plain");
+	// 	return ;
+	// }
+	// std::string type = path.substr(pos + 1);
+	// if (type == "html" || type == "htm" || type == "php")
+	// 	addHeader("Content-Type", "text/html");
 }
