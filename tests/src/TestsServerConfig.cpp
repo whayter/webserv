@@ -115,8 +115,9 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 	ServerConfig& config = ServerConfig::getInstance("./config_files/testParser_directive_return.conf");
 	(void)config;
 
-	//server 0
 	CHECK( config.getServers().size() == 2);
+	//server 0
+
 	CHECK( config.getServer(0).hasReturnDirective() == true);
 	CHECK( config.getServer(0).getReturnDirective().hasText() == false);
 	CHECK( config.getServer(0).getReturnDirective().hasCode() == true);
@@ -154,10 +155,61 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 	CHECK( config.getServer(0).getLocations()[2].getReturnDirective().getText().empty());
 	CHECK( config.getServer(0).getLocations()[2].getReturnDirective().getUri() == "https://youtube.fr");
 
+	CHECK( config.getServer(0).getLocations()[3].getUri() == "/intra" ) ;
+	CHECK( config.getServer(0).getLocations()[3].hasReturnDirective() == true );
+	CHECK( config.getServer(0).getLocations()[3].getReturnDirective().hasCode() == true);
+	CHECK( config.getServer(0).getLocations()[3].getReturnDirective().hasText() == false);
+	CHECK( config.getServer(0).getLocations()[3].getReturnDirective().hasUri() == true);
+	CHECK( config.getServer(0).getLocations()[3].getReturnDirective().getCode() == 307);
+	CHECK( config.getServer(0).getLocations()[3].getReturnDirective().getText().empty());
+	CHECK( config.getServer(0).getLocations()[3].getReturnDirective().getUri() == "https://intra.42.fr");
+
+	CHECK( config.getServer(0).getLocations()[4].getUri() == "/nginx" ) ;
+	CHECK( config.getServer(0).getLocations()[4].hasReturnDirective() == true );
+	CHECK( config.getServer(0).getLocations()[4].getReturnDirective().hasCode() == true);
+	CHECK( config.getServer(0).getLocations()[4].getReturnDirective().hasText() == false);
+	CHECK( config.getServer(0).getLocations()[4].getReturnDirective().hasUri() == true);
+	CHECK( config.getServer(0).getLocations()[4].getReturnDirective().getCode() == 308);
+	CHECK( config.getServer(0).getLocations()[4].getReturnDirective().getText().empty());
+	CHECK( config.getServer(0).getLocations()[4].getReturnDirective().getUri() == "http://nginx.org");
+
+	CHECK( config.getServer(0).getLocations()[5].getUri() == "/bird" ) ;
+	CHECK( config.getServer(0).getLocations()[5].hasReturnDirective() == true );
+	CHECK( config.getServer(0).getLocations()[5].getReturnDirective().hasCode() == true);
+	CHECK( config.getServer(0).getLocations()[5].getReturnDirective().hasText() == true);
+	CHECK( config.getServer(0).getLocations()[5].getReturnDirective().hasUri() == false);
+	CHECK( config.getServer(0).getLocations()[5].getReturnDirective().getCode() == 204);
+	CHECK( config.getServer(0).getLocations()[5].getReturnDirective().getText() == "data_returned_quotes?");
+	CHECK( config.getServer(0).getLocations()[5].getReturnDirective().getUri().empty());
+
 	
 	
 	// server 1
 
+	CHECK( config.getServer(1).getReturnDirective().hasText() == false);
+	CHECK( config.getServer(1).hasReturnDirective() == false);
+	CHECK( config.getServer(1).getReturnDirective().hasCode() == false);
+	CHECK( config.getServer(1).getReturnDirective().hasUri() == false);
+	CHECK( config.getServer(1).getReturnDirective().getCode() == 0);
+	CHECK( config.getServer(1).getReturnDirective().getText().empty());
+	CHECK( config.getServer(1).getReturnDirective().getUri().empty());
 
+	CHECK( config.getServer(1).getLocations()[0].getUri() == "/" ) ;
+	CHECK( config.getServer(1).getLocations()[0].hasReturnDirective() == true );
+	CHECK( config.getServer(1).getLocations()[0].getReturnDirective().hasCode() == false);
+	CHECK( config.getServer(1).getLocations()[0].getReturnDirective().hasText() == false);
+	CHECK( config.getServer(1).getLocations()[0].getReturnDirective().hasUri() == true);
+	CHECK( config.getServer(1).getLocations()[0].getReturnDirective().getCode() == 0);
+	CHECK( config.getServer(1).getLocations()[0].getReturnDirective().getText().empty());
+	CHECK( config.getServer(1).getLocations()[0].getReturnDirective().getUri() == "stack");
+
+	CHECK( config.getServer(1).getLocations()[1].getUri() == "/stack" ) ;
+	CHECK( config.getServer(1).getLocations()[1].hasReturnDirective() == true );
+	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().hasCode() == false);
+	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().hasText() == false);
+	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().hasUri() == true);
+	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().getCode() == 0);
+	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().getText().empty());
+	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().getUri() == "https://stackoverflow.com");
 
 }

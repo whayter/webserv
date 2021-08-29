@@ -506,7 +506,6 @@ ReturnDirective	ServerConfig::_parseReturn(parser::config::ScannerConfig & scann
 		if (code == 301 || code == 302 || code == 303
 		|| code == 307 || code == 308)
 		{
-			result.setUri(argTwo.value);
 			try {
 				result.setUri(argTwo.value);}
 			catch(const SyntaxError& e){
@@ -524,12 +523,11 @@ ReturnDirective	ServerConfig::_parseReturn(parser::config::ScannerConfig & scann
 	else
 	{	
 		try {
-			result.setUri(argTwo.value); }
+			result.setUri(argOne.value); }
 		catch(const SyntaxError& e)	{
 			_throw_SyntaxError(argTwo, "Problem with uri in context \"return\".");
 		}
 	}
-		result.setUri(argOne.value);
 	_skipSemiColonNewLine(scanner);
 	return result;
 }
