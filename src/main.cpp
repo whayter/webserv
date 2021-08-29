@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/30 14:07:41 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/23 10:22:25 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/24 16:51:00 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,7 @@ void signalCallback(int signum) {
 int main(int ac, char** av)
 {
 	parseArgs(ac, av);
-	ServerConfig& config = ServerConfig::getInstance();
-	server::ServerHandler sh(config.getPorts());
+	server::ServerHandler sh;
 	signal(SIGINT, signalCallback);
 	sh.start();
 	run = true;

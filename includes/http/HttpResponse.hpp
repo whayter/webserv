@@ -3,21 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   HttpResponse.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 09:29:57 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/07 13:12:53 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/29 16:07:51 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HTTP_RESPONSE_HPP
 # define HTTP_RESPONSE_HPP
 
+# include "AHttpMessage.hpp"
+# include "HttpRequest.hpp"
+# include "HttpStatus.hpp"
+# include "ServerHandler.hpp"
+
 # include <string>
 # include <fstream>
-
-# include "AHttpMessage.hpp"
-# include "HttpStatus.hpp"
 
 class HttpResponse: public AHttpMessage
 {
@@ -25,30 +27,40 @@ class HttpResponse: public AHttpMessage
 
 	/* --- Member functions ------------------------------------------------- */
 
-		HttpResponse();
+		HttpResponse(server::Server server, HttpRequest& request);
 		~HttpResponse();
 
-		int				getStatus();
-		std::string		getStatusMessage(int code);
+		void			setMandatory();
 
+		void			setContent();
+		void			setError();
 
+		void methodGet(std::string filename);
 
-		void			setStatus(int code);
-		void			setContentLength(int contentLength);
-
-		void			read(std::istream is);
-		void			write(std::ostream os);
-
-		void			sendError(int code, std::ofstream out);
-
-		std::string		toString();
-		
+		std::string		toString();		
 
 	private:
 
+	/* --- Private functions ------------------------------------------------ */
+
+		std::string		_getHeader(std::string key);
+		int				_getStatus(void); 
+		std::string		_getStatusMessage(void);
+
+		void			_setStatus(int code);
+		void			_setStatusLine(void);
+		void			_setDate(void);
+		void			_setServer(void);
+		void			_setContentType(const Uri& uri);
+		void			_setContentLength(int contentLength);
+
 	/* --- Member variables ------------------------------------------------- */
 
-		HttpStatus		_status;
+		server::Server	_server;
+		HttpRequest		_request;
+		std::string		_statusLine;
+		std::string		_content;	
+		HttpStatus		_code;
 };
 
 #endif

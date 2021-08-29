@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 17:50:07 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/23 16:36:57 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/25 19:24:44 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include "Socket.hpp"
 # include "HttpRequest.hpp"
-# include "HttpResponse.hpp"
+#include "ServerConfig.hpp"
 
 # include <poll.h>
 # include <vector>
@@ -24,6 +24,7 @@ namespace server
 {
 	struct Server
 	{
+		ServerBlock				block;
 		sckt::Socket			socket;
 		uint32_t				port;
 		int						index;
@@ -35,11 +36,11 @@ namespace server
 
 		/* --- Member functions --------------------------------------------- */
 
-			ServerHandler(std::vector<uint32_t> ports);
+			ServerHandler();
 			~ServerHandler();
 
-			bool 				start();
-			void 				run();
+			bool 				start(void);
+			void 				run(void);
 			void 				stop(int status = 0);
 
 		private:
@@ -51,12 +52,12 @@ namespace server
 			void				_serveClient(int index);
 			
 			void				_getRequest(int index);
-			void				_processRequest(int index);
-			void				_sendResponse(int index);
+			void				_sendResponse(int index, const char* response);
 
+			Server				_getServer(u_short port);
 			bool				_isServerSocket(int index);
-			void				_updateData();
-			void				_log(int index, std::string message);
+			void				_updateData(void);
+			void				_log(int fd, std::string message);
 
 		/* --- Disabled functions ------------------------------------------- */
 
