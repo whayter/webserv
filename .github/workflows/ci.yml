@@ -19,6 +19,11 @@ jobs:
 
     - name: make
       run: make
+    - name: test run
+      run: |
+        ./webserv &
+        sleep 3
+        ps -p $!
 
   unit-tests:
     runs-on: ${{ matrix.os }}
