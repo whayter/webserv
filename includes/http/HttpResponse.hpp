@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 09:29:57 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/29 15:44:04 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/29 16:07:51 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class HttpResponse: public AHttpMessage
 		void			setMandatory();
 
 		void			setContent();
-		void			setError(int code);
+		void			setError();
 
 		void methodGet(std::string filename);
 

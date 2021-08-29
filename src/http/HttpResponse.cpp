@@ -6,12 +6,13 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:47:59 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/29 15:50:09 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/29 16:15:09 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HttpResponse.hpp"
 #include "ServerConfig.hpp"
+#include "utility.hpp"
 
 /* --- Public functions ----------------------------------------------------- */
 
@@ -37,9 +38,10 @@ void HttpResponse::setError()
 {
 	_content = "<!DOCTYPE html>";
 	_content += "<meta charset=\"utf-8\">";
-	_content += "<html lang=\"en\"><head><title>" + code + "</title>";
+	_content += "<html lang=\"en\"><head><title>";
+	_content += intToString(_getStatus() + "</title>";
 	_content += "<style>body{text-align:center}</style></head>";
-	_content += "<body><h1>" + _getStatus();
+	_content += "<body><h1>" + intToString(_getStatus());
 	_content += + " - " + _getStatusMessage() + "</h1></body>";
 	_content += "</html>";
 }
