@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:47:59 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/29 16:24:07 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/29 16:26:47 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void HttpResponse::setMandatory()
 void HttpResponse::methodGet(std::string filename)
 {
 	std::ifstream ifs;
-	ifs.open(filename);
+	ifs.open(filename.c_str());
 	if (!ifs)
 		return ;
 	ifs.seekg(0, ifs.end);
