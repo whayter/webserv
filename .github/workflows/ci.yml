@@ -21,7 +21,7 @@ jobs:
       run: make
     - name: test run
       run: |
-        ./webserv &
+        sudo ./webserv &
         sleep 3
         ps -p $!
 
