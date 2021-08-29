@@ -14,6 +14,8 @@
 
 #include "parser/config/ScannerConfig.hpp"
 #include "utility.hpp"
+#include  "SyntaxError.hpp"
+
 
 #include <fstream>
 #include <exception>
@@ -98,7 +100,7 @@ void ServerConfig::_throw_SyntaxError(parser::config::Token t, const std::string
 	error += ": error: ";
 	error += error_str;
 	error += '\n';
-	throw ServerConfig::SyntaxError(error);
+	throw SyntaxError(error);
 }
 
 void ServerConfig::_skipSemiColonNewLine(parser::config::ScannerConfig & scanner)
@@ -113,6 +115,11 @@ void ServerConfig::_skipSemiColonNewLine(parser::config::ScannerConfig & scanner
 }
 
 void ServerConfig::_postParser(){
+	_postParserSetAutoindexInChilds();
+	_postParserSetClientMaxBodySizeInChilds();
+}
+
+void ServerConfig::_postParserSetAutoindexInChilds(){
 	std::vector<ServerBlock>::iterator itServer;
 
 	for (itServer = _servers.begin(); itServer != _servers.end(); itServer++)
@@ -126,6 +133,19 @@ void ServerConfig::_postParser(){
 	}
 }
 
+void ServerConfig::_postParserSetClientMaxBodySizeInChilds(){
+	std::vector<ServerBlock>::iterator itServer;
+
+	for (itServer = _servers.begin(); itServer != _servers.end(); itServer++)
+	{
+		if (itServer->hasClientMaxBodySize() == false)
+			continue;
+		std::vector<Location>::iterator itLocation;
+		for (itLocation = itServer->getLocations().begin(); itLocation != itServer->getLocations().end(); itLocation++)
+			if (itLocation->hasClientMaxBodySize() == false)
+				itLocation->setClientMaxBodySize(itServer->getClientMaxBodySize());
+	}
+}
 void ServerConfig::_parse(std::istream & in)
 {
 	pr::ScannerConfig scanner(in);
@@ -142,7 +162,7 @@ void ServerConfig::_parse(std::istream & in)
 					_servers.push_back(_parseServer(scanner));
 				else
 				_throw_SyntaxError(t,
-					"Unknown directive \"" + t.value + "\" at root context");
+					"Unknown directive \"" + t.value + "\" in main context");
 	
 				break;
 			default:
@@ -173,13 +193,17 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 				else if (t.value == "index")
 					result.setIndex(_parseIndex(scanner));
 				else if (t.value == "server_name")
-					_parseServerName(scanner);
+					result.setServerName(_parseServerName(scanner));
 				else if (t.value == "error_page")
 					result.addErrors(_parseErrorPage(scanner));
 				else if (t.value == "location")
 					result.addLocation(_parseLocation(scanner));
 				else if (t.value == "autoindex")
 					result.setAutoindex(_parseAutoindex(scanner));
+				else if (t.value == "client_max_body_size")
+					result.setClientMaxBodySize(_parseClientMaxBodySize(scanner));
+				else if (t.value == "return")
+					result.setReturnDirective(_parseReturn(scanner));
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in context 'server'");
@@ -299,6 +323,10 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 					result.setIndex(_parseIndex(scanner));
 				else if (t.value == "autoindex")
 					result.setAutoindex(_parseAutoindex(scanner));
+				else if (t.value == "client_max_body_size")
+					result.setClientMaxBodySize(_parseClientMaxBodySize(scanner));
+				else if (t.value == "return")
+					result.setReturnDirective(_parseReturn(scanner));
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in location context");
@@ -401,6 +429,105 @@ std::pair<std::string, std::string>	ServerConfig::_parseFastCgiParam(parser::con
 		_throw_SyntaxError(tValue, "Bad fastcgi parameter value");
 	result.first = tName.value;
 	result.second = tValue.value;
+	_skipSemiColonNewLine(scanner);
+	return result;
+}
+
+size_t	ServerConfig::_parseClientMaxBodySize(parser::config::ScannerConfig & scanner)
+{
+	size_t bytes = 0;
+	char unit = 0;
+	pr::Token t;
+
+	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString && t.kind != pr::ScopedEnum::kInteger)
+		_throw_SyntaxError(t, "Unexpected token: " + pr::tokenToString(t) + " in context \"client_max_body_size\".");
+	_skipSemiColonNewLine(scanner);
+	
+	if (t.kind == pr::ScopedEnum::kInteger)
+		return strtoul(t.value.c_str(), 0, 10);
+	
+    std::string::const_iterator it = t.value.begin();
+    std::string::const_iterator end = t.value.end();
+
+	while (it != end && isdigit(*it))
+	{
+		bytes = bytes * 10 + *it - '0';
+		it++;
+	}
+	unit = *it;
+
+	switch (unit)
+	{
+		case 'k':
+			bytes *= 1000;
+			break;
+		case 'K':
+			bytes *= 1024;
+			break;
+		case 'm':
+			bytes *= 1000;
+			bytes *= 1000;
+			break;
+		case 'M':
+			bytes *= 1024;
+			bytes *= 1024;
+			break;	
+	default:
+		_throw_SyntaxError(t, std::string("Unknown unit '") + std::string(it, end) + std::string("' in context \"client_max_body_size\". RTFM !"));
+		break;
+	}
+
+	return bytes;
+}
+
+ReturnDirective	ServerConfig::_parseReturn(parser::config::ScannerConfig & scanner)
+{
+	ReturnDirective result;
+	pr::Token argOne;
+	pr::Token argTwo;
+	size_t code = 0;
+
+	if ((argOne = scanner.getToken()).kind != pr::ScopedEnum::kString && argOne.kind != pr::ScopedEnum::kInteger)
+		_throw_SyntaxError(argOne, "Unexpected token: " + pr::tokenToString(argOne) + " in context \"return\".");
+
+	if (argOne.kind == pr::ScopedEnum::kInteger)
+	{
+		if ((argTwo = scanner.getToken()).kind != pr::ScopedEnum::kString)
+			_throw_SyntaxError(argTwo, "Unexpected token: " + pr::tokenToString(argTwo) + " in context \"return\".");
+
+		std::string::const_iterator it = argOne.value.begin();
+		std::string::const_iterator end = argOne.value.end();
+
+		while (it != end && isdigit(*it))
+		{
+			code = code * 10 + *it - '0';	
+			it++;
+		}
+		if (code == 301 || code == 302 || code == 303
+		|| code == 307 || code == 308)
+		{
+			try {
+				result.setUri(argTwo.value);}
+			catch(const SyntaxError& e){
+				_throw_SyntaxError(argTwo, "Problem with uri in context \"return\".");
+			}
+		}
+		else if (code == 204 || code == 400 || code == 402
+		|| code == 406 || code == 408 || code == 410 || code == 411
+		|| code == 413 || code == 416 || code == 500 || code == 504)
+			result.setText(argTwo.value);
+		else
+			_throw_SyntaxError(argOne, "Can't use code " + intToString(code) + " in context \"return\". RTFM !");
+		result.setCode(code);
+	}
+	else
+	{	
+		try {
+			result.setUri(argOne.value); }
+		catch(const SyntaxError& e)	{
+			_throw_SyntaxError(argTwo, "Problem with uri in context \"return\".");
+		}
+	}
 	_skipSemiColonNewLine(scanner);
 	return result;
 }

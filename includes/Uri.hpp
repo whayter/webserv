@@ -19,7 +19,8 @@
 #include <algorithm>
 #include <map>
 #include <iostream>
-#include <exception>
+
+#include "SyntaxError.hpp"
 
 /**
  *    The following are two example URIs and their component parts:
@@ -130,15 +131,6 @@ private:
 	void 	_parseAuthority(std::string::const_iterator& it, const std::string::const_iterator & end);
 	void 	_parsePathEtc(std::string::const_iterator& it, const std::string::const_iterator& end);
 
-
-/* --- Exception -------------------------------------------------------- */
-
-	class SyntaxError: public std::exception {
-		virtual const char* what() const throw() {
-			return "Uri syntax error";
-		}
-	};
-
 };
 
-#endif
+#endif /* URI_HPP */
