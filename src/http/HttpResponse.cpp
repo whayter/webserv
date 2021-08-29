@@ -6,13 +6,15 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:47:59 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/29 16:26:47 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/29 16:58:55 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HttpResponse.hpp"
 #include "ServerConfig.hpp"
 #include "utility.hpp"
+
+#include <ctime>
 
 /* --- Public functions ----------------------------------------------------- */
 
@@ -123,9 +125,10 @@ void		HttpResponse::_setStatusLine(void)
 
 void		HttpResponse::_setDate(void)
 {
+	char date[30];
 	time_t now = time(0);
-	std::string date = ctime(&now);
-	date.pop_back();
+	struct tm* lt = gmtime(&now);
+	strftime(date, sizeof(date), "%a, %d %b %Y %k:%M:%S GMT", lt);
 	this->addHeader("Date", date);
 }
 
