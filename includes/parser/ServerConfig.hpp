@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/30 16:07:03 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/30 18:38:34 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,11 +212,11 @@ public:
 	inline std::string		getConfigFilePath() const { return _configFilePath;}
 
 	/// return the vector of servers (usefull for testing)
-	inline std::vector<ServerBlock>	getServers() const			{ return _servers;}
+	inline const std::vector<ServerBlock>&	getServers() const			{ return _servers;}
 	/// return server from given index (usefull for testing purpose)
 	inline ServerBlock&				getServer(uint32_t index) 	{ return _servers[index];}
 	/// return the server who own the given port
-	ServerBlock&					findServer(uint32_t port);
+	//ServerBlock&					findServer(uint32_t port);
 
 	ServerBlock&					findServer(const Uri& uri);
 
