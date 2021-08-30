@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 19:22:37 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/29 15:57:24 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/30 13:18:14 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,13 @@
 
 #include "HttpResponse.hpp"
 
+#include "utility.hpp"
+
 #include <cerrno>
 #include <ctime>
 #include <iomanip>
 
-#define BUF_SIZE 2048
+#define BUF_SIZE 1048
 
 /* --- Public functions ----------------------------------------------------- */
 
@@ -106,7 +108,7 @@ void server::ServerHandler::stop(int status)
 	_servers.clear();
 	if (status == -1)
 	{
-		_log(0, "An error has occurred. ");
+		_log(0, "An error has occurred.");
 		_log (0, "Shutting down...");
 		exit(EXIT_FAILURE);
 	}
@@ -144,8 +146,9 @@ void server::ServerHandler::_disconnectClient(int index)
 
 void server::ServerHandler::_serveClient(int index)
 {
-	u_short requestedPort = _requests[index]->getUri().getPort();
-	HttpResponse response(_getServer(requestedPort), *_requests[index]);
+	ServerConfig& config = ServerConfig::getInstance();
+	u_short port = _requests[index]->getUri().getPort();
+	HttpResponse response(config.findServer(port), *_requests[index]);
 	response.setMandatory();
 	_sendResponse(index, response.toString().c_str());
 	_requests[index]->clear();
@@ -153,6 +156,9 @@ void server::ServerHandler::_serveClient(int index)
 
 void server::ServerHandler::_getRequest(int index)
 {
+
+	// send nbytes to read
+
 	char buffer[BUF_SIZE] = {0};
 	int nbytes = recv(_fds[index].fd, buffer, BUF_SIZE - 1, 0);
 	if (nbytes < 0)
@@ -171,15 +177,6 @@ void server::ServerHandler::_sendResponse(int index, const char* response)
 		stop(-1);
 	}
 	_log(_fds[index].fd, "Response sent.");
-}
-
-server::Server server::ServerHandler::_getServer(u_short port)
-{
-	std::vector<Server>::iterator server;
-	for (server = _servers.begin(); server != _servers.end(); server++)
-		if (server->port == port)
-			break;
-	return *server;
 }
 
 bool server::ServerHandler::_isServerSocket(int index)
@@ -207,22 +204,14 @@ void server::ServerHandler::_updateData(void)
 
 void server::ServerHandler::_log(int fd, std::string message)
 {
-	time_t now = time(0);
-	tm *ltm = localtime(&now);
-	std::cout << std::setw(3) << std::setfill(' ') << ' ';
-	std::cout << "[";
-	std::cout << std::setw(2) << std::setfill('0');
-	std::cout << ltm->tm_hour << ":";
-	std::cout << std::setw(2) << std::setfill('0');
-	std::cout << ltm->tm_min << ":";
-	std::cout << std::setw(2) << std::setfill('0');
-	std::cout << ltm->tm_sec << "]";
-	std::cout << std::setw(3) << std::setfill(' ') << ' ';
-	if (fd >= _firstClientIndex)
+	std::cout << std::setw(4) << std::setfill(' ') << ' ';
+	std::cout << "[" << getDate() << "]";
+	std::cout << std::setw(4) << std::setfill(' ') << ' ';
+	if (fd)
 	{
 		std::cout << std::setw(2) << std::setfill('0');
 		std::cout << fd;
-		std::cout << " - ";
+		std::cout << std::setw(4) << std::setfill(' ') << ' ';
 	}
 	std::cout << message << std::endl;
 }

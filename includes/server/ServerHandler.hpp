@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 17:50:07 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/25 19:24:44 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/30 10:00:22 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ namespace server
 			void				_getRequest(int index);
 			void				_sendResponse(int index, const char* response);
 
-			Server				_getServer(u_short port);
 			bool				_isServerSocket(int index);
 			void				_updateData(void);
 			void				_log(int fd, std::string message);

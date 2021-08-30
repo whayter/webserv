@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/30 14:07:41 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/24 16:51:00 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/30 09:03:44 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,15 +65,14 @@ void textLine(int width, char ornament, std::string text)
 
 void prompt()
 {
-	int		width = 80;
-	char	ornament = '*';
+	int		width = 70;
+	char	ornament = '/';
 
 	std::cout << std::endl;
 	solidLine(width, ornament);
 	emptyLine(width, ornament);
-	textLine(width, ornament, "Webserv - another 42 project");
+	textLine(width, ornament, "Webserv - 42");
 	emptyLine(width, ornament);
-	textLine(width, ornament, "v 1.0 | august 2021");
 	textLine(width, ornament, "authors: hwinston, juligonz");
 	emptyLine(width, ornament);
 	solidLine(width, ornament);

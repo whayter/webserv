@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 09:29:57 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/29 16:07:51 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/30 13:06:49 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "HttpRequest.hpp"
 # include "HttpStatus.hpp"
 # include "ServerHandler.hpp"
+# include "ServerConfig.hpp"
 
 # include <string>
 # include <fstream>
@@ -27,15 +28,14 @@ class HttpResponse: public AHttpMessage
 
 	/* --- Member functions ------------------------------------------------- */
 
-		HttpResponse(server::Server server, HttpRequest& request);
+		HttpResponse(ServerBlock serverBlock, HttpRequest& request);
 		~HttpResponse();
 
 		void			setMandatory();
 
-		void			setContent();
-		void			setError();
+		void			setLocalContent();
+		void			setErrorContent();
 
-		void methodGet(std::string filename);
 
 		std::string		toString();		
 
@@ -52,11 +52,11 @@ class HttpResponse: public AHttpMessage
 		void			_setDate(void);
 		void			_setServer(void);
 		void			_setContentType(const Uri& uri);
-		void			_setContentLength(int contentLength);
+		void			_setContentLength(void);
 
 	/* --- Member variables ------------------------------------------------- */
 
-		server::Server	_server;
+		ServerBlock		_serverBlock;
 		HttpRequest		_request;
 		std::string		_statusLine;
 		std::string		_content;	
