@@ -88,8 +88,8 @@ void HttpRequest::read(const char *buffer)
 			||	!t.value.compare("DELETE"))
 				this->setMethod(t.value);
 			else
-				throw std::invalid_argument("Bad http request, No method specified");
-			// _code.setValue(HttpStatus::BadRequest);
+				_code.setValue(HttpStatus::BadRequest);
+				// throw std::invalid_argument("Bad http request, No method specified");
 		}
 		if (_uri.empty())
 		{		
@@ -106,16 +106,16 @@ void HttpRequest::read(const char *buffer)
 			ph::Token cr;
 			if (!_getCompleteToken(cr)) return;
 			if (cr.kind != ph::ScopedEnum::kCarriage)
-				throw std::invalid_argument("Method line not separated by return carriage");
-				// _code.setValue(HttpStatus::BadRequest);
+				_code.setValue(HttpStatus::BadRequest);
+				// throw std::invalid_argument("Method line not separated by return carriage");
 
 			if (!_getCompleteToken(t)) {
 				_scanner.putback(cr);
 				return;
 			}
 			if (t.kind != ph::ScopedEnum::kNewLine)
-				throw std::invalid_argument("Method line not separated by new line");
-				// _code.setValue(HttpStatus::BadRequest);
+				_code.setValue(HttpStatus::BadRequest);
+				// throw std::invalid_argument("Method line not separated by new line");
 		}
 		_isRequestLineParsed = true;
 	}
