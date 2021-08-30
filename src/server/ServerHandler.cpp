@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 19:22:37 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/30 15:03:48 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/30 18:48:43 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ server::ServerHandler::ServerHandler()
 	for (port = ports.begin(); port != ports.end(); port++)
 	{
 		server::Server newServer;
-		newServer.block = config.findServer(*port);
 		newServer.port = *port;
 		_servers.push_back(newServer);
 	}
@@ -54,6 +53,7 @@ bool server::ServerHandler::start(void)
 		if (!server->socket.setFd(AF_INET, SOCK_STREAM))
 			return false;
 		server->socket.setAddr(AF_INET, INADDR_ANY, server->port);
+		std::cout << "socket() ok" << std::endl;
 		if (!sckt::setNonBlocking(server->socket.getFd())
 		|| !sckt::setReusableAddr(server->socket.getFd())
 		|| !sckt::bindSocket(server->socket.getFd(), server->socket.getAddr())
@@ -62,8 +62,10 @@ bool server::ServerHandler::start(void)
 		_fds[_nfds].fd = server->socket.getFd();
 		_fds[_nfds].events = POLLIN;
 		server->index = _nfds;
-		_nfds++;		
+		_nfds++;
+		std::cout << "next" << std::endl;	
 	}
+	std::cout << "start done" << std::endl;
 	_firstClientIndex = _nfds;
 	return true;
 }
@@ -147,8 +149,8 @@ void server::ServerHandler::_disconnectClient(int index)
 void server::ServerHandler::_serveClient(int index)
 {
 	ServerConfig& config = ServerConfig::getInstance();
-	u_short port = _requests[index]->getUri().getPort();
-	HttpResponse response(config.findServer(port), *_requests[index]);
+	Uri uri = _requests[index]->getUri();
+	HttpResponse response(config.findServer(uri), *_requests[index]);
 	response.setMandatory();
 	_sendResponse(index, response.toString().c_str());
 	_requests[index]->clear();

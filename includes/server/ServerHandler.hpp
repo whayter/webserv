@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 17:50:07 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/30 10:00:22 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/30 18:43:36 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ namespace server
 {
 	struct Server
 	{
-		ServerBlock				block;
 		sckt::Socket			socket;
 		uint32_t				port;
 		int						index;

@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/30 16:41:31 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/30 18:38:27 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,35 +50,35 @@ ServerConfig& ServerConfig::getInstance(){
 	return *_singleton;
 }
 
-ServerBlock& ServerConfig::findServer(uint32_t port)
-{
-	std::vector<ServerBlock>::iterator itServer;
+// ServerBlock& ServerConfig::findServer(uint32_t port)
+// {
+// 	std::vector<ServerBlock>::iterator itServer;
 
-	itServer = _servers.begin();
-	while (itServer != _servers.end())
-	{
-		ServerBlock& serv = *itServer;
-		std::vector<Host>::iterator itListen = serv.getListens().begin();
-		while (itListen != serv.getListens().end())
-		{
-			Host& listen = *itListen;
-			if (listen.getPort() == port)
-				return serv;
-			itListen++;
-		}
+// 	itServer = _servers.begin();
+// 	while (itServer != _servers.end())
+// 	{
+// 		ServerBlock& serv = *itServer;
+// 		std::vector<Host>::iterator itListen = serv.getListens().begin();
+// 		while (itListen != serv.getListens().end())
+// 		{
+// 			Host& listen = *itListen;
+// 			if (listen.getPort() == port)
+// 				return serv;
+// 			itListen++;
+// 		}
 		
-		itServer++;
-	}
+// 		itServer++;
+// 	}
 	
-	return _servers[0];
-}
+// 	return _servers[0];
+// }
 
 ServerBlock& ServerConfig::findServer(const Uri& uri)
 {
-	std::vector<ServerBlock>::iterator itServer;
+	std::vector<ServerBlock>::reverse_iterator itServer;
 	ServerBlock& bestMatch = _servers[0];
 
-	for (itServer = _servers.begin(); itServer != _servers.end(); itServer++)
+	for (itServer = _servers.rbegin(); itServer != _servers.rend(); itServer++)
 	{
 		std::vector<Host>::iterator itListen = itServer->getListens().begin();
 		for (; itListen != itServer->getListens().end(); itListen++)
@@ -86,6 +86,7 @@ ServerBlock& ServerConfig::findServer(const Uri& uri)
 			if (itListen->getPort() == uri.getPort())
 			{
 				bestMatch = *itServer;
+				std::cout << "host = " << uri.getHost() << std::endl;
 				if (itServer->getServerName() == uri.getHost())
 					return bestMatch;
 			}
