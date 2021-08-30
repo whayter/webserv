@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utility.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 16:10:02 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/19 15:02:57 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/30 08:47:39 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,13 @@ bool isInteger(std::string& s)
 		it++;
 	}
 	return true;
+}
+
+std::string getDate()
+{
+	char date[30];
+	time_t now = time(0);
+	struct tm* lt = gmtime(&now);
+	strftime(date, sizeof(date), "%a, %d %b %Y %k:%M:%S GMT", lt);
+	return date;
 }
