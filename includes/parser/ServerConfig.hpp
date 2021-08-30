@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerConfig.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/20 19:34:05 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/30 16:07:03 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,6 +217,8 @@ public:
 	inline ServerBlock&				getServer(uint32_t index) 	{ return _servers[index];}
 	/// return the server who own the given port
 	ServerBlock&					findServer(uint32_t port);
+
+	ServerBlock&					findServer(const Uri& uri);
 
 	/// return all ports defined in listen directives.
 	std::vector<uint32_t>			getPorts();

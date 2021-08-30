@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:47:59 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/30 13:08:48 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/30 15:05:42 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,11 @@ HttpResponse::~HttpResponse() {}
 
 void HttpResponse::setLocalContent()
 {
+	std::vector<Location> locs = _serverBlock.getLocations();
+	std::cout << "locs len = " << locs.size() << std::endl;
+	std::cout << "---\n" << locs[0].getRoot() << "\n---" << std::endl;
+
+	
 	std::ifstream ifs;
 	std::string path = "www" +  _request.getUri().getPathEtc();						// tmp
 	ifs.open(path.c_str());
