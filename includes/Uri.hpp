@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Uri.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/03 13:01:23 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/16 18:00:59 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/30 16:29:02 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ public:
 
 	inline std::string		getScheme()			{ return _scheme;	}
 	inline std::string		getUserInfo()		{ return _userInfo; }
-	inline std::string		getHost()			{ return _host; 	}
+	inline std::string		getHost() const		{ return _host; 	}
 	inline std::string		getPath()			{ return _path;		}
 	inline u_short			getSpecifiedPort()	{ return _port;		}
 	inline std::string		getRawQuery()		{ return _query;	}

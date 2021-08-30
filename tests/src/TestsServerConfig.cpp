@@ -214,3 +214,17 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().getUri() == "https://stackoverflow.com");
 
 }
+
+TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][ServerConfig][findLocation]" )
+{
+	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindLocation.conf");
+
+
+	CHECK( &(config.findServer(Uri("http://srv_one:80"))) == &(config.getServer(0)) );
+	CHECK( &(config.findServer(Uri("http://srv_two:80"))) == &(config.getServer(1)) );
+	CHECK( &(config.findServer(Uri("http://localhost:81"))) == &(config.getServer(2)) );
+
+	CHECK( config.findServer(Uri("http://srv_one:80")).getServerName() == config.getServer(0).getServerName() );
+	CHECK( config.findServer(Uri("http://srv_two:80")).getServerName() == config.getServer(1).getServerName() );
+	CHECK( config.findServer(Uri("http://localhost:81")).getServerName() == config.getServer(2).getServerName() );
+}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerConfig.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/20 19:50:35 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/08/30 16:41:31 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,27 @@ ServerBlock& ServerConfig::findServer(uint32_t port)
 	}
 	
 	return _servers[0];
+}
+
+ServerBlock& ServerConfig::findServer(const Uri& uri)
+{
+	std::vector<ServerBlock>::iterator itServer;
+	ServerBlock& bestMatch = _servers[0];
+
+	for (itServer = _servers.begin(); itServer != _servers.end(); itServer++)
+	{
+		std::vector<Host>::iterator itListen = itServer->getListens().begin();
+		for (; itListen != itServer->getListens().end(); itListen++)
+		{
+			if (itListen->getPort() == uri.getPort())
+			{
+				bestMatch = *itServer;
+				if (itServer->getServerName() == uri.getHost())
+					return bestMatch;
+			}
+		}
+	}
+	return bestMatch;
 }
 
 std::vector<uint32_t> ServerConfig::getPorts()
