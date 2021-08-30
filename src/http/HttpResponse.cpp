@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:47:59 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/29 16:58:55 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/30 13:08:48 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,10 @@
 #include "ServerConfig.hpp"
 #include "utility.hpp"
 
-#include <ctime>
-
 /* --- Public functions ----------------------------------------------------- */
 
-HttpResponse::HttpResponse(server::Server server, HttpRequest& request)
-: _server(server), _request(request)
+HttpResponse::HttpResponse(ServerBlock serverBlock, HttpRequest& request)
+: _serverBlock(serverBlock), _request(request)
 {
 	int code = request.getHttpErrorCode();
 	if (code == 0)
@@ -30,22 +28,43 @@ HttpResponse::HttpResponse(server::Server server, HttpRequest& request)
 
 HttpResponse::~HttpResponse() {}
 
-void HttpResponse::setContent()
+
+void HttpResponse::setLocalContent()
 {
-	// call cgi here
-	methodGet("www/index.php"); 		// tmp
+	std::ifstream ifs;
+	std::string path = "www" +  _request.getUri().getPathEtc();						// tmp
+	ifs.open(path.c_str());
+	if (!ifs)
+	{
+		_code.setValue(HttpStatus::NotFound);
+		setErrorContent();
+		return ;
+	}
+	ifs.seekg(0, ifs.end);
+	int len = ifs.tellg();
+	ifs.seekg(0, ifs.beg);
+	char buffer[len];
+	ifs.read(buffer, len);
+	_content = buffer;
 }
 
-void HttpResponse::setError()
+void HttpResponse::setErrorContent()
 {
 	_content = "<!DOCTYPE html>";
-	_content += "<meta charset=\"utf-8\">";
-	_content += "<html lang=\"en\"><head><title>";
-	_content += intToString(_getStatus()) + "</title>";
+	_content += "<html lang=\"en\"><head><meta charset=\"utf-8\">";
+	_content += "<title>" + intToString(_getStatus());
+	_content += " " + _getStatusMessage() + "</title>";
 	_content += "<style>body{text-align:center}</style></head>";
 	_content += "<body><h1>" + intToString(_getStatus());
-	_content += + " - " + _getStatusMessage() + "</h1></body>";
-	_content += "</html>";
+	_content += + " " + _getStatusMessage() + "</h1>";
+	_content += "<hr size=\"3\">";
+	if (_getStatus() == HttpStatus::MovedPermanently)
+	{
+		_content += "<p>The document has moved ";
+		//_content ++ "<a href=\"" + new_location + "\">here</a></p>";				// a ajouter
+	}
+	else
+		_content += "<p>Webserv</p></body></html>";
 }
 
 void HttpResponse::setMandatory()
@@ -54,29 +73,13 @@ void HttpResponse::setMandatory()
 	_setDate();
 	_setServer();
 
-	setContent();	// tmp
+	setLocalContent();			// for local get
 
-	_setContentLength(_content.size());
+	_setContentLength();
 
 	_setContentType(_request.getUri());
 }
 
-
-
-void HttpResponse::methodGet(std::string filename)
-{
-	std::ifstream ifs;
-	ifs.open(filename.c_str());
-	if (!ifs)
-		return ;
-	ifs.seekg(0, ifs.end);
-	int len = ifs.tellg();
-	ifs.seekg(0, ifs.beg);
-	char buffer[len];
-	ifs.read(buffer, len);
-	_content = buffer;
-	//std::cout << _content << std::endl;
-}
 
 
 std::string HttpResponse::toString()
@@ -125,23 +128,17 @@ void		HttpResponse::_setStatusLine(void)
 
 void		HttpResponse::_setDate(void)
 {
-	char date[30];
-	time_t now = time(0);
-	struct tm* lt = gmtime(&now);
-	strftime(date, sizeof(date), "%a, %d %b %Y %k:%M:%S GMT", lt);
-	this->addHeader("Date", date);
+	this->addHeader("Date", getDate());
 }
 
 void 		HttpResponse::_setServer(void)
 {
-	this->addHeader("Server", _server.block.getServerName());
+	this->addHeader("Server", "Webserv");
 }
 
-void 		HttpResponse::_setContentLength(int contentLength)
+void 		HttpResponse::_setContentLength(void)
 {
-	std::ostringstream os;
-	os << contentLength;
-	this->addHeader("Content-Length", os.str());
+	this->addHeader("Content-Length", intToString(_content.size()));
 }
 
 void 		HttpResponse::_setContentType(const Uri& uri)
