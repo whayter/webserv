@@ -525,7 +525,7 @@ ReturnDirective	ServerConfig::_parseReturn(parser::config::ScannerConfig & scann
 		try {
 			result.setUri(argOne.value); }
 		catch(const SyntaxError& e)	{
-			_throw_SyntaxError(argTwo, "Problem with uri in context \"return\".");
+			_throw_SyntaxError(argOne, "Problem with uri in context \"return\".");
 		}
 	}
 	_skipSemiColonNewLine(scanner);
