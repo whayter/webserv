@@ -60,7 +60,7 @@ Token ScannerConfig::getToken(bool skipNL)
 			std::string lexeme = "";
 			int column = _scan.getColumn(), line = _scan.getLine();
 		
-			while (c != '\n')
+			while (c != '\n' && c != -1 && c != 0)
 			{
 				lexeme += c;
 				c = _scan.get();

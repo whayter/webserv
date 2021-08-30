@@ -228,14 +228,14 @@ private:
 	
 	void								_parse(std::istream &);
 
-	ServerBlock							_parseServer(parser::config::ScannerConfig & scanner);
+	ServerBlock							_parseServer(parser::config::ScannerConfig & scanner, parser::config::Token serverToken);
 	Host								_parseListen(parser::config::ScannerConfig & scanner);
 	std::string 						_parseRoot(parser::config::ScannerConfig & scanner);
 	std::string 						_parseIndex(parser::config::ScannerConfig & scanner);
 	bool								_parseAutoindex(parser::config::ScannerConfig & scanner);
 	std::string 						_parseServerName(parser::config::ScannerConfig & scanner);
 	std::map<u_short, std::string>		_parseErrorPage(parser::config::ScannerConfig & scanner);
-	Location							_parseLocation(parser::config::ScannerConfig & scanner);
+	Location							_parseLocation(parser::config::ScannerConfig & scanner, parser::config::Token locationToken);
 	Host 								_parseHost(parser::config::ScannerConfig & scanner);
 	std::pair<std::string, std::string>	_parseFastCgiParam(parser::config::ScannerConfig & scanner);
 	size_t								_parseClientMaxBodySize(parser::config::ScannerConfig & scanner);

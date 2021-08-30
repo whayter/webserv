@@ -126,7 +126,7 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 	CHECK( config.getServer(0).getReturnDirective().hasUri() == true);
 	CHECK( config.getServer(0).getReturnDirective().getCode() == 301);
 	CHECK( config.getServer(0).getReturnDirective().getText().empty() );
-	CHECK( config.getServer(0).getReturnDirective().getUri() == "stack");
+	REQUIRE( config.getServer(0).getReturnDirective().getUri() == "stack");
 
 
 	CHECK( config.getServer(0).getLocations()[0].getUri() == "/" ) ;
