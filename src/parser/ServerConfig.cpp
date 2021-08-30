@@ -158,8 +158,8 @@ void ServerConfig::_parse(std::istream & in)
 			case pr::ScopedEnum::kComment:
 				continue;
 			case pr::ScopedEnum::kString:
-				if (t.kind== pr::ScopedEnum::kString && t.value == "server")
-					_servers.push_back(_parseServer(scanner));
+				if (t.value == "server")
+					_servers.push_back(_parseServer(scanner, t));
 				else
 				_throw_SyntaxError(t,
 					"Unknown directive \"" + t.value + "\" in main context");
@@ -171,22 +171,23 @@ void ServerConfig::_parse(std::istream & in)
 	}
 }
 
-ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
+ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner, pr::Token serverToken)
 {
 	ServerBlock result;
 	pr::Token t;
 
 	if ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kLeftBrace)
 		_throw_SyntaxError(t, "Missing open brace at server block.");
-	while ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kEndOfInput
-	 && t.kind != pr::ScopedEnum::kRightBrace)
+	while ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kRightBrace)
 	{
 		switch (t.kind)
 		{
 			case pr::ScopedEnum::kComment :
 				continue;
 			case pr::ScopedEnum::kString :
-				if (t.value == "listen")
+				if (t.value == "server")
+					_throw_SyntaxError(serverToken, "Missing closing bracket at end of server directive");
+				else if (t.value == "listen")
 					result.addListen(_parseListen(scanner));
 				else if (t.value == "root")
 					result.setRoot(_parseRoot(scanner));
@@ -197,7 +198,7 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 				else if (t.value == "error_page")
 					result.addErrors(_parseErrorPage(scanner));
 				else if (t.value == "location")
-					result.addLocation(_parseLocation(scanner));
+					result.addLocation(_parseLocation(scanner, t));
 				else if (t.value == "autoindex")
 					result.setAutoindex(_parseAutoindex(scanner));
 				else if (t.value == "client_max_body_size")
@@ -210,6 +211,9 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner)
 				break;
 			case pr::ScopedEnum::kSemiColon :
 				_throw_SyntaxError(t, "Unexpected semi-colon.");
+				break;
+			case pr::ScopedEnum::kEndOfInput :
+				_throw_SyntaxError(serverToken, "Missing closing bracket at end of server directive");
 				break;
 			default:
 				_throw_SyntaxError(t, "Unexpected token:  " + pr::tokenToString(t));
@@ -290,7 +294,7 @@ std::map<u_short, std::string> ServerConfig::_parseErrorPage(parser::config::Sca
 	
 }
 
-Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
+Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner, pr::Token locationToken)
 {
 	pr::Token	t;
 	Location result;
@@ -298,11 +302,10 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
 		_throw_SyntaxError(t, "Location directive: invalid uri");
 	result.setUri(t.value);
-	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kLeftBrace)
+	if ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kLeftBrace)
 		_throw_SyntaxError(t, "Location directive: No scope defined. Add braces...");
 
-	while ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kEndOfInput
-		&& t.kind != pr::ScopedEnum::kRightBrace)
+	while ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kRightBrace)
 	{
 		switch (t.kind)
 		{
@@ -313,6 +316,8 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 					scanner.getToken();
 					_skipSemiColonNewLine(scanner);
 				}
+				else if (t.value == "location")
+					_throw_SyntaxError(locationToken, "Missing closing bracket at end of location directive");
 				else if (t.value == "fastcgi_pass")
 					result.setFastCgiPass(_parseHost(scanner));
 				else if (t.value == "fastcgi_param")
@@ -330,6 +335,9 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner)
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in location context");
+				break;
+			case pr::ScopedEnum::kEndOfInput :
+				_throw_SyntaxError(locationToken, "Missing closing bracket at end of location directive");
 				break;
 			default:
 				_throw_SyntaxError(t, "Unexpected token: " + pr::tokenToString(t));
@@ -525,7 +533,7 @@ ReturnDirective	ServerConfig::_parseReturn(parser::config::ScannerConfig & scann
 		try {
 			result.setUri(argOne.value); }
 		catch(const SyntaxError& e)	{
-			_throw_SyntaxError(argTwo, "Problem with uri in context \"return\".");
+			_throw_SyntaxError(argOne, "Problem with uri in context \"return\".");
 		}
 	}
 	_skipSemiColonNewLine(scanner);
