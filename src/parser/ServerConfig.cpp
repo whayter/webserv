@@ -50,6 +50,16 @@ ServerConfig& ServerConfig::getInstance(){
 	return *_singleton;
 }
 
+/// ONLY FOR TESTING PURPOSE
+void	ServerConfig::__reset_singleton_instance()
+{
+	if (_singleton != NULL)
+	{
+		delete _singleton;
+		_singleton = NULL;
+	}
+}
+
 // ServerBlock& ServerConfig::findServer(uint32_t port)
 // {
 // 	std::vector<ServerBlock>::iterator itServer;
@@ -86,7 +96,6 @@ ServerBlock& ServerConfig::findServer(const Uri& uri)
 			if (itListen->getPort() == uri.getPort())
 			{
 				bestMatch = *itServer;
-				std::cout << "host = " << uri.getHost() << std::endl;
 				if (itServer->getServerName() == uri.getHost())
 					return bestMatch;
 			}

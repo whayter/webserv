@@ -209,6 +209,9 @@ public:
 	static ServerConfig&	getInstance(std::string filepath);
 	/// Must instanciate the class before using this function.
 	static ServerConfig&	getInstance();
+	/// ONLY FOR TESTING PURPOSE
+	static void	__reset_singleton_instance();
+
 	inline std::string		getConfigFilePath() const { return _configFilePath;}
 
 	/// return the vector of servers (usefull for testing)
