@@ -53,8 +53,8 @@
 - [x] limit [client body size](http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size)
 - [ ] [setup routes](http://nginx.org/en/docs/http/ngx_http_core_module.html#location) with one or multiple of the following rules/configuration (routes wont be using regexp):
 	- [ ] define a list of accepted HTTP Methods for the route
-	- [ ] define an HTTP redirection.
-	- [ ] define a directory or a file from where the file should be search (for example if url /kapouet is rooted to /tmp/www, url /kapouet/pouic/toto/pouet is /tmp/www/pouic/toto/pouet)
+	- [x] define an HTTP redirection.
+	- [x] define a directory or a file from where the file should be search (for example if url /kapouet is rooted to /tmp/www, url /kapouet/pouic/toto/pouet is /tmp/www/pouic/toto/pouet)
 	- [x] turn on or off directory listing
 	- [x] default file to answer if the request is a directory
 	- [ ] execute CGI based on certain file extension (for example .php)

@@ -28,12 +28,6 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 	CHECK( config.getServer(1).getListen(1).getHostname().empty() );
 	CHECK( config.getServer(1).getListen(1).getPort() == 83 );
 
-
-	// CHECK( &config.findServer(80) == &config.getServer(0) );
-	// CHECK( &config.findServer(81) == &config.getServer(0) );
-	// CHECK( &config.findServer(82) == &config.getServer(1) );
-	// CHECK( &config.findServer(83) == &config.getServer(1) );
-
 	// location directive
 	CHECK( config.getServer(0).getLocations()[0].getUri() == "/" );
 	CHECK( config.getServer(0).getLocations()[1].getUri() == "/media" );
@@ -119,8 +113,7 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 	CHECK( config.getServers().size() == 2);
 
 	//server 0
-	CHECK( config.getServer(0).getLocations().size() == 6);
-	REQUIRE( config.getServer(1).getLocations().size() == 2);
+	REQUIRE( config.getServer(0).getLocations().size() == 6);
 
 	CHECK( config.getServer(0).hasReturnDirective() == true);
 	CHECK( config.getServer(0).getReturnDirective().hasText() == false);
@@ -128,7 +121,7 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 	CHECK( config.getServer(0).getReturnDirective().hasUri() == true);
 	CHECK( config.getServer(0).getReturnDirective().getCode() == 301);
 	CHECK( config.getServer(0).getReturnDirective().getText().empty() );
-	REQUIRE( config.getServer(0).getReturnDirective().getUri() == "stack");
+	CHECK( config.getServer(0).getReturnDirective().getUri() == "stack");
 
 
 	CHECK( config.getServer(0).getLocations()[0].getUri() == "/" ) ;
@@ -189,6 +182,8 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 	
 	// server 1
 
+	REQUIRE( config.getServer(1).getLocations().size() == 2);
+
 	CHECK( config.getServer(1).getReturnDirective().hasText() == false);
 	CHECK( config.getServer(1).hasReturnDirective() == false);
 	CHECK( config.getServer(1).getReturnDirective().hasCode() == false);
@@ -199,19 +194,19 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 
 	CHECK( config.getServer(1).getLocations()[0].getUri() == "/" ) ;
 	CHECK( config.getServer(1).getLocations()[0].hasReturnDirective() == true );
-	CHECK( config.getServer(1).getLocations()[0].getReturnDirective().hasCode() == false);
+	CHECK( config.getServer(1).getLocations()[0].getReturnDirective().hasCode() == true);
 	CHECK( config.getServer(1).getLocations()[0].getReturnDirective().hasText() == false);
 	CHECK( config.getServer(1).getLocations()[0].getReturnDirective().hasUri() == true);
-	CHECK( config.getServer(1).getLocations()[0].getReturnDirective().getCode() == 0);
+	CHECK( config.getServer(1).getLocations()[0].getReturnDirective().getCode() == 302);
 	CHECK( config.getServer(1).getLocations()[0].getReturnDirective().getText().empty());
 	CHECK( config.getServer(1).getLocations()[0].getReturnDirective().getUri() == "stack");
 
 	CHECK( config.getServer(1).getLocations()[1].getUri() == "/stack" ) ;
 	CHECK( config.getServer(1).getLocations()[1].hasReturnDirective() == true );
-	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().hasCode() == false);
+	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().hasCode() == true);
 	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().hasText() == false);
 	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().hasUri() == true);
-	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().getCode() == 0);
+	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().getCode() == 302);
 	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().getText().empty());
 	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().getUri() == "https://stackoverflow.com");
 
@@ -231,4 +226,20 @@ TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][Serv
 	Uri uri;
 	uri.setPort(80);
 	CHECK( config.findServer(uri).getIndex() == config.getServer(3).getIndex() );
+
+	Uri uriEmptyHost;
+	uriEmptyHost.setPort(80);
+	CHECK_NOFAIL( &config.findServer(uriEmptyHost) == &config.getServer(3) );
+	uriEmptyHost.setPort(81);
+	CHECK_NOFAIL( &config.findServer(uriEmptyHost) == &config.getServer(2) );
+	uriEmptyHost.setPort(82);
+	CHECK_NOFAIL( &config.findServer(uriEmptyHost) == &config.getServer(5) );
+
+	uriEmptyHost.setPort(80);
+	CHECK( config.findServer(uriEmptyHost).getIndex() == config.getServer(3).getIndex() );
+	uriEmptyHost.setPort(81);
+	CHECK( config.findServer(uriEmptyHost).getIndex() == config.getServer(2).getIndex() );
+	uriEmptyHost.setPort(82);
+	CHECK( config.findServer(uriEmptyHost).getIndex() == config.getServer(5).getIndex() );
+
 }

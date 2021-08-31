@@ -57,7 +57,7 @@ https://nginx.org/en/docs/http/ngx_http_core_module.html#limit_except
 
 Syntax:	**return** code [text];
 **return** code URL;
-**return** URL;
+<!-- **return** URL; -->
 Default: —
 Context: server, location
 http://nginx.org/en/docs/http/ngx_http_rewrite_module.html#return
