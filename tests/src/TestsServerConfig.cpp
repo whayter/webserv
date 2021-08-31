@@ -8,7 +8,7 @@
 
 TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConfig]" )
 {
-	ServerConfig::__reset_singleton_instance();
+	ServerConfig::__delete_singleton_instance();
 	ServerConfig& config = ServerConfig::getInstance("./config_files/testParser.conf");
 
 
@@ -113,7 +113,7 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 
 TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[class][ServerConfig][directive][return]" )
 {
-	ServerConfig::__reset_singleton_instance();
+	ServerConfig::__delete_singleton_instance();
 	ServerConfig& config = ServerConfig::getInstance("./config_files/testParser_directive_return.conf");
 
 	CHECK( config.getServers().size() == 2);
@@ -219,7 +219,7 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 
 TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][ServerConfig][findLocation]" )
 {
-	ServerConfig::__reset_singleton_instance();
+	ServerConfig::__delete_singleton_instance();
 	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindLocation.conf");
 
 	CHECK( config.findServer(Uri("http://srv_one:80")).getServerName() == config.getServer(0).getServerName() );

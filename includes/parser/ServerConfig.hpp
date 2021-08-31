@@ -210,7 +210,7 @@ public:
 	/// Must instanciate the class before using this function.
 	static ServerConfig&	getInstance();
 	/// ONLY FOR TESTING PURPOSE
-	static void	__reset_singleton_instance();
+	static void	__delete_singleton_instance();
 
 	inline std::string		getConfigFilePath() const { return _configFilePath;}
 

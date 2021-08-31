@@ -51,7 +51,7 @@ ServerConfig& ServerConfig::getInstance(){
 }
 
 /// ONLY FOR TESTING PURPOSE
-void	ServerConfig::__reset_singleton_instance()
+void	ServerConfig::__delete_singleton_instance()
 {
 	if (_singleton != NULL)
 	{
