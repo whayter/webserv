@@ -73,9 +73,10 @@ jobs:
         if [ "$RUNNER_OS" == "Linux" ]; then
             valgrind --leak-check=full --show-leak-kinds=definite,indirect,possible --errors-for-leak-kinds=definite,indirect,possible --error-exitcode=42 ./build/tests
         elif [ "$RUNNER_OS" == "macOS" ]; then
-            MallocStackLoggingNoCompact=1
-            ./build/tests &
-            leaks ./build/tests
+            # MallocStackLoggingNoCompact=1
+            # ./build/tests &
+            # leaks ./build/tests
+            :
         else
             echo "$RUNNER_OS not supported"
             exit 1
