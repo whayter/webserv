@@ -177,6 +177,9 @@
 #### Sockets
 - https://www.youtube.com/watch?v=YwHErWJIh6Y
 
+#### FCGI
+- http://www.chiark.greenend.org.uk/doc/libfcgi0ldbl/fastcgi-prog-guide/ch1intro.htm#9432
+
 #### Http decision tree
 - https://news.ycombinator.com/item?id=12067809
 - https://github.com/for-GET/http-decision-diagram
