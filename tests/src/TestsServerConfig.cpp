@@ -119,8 +119,7 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 	CHECK( config.getServers().size() == 2);
 
 	//server 0
-	CHECK( config.getServer(0).getLocations().size() == 6);
-	REQUIRE( config.getServer(1).getLocations().size() == 2);
+	REQUIRE( config.getServer(0).getLocations().size() == 6);
 
 	CHECK( config.getServer(0).hasReturnDirective() == true);
 	CHECK( config.getServer(0).getReturnDirective().hasText() == false);
@@ -128,7 +127,7 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 	CHECK( config.getServer(0).getReturnDirective().hasUri() == true);
 	CHECK( config.getServer(0).getReturnDirective().getCode() == 301);
 	CHECK( config.getServer(0).getReturnDirective().getText().empty() );
-	REQUIRE( config.getServer(0).getReturnDirective().getUri() == "stack");
+	CHECK( config.getServer(0).getReturnDirective().getUri() == "stack");
 
 
 	CHECK( config.getServer(0).getLocations()[0].getUri() == "/" ) ;
@@ -188,6 +187,8 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 	
 	
 	// server 1
+
+	REQUIRE( config.getServer(1).getLocations().size() == 2);
 
 	CHECK( config.getServer(1).getReturnDirective().hasText() == false);
 	CHECK( config.getServer(1).hasReturnDirective() == false);
