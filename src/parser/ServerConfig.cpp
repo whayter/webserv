@@ -561,12 +561,13 @@ ReturnDirective	ServerConfig::_parseReturn(parser::config::ScannerConfig & scann
 	}
 	else
 	{
-		try {
-			result.setUri(argOne.value); }
-		catch(const SyntaxError& e)	{
-			_throw_SyntaxError(argOne, "Problem with uri in context \"return\".");
-		}
-		result.setCode(302);
+		// try {
+		// 	result.setUri(argOne.value); }
+		// catch(const SyntaxError& e)	{
+		// 	_throw_SyntaxError(argOne, "Problem with uri in context \"return\".");
+		// }
+		// result.setCode(302);
+		_throw_SyntaxError(argOne, "Invalid return code \""+ argOne.value +"\" in return context.");
 	}
 	_skipSemiColonNewLine(scanner);
 	return result;
