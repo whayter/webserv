@@ -63,10 +63,15 @@ Context: server, location
 http://nginx.org/en/docs/http/ngx_http_rewrite_module.html#return
 https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections
 
+
+Syntax: upload_pass <location>;
+Default:	—
+Context:	location
+https://www.nginx.com/resources/wiki/modules/upload/
+
 <!-- Syntax:	default_type mime-type;
-Default:	
-default_type text/plain;
-Context:	http, server, location
+Default: default_type text/plain;
+Context: http, server, location
 https://nginx.org/en/docs/http/ngx_http_core_module.html#default_type
 
 Syntax:	types { ... }

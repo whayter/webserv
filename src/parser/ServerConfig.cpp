@@ -260,7 +260,7 @@ Host ServerConfig::_parseListen(parser::config::ScannerConfig & scanner)
 	pr::Token t =  scanner.getToken();
 
 	if (t.kind != pr::ScopedEnum::kString && t.kind != pr::ScopedEnum::kInteger)
-		_throw_SyntaxError(t, "Bad character in \"listen\" context.");
+		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"listen\".");
 	result = _parseListenValue(t);
 	_skipSemiColonNewLine(scanner);
 	return result;
@@ -271,7 +271,7 @@ std::string ServerConfig::_parseRoot(parser::config::ScannerConfig & scanner)
 	pr::Token t;
 
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
-		_throw_SyntaxError(t, "Bad token in root context");
+		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"root\".");
 	_skipSemiColonNewLine(scanner);
 	return t.value;
 }
@@ -281,7 +281,7 @@ std::string ServerConfig::_parseIndex(parser::config::ScannerConfig & scanner)
 	pr::Token t;
 
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
-		_throw_SyntaxError(t, "Bad token in index context");
+		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"index\".");
 	_skipSemiColonNewLine(scanner);
 	return t.value;
 }
@@ -291,7 +291,7 @@ std::string ServerConfig::_parseServerName(parser::config::ScannerConfig & scann
 	pr::Token t;
 
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
-		_throw_SyntaxError(t, "Bad token in server_name context");
+		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"server_name\".");
 	_skipSemiColonNewLine(scanner);
 	return t.value;	
 }
@@ -313,7 +313,7 @@ std::map<u_short, std::string> ServerConfig::_parseErrorPage(parser::config::Sca
 	if (t.kind == pr::ScopedEnum::kString)
 		path = t.value;
 	else
-		_throw_SyntaxError(t, "Bad token in context \"error\".");
+		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"error\".");
 	std::vector<u_short>::iterator it = codes.begin();
 	while (it != codes.end())
 	{
@@ -382,7 +382,7 @@ bool	ServerConfig::_parseAutoindex(parser::config::ScannerConfig & scanner)
 	pr::Token t;
 
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
-		_throw_SyntaxError(t, "Bad token in context \"autoindex\".");
+		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"autoindex\".");
 	_skipSemiColonNewLine(scanner);
 	if (t.value == "on")
 		return true;
