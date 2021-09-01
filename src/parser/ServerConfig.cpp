@@ -567,7 +567,7 @@ ReturnDirective	ServerConfig::_parseReturn(parser::config::ScannerConfig & scann
 		// 	_throw_SyntaxError(argOne, "Problem with uri in context \"return\".");
 		// }
 		// result.setCode(302);
-		_throw_SyntaxError(argOne, "Invalid return code \""+ argOne.value +"\" in return context.");
+		_throw_SyntaxError(argOne, "Invalid return code \""+ argOne.value +"\" in return context. Must be an integer. Don't quote integers. thx");
 	}
 	_skipSemiColonNewLine(scanner);
 	return result;
