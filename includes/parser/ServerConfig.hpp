@@ -28,11 +28,6 @@ class ReturnDirective
 {
 public:
 	ReturnDirective() : _code(0), _uri() {}
-	ReturnDirective(const ReturnDirective& other) :
-		_code(other._code),
-		_uri(other._uri),
-		_text(other._text)
-	{}
 
 	inline u_short 				getCode() const	{ return _code; }
 	inline const Uri&			getUri() const	{ return _uri; }
@@ -47,6 +42,12 @@ public:
 	inline bool hasText() const { return !_text.empty(); }
 
 private:
+	ReturnDirective(const ReturnDirective& other) :
+		_code(other._code),
+		_uri(other._uri),
+		_text(other._text)
+	{}
+
 	u_short 	_code;
 	Uri			_uri;
 	// std::string	_uri;
@@ -78,20 +79,6 @@ public:
 	Location(): _autoindex(false), _hasAutoindex(false), 
 		_clientMaxBodySize(DEFAULT_CLIENT_MAX_BODY_SIZE), _hasClientMaxBodySize(false),
 		_hasReturnDirective(false)
-	{}
-	Location (const Location& other):
-		_uri(other._uri),
-		_autoindex(other._autoindex),
-		_hasAutoindex(other._hasAutoindex),
-		_clientMaxBodySize(other._clientMaxBodySize),
-		_hasClientMaxBodySize(other._hasClientMaxBodySize),
-		_returnDirective(other._returnDirective),
-		_hasReturnDirective(other._hasReturnDirective),
-		_cgiExec(other._cgiExec),
-		_cgiParams(other._cgiParams),
-		_limitExceptMethods(other._limitExceptMethods),
-		_root(other._root),
-		_index(other._index)
 	{}
 
 	inline std::string				getUri() const				{ return _uri; }
@@ -137,6 +124,21 @@ public:
 	bool	hasLimitExceptMethods(const std::string& method)		{ return _limitExceptMethods.count(method);}
 
 private:
+	Location (const Location& other):
+		_uri(other._uri),
+		_autoindex(other._autoindex),
+		_hasAutoindex(other._hasAutoindex),
+		_clientMaxBodySize(other._clientMaxBodySize),
+		_hasClientMaxBodySize(other._hasClientMaxBodySize),
+		_returnDirective(other._returnDirective),
+		_hasReturnDirective(other._hasReturnDirective),
+		_cgiExec(other._cgiExec),
+		_cgiParams(other._cgiParams),
+		_limitExceptMethods(other._limitExceptMethods),
+		_root(other._root),
+		_index(other._index)
+	{}
+	
 	std::string							_uri;
 	
 	bool								_autoindex;
