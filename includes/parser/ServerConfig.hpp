@@ -15,6 +15,7 @@
 
 #include <vector>
 #include <map>
+#include <set>
 #include <string>
 #include <stdint.h>
 
@@ -111,6 +112,10 @@ public:
 	inline std::map<std::string, std::string>&	getFastCgiParams() 	{ return _fastCgiParams;}
 	inline std::string	getFastCgiParam(std::string param) 			{ return _fastCgiParams[param];}
 
+	void	addLimitExceptMethod(const std::string& method)			{_limitExceptMethods.insert(method);}
+	void	addLimitExceptMethods(const std::set<std::string>& l)	{ _limitExceptMethods.insert(l.begin(), l.end());}
+	inline	std::set<std::string>&	getLimitExceptMethods() 		{ return _limitExceptMethods;}
+	bool	hasLimitExceptMethods(const std::string& method)		{ return _limitExceptMethods.count(method);}
 
 private:
 	std::string							_uri;
@@ -126,6 +131,9 @@ private:
 
 	Host								_fastCgiPass;
 	std::map<std::string, std::string> 	_fastCgiParams;
+
+	std::set<std::string>			_limitExceptMethods;
+
 	std::string							_root;
 	std::string							_index;
 }; /* class Location */
@@ -245,6 +253,7 @@ private:
 	std::pair<std::string, std::string>	_parseFastCgiParam(parser::config::ScannerConfig & scanner);
 	size_t								_parseClientMaxBodySize(parser::config::ScannerConfig & scanner);
 	ReturnDirective						_parseReturn(parser::config::ScannerConfig & scanner);
+	std::set<std::string>				_parseLimitExceptMethods(parser::config::ScannerConfig & scanner);
 	
 	Host _parseListenValue(const parser::config::Token& host);
 

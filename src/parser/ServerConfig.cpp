@@ -312,6 +312,8 @@ std::map<u_short, std::string> ServerConfig::_parseErrorPage(parser::config::Sca
 	
 	if (t.kind == pr::ScopedEnum::kString)
 		path = t.value;
+	else if (t.kind == pr::ScopedEnum::kSemiColon)
+		_throw_SyntaxError(t, "Missing Uri in context \"error\".");
 	else
 		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"error\".");
 	std::vector<u_short>::iterator it = codes.begin();
@@ -361,6 +363,8 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner, pr::Token loc
 					result.setAutoindex(_parseAutoindex(scanner));
 				else if (t.value == "client_max_body_size")
 					result.setClientMaxBodySize(_parseClientMaxBodySize(scanner));
+				else if (t.value == "limit_except")
+					result.addLimitExceptMethods(_parseLimitExceptMethods(scanner));
 				else if (t.value == "return")
 					result.setReturnDirective(_parseReturn(scanner));
 				else
@@ -571,4 +575,32 @@ ReturnDirective	ServerConfig::_parseReturn(parser::config::ScannerConfig & scann
 	}
 	_skipSemiColonNewLine(scanner);
 	return result;
+}
+
+std::set<std::string> ServerConfig::_parseLimitExceptMethods(parser::config::ScannerConfig & scanner)
+{
+	std::set<std::string> result;
+	// std::set<std::string> allowedMethods = {"GET", "POST", "DELETE"}; // c++98 sucks :@
+	std::set<std::string> allowedMethods;
+	pr::Token t;
+	
+	// allowedMethods.insert({"GET", "POST", "DELETE"}); // c++ 98 still suck or am I dumb ?! :@ 
+	allowedMethods.insert("GET"); 
+	allowedMethods.insert("POST"); 
+	allowedMethods.insert("DELETE"); 
+	
+	t = scanner.getToken();
+	if (t.kind == pr::ScopedEnum::kSemiColon)
+		_throw_SyntaxError(t, "No allowed method specified. There is no point of doing this.");
+	do {
+		if (!allowedMethods.count(t.value))
+			_throw_SyntaxError(t, "Unknown method \"" + t.value + "\".");
+		result.insert(t.value);
+	} while ((t = scanner.getToken()).kind == pr::ScopedEnum::kString);
+	if (t.kind != pr::ScopedEnum::kSemiColon)
+		_throw_SyntaxError(t, "Missing semi-colon.");
+	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kNewLine)
+		if (t.kind != pr::ScopedEnum::kComment)
+		_throw_SyntaxError(t, "Missing new line after semi-colon.");
+	return result;	
 }

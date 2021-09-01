@@ -243,3 +243,29 @@ TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][Serv
 	CHECK( config.findServer(uriEmptyHost).getIndex() == config.getServer(5).getIndex() );
 
 }
+
+TEST_CASE( "ServerConfig4 - ./config_files/testParser_directive_limit_except.conf", "[class][ServerConfig][findLocation]" )
+{
+	ServerConfig::__delete_singleton_instance();
+	ServerConfig& config = ServerConfig::getInstance("./config_files/testParser_directive_limit_except.conf");
+
+	// Location /
+	CHECK( config.getServer(0).getLocations()[0].getLimitExceptMethods().size() == 0);
+
+	// Location /youtube
+	CHECK( config.getServer(0).getLocations()[1].getLimitExceptMethods().size() == 2);
+	CHECK( config.getServer(0).getLocations()[1].hasLimitExceptMethods("GET") == true);
+	CHECK( config.getServer(0).getLocations()[1].hasLimitExceptMethods("POST") == true);
+	CHECK( config.getServer(0).getLocations()[1].hasLimitExceptMethods("DELETE") == false);
+	CHECK( config.getServer(0).getLocations()[1].hasLimitExceptMethods("RANDOM") == false);
+	
+	// Location /intra
+	CHECK( config.getServer(0).getLocations()[2].getLimitExceptMethods().size() == 2);
+	CHECK( config.getServer(0).getLocations()[2].hasLimitExceptMethods("GET") == false);
+	CHECK( config.getServer(0).getLocations()[2].hasLimitExceptMethods("POST") == true);
+	CHECK( config.getServer(0).getLocations()[2].hasLimitExceptMethods("DELETE") == true);
+	CHECK( config.getServer(0).getLocations()[2].hasLimitExceptMethods("Nop") == false);
+
+	// Location /nginx
+	CHECK( config.getServer(0).getLocations()[3].getLimitExceptMethods().size() == 0);
+}
