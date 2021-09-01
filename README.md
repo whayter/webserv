@@ -51,8 +51,8 @@
 - [x] The first server for a host:port will be the default for this host:port (meaning it will answer to all request that doesn’t belong to an other server)
 - [x] setup default [error pages](http://nginx.org/en/docs/http/ngx_http_core_module.html#error_page)
 - [x] limit [client body size](http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size)
-- [ ] [setup routes](http://nginx.org/en/docs/http/ngx_http_core_module.html#location) with one or multiple of the following rules/configuration (routes wont be using regexp):
-	- [ ] define a list of accepted HTTP Methods for the route
+- [x] [setup routes](http://nginx.org/en/docs/http/ngx_http_core_module.html#location) with one or multiple of the following rules/configuration (routes wont be using regexp):
+	- [x] define a list of accepted HTTP Methods for the route
 	- [x] define an HTTP redirection.
 	- [x] define a directory or a file from where the file should be search (for example if url /kapouet is rooted to /tmp/www, url /kapouet/pouic/toto/pouet is /tmp/www/pouic/toto/pouet)
 	- [x] turn on or off directory listing
