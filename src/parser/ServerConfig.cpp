@@ -351,10 +351,12 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner, pr::Token loc
 				}
 				else if (t.value == "location")
 					_throw_SyntaxError(locationToken, "Missing closing bracket at end of location directive");
-				else if (t.value == "fastcgi_pass")
-					result.setFastCgiPass(_parseHost(scanner));
-				else if (t.value == "fastcgi_param")
-					result.addFastCgiParam(_parseFastCgiParam(scanner));
+				// else if (t.value == "fastcgi_pass")
+				// 	result.setFastCgiPass(_parseHost(scanner));
+				else if (t.value == "cgi_exec")
+					result.setCgiExec(_parseCgiExec(scanner));
+				else if (t.value == "cgi_param")
+					result.addCgiParam(_parseCgiParam(scanner));
 				else if (t.value == "root")
 					result.setRoot(_parseRoot(scanner));
 				else if (t.value == "index")
@@ -460,16 +462,28 @@ Host ServerConfig::_parseHost(parser::config::ScannerConfig & scanner)
 	return Host(host, port);
 }
 
-std::pair<std::string, std::string>	ServerConfig::_parseFastCgiParam(parser::config::ScannerConfig & scanner)
+std::string ServerConfig::_parseCgiExec(parser::config::ScannerConfig & scanner)
+{
+	std::string	exec;
+	pr::Token	t;
+
+	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
+		_throw_SyntaxError(t, "Invalid value exec.");
+	exec = t.value;
+	_skipSemiColonNewLine(scanner);
+	return exec;
+}
+
+std::pair<std::string, std::string>	ServerConfig::_parseCgiParam(parser::config::ScannerConfig & scanner)
 {
 	pr::Token tName;
 	pr::Token tValue;
 	std::pair<std::string, std::string> result;
 
 	if ((tName = scanner.getToken()).kind != pr::ScopedEnum::kString)
-		_throw_SyntaxError(tName, "Bad fastcgi parameter name");
+		_throw_SyntaxError(tName, "Bad cgi parameter name");
 	if ((tValue = scanner.getToken()).kind != pr::ScopedEnum::kString)
-		_throw_SyntaxError(tValue, "Bad fastcgi parameter value");
+		_throw_SyntaxError(tValue, "Bad cgi parameter value");
 	result.first = tName.value;
 	result.second = tValue.value;
 	_skipSemiColonNewLine(scanner);

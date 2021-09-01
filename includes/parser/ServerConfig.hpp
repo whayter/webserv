@@ -78,7 +78,7 @@ public:
 	inline std::string				getUri() const				{ return _uri; }
 	inline bool						getAutoindex() const		{ return _autoindex; }
 
-	inline Host						getFastCgiPass() const		{ return _fastCgiPass; }
+	inline std::string				getCgiExec() const		{ return _cgiExec; }
 	inline size_t					getClientMaxBodySize() const{ return _clientMaxBodySize; }
 	inline const ReturnDirective&	getReturnDirective() const	{ return _returnDirective; }
 	inline std::string				getRoot() const				{ return _root; }
@@ -101,16 +101,16 @@ public:
 		_hasReturnDirective = true;
 	}
 	void 	setUri(std::string uri)				{ _uri = uri; }
-	void 	setFastCgiPass(Host host)			{ _fastCgiPass = host;}
+	void 	setCgiExec(const std::string& exec)	{ _cgiExec = exec;}
 	void 	setRoot(std::string root)			{_root = root;}
 	void 	setIndex(std::string index)			{_index = index;}
 
-	void	addFastCgiParam(const std::string& name, const std::string& value) { _fastCgiParams[name] = value;}
-	void	addFastCgiParam(const std::pair<std::string,std::string> pair) 	{ _fastCgiParams[pair.first] = pair.second;}
+	void	addCgiParam(const std::string& name, const std::string& value) { _cgiParams[name] = value;}
+	void	addCgiParam(const std::pair<std::string,std::string> pair) 	{ _cgiParams[pair.first] = pair.second;}
 
-	/// return the map of fastcgiParam (usefull for testing purpose)
-	inline std::map<std::string, std::string>&	getFastCgiParams() 	{ return _fastCgiParams;}
-	inline std::string	getFastCgiParam(std::string param) 			{ return _fastCgiParams[param];}
+	/// return the map of cgiParam (usefull for testing purpose)
+	inline std::map<std::string, std::string>&	getCgiParams() 	{ return _cgiParams;}
+	inline std::string	getCgiParam(std::string param) 			{ return _cgiParams[param];}
 
 	void	addLimitExceptMethod(const std::string& method)			{_limitExceptMethods.insert(method);}
 	void	addLimitExceptMethods(const std::set<std::string>& l)	{ _limitExceptMethods.insert(l.begin(), l.end());}
@@ -129,8 +129,8 @@ private:
 	ReturnDirective						_returnDirective;
 	bool								_hasReturnDirective;
 
-	Host								_fastCgiPass;
-	std::map<std::string, std::string> 	_fastCgiParams;
+	std::string							_cgiExec;
+	std::map<std::string, std::string> 	_cgiParams;
 
 	std::set<std::string>			_limitExceptMethods;
 
@@ -250,7 +250,8 @@ private:
 	std::map<u_short, std::string>		_parseErrorPage(parser::config::ScannerConfig & scanner);
 	Location							_parseLocation(parser::config::ScannerConfig & scanner, parser::config::Token locationToken);
 	Host 								_parseHost(parser::config::ScannerConfig & scanner);
-	std::pair<std::string, std::string>	_parseFastCgiParam(parser::config::ScannerConfig & scanner);
+	std::string							_parseCgiExec(parser::config::ScannerConfig & scanner);
+	std::pair<std::string, std::string>	_parseCgiParam(parser::config::ScannerConfig & scanner);
 	size_t								_parseClientMaxBodySize(parser::config::ScannerConfig & scanner);
 	ReturnDirective						_parseReturn(parser::config::ScannerConfig & scanner);
 	std::set<std::string>				_parseLimitExceptMethods(parser::config::ScannerConfig & scanner);

@@ -34,7 +34,7 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 	CHECK( config.getServer(0).getLocations()[2].getUri() == ".php$" );
 
 	CHECK( config.getServer(1).getLocations()[0].getUri() == "/" );
-	CHECK( config.getServer(1).getLocations()[1].getUri() == "\\.php$" );
+	CHECK( config.getServer(1).getLocations()[1].getUri() == "\\.rb$" );
 
 	//root directive
 	CHECK( config.getServer(0).getRoot() == "/var/www/app" );
@@ -73,23 +73,39 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 	CHECK( config.getServer(1).getLocations()[0].getAutoindex() == true);
 	CHECK( config.getServer(1).getLocations()[1].getAutoindex() == false);
 
-	// fastcgi_pass directive
-	CHECK( config.getServer(0).getLocations()[2].getFastCgiPass().getHostname() == "wordpress");
-	CHECK( config.getServer(0).getLocations()[2].getFastCgiPass().getPort() == 9000);
+	// // fastcgi_pass directive
+	// CHECK( config.getServer(0).getLocations()[2].getFastCgiPass().getHostname() == "wordpress");
+	// CHECK( config.getServer(0).getLocations()[2].getFastCgiPass().getPort() == 9000);
 
-	CHECK( config.getServer(1).getLocations()[1].getFastCgiPass().getHostname() == "rails");
-	CHECK( config.getServer(1).getLocations()[1].getFastCgiPass().getPort() == 3000);
+	// CHECK( config.getServer(1).getLocations()[1].getFastCgiPass().getHostname() == "rails");
+	// CHECK( config.getServer(1).getLocations()[1].getFastCgiPass().getPort() == 3000);
 
-	// fastcgi_param directive
-	CHECK( config.getServer(0).getLocations()[0].getFastCgiParams().size() == 0);
-	CHECK( config.getServer(0).getLocations()[1].getFastCgiParams().size() == 0);
-	CHECK( config.getServer(0).getLocations()[2].getFastCgiParams().size() == 1);
-	CHECK( config.getServer(0).getLocations()[2].getFastCgiParam("SCRIPT_FILENAME") == "$document_root$fastcgi_script_name");
+	// // fastcgi_param directive
+	// CHECK( config.getServer(0).getLocations()[0].getFastCgiParams().size() == 0);
+	// CHECK( config.getServer(0).getLocations()[1].getFastCgiParams().size() == 0);
+	// CHECK( config.getServer(0).getLocations()[2].getFastCgiParams().size() == 1);
+	// CHECK( config.getServer(0).getLocations()[2].getFastCgiParam("SCRIPT_FILENAME") == "$document_root$fastcgi_script_name");
 
-	CHECK( config.getServer(1).getLocations()[0].getFastCgiParams().size() == 0);
-	CHECK( config.getServer(1).getLocations()[1].getFastCgiParams().size() == 2);
-	CHECK( config.getServer(1).getLocations()[1].getFastCgiParam("SCRIPT_FILENAME") == "$document_root$fastcgi_script_name");
-	CHECK( config.getServer(1).getLocations()[1].getFastCgiParam("SERVER_NAME") == "$server_name");
+	// CHECK( config.getServer(1).getLocations()[0].getFastCgiParams().size() == 0);
+	// CHECK( config.getServer(1).getLocations()[1].getFastCgiParams().size() == 2);
+	// CHECK( config.getServer(1).getLocations()[1].getFastCgiParam("SCRIPT_FILENAME") == "$document_root$fastcgi_script_name");
+	// CHECK( config.getServer(1).getLocations()[1].getFastCgiParam("SERVER_NAME") == "$server_name");
+
+	// cgi_exec directive
+	CHECK( config.getServer(0).getLocations()[2].getCgiExec() == "./cgi-bin/php");
+
+	CHECK( config.getServer(1).getLocations()[1].getCgiExec() == "./cgi-bin/ruby");
+
+	// cgi_param directive
+	CHECK( config.getServer(0).getLocations()[0].getCgiParams().size() == 0);
+	CHECK( config.getServer(0).getLocations()[1].getCgiParams().size() == 0);
+	CHECK( config.getServer(0).getLocations()[2].getCgiParams().size() == 1);
+	CHECK( config.getServer(0).getLocations()[2].getCgiParam("SCRIPT_FILENAME") == "$document_root$fastcgi_script_name");
+
+	CHECK( config.getServer(1).getLocations()[0].getCgiParams().size() == 0);
+	CHECK( config.getServer(1).getLocations()[1].getCgiParams().size() == 2);
+	CHECK( config.getServer(1).getLocations()[1].getCgiParam("SCRIPT_FILENAME") == "$document_root$fastcgi_script_name");
+	CHECK( config.getServer(1).getLocations()[1].getCgiParam("SERVER_NAME") == "$server_name");
 
 	// client_max_body_size directive
 	CHECK( config.getServer(0).getClientMaxBodySize() == (1000 * 1000) );
