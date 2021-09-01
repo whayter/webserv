@@ -29,7 +29,6 @@ struct ScopedEnum
 		kLeftBrace, kRightBrace,
 		kComma, kColon, kSemiColon,
 		kNewLine,
-		kIdentifier
 	};
 };
 typedef ScopedEnum::TokenKind TokenKind;

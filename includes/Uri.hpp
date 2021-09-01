@@ -63,7 +63,7 @@ public:
 	Uri(const std::string& scheme, const std::string& authority, const std::string& path, const std::string& query, const std::string& fragment);
 	
 	/// @brief Copy constructor
-	Uri(Uri&);
+	Uri(const Uri&);
 	/// @brief Assignment operator
 	Uri& operator=(const Uri&);
 	/// @brief Parse string and assign it
@@ -100,7 +100,7 @@ public:
 	void					setAuthority(const std::string&);
 
 	std::string			decode(std::string s) const;
-	std::string			toString();
+	std::string			toString() const;
 
 	void 					clear();
 

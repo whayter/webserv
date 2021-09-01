@@ -34,7 +34,7 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 	CHECK( config.getServer(0).getLocations()[2].getUri() == ".php$" );
 
 	CHECK( config.getServer(1).getLocations()[0].getUri() == "/" );
-	CHECK( config.getServer(1).getLocations()[1].getUri() == "\\.php$" );
+	CHECK( config.getServer(1).getLocations()[1].getUri() == "\\.rb$" );
 
 	//root directive
 	CHECK( config.getServer(0).getRoot() == "/var/www/app" );
@@ -73,23 +73,39 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 	CHECK( config.getServer(1).getLocations()[0].getAutoindex() == true);
 	CHECK( config.getServer(1).getLocations()[1].getAutoindex() == false);
 
-	// fastcgi_pass directive
-	CHECK( config.getServer(0).getLocations()[2].getFastCgiPass().getHostname() == "wordpress");
-	CHECK( config.getServer(0).getLocations()[2].getFastCgiPass().getPort() == 9000);
+	// // fastcgi_pass directive
+	// CHECK( config.getServer(0).getLocations()[2].getFastCgiPass().getHostname() == "wordpress");
+	// CHECK( config.getServer(0).getLocations()[2].getFastCgiPass().getPort() == 9000);
 
-	CHECK( config.getServer(1).getLocations()[1].getFastCgiPass().getHostname() == "rails");
-	CHECK( config.getServer(1).getLocations()[1].getFastCgiPass().getPort() == 3000);
+	// CHECK( config.getServer(1).getLocations()[1].getFastCgiPass().getHostname() == "rails");
+	// CHECK( config.getServer(1).getLocations()[1].getFastCgiPass().getPort() == 3000);
 
-	// fastcgi_param directive
-	CHECK( config.getServer(0).getLocations()[0].getFastCgiParams().size() == 0);
-	CHECK( config.getServer(0).getLocations()[1].getFastCgiParams().size() == 0);
-	CHECK( config.getServer(0).getLocations()[2].getFastCgiParams().size() == 1);
-	CHECK( config.getServer(0).getLocations()[2].getFastCgiParam("SCRIPT_FILENAME") == "$document_root$fastcgi_script_name");
+	// // fastcgi_param directive
+	// CHECK( config.getServer(0).getLocations()[0].getFastCgiParams().size() == 0);
+	// CHECK( config.getServer(0).getLocations()[1].getFastCgiParams().size() == 0);
+	// CHECK( config.getServer(0).getLocations()[2].getFastCgiParams().size() == 1);
+	// CHECK( config.getServer(0).getLocations()[2].getFastCgiParam("SCRIPT_FILENAME") == "$document_root$fastcgi_script_name");
 
-	CHECK( config.getServer(1).getLocations()[0].getFastCgiParams().size() == 0);
-	CHECK( config.getServer(1).getLocations()[1].getFastCgiParams().size() == 2);
-	CHECK( config.getServer(1).getLocations()[1].getFastCgiParam("SCRIPT_FILENAME") == "$document_root$fastcgi_script_name");
-	CHECK( config.getServer(1).getLocations()[1].getFastCgiParam("SERVER_NAME") == "$server_name");
+	// CHECK( config.getServer(1).getLocations()[0].getFastCgiParams().size() == 0);
+	// CHECK( config.getServer(1).getLocations()[1].getFastCgiParams().size() == 2);
+	// CHECK( config.getServer(1).getLocations()[1].getFastCgiParam("SCRIPT_FILENAME") == "$document_root$fastcgi_script_name");
+	// CHECK( config.getServer(1).getLocations()[1].getFastCgiParam("SERVER_NAME") == "$server_name");
+
+	// cgi_exec directive
+	CHECK( config.getServer(0).getLocations()[2].getCgiExec() == "./cgi-bin/php");
+
+	CHECK( config.getServer(1).getLocations()[1].getCgiExec() == "./cgi-bin/ruby");
+
+	// cgi_param directive
+	CHECK( config.getServer(0).getLocations()[0].getCgiParams().size() == 0);
+	CHECK( config.getServer(0).getLocations()[1].getCgiParams().size() == 0);
+	CHECK( config.getServer(0).getLocations()[2].getCgiParams().size() == 1);
+	CHECK( config.getServer(0).getLocations()[2].getCgiParam("SCRIPT_FILENAME") == "$document_root$fastcgi_script_name");
+
+	CHECK( config.getServer(1).getLocations()[0].getCgiParams().size() == 0);
+	CHECK( config.getServer(1).getLocations()[1].getCgiParams().size() == 2);
+	CHECK( config.getServer(1).getLocations()[1].getCgiParam("SCRIPT_FILENAME") == "$document_root$fastcgi_script_name");
+	CHECK( config.getServer(1).getLocations()[1].getCgiParam("SERVER_NAME") == "$server_name");
 
 	// client_max_body_size directive
 	CHECK( config.getServer(0).getClientMaxBodySize() == (1000 * 1000) );
@@ -121,7 +137,7 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 	CHECK( config.getServer(0).getReturnDirective().hasUri() == true);
 	CHECK( config.getServer(0).getReturnDirective().getCode() == 301);
 	CHECK( config.getServer(0).getReturnDirective().getText().empty() );
-	CHECK( config.getServer(0).getReturnDirective().getUri() == "stack");
+	CHECK( config.getServer(0).getReturnDirective().getUri().toString() == "stack");
 
 
 	CHECK( config.getServer(0).getLocations()[0].getUri() == "/" ) ;
@@ -140,7 +156,7 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 	CHECK( config.getServer(0).getLocations()[1].getReturnDirective().hasUri() == true);
 	CHECK( config.getServer(0).getLocations()[1].getReturnDirective().getCode() == 302);
 	CHECK( config.getServer(0).getLocations()[1].getReturnDirective().getText().empty());
-	CHECK( config.getServer(0).getLocations()[1].getReturnDirective().getUri() == "https://stackoverflow.com");
+	CHECK( config.getServer(0).getLocations()[1].getReturnDirective().getUri().toString() == "https://stackoverflow.com");
 
 	CHECK( config.getServer(0).getLocations()[2].getUri() == "/youtube" ) ;
 	CHECK( config.getServer(0).getLocations()[2].hasReturnDirective() == true );
@@ -149,7 +165,7 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 	CHECK( config.getServer(0).getLocations()[2].getReturnDirective().hasUri() == true);
 	CHECK( config.getServer(0).getLocations()[2].getReturnDirective().getCode() == 303);
 	CHECK( config.getServer(0).getLocations()[2].getReturnDirective().getText().empty());
-	CHECK( config.getServer(0).getLocations()[2].getReturnDirective().getUri() == "https://youtube.fr");
+	CHECK( config.getServer(0).getLocations()[2].getReturnDirective().getUri().toString() == "https://youtube.fr");
 
 	CHECK( config.getServer(0).getLocations()[3].getUri() == "/intra" ) ;
 	CHECK( config.getServer(0).getLocations()[3].hasReturnDirective() == true );
@@ -158,7 +174,7 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 	CHECK( config.getServer(0).getLocations()[3].getReturnDirective().hasUri() == true);
 	CHECK( config.getServer(0).getLocations()[3].getReturnDirective().getCode() == 307);
 	CHECK( config.getServer(0).getLocations()[3].getReturnDirective().getText().empty());
-	CHECK( config.getServer(0).getLocations()[3].getReturnDirective().getUri() == "https://intra.42.fr");
+	CHECK( config.getServer(0).getLocations()[3].getReturnDirective().getUri().toString() == "https://intra.42.fr");
 
 	CHECK( config.getServer(0).getLocations()[4].getUri() == "/nginx" ) ;
 	CHECK( config.getServer(0).getLocations()[4].hasReturnDirective() == true );
@@ -167,7 +183,7 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 	CHECK( config.getServer(0).getLocations()[4].getReturnDirective().hasUri() == true);
 	CHECK( config.getServer(0).getLocations()[4].getReturnDirective().getCode() == 308);
 	CHECK( config.getServer(0).getLocations()[4].getReturnDirective().getText().empty());
-	CHECK( config.getServer(0).getLocations()[4].getReturnDirective().getUri() == "http://nginx.org");
+	CHECK( config.getServer(0).getLocations()[4].getReturnDirective().getUri().toString() == "http://nginx.org");
 
 	CHECK( config.getServer(0).getLocations()[5].getUri() == "/bird" ) ;
 	CHECK( config.getServer(0).getLocations()[5].hasReturnDirective() == true );
@@ -199,7 +215,7 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 	CHECK( config.getServer(1).getLocations()[0].getReturnDirective().hasUri() == true);
 	CHECK( config.getServer(1).getLocations()[0].getReturnDirective().getCode() == 302);
 	CHECK( config.getServer(1).getLocations()[0].getReturnDirective().getText().empty());
-	CHECK( config.getServer(1).getLocations()[0].getReturnDirective().getUri() == "stack");
+	CHECK( config.getServer(1).getLocations()[0].getReturnDirective().getUri().toString() == "stack");
 
 	CHECK( config.getServer(1).getLocations()[1].getUri() == "/stack" ) ;
 	CHECK( config.getServer(1).getLocations()[1].hasReturnDirective() == true );
@@ -208,14 +224,14 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().hasUri() == true);
 	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().getCode() == 302);
 	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().getText().empty());
-	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().getUri() == "https://stackoverflow.com");
+	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().getUri().toString() == "https://stackoverflow.com");
 
 }
 
-TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][ServerConfig][findLocation]" )
+TEST_CASE( "ServerConfig3 - ./config_files/testFindServer.conf", "[class][ServerConfig][findServer]" )
 {
 	ServerConfig::__delete_singleton_instance();
-	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindLocation.conf");
+	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindServer.conf");
 
 	CHECK( config.findServer(Uri("http://srv_one:80")).getServerName() == config.getServer(0).getServerName() );
 	CHECK( config.findServer(Uri("http://srv_two:80")).getServerName() == config.getServer(1).getServerName() );
@@ -242,4 +258,30 @@ TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][Serv
 	uriEmptyHost.setPort(82);
 	CHECK( config.findServer(uriEmptyHost).getIndex() == config.getServer(5).getIndex() );
 
+}
+
+TEST_CASE( "ServerConfig4 - ./config_files/testParser_directive_limit_except.conf", "[class][ServerConfig][findLocation]" )
+{
+	ServerConfig::__delete_singleton_instance();
+	ServerConfig& config = ServerConfig::getInstance("./config_files/testParser_directive_limit_except.conf");
+
+	// Location /
+	CHECK( config.getServer(0).getLocations()[0].getLimitExceptMethods().size() == 0);
+
+	// Location /youtube
+	CHECK( config.getServer(0).getLocations()[1].getLimitExceptMethods().size() == 2);
+	CHECK( config.getServer(0).getLocations()[1].hasLimitExceptMethods("GET") == true);
+	CHECK( config.getServer(0).getLocations()[1].hasLimitExceptMethods("POST") == true);
+	CHECK( config.getServer(0).getLocations()[1].hasLimitExceptMethods("DELETE") == false);
+	CHECK( config.getServer(0).getLocations()[1].hasLimitExceptMethods("RANDOM") == false);
+	
+	// Location /intra
+	CHECK( config.getServer(0).getLocations()[2].getLimitExceptMethods().size() == 2);
+	CHECK( config.getServer(0).getLocations()[2].hasLimitExceptMethods("GET") == false);
+	CHECK( config.getServer(0).getLocations()[2].hasLimitExceptMethods("POST") == true);
+	CHECK( config.getServer(0).getLocations()[2].hasLimitExceptMethods("DELETE") == true);
+	CHECK( config.getServer(0).getLocations()[2].hasLimitExceptMethods("Nop") == false);
+
+	// Location /nginx
+	CHECK( config.getServer(0).getLocations()[3].getLimitExceptMethods().size() == 0);
 }

@@ -60,7 +60,7 @@ Uri::Uri(const std::string& scheme, const std::string& authority, const std::str
     _parseAuthority(it, end);
 }
 
-Uri::Uri(Uri& other):
+Uri::Uri(const Uri& other):
     _scheme(other._scheme),
     _userInfo(other._userInfo),
     _host(other._host),
@@ -387,7 +387,7 @@ std::string Uri::decode(std::string s) const
 
 // https://en.wikipedia.org/wiki/File:URI_syntax_diagram.svg
 
-std::string			Uri::toString()
+std::string			Uri::toString() const
 {
     std::string result;
 

@@ -260,7 +260,7 @@ Host ServerConfig::_parseListen(parser::config::ScannerConfig & scanner)
 	pr::Token t =  scanner.getToken();
 
 	if (t.kind != pr::ScopedEnum::kString && t.kind != pr::ScopedEnum::kInteger)
-		_throw_SyntaxError(t, "Bad character in \"listen\" context.");
+		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"listen\".");
 	result = _parseListenValue(t);
 	_skipSemiColonNewLine(scanner);
 	return result;
@@ -271,7 +271,7 @@ std::string ServerConfig::_parseRoot(parser::config::ScannerConfig & scanner)
 	pr::Token t;
 
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
-		_throw_SyntaxError(t, "Bad token in root context");
+		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"root\".");
 	_skipSemiColonNewLine(scanner);
 	return t.value;
 }
@@ -281,7 +281,7 @@ std::string ServerConfig::_parseIndex(parser::config::ScannerConfig & scanner)
 	pr::Token t;
 
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
-		_throw_SyntaxError(t, "Bad token in index context");
+		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"index\".");
 	_skipSemiColonNewLine(scanner);
 	return t.value;
 }
@@ -291,7 +291,7 @@ std::string ServerConfig::_parseServerName(parser::config::ScannerConfig & scann
 	pr::Token t;
 
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
-		_throw_SyntaxError(t, "Bad token in server_name context");
+		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"server_name\".");
 	_skipSemiColonNewLine(scanner);
 	return t.value;	
 }
@@ -312,8 +312,10 @@ std::map<u_short, std::string> ServerConfig::_parseErrorPage(parser::config::Sca
 	
 	if (t.kind == pr::ScopedEnum::kString)
 		path = t.value;
+	else if (t.kind == pr::ScopedEnum::kSemiColon)
+		_throw_SyntaxError(t, "Missing Uri in context \"error\".");
 	else
-		_throw_SyntaxError(t, "Bad token in context \"error\".");
+		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"error\".");
 	std::vector<u_short>::iterator it = codes.begin();
 	while (it != codes.end())
 	{
@@ -349,10 +351,12 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner, pr::Token loc
 				}
 				else if (t.value == "location")
 					_throw_SyntaxError(locationToken, "Missing closing bracket at end of location directive");
-				else if (t.value == "fastcgi_pass")
-					result.setFastCgiPass(_parseHost(scanner));
-				else if (t.value == "fastcgi_param")
-					result.addFastCgiParam(_parseFastCgiParam(scanner));
+				// else if (t.value == "fastcgi_pass")
+				// 	result.setFastCgiPass(_parseHost(scanner));
+				else if (t.value == "cgi_exec")
+					result.setCgiExec(_parseCgiExec(scanner));
+				else if (t.value == "cgi_param")
+					result.addCgiParam(_parseCgiParam(scanner));
 				else if (t.value == "root")
 					result.setRoot(_parseRoot(scanner));
 				else if (t.value == "index")
@@ -361,6 +365,8 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner, pr::Token loc
 					result.setAutoindex(_parseAutoindex(scanner));
 				else if (t.value == "client_max_body_size")
 					result.setClientMaxBodySize(_parseClientMaxBodySize(scanner));
+				else if (t.value == "limit_except")
+					result.addLimitExceptMethods(_parseLimitExceptMethods(scanner));
 				else if (t.value == "return")
 					result.setReturnDirective(_parseReturn(scanner));
 				else
@@ -382,7 +388,7 @@ bool	ServerConfig::_parseAutoindex(parser::config::ScannerConfig & scanner)
 	pr::Token t;
 
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
-		_throw_SyntaxError(t, "Bad token in context \"autoindex\".");
+		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"autoindex\".");
 	_skipSemiColonNewLine(scanner);
 	if (t.value == "on")
 		return true;
@@ -456,16 +462,28 @@ Host ServerConfig::_parseHost(parser::config::ScannerConfig & scanner)
 	return Host(host, port);
 }
 
-std::pair<std::string, std::string>	ServerConfig::_parseFastCgiParam(parser::config::ScannerConfig & scanner)
+std::string ServerConfig::_parseCgiExec(parser::config::ScannerConfig & scanner)
+{
+	std::string	exec;
+	pr::Token	t;
+
+	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
+		_throw_SyntaxError(t, "Invalid value exec.");
+	exec = t.value;
+	_skipSemiColonNewLine(scanner);
+	return exec;
+}
+
+std::pair<std::string, std::string>	ServerConfig::_parseCgiParam(parser::config::ScannerConfig & scanner)
 {
 	pr::Token tName;
 	pr::Token tValue;
 	std::pair<std::string, std::string> result;
 
 	if ((tName = scanner.getToken()).kind != pr::ScopedEnum::kString)
-		_throw_SyntaxError(tName, "Bad fastcgi parameter name");
+		_throw_SyntaxError(tName, "Bad cgi parameter name");
 	if ((tValue = scanner.getToken()).kind != pr::ScopedEnum::kString)
-		_throw_SyntaxError(tValue, "Bad fastcgi parameter value");
+		_throw_SyntaxError(tValue, "Bad cgi parameter value");
 	result.first = tName.value;
 	result.second = tValue.value;
 	_skipSemiColonNewLine(scanner);
@@ -567,8 +585,36 @@ ReturnDirective	ServerConfig::_parseReturn(parser::config::ScannerConfig & scann
 		// 	_throw_SyntaxError(argOne, "Problem with uri in context \"return\".");
 		// }
 		// result.setCode(302);
-		_throw_SyntaxError(argOne, "Invalid return code \""+ argOne.value +"\" in return context.");
+		_throw_SyntaxError(argOne, "Invalid return code \""+ argOne.value +"\" in return context. Must be an integer. Don't quote integers. thx");
 	}
 	_skipSemiColonNewLine(scanner);
 	return result;
+}
+
+std::set<std::string> ServerConfig::_parseLimitExceptMethods(parser::config::ScannerConfig & scanner)
+{
+	std::set<std::string> result;
+	// std::set<std::string> allowedMethods = {"GET", "POST", "DELETE"}; // c++98 sucks :@
+	std::set<std::string> allowedMethods;
+	pr::Token t;
+	
+	// allowedMethods.insert({"GET", "POST", "DELETE"}); // c++ 98 still suck or am I dumb ?! :@ 
+	allowedMethods.insert("GET"); 
+	allowedMethods.insert("POST"); 
+	allowedMethods.insert("DELETE"); 
+	
+	t = scanner.getToken();
+	if (t.kind == pr::ScopedEnum::kSemiColon)
+		_throw_SyntaxError(t, "No allowed method specified. There is no point of doing this.");
+	do {
+		if (!allowedMethods.count(t.value))
+			_throw_SyntaxError(t, "Unknown method \"" + t.value + "\".");
+		result.insert(t.value);
+	} while ((t = scanner.getToken()).kind == pr::ScopedEnum::kString);
+	if (t.kind != pr::ScopedEnum::kSemiColon)
+		_throw_SyntaxError(t, "Missing semi-colon.");
+	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kNewLine)
+		if (t.kind != pr::ScopedEnum::kComment)
+		_throw_SyntaxError(t, "Missing new line after semi-colon.");
+	return result;	
 }
