@@ -228,10 +228,10 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 
 }
 
-TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][ServerConfig][findLocation]" )
+TEST_CASE( "ServerConfig3 - ./config_files/testFindServer.conf", "[class][ServerConfig][findServer]" )
 {
 	ServerConfig::__delete_singleton_instance();
-	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindLocation.conf");
+	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindServer.conf");
 
 	CHECK( config.findServer(Uri("http://srv_one:80")).getServerName() == config.getServer(0).getServerName() );
 	CHECK( config.findServer(Uri("http://srv_two:80")).getServerName() == config.getServer(1).getServerName() );
