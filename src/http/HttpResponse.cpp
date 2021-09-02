@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:47:59 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/02 11:15:23 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/02 20:30:46 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,9 @@ HttpResponse::~HttpResponse() {}
 void HttpResponse::setLocalContent()
 {
 	std::ifstream ifs;
-	std::string path = "www" +  _request.getUri().getPathEtc();						// tmp
+	std::string root = _serverBlock.getRoot();
+	std::string path = _request.getUri().getPath();
+	std::string file = "." + root + path;					// root will always start with '/' ?
 	ifs.open(path.c_str());
 	if (!ifs)
 	{
@@ -48,7 +50,7 @@ void HttpResponse::setLocalContent()
 	_content = buffer;
 }
 
-void HttpResponse::setErrorContent()
+void HttpResponse::setErrorContent()												// not complete yet
 {
 	_content = "<!DOCTYPE html>";
 	_content += "<html lang=\"en\"><head><meta charset=\"utf-8\">";
