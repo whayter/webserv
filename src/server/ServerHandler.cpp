@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 19:22:37 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/30 18:48:43 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/08/30 22:24:47 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ bool server::ServerHandler::start(void)
 		if (!server->socket.setFd(AF_INET, SOCK_STREAM))
 			return false;
 		server->socket.setAddr(AF_INET, INADDR_ANY, server->port);
-		std::cout << "socket() ok" << std::endl;
 		if (!sckt::setNonBlocking(server->socket.getFd())
 		|| !sckt::setReusableAddr(server->socket.getFd())
 		|| !sckt::bindSocket(server->socket.getFd(), server->socket.getAddr())
@@ -63,9 +62,7 @@ bool server::ServerHandler::start(void)
 		_fds[_nfds].events = POLLIN;
 		server->index = _nfds;
 		_nfds++;
-		std::cout << "next" << std::endl;	
 	}
-	std::cout << "start done" << std::endl;
 	_firstClientIndex = _nfds;
 	return true;
 }
