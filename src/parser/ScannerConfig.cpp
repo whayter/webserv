@@ -69,6 +69,27 @@ Token ScannerConfig::getToken(bool skipNL)
 				_scan.putback(c);
 			return _makeToken(ScopedEnum::kComment, lexeme, column, line);
 		}
+		case '\'':
+		case '"':
+		{
+			std::string lexeme = "";
+			int column = _scan.getColumn(), line = _scan.getLine();
+			char quoteType = c;
+
+			c = _scan.get();
+			while (c != quoteType && c != '\n' && isprint(c))
+			{
+				lexeme += c;
+				c = _scan.get();
+			}
+			if (c == '\n' || c == 0 || c== -1)
+				return _makeToken(ScopedEnum::kError,
+					std::string("Missing closing quote."), column, line);
+			else if (!isprint(c))
+				return _makeToken(ScopedEnum::kError,
+					std::string("Wtf, characters that are not printable."), column, line);
+			return _makeToken(ScopedEnum::kString, lexeme, column, line);
+		}
 		default:
 		{
 			std::string lexeme = "";
@@ -147,7 +168,6 @@ const char* tokenKindToCstring(TokenKind kind)
 		"kLeftBrace", "kRightBrace",
 		"kComma", "kColon", "kSemiColon",
 		"kNewLine",
-		"kIdentifier"
 	};
 	return str[kind];
 }

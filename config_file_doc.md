@@ -57,16 +57,42 @@ https://nginx.org/en/docs/http/ngx_http_core_module.html#limit_except
 
 Syntax:	**return** code [text];
 **return** code URL;
-**return** URL;
+<!-- **return** URL; -->
 Default: —
 Context: server, location
 http://nginx.org/en/docs/http/ngx_http_rewrite_module.html#return
 https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections
 
-<!-- Syntax:	default_type mime-type;
-Default:	
-default_type text/plain;
-Context:	http, server, location
+
+
+
+Syntax:	cgi_exec binary_path;
+Default:	—
+Context:	location
+
+Syntax:	cgi_param parameter value [if_not_empty];
+Default:	—
+Context:	location
+
+<!-- //////////////// Not impl ////////////// -->
+Syntax: upload_pass <location>;
+Default:	—
+Context:	location
+https://www.nginx.com/resources/wiki/modules/upload/
+
+Syntax:	fastcgi_pass address;
+Default:	—
+Context:	location
+http://nginx.org/en/docs/http/ngx_http_fastcgi_module.html#fastcgi_pass
+
+Syntax:	fastcgi_param parameter value [if_not_empty];
+Default:	—
+Context:	location
+http://nginx.org/en/docs/http/ngx_http_fastcgi_module.html#fastcgi_param
+
+Syntax:	default_type mime-type;
+Default: default_type text/plain;
+Context: http, server, location
 https://nginx.org/en/docs/http/ngx_http_core_module.html#default_type
 
 Syntax:	types { ... }
@@ -77,5 +103,5 @@ types {
     image/jpeg jpg;
 }
 Context:	server, location
-https://nginx.org/en/docs/http/ngx_http_core_module.html#types -->
+https://nginx.org/en/docs/http/ngx_http_core_module.html#types
 

@@ -15,6 +15,7 @@
 
 #include <vector>
 #include <map>
+#include <set>
 #include <string>
 #include <stdint.h>
 
@@ -27,10 +28,15 @@ class ReturnDirective
 {
 public:
 	ReturnDirective() : _code(0), _uri() {}
+	// ReturnDirective(const ReturnDirective& other) :
+	// 	_code(other._code),
+	// 	_uri(other._uri),
+	// 	_text(other._text)
+	// {}
 
-	inline u_short getCode() const		{ return _code; }
-	inline const std::string&		getUri() const	{ return _uri; }
-	inline const std::string& getText() const	{ return _text; }
+	inline u_short 				getCode() const	{ return _code; }
+	inline const Uri&			getUri() const	{ return _uri; }
+	inline const std::string& 	getText() const	{ return _text; }
 
 	void setCode(u_short code)				{ _code = code; }
 	void setUri(const std::string& uri)		{ _uri = uri; }
@@ -42,8 +48,7 @@ public:
 
 private:
 	u_short 	_code;
-	// Uri			_uri;
-	std::string	_uri;
+	Uri			_uri;
 	std::string _text;
 }; /* class ReturnDirective */
 
@@ -73,11 +78,25 @@ public:
 		_clientMaxBodySize(DEFAULT_CLIENT_MAX_BODY_SIZE), _hasClientMaxBodySize(false),
 		_hasReturnDirective(false)
 	{}
+	// Location (const Location& other):
+	// 	_uri(other._uri),
+	// 	_autoindex(other._autoindex),
+	// 	_hasAutoindex(other._hasAutoindex),
+	// 	_clientMaxBodySize(other._clientMaxBodySize),
+	// 	_hasClientMaxBodySize(other._hasClientMaxBodySize),
+	// 	_returnDirective(other._returnDirective),
+	// 	_hasReturnDirective(other._hasReturnDirective),
+	// 	_cgiExec(other._cgiExec),
+	// 	_cgiParams(other._cgiParams),
+	// 	_limitExceptMethods(other._limitExceptMethods),
+	// 	_root(other._root),
+	// 	_index(other._index)
+	// {}
 
 	inline std::string				getUri() const				{ return _uri; }
 	inline bool						getAutoindex() const		{ return _autoindex; }
 
-	inline Host						getFastCgiPass() const		{ return _fastCgiPass; }
+	inline std::string				getCgiExec() const		{ return _cgiExec; }
 	inline size_t					getClientMaxBodySize() const{ return _clientMaxBodySize; }
 	inline const ReturnDirective&	getReturnDirective() const	{ return _returnDirective; }
 	inline std::string				getRoot() const				{ return _root; }
@@ -100,17 +119,21 @@ public:
 		_hasReturnDirective = true;
 	}
 	void 	setUri(std::string uri)				{ _uri = uri; }
-	void 	setFastCgiPass(Host host)			{ _fastCgiPass = host;}
+	void 	setCgiExec(const std::string& exec)	{ _cgiExec = exec;}
 	void 	setRoot(std::string root)			{_root = root;}
 	void 	setIndex(std::string index)			{_index = index;}
 
-	void	addFastCgiParam(const std::string& name, const std::string& value) { _fastCgiParams[name] = value;}
-	void	addFastCgiParam(const std::pair<std::string,std::string> pair) 	{ _fastCgiParams[pair.first] = pair.second;}
+	void	addCgiParam(const std::string& name, const std::string& value) { _cgiParams[name] = value;}
+	void	addCgiParam(const std::pair<std::string,std::string> pair) 	{ _cgiParams[pair.first] = pair.second;}
 
-	/// return the map of fastcgiParam (usefull for testing purpose)
-	inline std::map<std::string, std::string>&	getFastCgiParams() 	{ return _fastCgiParams;}
-	inline std::string	getFastCgiParam(std::string param) 			{ return _fastCgiParams[param];}
+	/// return the map of cgiParam (usefull for testing purpose)
+	inline std::map<std::string, std::string>&	getCgiParams() 	{ return _cgiParams;}
+	inline std::string	getCgiParam(std::string param) 			{ return _cgiParams[param];}
 
+	void	addLimitExceptMethod(const std::string& method)			{_limitExceptMethods.insert(method);}
+	void	addLimitExceptMethods(const std::set<std::string>& l)	{ _limitExceptMethods.insert(l.begin(), l.end());}
+	inline	std::set<std::string>&	getLimitExceptMethods() 		{ return _limitExceptMethods;}
+	bool	hasLimitExceptMethods(const std::string& method)		{ return _limitExceptMethods.count(method);}
 
 private:
 	std::string							_uri;
@@ -124,13 +147,16 @@ private:
 	ReturnDirective						_returnDirective;
 	bool								_hasReturnDirective;
 
-	Host								_fastCgiPass;
-	std::map<std::string, std::string> 	_fastCgiParams;
+	std::string							_cgiExec;
+	std::map<std::string, std::string> 	_cgiParams;
+
+	std::set<std::string>			_limitExceptMethods;
+
 	std::string							_root;
 	std::string							_index;
 }; /* class Location */
 
-struct ServerBlock
+class ServerBlock
 {
 public:
 	ServerBlock(): _autoindex(false), _hasAutoindex(false),
@@ -209,6 +235,9 @@ public:
 	static ServerConfig&	getInstance(std::string filepath);
 	/// Must instanciate the class before using this function.
 	static ServerConfig&	getInstance();
+	/// ONLY FOR TESTING PURPOSE
+	static void	__delete_singleton_instance();
+
 	inline std::string		getConfigFilePath() const { return _configFilePath;}
 
 	/// return the vector of servers (usefull for testing)
@@ -239,9 +268,11 @@ private:
 	std::map<u_short, std::string>		_parseErrorPage(parser::config::ScannerConfig & scanner);
 	Location							_parseLocation(parser::config::ScannerConfig & scanner, parser::config::Token locationToken);
 	Host 								_parseHost(parser::config::ScannerConfig & scanner);
-	std::pair<std::string, std::string>	_parseFastCgiParam(parser::config::ScannerConfig & scanner);
+	std::string							_parseCgiExec(parser::config::ScannerConfig & scanner);
+	std::pair<std::string, std::string>	_parseCgiParam(parser::config::ScannerConfig & scanner);
 	size_t								_parseClientMaxBodySize(parser::config::ScannerConfig & scanner);
 	ReturnDirective						_parseReturn(parser::config::ScannerConfig & scanner);
+	std::set<std::string>				_parseLimitExceptMethods(parser::config::ScannerConfig & scanner);
 	
 	Host _parseListenValue(const parser::config::Token& host);
 
