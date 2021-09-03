@@ -196,10 +196,10 @@ void HttpRequest::read(const char *buffer)
 	_isComplete = true;
 
 
-	if (this->getContentLength() > ServerConfig::getInstance().findServer(_uri).getClientMaxBodySize())
-		_code.setValue(HttpStatus::PayloadTooLarge);
-	if (this->getUri().getPathEtc().size() > 8000)
-		_code.setValue(HttpStatus::URITooLong);
+	// if (this->getContentLength() > ServerConfig::getInstance().findServer(_uri).getClientMaxBodySize())
+	// 	_code.setValue(HttpStatus::PayloadTooLarge);
+	// if (this->getUri().getPathEtc().size() > 8000)
+	// 	_code.setValue(HttpStatus::URITooLong);
 }
 
 bool HttpRequest::_getCompleteToken(ph::Token& placeHolder, bool skipLWS)
