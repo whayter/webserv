@@ -14,7 +14,7 @@ TEST_CASE( "HttpRequest::read simple get", "[class][HttpRequest][read]" )
 	HttpRequest req;
 	std::string str((std::istreambuf_iterator<char>(file)),
                  std::istreambuf_iterator<char>());
-	req.read(str.c_str());
+	req.read(str.c_str(), str.length());
 
 	CHECK( req.getMethod() == "GET" );
 	CHECK( req.getUri().getPathEtc() == "/getip");
@@ -43,7 +43,7 @@ TEST_CASE( "HttpRequest::read simple post", "[class][HttpRequest][read]" )
 	HttpRequest req;
 	std::string str((std::istreambuf_iterator<char>(file)),
                  std::istreambuf_iterator<char>());
-	req.read(str.c_str());
+	req.read(str.c_str(), str.length());
 
 	CHECK( req.getMethod() == "POST" );
 	CHECK( req.getUri().getPathEtc() == "/getip");
@@ -73,7 +73,7 @@ TEST_CASE( "HttpRequest::read3", "[class][HttpRequest][read]" )
 	HttpRequest req;
 	std::string str((std::istreambuf_iterator<char>(file)),
                  std::istreambuf_iterator<char>());
-	req.read(str.c_str());
+	req.read(str.c_str(), str.length());
 	
 	CHECK( req.getMethod() == "GET" );
 	CHECK( req.getUri().getPathEtc() == "/getip");
@@ -97,7 +97,7 @@ TEST_CASE( "HttpRequest::read3", "[class][HttpRequest][read]" )
 	req.clear();
 	CHECK( req.isComplete() == false);
 
-	req.read("");
+	req.read("", 0);
 
 	CHECK( req.getMethod() == "GET" );
 	CHECK( req.getUri().getPathEtc() == "/");
@@ -129,7 +129,7 @@ TEST_CASE( "HttpRequest::read4", "[class][HttpRequest][read]" )
 	std::string str((std::istreambuf_iterator<char>(file)),
                  std::istreambuf_iterator<char>());
 
-	req.read(str.c_str());
+	req.read(str.c_str(), str.length());
 	CHECK( req.getMethod() == "GET" );
 	CHECK( req.getUri().getPathEtc() == "/getip");
 
@@ -151,7 +151,7 @@ TEST_CASE( "HttpRequest::read4", "[class][HttpRequest][read]" )
 	req.clear();
 	CHECK( req.isComplete() == false);
 
-	req.read("");
+	req.read("", 0);
 
 	CHECK( req.getMethod() == "GET" );
 	CHECK( req.getUri().getPathEtc() == "/");
@@ -185,10 +185,10 @@ TEST_CASE( "HttpRequest::read simple get, but cut in two read", "[class][HttpReq
 	REQUIRE( one + two == data);
 
 
-	req.read(one.c_str());
+	req.read(one.c_str(), one.length());
 	CHECK( req.isComplete() == false);
 	CHECK( req.getHttpErrorCode() == 0);
-	req.read(two.c_str());
+	req.read(two.c_str(), two.length());
 	CHECK( req.isComplete() == true);
 
 
@@ -235,10 +235,10 @@ TEST_CASE( "HttpRequest::read simple get, cut in two read - loop", "[class][Http
 			std::string two = data.substr(idx);
 			CHECK( one + two == data);
 
-			req.read(one.c_str());
+			req.read(one.c_str(), one.length());
 			CHECK( req.isComplete() == false);
 			CHECK( req.getHttpErrorCode() == 0);
-			req.read(two.c_str());
+			req.read(two.c_str(), two.length());
 			CHECK( req.isComplete() == true);
 
 
