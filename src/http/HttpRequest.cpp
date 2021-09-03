@@ -66,13 +66,13 @@ std::string HttpRequest::toString()
 
 namespace ph = parser::http;
 
-void HttpRequest::read(const char *buffer)
+void HttpRequest::read(const char *buffer, size_t len)
 {
 	ph::Token t;
 	
-	// if (isComplete())
-	// 	throw std::logic_error("Wtf ima complete request already");
-	_scanner.pushNewBuffer(buffer);
+	if (isComplete())
+		throw std::logic_error("Wtf request  completed already");
+	_scanner.pushNewBuffer(buffer, len);
 
 	// if (!_getCompleteToken(t, true)) return;
 	// if (!_getCompleteToken(t, true)){std::cout << "TOk" << t << std::endl; return;}

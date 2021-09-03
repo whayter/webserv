@@ -43,11 +43,11 @@ void parser::ScannerBuffer::putback(char c)
 	_buffer.push_front(c);
 }
 
-void parser::ScannerBuffer::pushNewBuffer(const char *buffer)
+void parser::ScannerBuffer::pushNewBuffer(const char *buffer, size_t len)
 {
 	std::size_t i = 0;
 
-	while (buffer[i])
+	while (len--)
 		_buffer.push_back(buffer[i++]);
 }
 
