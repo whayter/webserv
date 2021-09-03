@@ -27,45 +27,53 @@ it ('GET should return a status of 200', function () {
   // .inspectBody()
 });
 
-// test on folders, (autoindex or not, index or not (so forbidder or 404 ?))
-// test etc...
+// 262144 max char macos (getconf ARG_MAX) 
+var max_len_uri = 8000; // choose our random max len uri 7980
+it ('GET with max uri len should return 404 not found', function () {
+  return frisby
+  .get(baseUri + "x".repeat(max_len_uri- baseUri.length + 3))
+  .expect('status', 404)
+});
 
+it ('GET with max uri len + 1 should return 414 URI Too Long', function () {
+  return frisby
+  .get(baseUri + "x".repeat(max_len_uri - baseUri.length + 4))
+  .expect('status', 414)
+});
+
+// test on folders, (autoindex or not, index or not (so 403 or 404 ?))
+// test bad http protocol version
+// test not implemented Method
+// etc...
 
 
 /////////////////////////////////////////////////////////////////////  
 /////////////////////////////////////////////////////////////////////  
 // POST
 
-var max_body_size = 1000 * 1000;
-it ('POST: with content less than max body size should return 201 Success Created', function () {
-  return frisby
-  .setup({
-    request: {
-      body: "x".repeat(max_body_size)
-    }
-  })
-  .post(baseUri + 'index.php')
-  .expect('status', 201)
-});
+// var max_body_size = 1000 * 1000;
+// it ('POST: with content less than max body size should return 201 Success Created', function () {
+//   return frisby
+//   .setup({
+//     request: {
+//       body: "x".repeat(max_body_size)
+//     }
+//   })
+//   .post(baseUri + 'index.php')
+//   .expect('status', 201)
+// });
 
-it ('POST: should return 413 Request Entity Too Large', function () {
-  return frisby
-  .setup({
-    request: {
-      body: "x".repeat(max_body_size + 1)
-    }
-  })
-  .post(baseUri + 'index.php')
-  .expect('status', 414)
-});
+// it ('POST: should return 413 Request Entity Too Large', function () {
+//   return frisby
+//   .setup({
+//     request: {
+//       body: "x".repeat(max_body_size + 1)
+//     }
+//   })
+//   .post(baseUri + 'index.php')
+//   .expect('status', 413)
 
-// 262144 max char macos (getconf ARG_MAX) 
-var max_len_uri = 8000; // choose our random max len uri
-it ('POST: should return a status 414 URI Too Long', function () {
-  return frisby
-  .post(baseUri + "x".repeat(max_len_uri - baseUri.length + 1))
-  .expect('status', 414)
-});
+// });
 
 
 // it ('POST should return a status of 201 Created', function () {

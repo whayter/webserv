@@ -198,7 +198,7 @@ void HttpRequest::read(const char *buffer)
 
 	if (this->getContentLength() > ServerConfig::getInstance().findServer(_uri).getClientMaxBodySize())
 		_code.setValue(HttpStatus::PayloadTooLarge);
-	if (this->getUri().toString().size() > 8000)
+	if (this->getUri().getPathEtc().size() > 8000)
 		_code.setValue(HttpStatus::URITooLong);
 }
 
