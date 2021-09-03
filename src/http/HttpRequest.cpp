@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "http/HttpRequest.hpp"
+#include "ServerConfig.hpp"
 #include "parser/http/ScannerHttpRequest.hpp"
 
 HttpRequest::HttpRequest()
@@ -193,6 +194,12 @@ void HttpRequest::read(const char *buffer)
 		_content += c;
 	if (_content.size() != this->getContentLength()) return ;
 	_isComplete = true;
+
+
+	if (this->getContentLength() > ServerConfig::getInstance().findServer(_uri).getClientMaxBodySize())
+		_code.setValue(HttpStatus::PayloadTooLarge);
+	if (this->getUri().toString().size() > 8000)
+		_code.setValue(HttpStatus::URITooLong);
 }
 
 bool HttpRequest::_getCompleteToken(ph::Token& placeHolder, bool skipLWS)
