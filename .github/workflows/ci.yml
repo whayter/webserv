@@ -29,6 +29,7 @@ jobs:
 
 
   unit-tests:
+    need: build
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -45,6 +46,7 @@ jobs:
 
 
   unit-tests-leaks:
+    need: unit-tests
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
