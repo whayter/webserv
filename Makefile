@@ -64,7 +64,7 @@ SRC+= utility.cpp
 SRC+= ScannerHttpRequest.cpp ScannerConfig.cpp ServerConfig.cpp
 SRC+= ScannerStream.cpp ScannerBuffer.cpp
 SRC+= AHttpMessage.cpp HttpRequest.cpp HttpResponse.cpp HttpStatus.cpp
-SRC+= Uri.cpp
+SRC+= Uri.cpp Path.cpp
 SRC+= Socket.cpp ServerHandler.cpp
 
 

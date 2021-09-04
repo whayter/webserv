@@ -42,13 +42,6 @@ class Uri
 {
 public:
 
-/* --- Member types ----------------------------------------------------- */
-
-	typedef std::map<std::string, std::string>	map_type;
-	typedef size_t								size_type;
-
-/* --- Member functions ------------------------------------------------- */
-
 	/// @brief Create empty uri
 	Uri();
 	/// @brief Create uri from string
@@ -102,16 +95,19 @@ public:
 	std::string			decode(std::string s) const;
 	std::string			toString() const;
 
-	void 					clear();
-
 	u_short		getWellKnownPort() const ;
 	bool		isWellKnownPort() const ;
 	bool		isRelative() const ;
 	bool		empty() const ;
 
+	void 	clear();
+
 private:
 
-/* --- Member variables ------------------------------------------------- */
+	void	_parseUri(const std::string& uri);
+	void 	_parseHostAndPort(std::string::const_iterator& it, const std::string::const_iterator & end);
+	void 	_parseAuthority(std::string::const_iterator& it, const std::string::const_iterator & end);
+	void 	_parsePathEtc(std::string::const_iterator& it, const std::string::const_iterator& end);
 
 	std::string _scheme;
 	std::string _userInfo;
@@ -120,17 +116,6 @@ private:
 	std::string _path;
 	std::string _query;
 	std::string _fragment;
-
-/* --- Private functions ------------------------------------------------ */
-
-	void	_parseUri(const std::string& uri);
-	// void	_parsePathEtc(const std::string& pathEtc);
-	// void	_parseAuthority(const std::string& authority);
-	// void	_parseHostAndPort(const std::string& hostAndPort);
-	void 	_parseHostAndPort(std::string::const_iterator& it, const std::string::const_iterator & end);
-	void 	_parseAuthority(std::string::const_iterator& it, const std::string::const_iterator & end);
-	void 	_parsePathEtc(std::string::const_iterator& it, const std::string::const_iterator& end);
-
 };
 
 #endif /* URI_HPP */
