@@ -84,13 +84,13 @@ void Path::parse(const std::string& path)
 		return;
 	switch (*it)
 	{
-		case '/':
+	case '/':
 		{
 			_absolute = true;
 			++it;
 		}
-		break;
-		case '~':
+	break;
+	case '~':
 		{
 			++it;
 			if (it != end && *it != '/' )
@@ -102,9 +102,9 @@ void Path::parse(const std::string& path)
 				_absolute = true;
 			}
 		}
-		break;
-		default:
-			break;
+	break;
+	default:
+	break;
 	}
 	while (it != end)
 	{
@@ -114,7 +114,10 @@ void Path::parse(const std::string& path)
 		if (it == end)
 			_filename= s;
 		else
+		{
 			_dirs.push_back(s);
+			++it;
+		}
 	}
 }
 

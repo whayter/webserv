@@ -63,13 +63,16 @@ public:
 
 
 	/// Returns true if the path refer to a directory (the filename part is empty).
-	inline bool		isDirectory() const { return !_filename.empty();}
+	inline bool		isDirectory() const { return _filename.empty();}
 	/// Returns true if the path refer to a file (the filename part is not empty).
-	inline bool		isFile() const {return _filename.empty();}
+	inline bool		isFile() const {return !_filename.empty();}
 	/// Returns true if the path is absolute.
 	inline bool		isAbsolute() const { return _absolute;}
 	/// Returns true if the path is relative.
 	inline bool		isRelative() const { return !_absolute;}
+
+
+	inline size_t	depth() const { return _dirs.size();}
 
 
 	/// Makes the path absolute if it is relative. The current working directory is taken as base directory.

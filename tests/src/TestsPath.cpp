@@ -51,14 +51,14 @@ TEST_CASE( "Path - Construction", "[class][path]" ) {
 	CHECK ( p.isFile());
 	CHECK ( p.toString() == "/usr");
 
-// 	p.parse("/usr/");
-// 	CHECK ( !p.isRelative());
-// 	CHECK ( p.isAbsolute());
-// 	// CHECK ( p.depth() == 1);
-// 	// CHECK ( p[0] == "usr");
-// 	CHECK ( p.isDirectory());
-// 	CHECK ( !p.isFile());
-// 	CHECK ( p.toString() == "/usr/");
+	p.parse("/usr/");
+	CHECK ( !p.isRelative());
+	CHECK ( p.isAbsolute());
+	// CHECK ( p.depth() == 1);
+	// CHECK ( p[0] == "usr");
+	CHECK ( p.isDirectory());
+	CHECK ( !p.isFile());
+	CHECK ( p.toString() == "/usr/");
 
 // 	p.parse("usr/");
 // 	CHECK ( p.isRelative());
