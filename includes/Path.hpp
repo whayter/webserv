@@ -25,6 +25,15 @@
 
 #include "SyntaxError.hpp"
 
+// #include <limits.h> for linux
+
+#define PATH_MAX 1024 // For linux, don't care for now. Override macos define (but same len)
+
+// https://man7.org/linux/man-pages/man7/path_resolution.7.html
+// https://insanecoding.blogspot.com/2007/11/pathmax-simply-isnt.html
+// https://www.gnu.org/software/libc/manual/html_node/Limits-for-Files.html
+
+
 class Path
 {
 public:
