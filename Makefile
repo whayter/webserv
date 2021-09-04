@@ -71,10 +71,12 @@ SRC+= Socket.cpp ServerHandler.cpp
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))
 vpath %.cpp $(SRCS_DIR)
 
+DEP = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.d))
+
 LDFLAGS = $(foreach lib, $(LIB_DIR),-L$(lib))  $(foreach lib, $(LIB),-l$(lib))
 
 CXX = clang++
-CXXFLAGS  = -Wall -Wextra -Werror -std=c++98 -g #-fsanitize=address  -fsanitize=undefined -fstack-protector  
+CXXFLAGS  = -Wall -Wextra -Werror -std=c++98 -MMD -MP  -g #-fsanitize=address  -fsanitize=undefined -fstack-protector  
 IFLAGS  = $(foreach inc, $(INCS_DIR),-I$(inc))
 
 #OS specific
@@ -92,7 +94,7 @@ $(OBJ_DIR)/%.o: %.cpp
 	@mkdir -p $(OBJ_DIR)
 	@$(CXX) $(CXXFLAGS) $(IFLAGS) -c $< -o $@
 
-$(NAME): $(INC) $(OBJ)
+$(NAME): $(OBJ)
 	@$(CXX) $(CXXFLAGS) $(IFLAGS)  -o $@ $(OBJ) $(LDFLAGS)
 	@printf "$(_GREEN)Compiled : $(_MAGENTA)$(NAME)$(_R)\n"
 	@printf "\nDo $(_CYAN)$(_BOLD)make show$(_R) to debug the Makefile\n"
@@ -126,16 +128,16 @@ show:
 	@printf "$(_CYAN)SRCS_DIR:$(_RED)  $(SRCS_DIR)$(_END)\n"
 	@printf "$(_CYAN)INCS_DIR:$(_RED)  $(INCS_DIR)$(_END)\n"
 	@printf "$(_CYAN)LIB_DIR :$(_RED)  $(LIB_DIR)$(_END)\n\n"
-	@printf "$(_CYAN)INC     :$(_RED)  $(INC)$(_END)\n"
 	@printf "$(_CYAN)SRC     :$(_RED)  $(SRC)$(_END)\n"
 	@printf "$(_CYAN)OBJ     :$(_RED)  $(OBJ)$(_END)\n"
+	@printf "$(_CYAN)DEP     :$(_RED)  $(DEP)$(_END)\n"
 
 check:
 	@$(MAKE) check -C tests ARGS="$(ARGS)"
 
 clean:
 	@rm -rf $(OBJ_DIR) output_valgrind
-	@printf "$(_RED)Removed :$(_MAGENTA) $(OBJ_DIR)/$(_MAGENTA)\n"
+	@printf "$(_RED)Removed :$(_MAGENTA) $(OBJ_DIR)/ $(_MAGENTA)\n"
 
 fclean: clean
 	@rm -fr $(NAME) $(DEBUG_EXEC) $(NAME).dSYM/
@@ -144,7 +146,10 @@ fclean: clean
 
 re: fclean all
 
+-include $(DEP)
+
 .PHONY: all run debug valgrind norminette bonus show check clean fclean re
+
 
 #******************************************************************************#
 #                                  REMINDER                                    #  
@@ -177,6 +182,9 @@ https://www.gnu.org/software/make/manual/html_node/index.html#SEC_Contents      
 http://web.mit.edu/gnu/doc/html/make_toc.html#SEC88                              \
 https://www3.nd.edu/~zxu2/acms60212-40212/Makefile.pdf                           \
 																				 \
-cpp:																			 \
 																				 \
-https://www.gnu.org/software/make/manual/html_node/Catalogue-of-Rules.html
+cpp:																			 \
+https://www.gnu.org/software/make/manual/html_node/Catalogue-of-Rules.html		 \
+																				 \
+																				 \
+https://codereview.stackexchange.com/questions/2547/makefile-dependency-generation/11109#11109 		\

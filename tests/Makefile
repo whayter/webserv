@@ -82,10 +82,13 @@ SRC+= utility.cpp
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))
 vpath %.cpp $(SRCS_DIR)
 
+DEP = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.d))
+
+
 LDFLAGS = $(foreach lib, $(LIB_DIR),-L$(lib))  $(foreach lib, $(LIB),-l$(lib))
 
 CXX = clang++
-CXXFLAGS  = -Wall -Wextra -Werror -std=c++17 -g -fstandalone-debug #-fsanitize=address  -fsanitize=undefined -fstack-protector  
+CXXFLAGS  = -Wall -Wextra -Werror -std=c++17 -MMD -MP -g -fstandalone-debug #-fsanitize=address  -fsanitize=undefined -fstack-protector  
 IFLAGS  = $(foreach inc, $(INC_DIR),-I$(inc))
 
 #OS specific
@@ -97,29 +100,29 @@ else
 	CXXFLAGS += -D LINUX
 endif
 
-all: $(NAME)
+all: $(BUILD_DIR)/$(NAME)
 
 $(OBJ_DIR)/%.o: %.cpp
 	@mkdir -p $(OBJ_DIR)
-	@$(CXX) $(CXXFLAGS) $(IFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(IFLAGS) -c $< -o $@
 
-$(NAME): $(INC) $(OBJ)
+$(BUILD_DIR)/$(NAME): $(OBJ)
 	mkdir -p $(BUILD_DIR)
-	$(CXX) $(CXXFLAGS) $(IFLAGS)  -o $(BUILD_DIR)/$@ $(OBJ) $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) $(IFLAGS)  -o $@ $(OBJ) $(LDFLAGS)
 	@printf "$(_GREEN)Compiled : $(_MAGENTA)$(NAME)$(_R)\n"
 	@printf "\nDo $(_CYAN)$(_BOLD)make show$(_R) to debug the Makefile\n"
 	@printf "Do $(_RED)$(_BOLD)make debug$(_R) to run tests with lldb\n"
 	@printf "Do $(_YELLOW)$(_BOLD)make valgrind$(_R) to run valgrind $(_MAGENTA)(May have falses positives under OSX)$(_R)\n"
 	@printf "Do $(_GREEN)$(_BOLD)make check$(_R) to run unit tests $(_R)\n"
 
-run: $(NAME)
+run: $(BUILD_DIR)/$(NAME)
 	@./$(NAME)
 
 debug:	CFLAGS += -g
-debug: $(NAME)
+debug: $(BUILD_DIR)/$(NAME)
 	@lldb $(BUILD_DIR)/$(NAME) $(ARGS)
 
-valgrind: $(NAME)
+valgrind: $(BUILD_DIR)/$(NAME)
 	@valgrind --leak-check=full --show-leak-kinds=all --show-reachable=yes --track-origins=yes --log-file=output_valgrind ./$(NAME) $(ARGS)
 	@printf "$(_BOLD)$(_RED)################################################################$(_R)\n"
 	@printf "$(_BOLD)$(_RED)##########################  $(_GREEN)Valgrind$(_RED)  ##########################$(_R)\n"
@@ -139,9 +142,9 @@ show:
 	@printf "$(_CYAN)SRCS_DIR:$(_RED)  $(SRCS_DIR)$(_END)\n"
 	@printf "$(_CYAN)INCS_DIR:$(_RED)  $(INCS_DIR)$(_END)\n"
 	@printf "$(_CYAN)LIB_DIR :$(_RED)  $(LIB_DIR)$(_END)\n\n"
-	@printf "$(_CYAN)INC     :$(_RED)  $(INC)$(_END)\n"
 	@printf "$(_CYAN)SRC     :$(_RED)  $(SRC)$(_END)\n"
 	@printf "$(_CYAN)OBJ     :$(_RED)  $(OBJ)$(_END)\n"
+	@printf "$(_CYAN)DEP     :$(_RED)  $(DEP)$(_END)\n"
 
 clean:
 	@rm -rf $(OBJ_DIR) output_valgrind
@@ -151,10 +154,12 @@ fclean: clean
 	@rm -fr $(BUILD_DIR)/ $(NAME).dSYM/
 	@printf "$(_RED)Removed : $(_MAGENTA)./$(NAME), $(NAME).dSYM/$(_R)\n"
 
-check: $(NAME)
+check: $(BUILD_DIR)/$(NAME)
 	@$(BUILD_DIR)/$(NAME) $(ARGS)
 
 re: fclean all
+
+-include $(DEP)
 
 .PHONY: all run debug valgrind norminette bonus show clean fclean re check
 

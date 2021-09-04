@@ -185,3 +185,6 @@
 - https://github.com/for-GET/http-decision-diagram
 ![image2](https://camo.githubusercontent.com/d09839bf7ae593fa403793326a9af335e9392d622f89ea3ee13b889c02ece2fc/68747470733a2f2f7261776769746875622e636f6d2f666f722d4745542f687474702d6465636973696f6e2d6469616772616d2f6d61737465722f6874747064642e706e67)
 
+#### Directory Traversal Attacks
+- https://www.acunetix.com/websitesecurity/directory-traversal/
+

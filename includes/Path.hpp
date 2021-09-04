@@ -63,9 +63,9 @@ public:
 
 
 	/// Returns true if the path refer to a directory (the filename part is empty).
-	inline bool		isDirectory() const { return true;}
+	inline bool		isDirectory() const { return !_filename.empty();}
 	/// Returns true if the path refer to a file (the filename part is not empty).
-	inline bool		isFile() const {return false;}
+	inline bool		isFile() const {return _filename.empty();}
 	/// Returns true if the path is absolute.
 	inline bool		isAbsolute() const { return _absolute;}
 	/// Returns true if the path is relative.
@@ -93,14 +93,13 @@ public:
 	void	clear();
 	std::string toString() const;
 
-
 	void parse(const std::string& path);
 
 private:
 
-	std::string	_path;
-	std::vector<std::string> _dirs;
-	bool		_absolute;
+	std::string					_filename;
+	std::vector<std::string>	_dirs; // list of previous directories
+	bool						_absolute;
 };
 
 #endif /* PATH_HPP */
