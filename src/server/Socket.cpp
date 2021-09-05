@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/11 11:26:26 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/30 18:53:20 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/05 10:17:40 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,16 @@ bool	sckt::setReusableAddr(fd_type fd)
 
 bool	sckt::bindSocket(fd_type fd, const addr_type& addr)
 {
-	return bind(fd, (struct sockaddr*)&addr, sizeof(addr)) == 0;
+	if (bind(fd, (struct sockaddr*)&addr, sizeof(addr)) == 0)
+		return true;
+	std::cerr << "Error bind: " << strerror(errno) << std::endl;
+	return false;
 }
 
 bool	sckt::listenSocket(fd_type fd)
 {
-	return listen(fd, SOMAXCONN) == 0;
+	if (listen(fd, SOMAXCONN) == 0)
+		return true;
+	std::cerr << "Error listen: " << strerror(errno) << std::endl;
+	return false;
 }

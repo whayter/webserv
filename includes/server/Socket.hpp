@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/08 12:23:12 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/24 21:19:19 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/05 10:12:03 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 # include <netinet/in.h>
 # include <fcntl.h>
 # include <unistd.h>
+# include <cerrno>
+# include <iostream>
 
 # define INVALID_FD -1
 
