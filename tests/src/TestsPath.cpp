@@ -24,7 +24,7 @@ TEST_CASE( "Path - static functions", "[class][path][static]" ) {
 	// REQUIRE (p.isDirectory() && p.isAbsolute());
 }
 
-TEST_CASE( "Path - Construction", "[class][path]" ) {
+TEST_CASE( "Path - Construction", "[class][path][.]" ) {
 
 	Path p;
 	p.parse("");
