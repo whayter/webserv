@@ -50,7 +50,7 @@ public:
 	Token peekNextToken(bool skipLWS = false);
 
 	// spaghetti fix
-	void pushNewBuffer(const char *buffer);
+	void pushNewBuffer(const char *buffer, size_t len);
 	void putback(Token token);
 	void putback(std::string str);
 

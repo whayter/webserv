@@ -74,9 +74,9 @@ Token ScannerHttpRequest::peekNextToken(bool skipLWS)
 	return result;
 }
 
-void ScannerHttpRequest::pushNewBuffer(const char* buffer)
+void ScannerHttpRequest::pushNewBuffer(const char* buffer, size_t len)
 {
-	_scan.pushNewBuffer(buffer);
+	_scan.pushNewBuffer(buffer, len);
 }
 
 void ScannerHttpRequest::putback(Token token)

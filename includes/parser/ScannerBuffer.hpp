@@ -32,7 +32,7 @@ public:
 	void		putback(char c);
 
 	// spaghetti fix
-	void		pushNewBuffer(const char *buffer);
+	void		pushNewBuffer(const char *buffer, size_t len);
 
 	std::string toString();
 
