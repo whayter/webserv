@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 11:04:34 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/05 14:19:31 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/05 15:54:36 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 
 # include <string>
 
-# include "AHttpMessage.hpp"
+# include "AMessage.hpp"
 # include "HttpStatus.hpp"
 # include "Uri.hpp"
 # include "parser/http/ScannerHttpRequest.hpp"
 
-class HttpRequest: public AHttpMessage
+class HttpRequest: public AMessage
 {
 	public:
 

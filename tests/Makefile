@@ -71,7 +71,7 @@ SRC+= TestsHttpRequest.cpp
 SRC+= TestsScannerConfig.cpp
 SRC+= TestsServerConfig.cpp
 
-SRC+= AHttpMessage.cpp HttpRequest.cpp HttpResponse.cpp HttpStatus.cpp
+SRC+= AMessage.cpp HttpRequest.cpp HttpResponse.cpp HttpStatus.cpp
 SRC+= ScannerStream.cpp ScannerBuffer.cpp ScannerHttpRequest.cpp
 SRC+= ScannerConfig.cpp ServerConfig.cpp
 SRC+= Socket.cpp ServerHandler.cpp

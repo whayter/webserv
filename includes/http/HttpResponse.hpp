@@ -6,14 +6,14 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 09:29:57 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/30 13:06:49 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/05 15:54:47 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HTTP_RESPONSE_HPP
 # define HTTP_RESPONSE_HPP
 
-# include "AHttpMessage.hpp"
+# include "AMessage.hpp"
 # include "HttpRequest.hpp"
 # include "HttpStatus.hpp"
 # include "ServerHandler.hpp"
@@ -22,7 +22,7 @@
 # include <string>
 # include <fstream>
 
-class HttpResponse: public AHttpMessage
+class HttpResponse: public AMessage
 {
 	public:
 

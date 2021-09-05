@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:36:30 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/05 14:19:52 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/05 15:56:48 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "parser/http/ScannerHttpRequest.hpp"
 
 HttpRequest::HttpRequest()
-	: AHttpMessage(), _code(HttpStatus::None), _isRequestLineParsed(false),
+	: AMessage(), _code(HttpStatus::None), _isRequestLineParsed(false),
 		_isHeaderParsed(false),	_isComplete(false), _scanner(NULL)
 {}
 

@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   AHttpMessage.hpp                                   :+:      :+:    :+:   */
+/*   AMessage.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 14:47:44 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/05 14:17:52 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/05 15:54:18 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef AHTTP_MESSAGE_HPP
-#define AHTTP_MESSAGE_HPP
+#ifndef AMESSAGE_HPP
+#define AMESSAGE_HPP
 
 #include <vector>
 #include <map>
 #include <string>
 
-class AHttpMessage
+class AMessage
 {
 	public:
 
@@ -28,8 +28,8 @@ class AHttpMessage
 
 	/* --- Member functions ------------------------------------------------- */
 
-		AHttpMessage();
-		virtual ~AHttpMessage();
+		AMessage();
+		virtual ~AMessage();
 
 		inline headers_type		getHeaders() { return _headers; }
 		inline content_type		getContent() { return _content; }
