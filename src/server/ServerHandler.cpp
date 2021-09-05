@@ -163,7 +163,7 @@ void server::ServerHandler::_getRequest(int index)
 	if (nbytes < 0)
 		stop(-1);
 	else if (nbytes > 0)
-		_requests[index]->read(buffer);
+		_requests[index]->read(buffer, nbytes);
 	if (_requests[index]->isComplete())
 		_log(_fds[index].fd, "Request received.");
 }

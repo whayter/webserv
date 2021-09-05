@@ -31,7 +31,6 @@ class HttpRequest: public AHttpMessage
 	
 		std::string&	getMethod();
 		Uri&			getUri();
- 
 
 		void			setMethod(std::string method);
 		void			setUri(const Uri &uri);
@@ -39,7 +38,7 @@ class HttpRequest: public AHttpMessage
 
 		std::string 	toString();
 
-		void			read(const char *buffer);
+		void			read(const char *buffer, size_t len);
 		void			write(std::ostream os);
 
 		void			clear(void);

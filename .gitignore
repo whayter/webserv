@@ -12,3 +12,4 @@ a.out.dSYM
 output_valgrind
 build/
 obj/
+node_modules/

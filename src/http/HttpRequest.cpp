@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "http/HttpRequest.hpp"
+#include "ServerConfig.hpp"
 #include "parser/http/ScannerHttpRequest.hpp"
 
 HttpRequest::HttpRequest()
@@ -65,13 +66,13 @@ std::string HttpRequest::toString()
 
 namespace ph = parser::http;
 
-void HttpRequest::read(const char *buffer)
+void HttpRequest::read(const char *buffer, size_t len)
 {
 	ph::Token t;
 	
-	// if (isComplete())
-	// 	throw std::logic_error("Wtf ima complete request already");
-	_scanner.pushNewBuffer(buffer);
+	if (isComplete())
+		throw std::logic_error("Wtf request  completed already");
+	_scanner.pushNewBuffer(buffer, len);
 
 	// if (!_getCompleteToken(t, true)) return;
 	// if (!_getCompleteToken(t, true)){std::cout << "TOk" << t << std::endl; return;}
@@ -193,6 +194,12 @@ void HttpRequest::read(const char *buffer)
 		_content += c;
 	if (_content.size() != this->getContentLength()) return ;
 	_isComplete = true;
+
+
+	// if (this->getContentLength() > ServerConfig::getInstance().findServer(_uri).getClientMaxBodySize())
+	// 	_code.setValue(HttpStatus::PayloadTooLarge);
+	// if (this->getUri().getPathEtc().size() > 8000)
+	// 	_code.setValue(HttpStatus::URITooLong);
 }
 
 bool HttpRequest::_getCompleteToken(ph::Token& placeHolder, bool skipLWS)
