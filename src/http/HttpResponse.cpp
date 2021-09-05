@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:47:59 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/05 11:14:54 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/05 12:40:52 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ std::string HttpResponse::toString()
 {
 	std::string s;
 	s = _statusLine + "\n";
-	map_type::iterator header;
+	headers_type::iterator header;
 	for (header = _headers.begin(); header != _headers.end(); header++)
 		s += header->first + ": " + header->second + "\n";
 	s += "\n" + _content;
@@ -99,7 +99,7 @@ std::string HttpResponse::toString()
 
 std::string	HttpResponse::_getHeader(std::string key)
 {
-	map_type::iterator header = _headers.find(key);
+	headers_type::iterator header = _headers.find(key);
 	return header->first + ": " + header->second;	
 }
 
@@ -130,23 +130,23 @@ void		HttpResponse::_setStatusLine(void)
 
 void		HttpResponse::_setDate(void)
 {
-	this->addHeader("Date", getDate());
+	this->setHeader("Date", getDate());
 }
 
 void 		HttpResponse::_setServer(void)
 {
-	this->addHeader("Server", "Webserv");
+	this->setHeader("Server", "Webserv");
 }
 
 void 		HttpResponse::_setContentLength(void)
 {
-	this->addHeader("Content-Length", intToString(_content.size()));
+	this->setHeader("Content-Length", intToString(_content.size()));
 }
 
 void 		HttpResponse::_setContentType(const Uri& uri)
 {
 	(void)uri;
-	addHeader("Content-Type", "text/html"); // tmp
+	setHeader("Content-Type", "text/html"); // tmp
 
 	// scrapper le content-type dans le content demandé / retourné par cgi ?
 
@@ -160,10 +160,10 @@ void 		HttpResponse::_setContentType(const Uri& uri)
 	// int pos = path.find_last_of(".");
 	// if (!path.at(pos) || !path.at(pos + 1))
 	// {
-	// 	addHeader("Content-Type", "text/plain");
+	// 	setHeader("Content-Type", "text/plain");
 	// 	return ;
 	// }
 	// std::string type = path.substr(pos + 1);
 	// if (type == "html" || type == "htm" || type == "php")
-	// 	addHeader("Content-Type", "text/html");
+	// 	setHeader("Content-Type", "text/html");
 }

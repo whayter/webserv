@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpRequest.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 11:04:34 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/21 19:22:38 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/09/05 14:19:31 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,25 +29,27 @@ class HttpRequest: public AHttpMessage
 		HttpRequest();
 		~HttpRequest();
 	
-		std::string&	getMethod();
-		Uri&			getUri();
+		inline std::string&	getMethod() { return _method; }
+		inline std::string&	getVersion() { return _version; }
+		inline Uri&			getUri() { return _uri; }
 
-		void			setMethod(std::string method);
-		void			setUri(const Uri &uri);
-		void			setVersion(std::string version);
+		void				setMethod(std::string method);
+		void				setVersion(std::string version);
+		void				setUri(const Uri &uri);
 
-		std::string 	toString();
+		void				read(const char *buffer, size_t len);
 
-		void			read(const char *buffer, size_t len);
-		void			write(std::ostream os);
-
-		void			clear(void);
-		bool			isComplete(void);
+		void				clear(void);
+		bool				isComplete(void);
 		
 		/// Return 0 if no error during request parsing
-		int				getHttpErrorCode();
+		int					getHttpErrorCode();
+		size_t				getContentLength();
 
 	private:
+
+	/* --- Private functions ------------------------------------------------ */
+
 		/// return false if following token is kEndOfInput.
 		/// meaning the token may be incomplete
 		bool 			_getCompleteToken(parser::http::Token& placeHolder, bool skipLWS = false);
