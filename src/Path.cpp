@@ -15,9 +15,16 @@
 
 
 Path::Path(){}
+
 Path::Path(const Path& p):
 	_pathEntries(p._pathEntries)
 {}
+Path::Path(const string_type& p)
+{
+	(void)p;
+	// todo
+}
+
 Path::~Path() {}
 
 

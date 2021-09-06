@@ -40,11 +40,12 @@ public:
 	// constructors and destructor
 	Path();
 	Path(const Path& p);
-	Path(Path&& p) noexcept;
-	template <class Source>
-	  Path(const Source& source);
-	template <class InputIterator>
-	  Path(InputIterator first, InputIterator last);
+	Path(const string_type& p);
+	// Path(Path&& p) noexcept;
+	// template <class Source>
+	//   Path(const Source& source);
+	// template <class InputIterator>
+	//   Path(InputIterator first, InputIterator last);
 	// template <class Source>  
 	//   Path(const Source& source, const locale& loc);
 	// template <class InputIterator>
@@ -52,68 +53,68 @@ public:
    ~Path();
 
 	// assignments
-	Path& operator=(const Path& p);
-	Path& operator=(Path&& p) noexcept;
-	template <class Source>
-	  Path& operator=(const Source& source);
-	template <class Source>
-	  Path& assign(const Source& source);
-	template <class InputIterator>
-	  Path& assign(InputIterator first, InputIterator last);
+	// Path& operator=(const Path& p);
+	// Path& operator=(Path&& p) noexcept;
+	// template <class Source>
+	//   Path& operator=(const Source& source);
+	// template <class Source>
+	//   Path& assign(const Source& source);
+	// template <class InputIterator>
+	//   Path& assign(InputIterator first, InputIterator last);
 
 	// appends
-	Path& operator/=(const Path& p);
-	template <class Source>
-	  Path& operator/=(const Source& source);
-	template <class Source>
-	  Path& append(const Source& source);
-	template <class InputIterator>
-	  Path& append(InputIterator first, InputIterator last);
+	// Path& operator/=(const Path& p);
+	// template <class Source>
+	//   Path& operator/=(const Source& source);
+	// template <class Source>
+	//   Path& append(const Source& source);
+	// template <class InputIterator>
+	//   Path& append(InputIterator first, InputIterator last);
 
 	// concatenation
-	Path& operator+=(const Path& x);
-	Path& operator+=(const string_type& x);
-	Path& operator+=(const char* x);
-	Path& operator+=(char x);
-	template <class Source>
-	  Path& operator+=(const Source& x);
-	template <class EcharT>
-	  Path& operator+=(EcharT x);
-	template <class Source>
-	  Path& concat(const Source& x);
-	template <class InputIterator>
-	  Path& concat(InputIterator first, InputIterator last);
+	// Path& operator+=(const Path& x);
+	// Path& operator+=(const string_type& x);
+	// Path& operator+=(const char* x);
+	// Path& operator+=(char x);
+	// template <class Source>
+	//   Path& operator+=(const Source& x);
+	// template <class EcharT>
+	//   Path& operator+=(EcharT x);
+	// template <class Source>
+	//   Path& concat(const Source& x);
+	// template <class InputIterator>
+	//   Path& concat(InputIterator first, InputIterator last);
 	
 	// modifiers
-	void  clear() noexcept;
-	Path& make_preferred();
-	Path& remove_filename();
-	Path& replace_filename(const Path& replacement);
-	Path& replace_extension(const Path& replacement = Path());
-	void  swap(Path& rhs) noexcept;
+	// void  clear() noexcept;
+	// Path& make_preferred();
+	// Path& remove_filename();
+	// Path& replace_filename(const Path& replacement);
+	// Path& replace_extension(const Path& replacement = Path());
+	// void  swap(Path& rhs) noexcept;
 
 	// native format observers
-	const string_type&  native() const noexcept;
-	const char*   c_str() const noexcept;
-	operator string_type() const;
+	// const string_type&  native() const noexcept;
+	// const char*   c_str() const noexcept;
+	// operator string_type() const;
 
-	template <class EcharT, class traits = std::char_traits<EcharT>,
-			  class Allocator = std::allocator<EcharT> >
-	std::basic_string<EcharT, traits, Allocator>
-	  string(const Allocator& a = Allocator()) const;
-	std::string    string() const;
+	// template <class EcharT, class traits = std::char_traits<EcharT>,
+	// 		  class Allocator = std::allocator<EcharT> >
+	// std::basic_string<EcharT, traits, Allocator>
+	//   string(const Allocator& a = Allocator()) const;
+	// std::string    string() const;
 
 	// compare
-	int  compare(const Path& p) const noexcept;
-	int  compare(const string_type& s) const;
-	int  compare(const char* s) const;
+	// int  compare(const Path& p) const noexcept;
+	// int  compare(const string_type& s) const;
+	// int  compare(const char* s) const;
 
 	// decomposition
 	// Path root_name() 		const { return *this;};  useless for unix
-	Path root_directory()	const { return _pathEntries[0] == "/" ? Path(_pathEntries[0]) : Path() ; }
+	Path root_directory()	const { return !_pathEntries.empty() && _pathEntries[0] == "/" ? Path(_pathEntries[0]) : Path() ; }
 	Path root_path()		const { return /* root_name() / */ root_directory(); }
 	Path relative_path()	const { return empty() ? Path() : Path(*--end());}
-	Path parent_path()		const { return (empty() || begin() == --end()) ? Path() : Path(this); }
+	Path parent_path()		const { return (empty() || begin() == --end()) ? Path() : Path(*this); }
 	Path filename()			const { return empty() ? Path() : Path(*--end()); }
 	Path stem()				const
 	{
@@ -144,7 +145,7 @@ public:
 	inline bool has_filename() const 		{ return !filename().empty();};
 	inline bool has_stem() const 			{ return !stem().empty();};
 	inline bool has_extension() const 		{ return !extension().empty();};
-	inline bool is_absolute() const 		{ return _pathEntries[0] == "/";};
+	inline bool is_absolute() const 		{ return !_pathEntries.empty() && _pathEntries[0] == "/";};
 	inline bool is_relative() const 		{ return !is_absolute();};
 
 	// iterators
@@ -154,7 +155,7 @@ public:
 	const_iterator end() const {return _pathEntries.end();}; // why it should be const ??
 
 private:
-	string_type _pathname;  // exposition only
+	// string_type _pathname;  // exposition only
 	string_vec _pathEntries;
 };
 
