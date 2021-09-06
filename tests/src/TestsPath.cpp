@@ -39,7 +39,7 @@ TEST_CASE( "Path - Assign", "[class][path][.]" ) {
     REQUIRE(p1 == p3);
     p3 = Path("/usr/local");
     REQUIRE(p2 == p3);
-    p3 = Path(L"/usr/local");
+    p3 = Path("/usr/local");
     REQUIRE(p2 == p3);
     p3.assign(L"/usr/local");
     REQUIRE(p2 == p3);

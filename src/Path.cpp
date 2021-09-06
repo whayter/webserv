@@ -28,6 +28,20 @@ Path::Path(const string_type& p)
 Path::~Path() {}
 
 
+Path& Path::operator=(const Path& other)
+{
+	if (this == &other)
+		return *this;
+	_pathEntries = other._pathEntries;
+	return *this;
+}
+
+Path& Path::operator=(const string_type& path)
+{
+	*this = Path(path);
+	return *this;
+}
+
 
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////

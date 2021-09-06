@@ -24,7 +24,12 @@
 #include <uuid/uuid.h>
 
 
-
+bool operator==(const path& lhs, const path& rhs) noexcept{}
+bool operator!=(const path& lhs, const path& rhs) noexcept;
+bool operator< (const path& lhs, const path& rhs) noexcept;
+bool operator<=(const path& lhs, const path& rhs) noexcept;
+bool operator> (const path& lhs, const path& rhs) noexcept;
+bool operator>=(const path& lhs, const path& rhs) noexcept;
 
 class Path
 {
@@ -53,12 +58,10 @@ public:
    ~Path();
 
 	// assignments
-	// Path& operator=(const Path& p);
+	Path& operator=(const Path& other);
 	// Path& operator=(Path&& p) noexcept;
-	// template <class Source>
-	//   Path& operator=(const Source& source);
-	// template <class Source>
-	//   Path& assign(const Source& source);
+	Path& operator=(const string_type& path);
+	Path& assign(const string_type& path);
 	// template <class InputIterator>
 	//   Path& assign(InputIterator first, InputIterator last);
 
@@ -105,7 +108,10 @@ public:
 	// std::string    string() const;
 
 	// compare
-	// int  compare(const Path& p) const noexcept;
+	int  compare(const Path& p) const noexcept
+	{
+		
+	}
 	// int  compare(const string_type& s) const;
 	// int  compare(const char* s) const;
 
