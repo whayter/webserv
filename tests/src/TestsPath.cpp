@@ -2,7 +2,28 @@
 
 #include "Path.hpp"
 
-TEST_CASE( "Path - static functions", "[class][path][static]" ) {
+#include <filesystem>
+
+TEST_CASE( "Path - static functions", "[class][path][static][.]" ) {
+	// std::filesystem::path(".").extension().extension().extension().generic_u8string();
+
+	CHECK( Path().empty());
+	CHECK( Path().root_directory().empty() );
+	CHECK( Path().relative_path().empty() );
+
+
+	CHECK( Path().has_root_directory() == false );
+	CHECK( Path().has_root_path() == false );
+	CHECK( Path().has_relative_path() == false );
+	CHECK( Path().has_parent_path() == false );
+	CHECK( Path().has_filename() == false );
+	CHECK( Path().has_stem() == false );
+	CHECK( Path().has_extension() == false );
+	CHECK( Path().is_absolute() == false );
+	CHECK( Path().is_relative() == true );
+
+
+
 	// std::string s = Path::current();
 	// CHECK (!s.empty());
 	// Path p(s);
@@ -26,40 +47,42 @@ TEST_CASE( "Path - static functions", "[class][path][static]" ) {
 
 TEST_CASE( "Path - Construction", "[class][path][.]" ) {
 
-	Path p;
-	p.parse("");
-	CHECK( p.isRelative() );
-	CHECK( !p.isAbsolute() );
-	// CHECK( p.depth() == 0);
-	CHECK( p.isDirectory());
-	CHECK( !p.isFile());
-	CHECK( p.toString() == "");
+	// Path p;
+	// p.parse("");
+	// CHECK( p.isRelative() );
+	// CHECK( !p.isAbsolute() );
+	// // CHECK( p.depth() == 0);
+	// CHECK( p.isDirectory());
+	// CHECK( !p.isFile());
+	// CHECK( p.toString() == "");
 
-	p.parse("/");
-	CHECK ( !p.isRelative());
-	CHECK ( p.isAbsolute());
-	// CHECK ( p.depth() == 0);
-	CHECK ( p.isDirectory());
-	CHECK ( !p.isFile());
-	CHECK ( p.toString() == "/");
+	// p.parse("/");
+	// CHECK ( !p.isRelative());
+	// CHECK ( p.isAbsolute());
+	// // CHECK ( p.depth() == 0);
+	// CHECK ( p.isDirectory());
+	// CHECK ( !p.isFile());
+	// CHECK ( p.toString() == "/");
 
-	p.parse("/usr");
-	CHECK ( !p.isRelative());
-	CHECK ( p.isAbsolute());
-	// CHECK ( p.depth() == 0);
-	CHECK ( !p.isDirectory());
-	CHECK ( p.isFile());
-	CHECK ( p.toString() == "/usr");
+	// p.parse("/usr");
+	// CHECK ( !p.isRelative());
+	// CHECK ( p.isAbsolute());
+	// // CHECK ( p.depth() == 0);
+	// CHECK ( !p.isDirectory());
+	// CHECK ( p.isFile());
+	// CHECK ( p.toString() == "/usr");
 
-	p.parse("/usr/");
-	CHECK ( !p.isRelative());
-	CHECK ( p.isAbsolute());
-	// CHECK ( p.depth() == 1);
-	// CHECK ( p[0] == "usr");
-	CHECK ( p.isDirectory());
-	CHECK ( !p.isFile());
-	CHECK ( p.toString() == "/usr/");
+	// p.parse("/usr/");
+	// CHECK ( !p.isRelative());
+	// CHECK ( p.isAbsolute());
+	// // CHECK ( p.depth() == 1);
+	// // CHECK ( p[0] == "usr");
+	// CHECK ( p.isDirectory());
+	// CHECK ( !p.isFile());
+	// CHECK ( p.toString() == "/usr/");
 
+/////////////////////////////////////////////
+/////////////////////////////////////////////
 // 	p.parse("usr/");
 // 	CHECK ( p.isRelative());
 // 	CHECK ( !p.isAbsolute());
