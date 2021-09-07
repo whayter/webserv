@@ -12,17 +12,15 @@
 
 #include "Path.hpp"
 
-
-
 Path::Path(){}
 
-Path::Path(const Path& p):
-	_pathEntries(p._pathEntries)
+Path::Path(const Path& other):
+	_path(other._path)
 {}
-Path::Path(const string_type& p)
+
+Path::Path(const string_type& path):
+	_path(path)
 {
-	(void)p;
-	// todo
 }
 
 Path::~Path() {}
@@ -32,15 +30,58 @@ Path& Path::operator=(const Path& other)
 {
 	if (this == &other)
 		return *this;
-	_pathEntries = other._pathEntries;
+	_path = other._path;
 	return *this;
 }
 
-Path& Path::operator=(const string_type& path)
+Path& Path::operator/=(const Path& p)
 {
-	*this = Path(path);
+	(void)p;
 	return *this;
 }
+
+Path Path::root_directory()	const { 
+	return !_path.empty() && _path[0] == '/' ? Path("/") : Path() ;
+	// return !_path.empty() && _path[0] == '/' ? Path(_pathEntries[0]) : Path() ;
+}
+Path Path::root_path() const {
+	return /* root_name() / */ root_directory();
+}
+Path Path::relative_path() const {
+	return Path();
+	// return empty() ? Path() : Path(*--end());
+}
+Path Path::parent_path() const {
+	return Path();
+	// return (empty() || begin() == --end()) ? Path() : Path(*this);
+}
+Path Path::filename() const {
+	return Path();
+	// return empty() ? Path() : Path(*--end());
+}
+Path Path::stem() const
+{
+	if (empty())
+		return Path();
+		return Path();
+	// std::string filename = *--end();
+	// if (filename == "." || filename == "..")
+	// 	return Path();
+	// return Path(filename.substr(0, filename.rfind('.')));
+}
+Path Path::extension()	const 
+{
+	if (empty())
+		return Path();
+		return Path();
+	// std::string filename = *--end();
+	// if (filename == "." || filename == "..")
+	// 	return Path();
+	// return Path(filename.substr(filename.rfind('.')));
+}
+
+
+
 
 
 ///////////////////////////////////////////////////
