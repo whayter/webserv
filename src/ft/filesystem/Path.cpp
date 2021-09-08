@@ -12,21 +12,23 @@
 
 #include "Path.hpp"
 
-Path::Path(){}
+namespace ft{ 
+namespace filesystem{ 
+path::path(){}
 
-Path::Path(const Path& other):
+path::path(const path& other):
 	_path(other._path)
 {}
 
-Path::Path(const string_type& path):
+path::path(const string_type& path):
 	_path(path)
 {
 }
 
-Path::~Path() {}
+path::~path() {}
 
 
-Path& Path::operator=(const Path& other)
+path& path::operator=(const path& other)
 {
 	if (this == &other)
 		return *this;
@@ -34,52 +36,86 @@ Path& Path::operator=(const Path& other)
 	return *this;
 }
 
-Path& Path::operator/=(const Path& p)
+// template <class Source>
+// path& path::operator=(const Source& source)
+// {
+// 	_path = source;
+// 	return *this;
+// }
+
+path& path::operator/=(const path& p)
 {
 	(void)p;
 	return *this;
 }
 
-Path Path::root_directory()	const { 
-	return !_path.empty() && _path[0] == '/' ? Path("/") : Path() ;
-	// return !_path.empty() && _path[0] == '/' ? Path(_pathEntries[0]) : Path() ;
+path path::root_directory()	const { 
+	return !_path.empty() && _path[0] == '/' ? path("/") : path() ;
+	// return !_path.empty() && _path[0] == '/' ? path(_pathEntries[0]) : path() ;
 }
-Path Path::root_path() const {
+path path::root_path() const {
 	return /* root_name() / */ root_directory();
 }
-Path Path::relative_path() const {
-	return Path();
-	// return empty() ? Path() : Path(*--end());
+path path::relative_path() const {
+	return path();
+	// return empty() ? path() : path(*--end());
 }
-Path Path::parent_path() const {
-	return Path();
-	// return (empty() || begin() == --end()) ? Path() : Path(*this);
+path path::parent_path() const {
+	return path();
+	// return (empty() || begin() == --end()) ? path() : path(*this);
 }
-Path Path::filename() const {
-	return Path();
-	// return empty() ? Path() : Path(*--end());
+path path::filename() const {
+	return path();
+	// return empty() ? path() : path(*--end());
 }
-Path Path::stem() const
+path path::stem() const
 {
 	if (empty())
-		return Path();
-		return Path();
+		return path();
+		return path();
 	// std::string filename = *--end();
 	// if (filename == "." || filename == "..")
-	// 	return Path();
-	// return Path(filename.substr(0, filename.rfind('.')));
+	// 	return path();
+	// return path(filename.substr(0, filename.rfind('.')));
 }
-Path Path::extension()	const 
+path path::extension()	const 
 {
 	if (empty())
-		return Path();
-		return Path();
+		return path();
+		return path();
 	// std::string filename = *--end();
 	// if (filename == "." || filename == "..")
-	// 	return Path();
-	// return Path(filename.substr(filename.rfind('.')));
+	// 	return path();
+	// return path(filename.substr(filename.rfind('.')));
 }
 
+void  path::clear()
+{
+	_path.empty();
+}
+path& path::remove_filename()
+{
+
+	return *this;
+}
+path& path::replace_filename(const path& replacement)
+{
+	(void)replacement;
+	return *this;
+}
+path& path::replace_extension(const path& replacement)
+{
+	(void)replacement;
+	return *this;
+}
+
+void  path::swap(path& rhs)
+{
+	path tmp(*this);
+
+	*this = rhs;
+	rhs = tmp;
+}
 
 
 
@@ -212,3 +248,6 @@ Path Path::extension()	const
 // 	result += _filename;
 // 	return result;
 // }
+
+} /* namespace filesystem */
+} /* namespace ft */

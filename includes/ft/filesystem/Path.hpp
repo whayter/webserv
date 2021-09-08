@@ -23,64 +23,74 @@
 #include <pwd.h>
 #include <uuid/uuid.h>
 
+namespace ft{ 
+namespace filesystem{ 
 
-class Path
+
+class path
 {
 public:
 	typedef std::string		string_type;
 
 
 	// constructors and destructor
-    Path();
-    Path(const Path& other);
-	Path(const string_type& p);
+    path();
+    path(const path& other);
+	path(const string_type& p);
     // template <class InputIterator>
-    //   Path(InputIterator first, InputIterator last);
-   ~Path();
+    //   path(InputIterator first, InputIterator last);
+   ~path();
 
 
 	// assignments
-    Path& operator=(const Path& p);
+    path& operator=(const path& p);
     // template <class InputIterator>
-    //   Path& assign(InputIterator first, InputIterator last);
+    //   path& assign(InputIterator first, InputIterator last);
 
 	// appends
-	Path& operator/=(const Path& p);
+	path& operator/=(const path& p);
 	// template <class InputIterator>
-	//   Path& append(InputIterator first, InputIterator last);
+	//   path& append(InputIterator first, InputIterator last);
 
 	// concatenation
-	Path& operator+=(const Path& x){
+	path& operator+=(const path& x){
 		_path += x._path;
 		return *this;
 	}
-	Path& operator+=(const string_type& x){
+	path& operator+=(const string_type& x){
 		_path += x;
 		return *this;
 	}
-	Path& operator+=(const char* x){
+	path& operator+=(const char* x){
 		_path += x;
 		return *this;
 	}
-	Path& operator+=(char x){
+	path& operator+=(char x){
+		_path += x;
+		return *this;
+	}
+	template <class Source>
+      path& concat(const Source& x)
+	{
 		_path += x;
 		return *this;
 	}
 	template <class InputIterator>
-	  Path& concat(InputIterator first, InputIterator last)
+	  path& concat(InputIterator first, InputIterator last)
 	{
 		while (first != last)
 		{
 			_path += *first;
 			++first;
 		}
+		return *this;
 	}
 	// modifiers
-	void  clear() { _path.empty();}
-	// Path& remove_filename();
-	// Path& replace_filename(const Path& replacement);
-	// Path& replace_extension(const Path& replacement = Path());
-	// void  swap(Path& rhs) noexcept;
+	void  clear();
+	path& remove_filename();
+	path& replace_filename(const path& replacement);
+	path& replace_extension(const path& replacement = path());
+	void  swap(path& rhs);
 
 	// native format observers
 	const string_type&  native() const { return _path;}
@@ -98,13 +108,13 @@ public:
 	}
 
 	// decomposition
-	Path root_directory()	const;
-	Path root_path()		const; 
-	Path relative_path()	const; 
-	Path parent_path()		const; 
-	Path filename()			const; 
-	Path stem()				const;
-	Path extension()		const;
+	path root_directory()	const;
+	path root_path()		const; 
+	path relative_path()	const; 
+	path parent_path()		const; 
+	path filename()			const; 
+	path stem()				const;
+	path extension()		const;
 
 	// query
 	inline bool empty() const		 		{ return _path.empty();};
@@ -132,8 +142,8 @@ public:
 private:
 
 
-	friend bool operator==(const Path& lhs, const Path& rhs);
-	friend bool operator<(const Path& lhs, const Path& rhs);
+	friend bool operator==(const path& lhs, const path& rhs);
+	friend bool operator<(const path& lhs, const path& rhs);
 
 	void _parsePath(const string_type&);
 
@@ -141,19 +151,16 @@ private:
 };
 
 
-inline bool operator==(const Path& lhs, const Path& rhs){
-	return lhs._path == rhs._path;
-}
-inline bool operator< (const Path& lhs, const Path& rhs){
-	return lhs._path < rhs._path;
-}
+
 
 // move this to filesystem file
-inline bool operator!=(const Path& lhs, const Path& rhs) { return !(lhs == rhs); }
-inline bool operator<=(const Path& lhs, const Path& rhs) { return !(rhs < lhs); }
-inline bool operator> (const Path& lhs, const Path& rhs) { return rhs < lhs; }
-inline bool operator>=(const Path& lhs, const Path& rhs) { return !(lhs < rhs); }
-// Path		operator/ (const Path& lhs, const Path& rhs)		{	return Path(lhs) /= rhs;}
+
+
+
+} /* namespace filesystem */
+} /* namespace ft */
+
+#endif /* PATH_HPP */
 
 
 
@@ -162,13 +169,15 @@ inline bool operator>=(const Path& lhs, const Path& rhs) { return !(lhs < rhs); 
 
 
 
+///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
 
 
 
 
 // #include <limits.h> for linux
 
-#define PATH_MAX 1024 // For linux, don't care for now. Override macos define (but same len)
+// #define PATH_MAX 1024 // For linux, don't care for now. Override macos define (but same len)
 
 // https://man7.org/linux/man-pages/man7/path_resolution.7.html
 // https://insanecoding.blogspot.com/2007/11/pathmax-simply-isnt.html
@@ -245,4 +254,3 @@ inline bool operator>=(const Path& lhs, const Path& rhs) { return !(lhs < rhs); 
 // 	bool						_absolute;
 // };
 
-#endif /* PATH_HPP */
