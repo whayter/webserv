@@ -1,11 +1,11 @@
 #include "catch_amalgamated.hpp"
 
 #include "Filesystem.hpp"
-
+#include <filesystem>
 
 namespace fs = ft::filesystem;
 
-TEST_CASE( "ft::filesystem::path - Construction", "[class][path][construct]" )
+TEST_CASE( "ft::filesystem::path - Construction", "[class][path][filesystem][construct]" )
 {
 
 	CHECK( fs::path().empty());
@@ -36,7 +36,7 @@ TEST_CASE( "ft::filesystem::path - Construction", "[class][path][construct]" )
     CHECK(fs::path("foo/") == "foo/");
 }
 
-TEST_CASE( "path - Assign", "[class][path][assign]" )
+TEST_CASE( "path - Assign", "[class][path][filesystem][assign]" )
 {
     fs::path p1("/foo/bar");
     fs::path p2("/usr/local");
@@ -51,7 +51,7 @@ TEST_CASE( "path - Assign", "[class][path][assign]" )
     REQUIRE(p1 == p3);
 }
 
-TEST_CASE( "path - Append", "[class][path][append]" ) {
+TEST_CASE( "path - Append", "[class][path][filesystem][append]" ) {
     CHECK(fs::path("foo") / "" == "foo/");
     CHECK(fs::path("foo") / "/bar" == "/bar");
     CHECK(fs::path("/foo") / "/" == "/");
@@ -63,7 +63,7 @@ TEST_CASE( "path - Append", "[class][path][append]" ) {
     CHECK("/tmp/test/foobar.txt" == p3);
 }
 
-TEST_CASE( "fs::path - Concat", "[class][path][concatenation]" )
+TEST_CASE( "fs::path - Concat", "[class][path][filesystem][concatenation]" )
 {
     CHECK((fs::path("foo") += fs::path("bar")) == "foobar");
     CHECK((fs::path("foo") += fs::path("/bar")) == "foo/bar");
@@ -92,7 +92,7 @@ TEST_CASE( "fs::path - Concat", "[class][path][concatenation]" )
 
 }
 
-TEST_CASE( "fs::path - Modifiers", "[class][path][modifier]" ) {
+TEST_CASE( "fs::path - Modifiers", "[class][path][filesystem][modifier]" ) {
 
     CHECK(fs::path("foo/bar").remove_filename() == "foo/");
     CHECK(fs::path("foo/").remove_filename() == "foo/");
@@ -117,7 +117,7 @@ TEST_CASE( "fs::path - Modifiers", "[class][path][modifier]" ) {
     CHECK(p2 == "foo");
 }
 
-// TEST_CASE( "fs::path - Compare", "[class][path][compare]" ) {
+// TEST_CASE( "fs::path - Compare", "[class][path][filesystem][compare]" ) {
 
 //     CHECK(fs::path("/foo/b").compare("/foo/a") > 0);
 //     CHECK(fs::path("/foo/b").compare("/foo/b") == 0);
@@ -136,7 +136,7 @@ TEST_CASE( "fs::path - Modifiers", "[class][path][modifier]" ) {
 //     CHECK(fs::path("/a/b/").compare("a/c") > 0);
 // }
 
-TEST_CASE( "fs::path - Decompose", "[class][path][decompose]" ) {
+TEST_CASE( "fs::path - Decompose", "[class][path][filesystem][decompose]" ) {
     CHECK(fs::path("").root_directory() == "");
     CHECK(fs::path(".").root_directory() == "");
     CHECK(fs::path("..").root_directory() == "");
@@ -227,7 +227,7 @@ TEST_CASE( "fs::path - Decompose", "[class][path][decompose]" ) {
     CHECK(fs::path("..bar").extension() == ".bar");
 }
 
-TEST_CASE( "fs::path - Query", "[class][path][.]" ) {
+TEST_CASE( "fs::path - Query", "[class][path][filesystem][query]" ) {
    // has_relative_path()
     CHECK(!fs::path("").has_relative_path());
     CHECK(!fs::path("/").has_relative_path());
@@ -269,7 +269,7 @@ TEST_CASE( "fs::path - Query", "[class][path][.]" ) {
 
 }
 
-// TEST_CASE( "fs::path - Generation", "[class][path][.]" ) {
+// TEST_CASE( "fs::path - Generation", "[class][path][filesystem][generation]" ) {
 
 //     // lexically_normal()
 //     CHECK(fs::path("foo/./bar/..").lexically_normal() == "foo/");
@@ -297,7 +297,7 @@ TEST_CASE( "fs::path - Query", "[class][path][.]" ) {
 //     CHECK(fs::path("foo").lexically_proximate("/bar") == "foo");
 // }
 
-TEST_CASE( "fs::path - Non member functions", "[class][path][non-member-function]" )
+TEST_CASE( "fs::path - Non member functions", "[class][path][filesystem][non-member-function]" )
 {
     fs::path p1("foo/bar");
     fs::path p2("some/other");
@@ -317,3 +317,32 @@ TEST_CASE( "fs::path - Non member functions", "[class][path][non-member-function
     CHECK(p1 != p2);
     CHECK((p1 / p2).string() == "some/other/foo/bar");
 }
+
+TEST_CASE("fs::absolute - absolute", "[filesystem][operations][fs-absolute]")
+{
+    CHECK(fs::absolute("") == fs::current_path() / "");
+    CHECK(fs::absolute(fs::current_path()) == fs::current_path());
+    CHECK(fs::absolute(".") == fs::current_path() / ".");
+    CHECK((fs::absolute("..") == fs::current_path().parent_path() || fs::absolute("..") == fs::current_path() / ".."));
+    CHECK(fs::absolute("foo") == fs::current_path() / "foo");
+    std::error_code ec;
+    CHECK(fs::absolute("", ec) == fs::current_path() / "");
+    CHECK(!ec);
+    CHECK(fs::absolute("foo", ec) == fs::current_path() / "foo");
+    CHECK(!ec);
+}
+
+// TEST_CASE("fs::current_path - current_path", "[filesystem][operations][fs-current_path]")
+// {
+//     TemporaryDirectory t;
+//     std::error_code ec;
+//     fs::path p1 = fs::current_path();
+//     CHECK_NOTHROW(fs::current_path(t.path()));
+//     CHECK(p1 != fs::current_path());
+//     CHECK_NOTHROW(fs::current_path(p1, ec));
+//     CHECK(!ec);
+//     CHECK_THROWS_AS(fs::current_path(t.path() / "foo"), fs::filesystem_error);
+//     CHECK(p1 == fs::current_path());
+//     CHECK_NOTHROW(fs::current_path(t.path() / "foo", ec));
+//     CHECK(ec);
+// }
