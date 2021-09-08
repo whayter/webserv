@@ -123,8 +123,9 @@ path path::extension()	const
 
 void  path::clear()
 {
-	_path.empty();
+	_path.clear();
 }
+
 path& path::remove_filename()
 {
 	_path.erase(_path.rfind('/')+1);
