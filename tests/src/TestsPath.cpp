@@ -117,7 +117,7 @@ TEST_CASE( "fs::path - Modifiers", "[class][path][modifier]" ) {
     CHECK(p2 == "foo");
 }
 
-// TEST_CASE( "fs::path - Modifier", "[class][path][.]" ) {
+// TEST_CASE( "fs::path - Compare", "[class][path][compare]" ) {
 
 //     CHECK(fs::path("/foo/b").compare("/foo/a") > 0);
 //     CHECK(fs::path("/foo/b").compare("/foo/b") == 0);
@@ -136,92 +136,94 @@ TEST_CASE( "fs::path - Modifiers", "[class][path][modifier]" ) {
 //     CHECK(fs::path("/a/b/").compare("a/c") > 0);
 // }
 
-// TEST_CASE( "fs::path - Decompose", "[class][path][.]" ) {
-//     CHECK(fs::path("").root_directory() == "");
-//     CHECK(fs::path(".").root_directory() == "");
-//     CHECK(fs::path("..").root_directory() == "");
-//     CHECK(fs::path("foo").root_directory() == "");
-//     CHECK(fs::path("/").root_directory() == "/");
-//     CHECK(fs::path("/foo").root_directory() == "/");
-//     CHECK(fs::path("foo/").root_directory() == "");
-//     CHECK(fs::path("/foo/").root_directory() == "/");
-//     CHECK(fs::path("foo/bar").root_directory() == "");
-//     CHECK(fs::path("/foo/bar").root_directory() == "/");
-//     CHECK(fs::path("///foo/bar").root_directory() == "/");
+TEST_CASE( "fs::path - Decompose", "[class][path][decompose]" ) {
+    CHECK(fs::path("").root_directory() == "");
+    CHECK(fs::path(".").root_directory() == "");
+    CHECK(fs::path("..").root_directory() == "");
+    CHECK(fs::path("foo").root_directory() == "");
+    CHECK(fs::path("/").root_directory() == "/");
+    CHECK(fs::path("/foo").root_directory() == "/");
+    CHECK(fs::path("foo/").root_directory() == "");
+    CHECK(fs::path("/foo/").root_directory() == "/");
+    CHECK(fs::path("foo/bar").root_directory() == "");
+    CHECK(fs::path("/foo/bar").root_directory() == "/");
+    CHECK(fs::path("///foo/bar").root_directory() == "/");
 
 
-//     CHECK(fs::path("").root_path() == "");
-//     CHECK(fs::path(".").root_path() == "");
-//     CHECK(fs::path("..").root_path() == "");
-//     CHECK(fs::path("foo").root_path() == "");
-//     CHECK(fs::path("/").root_path() == "/");
-//     CHECK(fs::path("/foo").root_path() == "/");
-//     CHECK(fs::path("foo/").root_path() == "");
-//     CHECK(fs::path("/foo/").root_path() == "/");
-//     CHECK(fs::path("foo/bar").root_path() == "");
-//     CHECK(fs::path("/foo/bar").root_path() == "/");
-//     CHECK(fs::path("///foo/bar").root_path() == "/");
+    CHECK(fs::path("").root_path() == "");
+    CHECK(fs::path(".").root_path() == "");
+    CHECK(fs::path("..").root_path() == "");
+    CHECK(fs::path("foo").root_path() == "");
+    CHECK(fs::path("/").root_path() == "/");
+    CHECK(fs::path("/foo").root_path() == "/");
+    CHECK(fs::path("foo/").root_path() == "");
+    CHECK(fs::path("/foo/").root_path() == "/");
+    CHECK(fs::path("foo/bar").root_path() == "");
+    CHECK(fs::path("/foo/bar").root_path() == "/");
+    CHECK(fs::path("///foo/bar").root_path() == "/");
 
-// 	CHECK(fs::path("").relative_path() == "");
-//     CHECK(fs::path(".").relative_path() == ".");
-//     CHECK(fs::path("..").relative_path() == "..");
-//     CHECK(fs::path("foo").relative_path() == "foo");
-//     CHECK(fs::path("/").relative_path() == "");
-//     CHECK(fs::path("/foo").relative_path() == "foo");
-//     CHECK(fs::path("foo/").relative_path() == "foo/");
-//     CHECK(fs::path("/foo/").relative_path() == "foo/");
-//     CHECK(fs::path("foo/bar").relative_path() == "foo/bar");
-//     CHECK(fs::path("/foo/bar").relative_path() == "foo/bar");
-//     CHECK(fs::path("///foo/bar").relative_path() == "foo/bar");
+	CHECK(fs::path("").relative_path() == "");
+    CHECK(fs::path(".").relative_path() == ".");
+    CHECK(fs::path("..").relative_path() == "..");
+    CHECK(fs::path("foo").relative_path() == "foo");
+    CHECK(fs::path("/").relative_path() == "");
+    CHECK(fs::path("/foo").relative_path() == "foo");
+    CHECK(fs::path("foo/").relative_path() == "foo/");
+    CHECK(fs::path("/foo/").relative_path() == "foo/");
+    CHECK(fs::path("foo/bar").relative_path() == "foo/bar");
+    CHECK(fs::path("/foo/bar").relative_path() == "foo/bar");
+    CHECK(fs::path("///foo/bar").relative_path() == "foo/bar");
 
-// 	CHECK(fs::path("").parent_path() == "");
-//     CHECK(fs::path(".").parent_path() == "");
-//     CHECK(fs::path("..").parent_path() == "");  // unintuitive but as defined in the standard
-//     CHECK(fs::path("foo").parent_path() == "");
-//     CHECK(fs::path("/").parent_path() == "/");
-//     CHECK(fs::path("/foo").parent_path() == "/");
-//     CHECK(fs::path("foo/").parent_path() == "foo");
-//     CHECK(fs::path("/foo/").parent_path() == "/foo");
-//     CHECK(fs::path("foo/bar").parent_path() == "foo");
-//     CHECK(fs::path("/foo/bar").parent_path() == "/foo");
-//     CHECK(fs::path("///foo/bar").parent_path() == "/foo");
+	// CHECK(fs::path("").parent_path() == "");
+    // CHECK(fs::path(".").parent_path() == "");
+    // CHECK(fs::path("..").parent_path() == "");  // unintuitive but as defined in the standard
+    // CHECK(fs::path("foo").parent_path() == "");
+    // CHECK(fs::path("/").parent_path() == "/");
+    // CHECK(fs::path("/foo").parent_path() == "/");
+    // CHECK(fs::path("foo/").parent_path() == "foo");
+    // CHECK(fs::path("/foo/").parent_path() == "/foo");
+    // CHECK(fs::path("foo/bar").parent_path() == "foo");
+    // CHECK(fs::path("/foo/bar").parent_path() == "/foo");
+    // CHECK(fs::path("///foo/bar").parent_path() == "/foo");
 
-// 	CHECK(fs::path("").filename() == "");
-//     CHECK(fs::path(".").filename() == ".");
-//     CHECK(fs::path("..").filename() == "..");
-//     CHECK(fs::path("foo").filename() == "foo");
-//     CHECK(fs::path("/").filename() == "");
-//     CHECK(fs::path("/foo").filename() == "foo");
-//     CHECK(fs::path("foo/").filename() == "");
-//     CHECK(fs::path("/foo/").filename() == "");
-//     CHECK(fs::path("foo/bar").filename() == "bar");
-//     CHECK(fs::path("/foo/bar").filename() == "bar");
-//     CHECK(fs::path("///foo/bar").filename() == "bar");
+	CHECK(fs::path("").filename() == "");
+    CHECK(fs::path(".").filename() == ".");
+    CHECK(fs::path("..").filename() == "..");
+    CHECK(fs::path("foo").filename() == "foo");
+    CHECK(fs::path("/").filename() == "");
+    CHECK(fs::path("/foo").filename() == "foo");
+    CHECK(fs::path("foo/").filename() == "");
+    CHECK(fs::path("/foo/").filename() == "");
+    CHECK(fs::path("foo/bar").filename() == "bar");
+    CHECK(fs::path("/foo/bar").filename() == "bar");
+    CHECK(fs::path("///foo/bar").filename() == "bar");
 
 
-// 	// stem()
-//     CHECK(fs::path("/foo/bar.txt").stem() == "bar");
-//     {
-//         fs::path p = "foo.bar.baz.tar";
-//         CHECK(p.extension() == ".tar");
-//         p = p.stem();
-//         CHECK(p.extension() == ".baz");
-//         p = p.stem();
-//         CHECK(p.extension() == ".bar");
-//         p = p.stem();
-//         CHECK(p == "foo");
-//     }
-//     CHECK(fs::path("/foo/.profile").stem() == ".profile");
-//     CHECK(fs::path(".bar").stem() == ".bar");
-//     CHECK(fs::path("..bar").stem() == ".");
+	// stem()
+    CHECK(fs::path("/foo/bar.txt").stem() == "bar");
+    {
+        fs::path p = "foo.bar.baz.tar";
+        CHECK(p.extension() == ".tar");
+        p = p.stem();
+        CHECK(p.extension() == ".baz");
+        p = p.stem();
+        CHECK(p.extension() == ".bar");
+        p = p.stem();
+        CHECK(p == "foo");
+    }
+    CHECK(fs::path("/foo/.profile").stem() == ".profile");
+    CHECK(fs::path(".bar").stem() == ".bar");
+    CHECK(fs::path("..bar").stem() == ".");
+    CHECK(fs::path(".").stem() == ".");
+    CHECK(fs::path("..").stem() == "..");
 
-//     // extension()
-//     CHECK(fs::path("/foo/bar.txt").extension() == ".txt");
-//     CHECK(fs::path("/foo/bar").extension() == "");
-//     CHECK(fs::path("/foo/.profile").extension() == "");
-//     CHECK(fs::path(".bar").extension() == "");
-//     CHECK(fs::path("..bar").extension() == ".bar");
-// }
+    // extension()
+    CHECK(fs::path("/foo/bar.txt").extension() == ".txt");
+    CHECK(fs::path("/foo/bar").extension() == "");
+    CHECK(fs::path("/foo/.profile").extension() == "");
+    CHECK(fs::path(".bar").extension() == "");
+    CHECK(fs::path("..bar").extension() == ".bar");
+}
 
 // TEST_CASE( "fs::path - Query", "[class][path][.]" ) {
 //    // has_relative_path()

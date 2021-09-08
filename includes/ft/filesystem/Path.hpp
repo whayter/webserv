@@ -112,6 +112,20 @@ public:
 		return result;
 	}
 
+    // compare
+    // inline int  compare(const path& p) const
+	// {
+	// 	return strcmp(_path.c_str(), p._path.c_str());
+	// }	
+    // inline int  compare(const string_type& s) const
+	// {
+	// 	return compare(path(s));
+	// }
+    // inline int  compare(const char* s) const
+	// {
+	// 	return compare(path(s));
+	// }
+
 	// decomposition
 	path root_directory()	const;
 	path root_path()		const; 

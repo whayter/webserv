@@ -81,6 +81,10 @@ path path::root_path() const {
 	return /* root_name() / */ root_directory();
 }
 path path::relative_path() const {
+	if (is_absolute() && _path.size() > 1)
+		return path(string_type(_path.begin()+1, _path.end()));
+	if (is_relative())
+		return *this;
 	return path();
 	// return empty() ? path() : path(*--end());
 }
@@ -89,28 +93,32 @@ path path::parent_path() const {
 	// return (empty() || begin() == --end()) ? path() : path(*this);
 }
 path path::filename() const {
-	return path();
+	if (empty())
+		return path();
+	size_t pos = _path.rfind('/');
+	if (pos != string_type::npos)
+		return path(string_type(_path.begin() + pos + 1, _path.end()));
+	return *this;
 	// return empty() ? path() : path(*--end());
 }
 path path::stem() const
 {
-	if (empty())
-		return path();
-		return path();
-	// std::string filename = *--end();
-	// if (filename == "." || filename == "..")
-	// 	return path();
-	// return path(filename.substr(0, filename.rfind('.')));
+	size_t pos = _path.rfind('/');
+	
+	string_type filename(_path.begin() + pos + 1, _path.end());
+	if (filename == "." || filename == "..")
+		return path(filename);
+	pos = filename.rfind('.');
+	if (pos < 1)
+		return path(filename);
+	return path(string_type(filename.begin(), filename.begin() + pos));
 }
 path path::extension()	const 
 {
-	if (empty())
-		return path();
-		return path();
-	// std::string filename = *--end();
-	// if (filename == "." || filename == "..")
-	// 	return path();
-	// return path(filename.substr(filename.rfind('.')));
+	size_t pos = _path.rfind('.');
+	if (pos != string_type::npos && _path.rfind('/') + 1 != pos)
+		return path(string_type(_path.begin() + pos, _path.end()));
+	return path();
 }
 
 void  path::clear()
