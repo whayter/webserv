@@ -26,7 +26,7 @@ TEST_CASE( "ft::filesystem::path - Construction", "[class][path][construct]" )
 
     CHECK(fs::path("///foo/bar").empty() == false);
 
-    CHECK(fs::path("///foo/bar") == fs::path("/foo/bar"));
+    CHECK(fs::path("///foo////bar") == fs::path("/foo/bar"));
     CHECK(fs::path("///foo/bar") == "/foo/bar");
     CHECK(fs::path("//foo//bar") == "//foo/bar");
     CHECK("/usr/local/bin" == fs::path("/usr/local/bin"));
@@ -49,22 +49,17 @@ TEST_CASE( "path - Assign", "[class][path][assign]" )
     REQUIRE(p1 == p3);
 }
 
-// TEST_CASE( "path - Append", "[class][path][append]" ) {
-//     CHECK(fs::path("foo") / "" == "foo/");
-//     CHECK(fs::path("foo") / "/bar" == "/bar");
-//     CHECK(fs::path("/foo") / "/" == "/");
-//     // if (has_host_root_name_support()) {
-//     //     CHECK(fs::path("//host/foo") / "/bar" == "/bar");
-//     //     CHECK(fs::path("//host") / "/" == "//host/");
-//     //     CHECK(fs::path("//host/foo") / "/" == "/");
-//     // }
+TEST_CASE( "path - Append", "[class][path][append]" ) {
+    CHECK(fs::path("foo") / "" == "foo/");
+    CHECK(fs::path("foo") / "/bar" == "/bar");
+    CHECK(fs::path("/foo") / "/" == "/");
 
-// 	CHECK(fs::path("/foo/bar") / "some///other" == "/foo/bar/some/other");
-//     fs::path p1("/tmp/test");
-//     fs::path p2("foobar.txt");
-//     ft::path p3 = p1 / p2;
-//     CHECK("/tmp/test/foobar.txt" == p3);
-// }
+	CHECK(fs::path("/foo/bar") / "some///other" == "/foo/bar/some/other");
+    fs::path p1("/tmp/test");
+    fs::path p2("foobar.txt");
+    fs::path p3 = p1 / p2;
+    CHECK("/tmp/test/foobar.txt" == p3);
+}
 
 // TEST_CASE( "fs::path - Concat", "[class][path][concatenation]" )
 // {

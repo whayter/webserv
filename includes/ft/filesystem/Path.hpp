@@ -145,7 +145,8 @@ private:
 	friend bool operator==(const path& lhs, const path& rhs);
 	friend bool operator<(const path& lhs, const path& rhs);
 
-	void _parsePath(const string_type&);
+	std::vector<string_type> _splitPath();
+	void _formatPathInPlace();
 
 	string_type _path;
 };

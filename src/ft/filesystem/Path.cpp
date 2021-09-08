@@ -23,6 +23,7 @@ path::path(const path& other):
 path::path(const string_type& path):
 	_path(path)
 {
+	_formatPathInPlace();
 }
 
 path::~path() {}
@@ -117,6 +118,52 @@ void  path::swap(path& rhs)
 	rhs = tmp;
 }
 
+void path::_formatPathInPlace()
+{
+	std::vector<string_type> pathEntries = _splitPath();
+	std::vector<string_type>::const_iterator it = pathEntries.begin();
+	std::vector<string_type>::const_iterator end = pathEntries.end();
+	string_type result;
+
+	if (pathEntries.size() > 2 && pathEntries[0].empty() && pathEntries[1].empty() && !pathEntries[2].empty())
+	{
+		result += "//";
+		it += 2;
+	}
+	while (it != end)
+	{
+		if (it->empty() && it != pathEntries.begin())
+		{
+			++it;
+			continue;
+		}
+		if (!it->empty())
+			result += *it;
+		if (it + 1 != end)
+			result += '/';
+		it++;
+	}
+	_path = result;
+}
+
+std::vector<path::string_type> path::_splitPath()
+{
+	std::vector<string_type> result;
+	size_t i = 0;
+
+	string_type::const_iterator it = begin();
+	string_type::const_iterator end = this->end();
+
+	while (it != end)
+	{
+		if (*it == '/')
+			result.resize(++i + 1, "");
+		else
+			result[i] += *it;
+		it++;
+	}
+	return result;
+}
 
 
 
