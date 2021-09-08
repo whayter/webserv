@@ -210,6 +210,8 @@ TEST_CASE( "fs::path - Decompose", "[class][path][decompose]" ) {
         CHECK(p.extension() == ".bar");
         p = p.stem();
         CHECK(p == "foo");
+        p = p.stem();
+        CHECK(p == "foo");
     }
     CHECK(fs::path("/foo/.profile").stem() == ".profile");
     CHECK(fs::path(".bar").stem() == ".bar");

@@ -109,7 +109,7 @@ path path::stem() const
 	if (filename == "." || filename == "..")
 		return path(filename);
 	pos = filename.rfind('.');
-	if (pos < 1)
+	if (pos < 1 || pos == string_type::npos)
 		return path(filename);
 	return path(string_type(filename.begin(), filename.begin() + pos));
 }
