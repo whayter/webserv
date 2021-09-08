@@ -110,11 +110,11 @@ TEST_CASE( "fs::path - Modifiers", "[class][path][modifier]" ) {
     CHECK(fs::path("/foo/bar.").replace_extension(".odf") == "/foo/bar.odf");
     CHECK(fs::path("/foo/bar/").replace_extension("odf") == "/foo/bar/.odf");
 
-	// fs::path p1 = "foo";
-    // fs::path p2 = "bar";
-    // p1.swap(p2);
-    // CHECK(p1 == "bar");
-    // CHECK(p2 == "foo");
+	fs::path p1 = "foo";
+    fs::path p2 = "bar";
+    p1.swap(p2);
+    CHECK(p1 == "bar");
+    CHECK(p2 == "foo");
 }
 
 // TEST_CASE( "fs::path - Modifier", "[class][path][.]" ) {

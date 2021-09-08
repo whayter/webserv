@@ -37,6 +37,7 @@ public:
     path();
     path(const path& other);
 	path(const string_type& p);
+	path(const char* p);
     // template <class InputIterator>
     //   path(InputIterator first, InputIterator last);
    ~path();
@@ -44,6 +45,7 @@ public:
 
 	// assignments
     path& operator=(const path& p);
+    path& operator=(const string_type& p);
     // template <class InputIterator>
     //   path& assign(InputIterator first, InputIterator last);
 
@@ -92,10 +94,7 @@ public:
 	void  clear();
 	path& remove_filename();
 	path& replace_filename(const path& replacement);
-	path& replace_filename(const string_type& replacement);
 	path& replace_extension(const path& replacement = path());
-	path& replace_extension(const string_type& replacement);
-	// path& replace_extension();
 	void  swap(path& rhs);
 
 	// native format observers

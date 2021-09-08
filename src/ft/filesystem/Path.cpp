@@ -25,6 +25,11 @@ path::path(const string_type& path):
 {
 	_formatPathInPlace();
 }
+path::path(const char* path):
+	_path(path)
+{
+	_formatPathInPlace();
+}
 
 path::~path() {}
 
@@ -36,6 +41,14 @@ path& path::operator=(const path& other)
 	_path = other._path;
 	return *this;
 }
+
+path& path::operator=(const string_type& path)
+{
+	_path = path;
+	_formatPathInPlace();
+	return *this;
+}
+
 
 // template <class Source>
 // path& path::operator=(const Source& source)
@@ -116,36 +129,18 @@ path& path::replace_filename(const path& replacement)
 	return *this;
 }
 
-path& path::replace_filename(const string_type& replacement)
-{
-	replace_filename(path(replacement));
-	return *this;
-}
-
 path& path::replace_extension(const path& replacement)
-{
-	_path.erase(_path.rfind('.'));
-	_path += replacement._path;
-	return *this;
-}
-
-path& path::replace_extension(const string_type& replacement)
 {
 	size_t pos = _path.rfind('.');
 	if (pos != string_type::npos)
-		_path.erase(pos);
+		_path.erase(_path.rfind('.'));
 	if (replacement.empty())
 		return *this;
-	if (replacement.find('.') == string_type::npos)
+	if (replacement._path.find('.') == string_type::npos)
 		_path += '.';
-	_path += replacement;
+	_path += replacement._path;
 	return *this;
 }
-// path& path::replace_extension()
-// {
-// 	replace_extension(path());
-// 	return *this;
-// }
 
 void  path::swap(path& rhs)
 {

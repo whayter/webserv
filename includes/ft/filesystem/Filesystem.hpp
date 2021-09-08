@@ -13,16 +13,16 @@ namespace ft { namespace filesystem {
 
   inline bool operator==(const path& lhs, const path& rhs) {return lhs._path == rhs._path;}
   inline bool operator< (const path& lhs, const path& rhs) {return lhs._path < rhs._path;}
-  inline bool operator==(const path& lhs, const std::string& rhs) {return lhs == path(rhs);}
-  inline bool operator==(const std::string& lhs, const path& rhs) { return path(lhs) == rhs;}
+  // inline bool operator==(const path& lhs, const std::string& rhs) {return lhs == path(rhs);}
+  // inline bool operator==(const std::string& lhs, const path& rhs) { return path(lhs) == rhs;}
   inline bool operator!=(const path& lhs, const path& rhs) { return !(lhs == rhs); }
-  inline bool operator!=(const std::string& lhs, const path& rhs) { return !(path(lhs) == rhs); }
-  inline bool operator!=(const path& lhs, const std::string& rhs) { return !(lhs == path(rhs)); }
+  // inline bool operator!=(const std::string& lhs, const path& rhs) { return !(path(lhs) == rhs); }
+  // inline bool operator!=(const path& lhs, const std::string& rhs) { return !(lhs == path(rhs)); }
   inline bool operator<=(const path& lhs, const path& rhs) { return !(rhs < lhs); }
   inline bool operator> (const path& lhs, const path& rhs) { return rhs < lhs; }
   inline bool operator>=(const path& lhs, const path& rhs) { return !(lhs < rhs); }
   inline path operator/ (const path& lhs, const path& rhs) { return path(lhs) /= rhs;}
-  inline path	operator/ (const path& lhs, const std::string& rhs) { return path(lhs) /= rhs;}
+  // inline path	operator/ (const path& lhs, const std::string& rhs) { return path(lhs) /= rhs;}
 
   // template <class charT, class traits>
   // basic_ostream<charT, traits>&
