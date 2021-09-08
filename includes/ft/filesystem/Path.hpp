@@ -34,7 +34,7 @@ public:
 
 
 	// constructors and destructor
-    path();
+    path() throw();
     path(const path& other);
 	path(const string_type& p);
 	path(const char* p);
@@ -91,15 +91,15 @@ public:
 		return *this;
 	}
 	// modifiers
-	void  clear();
+	void  clear() throw();
 	path& remove_filename();
 	path& replace_filename(const path& replacement);
 	path& replace_extension(const path& replacement = path());
-	void  swap(path& rhs);
+	void  swap(path& rhs) throw();
 
 	// native format observers
-	const string_type&  native() const { return _path;}
-	const char*   c_str() const {return _path.c_str();}
+	const string_type&  native() const throw() { return _path;}
+	const char*   c_str() const throw() {return _path.c_str();}
 	operator string_type() const {return _path;}
 
 	std::string    string() const{
@@ -113,7 +113,7 @@ public:
 	}
 
     // compare
-    // inline int  compare(const path& p) const
+    // inline int  compare(const path& p) const throw()
 	// {
 	// 	return strcmp(_path.c_str(), p._path.c_str());
 	// }	
@@ -136,7 +136,7 @@ public:
 	path extension()		const;
 
 	// query
-	inline bool empty() const		 		{ return _path.empty();};
+	inline bool empty() const throw()		{ return _path.empty();};
 	inline bool has_root_directory() const	{ return !root_directory().empty();};
 	inline bool has_root_path() const 		{ return !root_path().empty();};
 	inline bool has_relative_path() const	{ return !relative_path().empty();};
@@ -161,8 +161,8 @@ public:
 private:
 
 
-	friend bool operator==(const path& lhs, const path& rhs);
-	friend bool operator<(const path& lhs, const path& rhs);
+	friend bool operator==(const path& lhs, const path& rhs) throw();
+	friend bool operator<(const path& lhs, const path& rhs) throw();
 
 	std::vector<string_type> _splitPath();
 	void _formatPathInPlace();

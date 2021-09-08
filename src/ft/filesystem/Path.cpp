@@ -14,7 +14,7 @@
 
 namespace ft{ 
 namespace filesystem{ 
-path::path(){}
+path::path() throw() {}
 
 path::path(const path& other):
 	_path(other._path)
@@ -121,7 +121,7 @@ path path::extension()	const
 	return path();
 }
 
-void  path::clear()
+void  path::clear() throw()
 {
 	_path.clear();
 }
@@ -151,7 +151,7 @@ path& path::replace_extension(const path& replacement)
 	return *this;
 }
 
-void  path::swap(path& rhs)
+void  path::swap(path& rhs) throw()
 {
 	path tmp(*this);
 	*this = rhs;

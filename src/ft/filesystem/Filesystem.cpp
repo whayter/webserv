@@ -2,7 +2,7 @@
 
 namespace ft { namespace filesystem {
 
-void swap(path& lhs, path& rhs)
+void swap(path& lhs, path& rhs) throw() 
 {
 	path tmp(lhs);
 	lhs = rhs;
@@ -17,6 +17,11 @@ path current_path()
 		throw std::runtime_error("getcwd() failed");
 	result = cwd;
 	return path(result);
+}
+path current_path(error_code& ec)
+{
+	(void)ec;
+	return path();
 }
 
 
