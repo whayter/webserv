@@ -63,7 +63,7 @@ path& path::operator/=(const path& p)
 		_path += '/';
 	else if (p.is_absolute())
 		_path = p._path;
-	else if (this->is_absolute() && p.is_relative())
+	else if ( p.is_relative())
 	{
 		_path += '/';
 		_path += p._path;
@@ -89,7 +89,7 @@ path path::relative_path() const {
 	// return empty() ? path() : path(*--end());
 }
 path path::parent_path() const {
-	return path();
+	throw "Flemme";
 	// return (empty() || begin() == --end()) ? path() : path(*this);
 }
 path path::filename() const {

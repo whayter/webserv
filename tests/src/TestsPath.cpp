@@ -16,7 +16,7 @@ TEST_CASE( "ft::filesystem::path - Construction", "[class][path][construct]" )
 	CHECK( fs::path().has_root_directory() == false );
 	CHECK( fs::path().has_root_path() == false );
 	CHECK( fs::path().has_relative_path() == false );
-	CHECK( fs::path().has_parent_path() == false );
+	// CHECK( fs::path().has_parent_path() == false );
 	CHECK( fs::path().has_filename() == false );
 	CHECK( fs::path().has_stem() == false );
 	CHECK( fs::path().has_extension() == false );
@@ -184,7 +184,7 @@ TEST_CASE( "fs::path - Decompose", "[class][path][decompose]" ) {
     // CHECK(fs::path("/foo/").parent_path() == "/foo");
     // CHECK(fs::path("foo/bar").parent_path() == "foo");
     // CHECK(fs::path("/foo/bar").parent_path() == "/foo");
-    // CHECK(fs::path("///foo/bar").parent_path() == "/foo");
+    // REQUIRE(fs::path("///foo/bar").parent_path() == "/foo");
 
 	CHECK(fs::path("").filename() == "");
     CHECK(fs::path(".").filename() == ".");
@@ -227,47 +227,47 @@ TEST_CASE( "fs::path - Decompose", "[class][path][decompose]" ) {
     CHECK(fs::path("..bar").extension() == ".bar");
 }
 
-// TEST_CASE( "fs::path - Query", "[class][path][.]" ) {
-//    // has_relative_path()
-//     CHECK(!fs::path("").has_relative_path());
-//     CHECK(!fs::path("/").has_relative_path());
-//     CHECK(fs::path("/foo").has_relative_path());
+TEST_CASE( "fs::path - Query", "[class][path][.]" ) {
+   // has_relative_path()
+    CHECK(!fs::path("").has_relative_path());
+    CHECK(!fs::path("/").has_relative_path());
+    CHECK(fs::path("/foo").has_relative_path());
 
-//     // has_parent_path()
-//     CHECK(!fs::path("").has_parent_path());
-//     CHECK(!fs::path(".").has_parent_path());
-//     CHECK(!fs::path("..").has_parent_path());  // unintuitive but as defined in the standard
-//     CHECK(!fs::path("foo").has_parent_path());
-//     CHECK(fs::path("/").has_parent_path());
-//     CHECK(fs::path("/foo").has_parent_path());
-//     CHECK(fs::path("foo/").has_parent_path());
-//     CHECK(fs::path("/foo/").has_parent_path());
+    // has_parent_path()
+    // CHECK(!fs::path("").has_parent_path());
+    // CHECK(!fs::path(".").has_parent_path());
+    // CHECK(!fs::path("..").has_parent_path());  // unintuitive but as defined in the standard
+    // CHECK(!fs::path("foo").has_parent_path());
+    // CHECK(fs::path("/").has_parent_path());
+    // CHECK(fs::path("/foo").has_parent_path());
+    // CHECK(fs::path("foo/").has_parent_path());
+    // CHECK(fs::path("/foo/").has_parent_path());
 
-//     // has_filename()
-//     CHECK(fs::path("foo").has_filename());
-//     CHECK(fs::path("foo/bar").has_filename());
-//     CHECK(!fs::path("/foo/bar/").has_filename());
+    // has_filename()
+    CHECK(fs::path("foo").has_filename());
+    CHECK(fs::path("foo/bar").has_filename());
+    CHECK(!fs::path("/foo/bar/").has_filename());
 
-//     // has_stem()
-//     CHECK(fs::path("foo").has_stem());
-//     CHECK(fs::path("foo.bar").has_stem());
-//     CHECK(fs::path(".profile").has_stem());
-//     CHECK(!fs::path("/foo/").has_stem());
+    // has_stem()
+    CHECK(fs::path("foo").has_stem());
+    CHECK(fs::path("foo.bar").has_stem());
+    CHECK(fs::path(".profile").has_stem());
+    CHECK(!fs::path("/foo/").has_stem());
 
-//     // has_extension()
-//     CHECK(!fs::path("foo").has_extension());
-//     CHECK(fs::path("foo.bar").has_extension());
-//     CHECK(!fs::path(".profile").has_extension());
+    // has_extension()
+    CHECK(!fs::path("foo").has_extension());
+    CHECK(fs::path("foo.bar").has_extension());
+    CHECK(!fs::path(".profile").has_extension());
 
-//     // is_absolute()
-//     CHECK(!fs::path("foo/bar").is_absolute());
-//     CHECK(fs::path("/foo").is_absolute());
+    // is_absolute()
+    CHECK(!fs::path("foo/bar").is_absolute());
+    CHECK(fs::path("/foo").is_absolute());
 
-//     // is_relative()
-//     CHECK(fs::path("foo/bar").is_relative());
-// 	CHECK(!fs::path("/foo").is_relative());
+    // is_relative()
+    CHECK(fs::path("foo/bar").is_relative());
+	CHECK(!fs::path("/foo").is_relative());
 
-// }
+}
 
 // TEST_CASE( "fs::path - Generation", "[class][path][.]" ) {
 
@@ -302,18 +302,18 @@ TEST_CASE( "fs::path - Non member functions", "[class][path][non-member-function
     fs::path p1("foo/bar");
     fs::path p2("some/other");
     fs::swap(p1, p2);
-    // CHECK(p1 == "some/other");
-    // CHECK(p2 == "foo/bar");
-    // CHECK(p2 < p1);
-    // CHECK(p2 <= p1);
-    // CHECK(p1 <= p1);
-    // CHECK(!(p1 < p2));
-    // CHECK(!(p1 <= p2));
-    // CHECK(p1 > p2);
-    // CHECK(p1 >= p2);
-    // CHECK(p1 >= p1);
-    // CHECK(!(p2 > p1));
-    // CHECK(!(p2 >= p1));
-    // CHECK(p1 != p2);
-    // CHECK(p1 / p2 == "some/other/foo/bar");
+    CHECK(p1 == "some/other");
+    CHECK(p2 == "foo/bar");
+    CHECK(p2 < p1);
+    CHECK(p2 <= p1);
+    CHECK(p1 <= p1);
+    CHECK(!(p1 < p2));
+    CHECK(!(p1 <= p2));
+    CHECK(p1 > p2);
+    CHECK(p1 >= p2);
+    CHECK(p1 >= p1);
+    CHECK(!(p2 > p1));
+    CHECK(!(p2 >= p1));
+    CHECK(p1 != p2);
+    CHECK((p1 / p2).string() == "some/other/foo/bar");
 }
