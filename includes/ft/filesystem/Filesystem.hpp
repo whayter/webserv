@@ -11,6 +11,10 @@ typedef int error_code;
 
 namespace filesystem {
 
+// #include <limits.h> for linux
+#define PATH_MAX 1024 // For linux, don't care for now. Override macos define (but same len)
+
+
 // class path;
   
   void swap(path& lhs, path& rhs)  throw();
