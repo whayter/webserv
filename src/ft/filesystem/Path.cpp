@@ -48,7 +48,7 @@ path& path::operator/=(const path& p)
 {
 	std::cout << _path <<"||"<< p._path << "|" << std::endl;
 	if (p.empty())
-		_path += "/+";
+		_path += '/';
 	else if (p.is_absolute())
 		_path = p._path;
 	else
