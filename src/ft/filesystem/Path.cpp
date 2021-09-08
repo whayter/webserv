@@ -51,6 +51,11 @@ path& path::operator/=(const path& p)
 		_path += '/';
 	else if (p.is_absolute())
 		_path = p._path;
+	else if (this->is_absolute() && p.is_relative())
+	{
+		_path += '/';
+		_path += p._path;
+	}
 	else
 		_path += p._path;
 	std::cout << _path << std::endl;

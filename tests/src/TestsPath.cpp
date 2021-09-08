@@ -56,7 +56,7 @@ TEST_CASE( "path - Append", "[class][path][append]" ) {
     CHECK(fs::path("foo") / "/bar" == "/bar");
     CHECK(fs::path("/foo") / "/" == "/");
 
-// 	CHECK(fs::path("/foo/bar") / "some///other" == "/foo/bar/some/other");
+	CHECK(fs::path("/foo/bar") / "some///other" == "/foo/bar/some/other");
 //     fs::path p1("/tmp/test");
 //     fs::path p2("foobar.txt");
 //     fs::path p3 = p1 / p2;
