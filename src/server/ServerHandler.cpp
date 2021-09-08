@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 19:22:37 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/30 22:24:47 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/07 13:21:53 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,8 +107,7 @@ void server::ServerHandler::stop(int status)
 	_servers.clear();
 	if (status == -1)
 	{
-		_log(0, "An error has occurred.");
-		_log (0, "Shutting down...");
+		_log(0, "An error has occurred. Shutting down...");
 		exit(EXIT_FAILURE);
 	}
 	else
@@ -148,16 +147,13 @@ void server::ServerHandler::_serveClient(int index)
 	ServerConfig& config = ServerConfig::getInstance();
 	Uri uri = _requests[index]->getUri();
 	HttpResponse response(config.findServer(uri), *_requests[index]);
-	response.setMandatory();
+	response.build();
 	_sendResponse(index, response.toString().c_str());
 	_requests[index]->clear();
 }
 
 void server::ServerHandler::_getRequest(int index)
 {
-
-	// send nbytes to read
-
 	char buffer[BUF_SIZE] = {0};
 	int nbytes = recv(_fds[index].fd, buffer, BUF_SIZE - 1, 0);
 	if (nbytes < 0)

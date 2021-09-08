@@ -1,26 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utility.hpp                                        :+:      :+:    :+:   */
+/*   Cgi.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/16 16:06:58 by juligonz          #+#    #+#             */
-/*   Updated: 2021/09/08 01:25:20 by hwinston         ###   ########.fr       */
+/*   Created: 2021/09/06 01:10:29 by hwinston          #+#    #+#             */
+/*   Updated: 2021/09/06 01:38:29 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef UTILITY_HPP
-#define UTILITY_HPP
+#include "../../includes/cgi/Cgi.hpp"
 
-#include <string>
-#include <sstream>
-#include <ctime>
-
-std::string intToString(int i);
-int         stringToInt(std::string integer);
-void		lowerStringInPlace(std::string& s);
-bool		isInteger(std::string& s);
-std::string getDate();
-
-#endif
+int main()
+{
+    std::string res = callCgi();
+    std::cout << res << std::endl;
+	return 0;
+}

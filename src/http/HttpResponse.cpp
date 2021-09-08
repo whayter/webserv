@@ -6,13 +6,16 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:47:59 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/05 12:40:52 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/08 02:41:42 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HttpResponse.hpp"
 #include "ServerConfig.hpp"
 #include "utility.hpp"
+#include "cgi.hpp"
+
+#include <algorithm>
 
 /* --- Public functions ----------------------------------------------------- */
 
@@ -20,14 +23,11 @@ HttpResponse::HttpResponse(ServerBlock serverBlock, HttpRequest& request)
 : _serverBlock(serverBlock), _request(request)
 {
 	int code = request.getHttpErrorCode();
-	if (code == 0)
-		_setStatus(HttpStatus::OK);
-	else
+	if (code != 0)
 		_setStatus(code);
 }
 
 HttpResponse::~HttpResponse() {}
-
 
 void HttpResponse::setLocalContent()
 {
@@ -35,19 +35,31 @@ void HttpResponse::setLocalContent()
 	std::string root = _serverBlock.getRoot();
 	std::string path = _request.getUri().getPath();
 	std::string file = "." + root + path;					// root will always start with '/' ?
-	ifs.open(path.c_str());
+	ifs.open(file.c_str());
 	if (!ifs)
 	{
 		_code.setValue(HttpStatus::NotFound);
 		setErrorContent();
 		return ;
 	}
+	_code.setValue(HttpStatus::OK);		// set ici ?
 	ifs.seekg(0, ifs.end);
 	int len = ifs.tellg();
 	ifs.seekg(0, ifs.beg);
 	char buffer[len];
 	ifs.read(buffer, len);
 	_content = buffer;
+}
+
+void HttpResponse::setCgiContent()
+{
+	std::vector<unsigned char> cgiHeaders;
+	std::vector<unsigned char> cgiContent;
+	setEnvironment(_serverBlock, _request);
+	callCgi(&cgiHeaders, &cgiContent);
+	unsetEnvironment();
+	_parseCgiHeaders(cgiHeaders);
+	_content = std::string(cgiContent.begin(), cgiContent.end());
 }
 
 void HttpResponse::setErrorContent()												// not complete yet
@@ -69,33 +81,70 @@ void HttpResponse::setErrorContent()												// not complete yet
 		_content += "<p>Webserv</p></body></html>";
 }
 
-void HttpResponse::setMandatory()
+void HttpResponse::build()
 {
+	/* PSEUDO-CODE */
+	
+	// if (cgi)
+	// 	callCgi();
+	// else if (GET)
+	// 	setLocalContent();
+	// else if (POST)
+	// 	post();
+	// else if (DELETE)
+	// 	delete();
+	// else
+	// 	err(not a valid method)
+	// setHeaders();
+
+	std::string path = _request.getUri().getPath();			// tmp
+	size_t pos = path.find_last_of('.') + 1;				// tmp
+	if (path.substr(pos) == "php")
+		setCgiContent();									// tmp
+	else
+		setLocalContent();
 	_setStatusLine();
 	_setDate();
 	_setServer();
-
-	setLocalContent();			// for local get
-
 	_setContentLength();
-
 	_setContentType(_request.getUri());
 }
-
-
 
 std::string HttpResponse::toString()
 {
 	std::string s;
-	s = _statusLine + "\n";
+	s = _statusLine + "\r\n";
 	headers_type::iterator header;
 	for (header = _headers.begin(); header != _headers.end(); header++)
-		s += header->first + ": " + header->second + "\n";
-	s += "\n" + _content;
+		s += header->first + ": " + header->second + "\r\n";
+	s += "\r\n" + _content;
 	return s;
 }
 
 /* --- Private functions ---------------------------------------------------- */
+
+void		HttpResponse::_parseCgiHeaders(std::vector<unsigned char>& cgiHeaders)
+{
+	std::stringstream ss(std::string(cgiHeaders.begin(), cgiHeaders.end()));
+	size_t n = std::count(cgiHeaders.begin(), cgiHeaders.end(), '\r');
+	for (size_t i = 0; i < n - 1; i++)
+	{
+		std::string line;
+		getline(ss, line);
+		int firstPos = line.find(':');
+		std::string name = line.substr(0, firstPos);
+		int secondPos = line.find('\r');
+		std::string value = line.substr(firstPos + 2, secondPos);
+		if (name == "Status")
+		{
+			std::cout << "name = status !" << std::endl;
+			_setStatus(stringToInt(value.substr(0, value.find_first_of(' '))));
+			_setStatusLine();
+		}
+		else if (name == "Content-type")
+			setHeader(name, value);
+	}
+}
 
 std::string	HttpResponse::_getHeader(std::string key)
 {
