@@ -59,14 +59,17 @@ public:
 	}
 	path& operator+=(const string_type& x){
 		_path += x;
+		_formatPathInPlace();
 		return *this;
 	}
 	path& operator+=(const char* x){
 		_path += x;
+		_formatPathInPlace();
 		return *this;
 	}
 	path& operator+=(char x){
 		_path += x;
+		_formatPathInPlace();
 		return *this;
 	}
 	template <class Source>
@@ -89,7 +92,10 @@ public:
 	void  clear();
 	path& remove_filename();
 	path& replace_filename(const path& replacement);
+	path& replace_filename(const string_type& replacement);
 	path& replace_extension(const path& replacement = path());
+	path& replace_extension(const string_type& replacement);
+	// path& replace_extension();
 	void  swap(path& rhs);
 
 	// native format observers

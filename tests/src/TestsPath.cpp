@@ -57,65 +57,65 @@ TEST_CASE( "path - Append", "[class][path][append]" ) {
     CHECK(fs::path("/foo") / "/" == "/");
 
 	CHECK(fs::path("/foo/bar") / "some///other" == "/foo/bar/some/other");
-//     fs::path p1("/tmp/test");
-//     fs::path p2("foobar.txt");
-//     fs::path p3 = p1 / p2;
-//     CHECK("/tmp/test/foobar.txt" == p3);
+    fs::path p1("/tmp/test");
+    fs::path p2("foobar.txt");
+    fs::path p3 = p1 / p2;
+    CHECK("/tmp/test/foobar.txt" == p3);
 }
 
-// TEST_CASE( "fs::path - Concat", "[class][path][concatenation]" )
-// {
-//     CHECK((fs::path("foo") += fs::path("bar")) == "foobar");
-//     CHECK((fs::path("foo") += fs::path("/bar")) == "foo/bar");
+TEST_CASE( "fs::path - Concat", "[class][path][concatenation]" )
+{
+    CHECK((fs::path("foo") += fs::path("bar")) == "foobar");
+    CHECK((fs::path("foo") += fs::path("/bar")) == "foo/bar");
 
-//     CHECK((fs::path("foo") += std::string("bar")) == "foobar");
-//     CHECK((fs::path("foo") += std::string("/bar")) == "foo/bar");
+    CHECK((fs::path("foo") += std::string("bar")) == "foobar");
+    CHECK((fs::path("foo") += std::string("/bar")) == "foo/bar");
 
-//     CHECK((fs::path("foo") += "bar") == "foobar");
-//     CHECK((fs::path("foo") += "/bar") == "foo/bar");
+    CHECK((fs::path("foo") += "bar") == "foobar");
+    CHECK((fs::path("foo") += "/bar") == "foo/bar");
 
-// 	CHECK((fs::path("foo") += 'b') == "foob");
-//     CHECK((fs::path("foo") += '/') == "foo/");
+	CHECK((fs::path("foo") += 'b') == "foob");
+    CHECK((fs::path("foo") += '/') == "foo/");
 
-// 	CHECK((fs::path("foo") += std::string("bar")) == "foobar");
-//     CHECK((fs::path("foo") += std::string("/bar")) == "foo/bar");
-
-
-//     CHECK(fs::path("foo").concat("bar") == "foobar");
-//     CHECK(fs::path("foo").concat("/bar") == "foo/bar");
-
-//     std::string bar = "bar";
-//     CHECK(fs::path("foo").concat(bar.begin(), bar.end()) == "foobar");
-
-//     CHECK((fs::path("/foo/bar") += "/some///other") == "/foo/bar/some/other");
+	CHECK((fs::path("foo") += std::string("bar")) == "foobar");
+    CHECK((fs::path("foo") += std::string("/bar")) == "foo/bar");
 
 
-// }
+    CHECK(fs::path("foo").concat("bar") == "foobar");
+    CHECK(fs::path("foo").concat("/bar") == "foo/bar");
 
-// TEST_CASE( "fs::path - Modifiers", "[class][path][modifiers]" ) {
+    std::string bar = "bar";
+    CHECK(fs::path("foo").concat(bar.begin(), bar.end()) == "foobar");
 
-//     CHECK(fs::path("foo/bar").remove_filename() == "foo/");
-//     CHECK(fs::path("foo/").remove_filename() == "foo/");
-//     CHECK(fs::path("/foo").remove_filename() == "/");
-//     CHECK(fs::path("/").remove_filename() == "/");
+    CHECK((fs::path("/foo/bar") += "/some///other") == "/foo/bar/some/other");
 
-	// CHECK(fs::path("/foo").replace_filename("bar") == "/bar");
-    // CHECK(fs::path("/").replace_filename("bar") == "/bar");
-    // CHECK(fs::path("/foo").replace_filename("b//ar") == "/b/ar");
 
-    // CHECK(fs::path("/foo/bar.txt").replace_extension("odf") == "/foo/bar.odf");
-    // CHECK(fs::path("/foo/bar.txt").replace_extension() == "/foo/bar");
-    // CHECK(fs::path("/foo/bar").replace_extension("odf") == "/foo/bar.odf");
-    // CHECK(fs::path("/foo/bar").replace_extension(".odf") == "/foo/bar.odf");
-    // CHECK(fs::path("/foo/bar.").replace_extension(".odf") == "/foo/bar.odf");
-    // CHECK(fs::path("/foo/bar/").replace_extension("odf") == "/foo/bar/.odf");
+}
+
+TEST_CASE( "fs::path - Modifiers", "[class][path][modifier]" ) {
+
+    CHECK(fs::path("foo/bar").remove_filename() == "foo/");
+    CHECK(fs::path("foo/").remove_filename() == "foo/");
+    CHECK(fs::path("/foo").remove_filename() == "/");
+    CHECK(fs::path("/").remove_filename() == "/");
+
+	CHECK(fs::path("/foo").replace_filename("bar") == "/bar");
+    CHECK(fs::path("/").replace_filename("bar") == "/bar");
+    CHECK(fs::path("/foo").replace_filename("b//ar") == "/b/ar");
+
+    CHECK(fs::path("/foo/bar.txt").replace_extension("odf") == "/foo/bar.odf");
+    CHECK(fs::path("/foo/bar.txt").replace_extension() == "/foo/bar");
+    CHECK(fs::path("/foo/bar").replace_extension("odf") == "/foo/bar.odf");
+    CHECK(fs::path("/foo/bar").replace_extension(".odf") == "/foo/bar.odf");
+    CHECK(fs::path("/foo/bar.").replace_extension(".odf") == "/foo/bar.odf");
+    CHECK(fs::path("/foo/bar/").replace_extension("odf") == "/foo/bar/.odf");
 
 	// fs::path p1 = "foo";
     // fs::path p2 = "bar";
     // p1.swap(p2);
     // CHECK(p1 == "bar");
     // CHECK(p2 == "foo");
-// }
+}
 
 // TEST_CASE( "fs::path - Modifier", "[class][path][.]" ) {
 

@@ -106,24 +106,50 @@ void  path::clear()
 }
 path& path::remove_filename()
 {
-
+	_path.erase(_path.rfind('/')+1);
 	return *this;
 }
 path& path::replace_filename(const path& replacement)
 {
-	(void)replacement;
+	remove_filename();
+	_path += replacement;
 	return *this;
 }
+
+path& path::replace_filename(const string_type& replacement)
+{
+	replace_filename(path(replacement));
+	return *this;
+}
+
 path& path::replace_extension(const path& replacement)
 {
-	(void)replacement;
+	_path.erase(_path.rfind('.'));
+	_path += replacement._path;
 	return *this;
 }
+
+path& path::replace_extension(const string_type& replacement)
+{
+	size_t pos = _path.rfind('.');
+	if (pos != string_type::npos)
+		_path.erase(pos);
+	if (replacement.empty())
+		return *this;
+	if (replacement.find('.') == string_type::npos)
+		_path += '.';
+	_path += replacement;
+	return *this;
+}
+// path& path::replace_extension()
+// {
+// 	replace_extension(path());
+// 	return *this;
+// }
 
 void  path::swap(path& rhs)
 {
 	path tmp(*this);
-
 	*this = rhs;
 	rhs = tmp;
 }
