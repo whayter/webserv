@@ -46,7 +46,16 @@ path& path::operator=(const path& other)
 
 path& path::operator/=(const path& p)
 {
-	(void)p;
+	std::cout << _path <<"||"<< p._path << "|" << std::endl;
+	if (p.empty())
+		_path += "/+";
+	else if (p.is_absolute())
+		_path = p._path;
+	else
+		_path += p._path;
+	std::cout << _path << std::endl;
+	// _formatPathInPlace();
+
 	return *this;
 }
 
@@ -149,19 +158,26 @@ void path::_formatPathInPlace()
 std::vector<path::string_type> path::_splitPath()
 {
 	std::vector<string_type> result;
-	size_t i = 0;
 
 	string_type::const_iterator it = begin();
 	string_type::const_iterator end = this->end();
 
+	string_type tmp;
 	while (it != end)
 	{
 		if (*it == '/')
-			result.resize(++i + 1, "");
+		{
+			result.push_back(tmp);
+			tmp.clear();
+		}
 		else
-			result[i] += *it;
+			tmp += *it;
 		it++;
 	}
+	if (!tmp.empty())
+		result.push_back(tmp);
+	if (!_path.empty() && *--this->end() == '/')
+		result.push_back("");
 	return result;
 }
 
