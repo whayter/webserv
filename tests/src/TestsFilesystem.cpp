@@ -356,20 +356,6 @@ TEST_CASE( "fs::path - Non member functions", "[class][path][filesystem][non-mem
     CHECK((p1 / p2).string() == "some/other/foo/bar");
 }
 
-// TEST_CASE("fs::absolute - absolute", "[filesystem][operations][fs-absolute]")
-// {
-//     CHECK(fs::absolute("") == fs::current_path() / "");
-//     CHECK(fs::absolute(fs::current_path()) == fs::current_path());
-//     CHECK(fs::absolute(".") == fs::current_path() / ".");
-//     CHECK((fs::absolute("..") == fs::current_path().parent_path() || fs::absolute("..") == fs::current_path() / ".."));
-//     CHECK(fs::absolute("foo") == fs::current_path() / "foo");
-//     std::error_code ec;
-//     CHECK(fs::absolute("", ec) == fs::current_path() / "");
-//     CHECK(!ec);
-//     CHECK(fs::absolute("foo", ec) == fs::current_path() / "foo");
-//     CHECK(!ec);
-// }
-
 // TEST_CASE("fs::current_path - current_path", "[filesystem][operations][fs-current_path]")
 // {
 //     TemporaryDirectory t;
@@ -383,4 +369,18 @@ TEST_CASE( "fs::path - Non member functions", "[class][path][filesystem][non-mem
 //     CHECK(p1 == fs::current_path());
 //     CHECK_NOTHROW(fs::current_path(t.path() / "foo", ec));
 //     CHECK(ec);
+// }
+
+// TEST_CASE("fs::absolute - absolute", "[filesystem][operations][fs-absolute]")
+// {
+//     CHECK(fs::absolute("") == fs::current_path() / "");
+//     CHECK(fs::absolute(fs::current_path()) == fs::current_path());
+//     CHECK(fs::absolute(".") == fs::current_path() / ".");
+//     CHECK((fs::absolute("..") == fs::current_path().parent_path() || fs::absolute("..") == fs::current_path() / ".."));
+//     CHECK(fs::absolute("foo") == fs::current_path() / "foo");
+//     std::error_code ec;
+//     CHECK(fs::absolute("", ec) == fs::current_path() / "");
+//     CHECK(!ec);
+//     CHECK(fs::absolute("foo", ec) == fs::current_path() / "foo");
+//     CHECK(!ec);
 // }

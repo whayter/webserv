@@ -120,8 +120,8 @@ typedef int error_code;
 
   path current_path();
   path current_path(error_code& ec);
-  // void current_path(const path& p);
-  // void current_path(const path& p, error_code& ec) throw() ;
+  void current_path(const path& p);
+  void current_path(const path& p, error_code& ec) throw() ;
 
   // bool exists(file_status s) throw() ;
   // bool exists(const path& p);

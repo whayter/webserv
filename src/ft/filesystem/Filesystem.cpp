@@ -1,4 +1,6 @@
-#include "Filesystem.hpp"
+#include "ft/filesystem/Filesystem.hpp"
+
+#include "ft/filesystem/FilesystemError.hpp"
 
 namespace ft { namespace filesystem {
 
@@ -13,8 +15,8 @@ path current_path()
 {
 	std::string result;
 	char cwd[PATH_MAX];
-	if (!getcwd(cwd, sizeof(cwd)))
-		throw std::runtime_error("getcwd() failed");
+	// if (!getcwd(cwd, sizeof(cwd)))
+	// 	throw filesystem_error("getcwd() failed");
 	result = cwd;
 	return path(result);
 }
@@ -22,6 +24,16 @@ path current_path(error_code& ec)
 {
 	(void)ec;
 	return path();
+}
+
+void current_path(const path& p)
+{
+	(void)p;
+}
+void current_path(const path& p, error_code& ec) throw()
+{
+	(void)p;
+	(void)ec;
 }
 
 
