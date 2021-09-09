@@ -88,13 +88,15 @@ DEP = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.d))
 LDFLAGS = $(foreach lib, $(LIB_DIR),-L$(lib))  $(foreach lib, $(LIB),-l$(lib))
 
 CXX = clang++
-CXXFLAGS  = -Wall -Wextra -Werror -std=c++17 -MMD -MP -g -fstandalone-debug #-fsanitize=address  -fsanitize=undefined -fstack-protector  
+CXXFLAGS  = -Wall -Wextra -Werror -std=c++17 -MMD -MP -g #-fstandalone-debug #-fsanitize=address  -fsanitize=undefined -fstack-protector  
 IFLAGS  = $(foreach inc, $(INC_DIR),-I$(inc))
 
 #OS specific
 ifeq ($(UNAME), Darwin)
 	# mac
-	CXXFLAGS += -D DARWIN
+	CXXFLAGS += -D DARWIN -mmacosx-version-min=10.15
+	# To be able to use std::filesystem ...
+	CXXFLAGS += -mmacosx-version-min=10.15
 else
 	#Linus and others...
 	CXXFLAGS += -D LINUX
