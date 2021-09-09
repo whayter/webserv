@@ -3,8 +3,7 @@
 
 #include <exception>
 #include <string>
-#include "Path.hpp"
-#include "Filesystem.hpp"
+#include "ft/filesystem/Path.hpp"
 
 namespace ft { 
 
@@ -12,6 +11,8 @@ namespace filesystem {
 
 class filesystem_error : public std::runtime_error
 {
+	typedef int error_code;
+
 public:
 	filesystem_error(const std::string& what_arg, error_code ec);
 	filesystem_error(const std::string& what_arg,
@@ -21,9 +22,7 @@ public:
 
 	const ft::filesystem::path& path1() const throw();
 	const ft::filesystem::path& path2() const throw();
-	const char* what() const throw() {
-		
-	}
+	const char* what() const throw() ;
 };
 
 } /* namespace filesystem */
