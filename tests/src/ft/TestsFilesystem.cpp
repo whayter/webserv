@@ -4,7 +4,7 @@
 #include "ft/filesystem/filesystem_error.hpp"
 #include <filesystem>
 
-// namespace fs = ft::filesystem;
+namespace fs = ft::filesystem;
 
 enum class TempOpt { none, change_path };
 class TemporaryDirectory
