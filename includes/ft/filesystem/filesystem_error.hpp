@@ -27,9 +27,11 @@ public:
 	const path& 			path2() const throw()	{ return _path2;}
 	const ft::error_code&	code() const throw()	{ return _code;}
 
+	// const char * what() const { return ;}
+
 private:
-	path 		_path1;
-	path 		_path2;
+	path 			_path1;
+	path 			_path2;
 	ft::error_code	_code;
 };
 

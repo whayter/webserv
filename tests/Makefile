@@ -66,7 +66,8 @@ SRC = main.cpp catch_amalgamated.cpp
 
 # Our tests
 SRC+= TestsUri.cpp Uri.cpp
-SRC+= TestsFilesystem.cpp 		filesystem.cpp path.cpp 
+SRC+= TestsFilesystemPath.cpp 	path.cpp 
+SRC+= TestsFilesystem.cpp 		filesystem.cpp
 SRC+= TestsHttpRequest.cpp
 SRC+= TestsScannerConfig.cpp
 SRC+= TestsServerConfig.cpp
