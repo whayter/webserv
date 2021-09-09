@@ -20,6 +20,7 @@ namespace ft {
  
 struct _errcScoppedEnum{
 	enum errc {
+		none						    	= 0,
 		address_family_not_supported    	= EAFNOSUPPORT,
 		address_in_use                    	= EADDRINUSE,
 		address_not_available				= EADDRNOTAVAIL,
@@ -105,7 +106,7 @@ typedef _errcScoppedEnum::errc errc;
 //   template<> struct is_error_condition_enum<errc> : true_type {};
  
   // non-member functions
-  error_code make_error_code(errc e) throw();
+  error_code make_error_code(errc e = errc::none) throw();
  
 //   template<class charT, class traits>
 //     basic_ostream<charT, traits>&

@@ -53,6 +53,7 @@ TEST_CASE("fs::current_path - current_path", "[namespace][ft][filesystem][curren
     TemporaryDirectory t;
     ft::error_code ec;
     ft::filesystem::path p1 = ft::filesystem::current_path();
+    CHECK( p1.c_str() == "");
     // CHECK_NOTHROW(fs::current_path(t.path()));
     // CHECK(p1 != fs::current_path());
     // CHECK_NOTHROW(fs::current_path(p1, ec));

@@ -98,7 +98,7 @@ ifeq ($(UNAME), Darwin)
 	# mac
 	CXXFLAGS += -D DARWIN -mmacosx-version-min=10.15
 	# To be able to use std::filesystem ...
-	CXXFLAGS += -mmacosx-version-min=10.15
+	# CXXFLAGS += -mmacosx-version-min=10.15
 else
 	#Linus and others...
 	CXXFLAGS += -D LINUX

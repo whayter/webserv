@@ -21,13 +21,14 @@ public:
 		: std::runtime_error(what_arg), _path1(p1), _path2(p2), _code(ec) {}
 	filesystem_error( const filesystem_error& other ) throw()
 		: std::runtime_error(other.what()), _path1(other._path1), _path2(other._path2), _code(other._code) {}
+
 	virtual ~filesystem_error() throw() {}
 
 	const path&				path1() const throw()	{ return _path1;}
 	const path& 			path2() const throw()	{ return _path2;}
 	const ft::error_code&	code() const throw()	{ return _code;}
 
-	// const char * what() const { return ;}
+	const char* what() const throw() { return std::runtime_error::what();}
 
 private:
 	path 			_path1;

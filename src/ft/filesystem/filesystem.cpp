@@ -15,14 +15,21 @@ path current_path()
 {
 	std::string result;
 	char cwd[PATH_MAX];
-	// if (!getcwd(cwd, sizeof(cwd)))
-	// 	throw filesystem_error("getcwd() failed");
+	if (!getcwd(cwd, sizeof(cwd)))
+		throw filesystem_error("getcwd() failed", make_error_code());
 	result = cwd;
 	return path(result);
 }
 path current_path(error_code& ec)
 {
 	(void)ec;
+	std::string result;
+	char cwd[PATH_MAX];
+	if (!getcwd(cwd, sizeof(cwd)))
+		make_error_code();
+	
+	result = cwd;
+	// return path(result);
 	return path();
 }
 
