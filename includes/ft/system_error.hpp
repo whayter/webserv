@@ -18,8 +18,8 @@ namespace ft {
 //   template<class T>
 //     struct is_error_condition_enum : public false_type {};
  
-struct errc{
-	enum errc_enum {
+struct _errcScoppedEnum{
+	enum errc {
 		address_family_not_supported    	= EAFNOSUPPORT,
 		address_in_use                    	= EADDRINUSE,
 		address_not_available				= EADDRNOTAVAIL,
@@ -100,6 +100,7 @@ struct errc{
 		wrong_protocol_type					= EPROTOTYPE,
 	};
 };
+typedef _errcScoppedEnum::errc errc;
  
 //   template<> struct is_error_condition_enum<errc> : true_type {};
  
