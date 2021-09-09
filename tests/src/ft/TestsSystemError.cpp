@@ -3,7 +3,7 @@
 #include "system_error.hpp"
 #include "error_code.hpp"
 
-TEST_CASE( "ft::error_code", "[namespace][ft][error_code]" )
+TEST_CASE( "ft::system_error", "[namespace][ft][system_error][error_code]" )
 {
 	REQUIRE(ft::errc::address_in_use == EADDRINUSE);
 
@@ -22,5 +22,3 @@ TEST_CASE( "ft::error_code", "[namespace][ft][error_code]" )
 	CHECK(err.value() == EBADMSG);
 	CHECK(err.message() == "Bad message");
 }
-
-// TEST_CASE( "ft::system_error", "[namespace][ft][system_error]" )

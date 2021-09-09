@@ -28,8 +28,8 @@ public:
 	int value() const throw() {return _val;}
 	// const error_category& category() const throw();
 	// error_condition default_error_condition() const throw();
-	std::string message() const { return strerror(_val);}
-	operator bool() const throw() {return _val;}
+	std::string message() const { return strerror(value());}
+	operator bool() const throw() {return value() == 0;}
  
 private:
 	int _val;
