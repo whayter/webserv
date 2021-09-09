@@ -4,7 +4,7 @@
 #include "ft/filesystem/filesystem_error.hpp"
 #include <filesystem>
 
-namespace fs = ft::filesystem;
+// namespace fs = ft::filesystem;
 
 enum class TempOpt { none, change_path };
 class TemporaryDirectory
@@ -48,20 +48,20 @@ TEST_CASE( "fs::filesystem_error", "[namespace][ft][filesystem][filesystem_error
 {
 }
 
-// TEST_CASE("fs::current_path - current_path", "[namespace][ft][filesystem][current_path]")
-// {
-//     TemporaryDirectory t;
-//     std::error_code ec;
-//     fs::path p1 = fs::current_path();
-//     CHECK_NOTHROW(fs::current_path(t.path()));
-//     CHECK(p1 != fs::current_path());
-//     CHECK_NOTHROW(fs::current_path(p1, ec));
-//     CHECK(!ec);
-//     CHECK_THROWS_AS(fs::current_path(t.path() / "foo"), fs::filesystem_error);
-//     CHECK(p1 == fs::current_path());
-//     CHECK_NOTHROW(fs::current_path(t.path() / "foo", ec));
-//     CHECK(ec);
-// }
+TEST_CASE("fs::current_path - current_path", "[namespace][ft][filesystem][current_path]")
+{
+    TemporaryDirectory t;
+    ft::error_code ec;
+    ft::filesystem::path p1 = ft::filesystem::current_path();
+    // CHECK_NOTHROW(fs::current_path(t.path()));
+    // CHECK(p1 != fs::current_path());
+    // CHECK_NOTHROW(fs::current_path(p1, ec));
+    // CHECK(!ec);
+    // CHECK_THROWS_AS(fs::current_path(t.path() / "foo"), fs::filesystem_error);
+    // CHECK(p1 == fs::current_path());
+    // CHECK_NOTHROW(fs::current_path(t.path() / "foo", ec));
+    // CHECK(ec);
+}
 
 // TEST_CASE("fs::absolute - absolute", "[namespace][ft][filesystem][absolute]")
 // {
