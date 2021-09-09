@@ -1,6 +1,6 @@
-#include "ft/filesystem/Filesystem.hpp"
+#include "ft/filesystem/filesystem.hpp"
 
-#include "ft/filesystem/FilesystemError.hpp"
+#include "ft/filesystem/filesystem_error.hpp"
 
 namespace ft { namespace filesystem {
 

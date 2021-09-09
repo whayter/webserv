@@ -3,6 +3,7 @@
 
 #include "ft/system_error.hpp"
 #include <string>
+#include <stdio.h>
 
 namespace ft {
 
@@ -27,7 +28,7 @@ public:
 	int value() const throw() {return _val;}
 	// const error_category& category() const throw();
 	// error_condition default_error_condition() const throw();
-	std::string message() const {return "bad bad bad, really bad";}
+	std::string message() const { return strerror(_val);}
 	operator bool() const throw() {return _val;}
  
 private:

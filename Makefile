@@ -64,8 +64,13 @@ SRC+= utility.cpp
 SRC+= ScannerHttpRequest.cpp ScannerConfig.cpp ServerConfig.cpp
 SRC+= ScannerStream.cpp ScannerBuffer.cpp
 SRC+= AHttpMessage.cpp HttpRequest.cpp HttpResponse.cpp HttpStatus.cpp
-SRC+= Uri.cpp Path.cpp Filesystem.cpp
+SRC+= Uri.cpp
 SRC+= Socket.cpp ServerHandler.cpp
+
+# ft
+SRC+= system_error.cpp
+# ft::filesystem
+SRC+= filesystem.cpp path.cpp 
 
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))

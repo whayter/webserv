@@ -1,7 +1,7 @@
 #ifndef FILESYSTEM_HPP
 #define FILESYSTEM_HPP
 
-#include "Path.hpp"
+#include "ft/filesystem/path.hpp"
 
 //http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0218r0.html#path-replace_extension
 
@@ -13,11 +13,9 @@ namespace filesystem {
 // #include <limits.h> for linux
 #define PATH_MAX 1024 // For linux, don't care for now. Override macos define (but same len)
 
-typedef int error_code;
-
-
 // class path;
-  
+  class error_code;
+
   void swap(path& lhs, path& rhs)  throw();
 
   inline bool operator==(const path& lhs, const path& rhs) throw() {return lhs._path == rhs._path;}

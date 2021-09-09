@@ -88,7 +88,7 @@ struct errc{
 		resource_deadlock_would_occur		= EDEADLK,
 		resource_unavailable_try_again		= EAGAIN,
 		result_out_of_range					= ERANGE,
-		state_not_recoverable					= ENOTRECOVERABLE,
+		state_not_recoverable				= ENOTRECOVERABLE,
 		stream_timeout						= ETIME,
 		text_file_busy						= ETXTBSY,
 		timed_out							= ETIMEDOUT,
