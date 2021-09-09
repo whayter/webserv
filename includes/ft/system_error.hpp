@@ -106,7 +106,7 @@ typedef _errcScoppedEnum::errc errc;
 //   template<> struct is_error_condition_enum<errc> : true_type {};
  
   // non-member functions
-  error_code make_error_code(errc e = errc::none) throw();
+  error_code make_error_code(errc e) throw();
  
 //   template<class charT, class traits>
 //     basic_ostream<charT, traits>&

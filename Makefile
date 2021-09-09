@@ -68,9 +68,9 @@ SRC+= Uri.cpp
 SRC+= Socket.cpp ServerHandler.cpp
 
 # ft
-SRC+= system_error.cpp
+SRC+= system_error.cpp error_code.cpp
 # ft::filesystem
-SRC+= filesystem.cpp path.cpp 
+SRC+= filesystem.cpp path.cpp filesystem_error.cpp
 
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))
