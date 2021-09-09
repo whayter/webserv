@@ -3,7 +3,7 @@
 
 #include "ft/system_error.hpp"
 #include <string>
-#include <stdio.h>
+#include <string.h>
 
 namespace ft {
 
