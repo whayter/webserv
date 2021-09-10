@@ -55,9 +55,9 @@ TEST_CASE("fs::current_path - current_path", "[namespace][ft][filesystem][curren
     CHECK(p1.string() != fs::current_path().string());
     CHECK_NOTHROW(fs::current_path(p1, ec));
     CHECK(!ec);
-    // CHECK_THROWS_AS(fs::current_path(t.path() / "foo"), fs::filesystem_error);
-    // CHECK(p1 == fs::current_path());
-    // CHECK_NOTHROW(fs::current_path(t.path() / "foo", ec));
+    CHECK_THROWS_AS(fs::current_path(fs::path(t.path().c_str()) / "foo"), fs::filesystem_error);
+    CHECK(p1 == fs::current_path());
+    CHECK_NOTHROW(fs::current_path(fs::path(t.path().c_str()) / "foo", ec));
     // CHECK(ec);
 }
 
