@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:47:59 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/08 02:41:42 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/09 19:10:00 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ std::string HttpResponse::toString()
 	s = _statusLine + "\r\n";
 	headers_type::iterator header;
 	for (header = _headers.begin(); header != _headers.end(); header++)
-		s += header->first + ": " + header->second + "\r\n";
+		s += header->first + ": " + header->second + "\n";
 	s += "\r\n" + _content;
 	return s;
 }

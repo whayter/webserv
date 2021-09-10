@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/15 19:22:37 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/07 13:21:53 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/10 00:20:32 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,8 +118,13 @@ void server::ServerHandler::stop(int status)
 
 void server::ServerHandler::_connectClients(int serverSocket)
 {
-	while (_nfds < SOMAXCONN)
+	while (true)
 	{
+		if (_nfds == SOMAXCONN)
+		{
+			_disconnectClient(_firstClientIndex);
+			_updateData();
+		}
 		sckt::fd_type newFd;
 		newFd = accept(serverSocket, NULL, NULL);
 		if (newFd == INVALID_FD)
