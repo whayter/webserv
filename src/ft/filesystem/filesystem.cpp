@@ -62,6 +62,23 @@ void current_path(const path& p, error_code& ec) throw()
 		ec.clear();
 }
 
+path absolute(const path& p)
+{
+	error_code ec;
+	path result = absolute(p, ec);
+	if (ec.value())
+		throw filesystem_error("absolute(const path&): " + ec.message(), p, ec);
+	return path();
+}
+
+path absolute(const path& p, error_code& ec)
+{
+	path result = current_path(ec) / p;
+	if (ec.value())
+		result = path();
+	return result;
+}
+
 
 } /* namespace filesystem */
 } /* namespace ft */

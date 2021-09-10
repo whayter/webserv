@@ -69,8 +69,9 @@ namespace filesystem {
 
   // // operational functions
 
-  // path absolute(const path& p, const path& base=current_path());
-
+  path absolute(const path& p);
+  path absolute(const path& p, error_code& ec);
+ 
   // path canonical(const path& p, const path& base = current_path());
   // path canonical(const path& p, error_code& ec);
   // path canonical(const path& p, const path& base, error_code& ec);

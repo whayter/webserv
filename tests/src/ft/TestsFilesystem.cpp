@@ -57,7 +57,8 @@ TEST_CASE("fs::current_path - current_path", "[namespace][ft][filesystem][curren
     CHECK_NOTHROW(fs::current_path(t.path().c_str()));
     CHECK(p1.string() != fs::current_path().string());
     CHECK_NOTHROW(fs::current_path(p1, ec));
-    CHECK(!ec.value());
+    CHECK(!ec);
+    CHECK(ec.value() == 0);
     REQUIRE_THROWS_AS(fs::current_path(fs::path(t.path().c_str()) / "foo"), fs::filesystem_error);
     try{
         fs::current_path(fs::path(t.path().c_str()) / "foo");
@@ -71,12 +72,13 @@ TEST_CASE("fs::current_path - current_path", "[namespace][ft][filesystem][curren
     }
     CHECK(p1.string() == fs::current_path().string());
     CHECK_NOTHROW(fs::current_path(fs::path(t.path().c_str()) / "foo", ec));
+    CHECK(ec);
     CHECK(ec.value() == ft::errc::no_such_file_or_directory);
 }
 
-// TEST_CASE("fs::absolute - absolute", "[namespace][ft][filesystem][absolute]")
-// {
-//     CHECK(fs::absolute("") == fs::current_path() / "");
+TEST_CASE("fs::absolute - absolute", "[namespace][ft][filesystem][absolute]")
+{
+    CHECK(fs::absolute("").string() == (fs::current_path() / "").string());
 //     CHECK(fs::absolute(fs::current_path()) == fs::current_path());
 //     CHECK(fs::absolute(".") == fs::current_path() / ".");
 //     CHECK((fs::absolute("..") == fs::current_path().parent_path() || fs::absolute("..") == fs::current_path() / ".."));
@@ -85,5 +87,5 @@ TEST_CASE("fs::current_path - current_path", "[namespace][ft][filesystem][curren
 //     CHECK(fs::absolute("", ec) == fs::current_path() / "");
 //     CHECK(!ec);
 //     CHECK(fs::absolute("foo", ec) == fs::current_path() / "foo");
-//     CHECK(!ec);
-// }
+    // CHECK(!ec);
+}
