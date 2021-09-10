@@ -25,25 +25,25 @@ path operator/ (const path& lhs, const path& rhs) { return path(lhs) /= rhs;}
  
 path current_path()
 {
-	std::string result;
-	char cwd[PATH_MAX];
-	if (!getcwd(cwd, sizeof(cwd)))
-		throw filesystem_error("getcwd() failed", make_error_code(errc::none));
-	result = cwd;
-	return path(result);
+	error_code ec;
+	path result = current_path(ec);
+	if (ec)
+		throw filesystem_error("getcwd() failed", ec);
+	return result;
 }
+
 path current_path(error_code& ec)
 {
-	(void)ec;
 	std::string result;
 	char cwd[PATH_MAX];
 	if (!getcwd(cwd, sizeof(cwd)))
-		ec = make_error_code(errc::none);
+	{
+		ec = make_error_code();
+		result = cwd;
+	}
 	else
 		ec.clear();
-	result = cwd;
 	return path(result);
-	return path();
 }
 
 void current_path(const path& p)

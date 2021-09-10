@@ -105,7 +105,7 @@ struct errc{
 //   template<> struct is_error_condition_enum<errc> : true_type {};
  
   // non-member functions
-  error_code make_error_code(int err) throw();
+  error_code make_error_code(int err = 0) throw();
  
 //   template<class charT, class traits>
 //     basic_ostream<charT, traits>&

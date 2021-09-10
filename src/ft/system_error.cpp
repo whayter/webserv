@@ -4,7 +4,9 @@
 namespace ft{
 
 error_code make_error_code(int e) throw() {
-	return error_code(e);
+	if (e)
+		return error_code(e);
+	return error_code(errno);
 }
 
 } /*namespace ft */
