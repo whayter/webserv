@@ -188,3 +188,5 @@
 #### Directory Traversal Attacks
 - https://www.acunetix.com/websitesecurity/directory-traversal/
 
+
+- https://www.joelonsoftware.com/2000/04/06/things-you-should-never-do-part-i/
