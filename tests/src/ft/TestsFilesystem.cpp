@@ -2,6 +2,7 @@
 
 #include "ft/filesystem/filesystem.hpp"
 #include "ft/error_code.hpp"
+#include "ft/system_error.hpp"
 #include "ft/filesystem/filesystem_error.hpp"
 #include <filesystem>
 
@@ -25,10 +26,12 @@ public:
             _path = fx::canonical(fx::temp_directory_path()) / filename;
         } while (fx::exists(_path));
         fx::create_directories(_path);
+        _orig_dir = fx::current_path();
         if (opt == TempOpt::change_path) {
-            _orig_dir = fx::current_path();
             fx::current_path(_path);
         }
+
+
     }
 
     ~TemporaryDirectory()
@@ -54,11 +57,21 @@ TEST_CASE("fs::current_path - current_path", "[namespace][ft][filesystem][curren
     CHECK_NOTHROW(fs::current_path(t.path().c_str()));
     CHECK(p1.string() != fs::current_path().string());
     CHECK_NOTHROW(fs::current_path(p1, ec));
-    CHECK(!ec);
-    CHECK_THROWS_AS(fs::current_path(fs::path(t.path().c_str()) / "foo"), fs::filesystem_error);
-    CHECK(p1 == fs::current_path());
+    CHECK(!ec.value());
+    REQUIRE_THROWS_AS(fs::current_path(fs::path(t.path().c_str()) / "foo"), fs::filesystem_error);
+    try{
+        fs::current_path(fs::path(t.path().c_str()) / "foo");
+    }
+    catch (const fs::filesystem_error& e)
+    {
+        CHECK( e.code().value() == ft::errc::no_such_file_or_directory );
+        CHECK( !e.path1().string().empty());
+        CHECK( e.path2().string().empty());
+        CHECK( e.what() == std::string("current_path(const path&): No such file or directory"));
+    }
+    CHECK(p1.string() == fs::current_path().string());
     CHECK_NOTHROW(fs::current_path(fs::path(t.path().c_str()) / "foo", ec));
-    // CHECK(ec);
+    CHECK(ec.value() == ft::errc::no_such_file_or_directory);
 }
 
 // TEST_CASE("fs::absolute - absolute", "[namespace][ft][filesystem][absolute]")
