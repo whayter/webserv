@@ -68,7 +68,7 @@ path absolute(const path& p)
 	path result = absolute(p, ec);
 	if (ec.value())
 		throw filesystem_error("absolute(const path&): " + ec.message(), p, ec);
-	return path();
+	return result;
 }
 
 path absolute(const path& p, error_code& ec)

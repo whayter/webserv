@@ -89,7 +89,14 @@ path path::relative_path() const {
 	// return empty() ? path() : path(*--end());
 }
 path path::parent_path() const {
-	throw "Flemme";
+	if (empty())
+		return path();
+	size_t pos = _path.rfind('/');
+	if (pos == string_type::npos)
+		return path();
+	if (pos == 0)
+		return path("/");
+	return path(string_type(_path.begin(), _path.begin() + pos));
 	// return (empty() || begin() == --end()) ? path() : path(*this);
 }
 path path::filename() const {
