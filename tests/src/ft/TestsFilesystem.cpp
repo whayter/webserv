@@ -81,11 +81,11 @@ TEST_CASE("fs::absolute - absolute", "[namespace][ft][filesystem][absolute]")
     CHECK(fs::absolute("").string() == (fs::current_path() / "").string());
     CHECK(fs::absolute(fs::current_path()).string() == fs::current_path().string());
     CHECK(fs::absolute(".").string() == (fs::current_path() / ".").string());
-    // CHECK((fs::absolute("..").string() == fs::current_path().parent_path() || fs::absolute("..") == fs::current_path() / ".."));
-    // CHECK(fs::absolute("foo") == fs::current_path() / "foo");
-    // std::error_code ec;
-    // CHECK(fs::absolute("", ec) == fs::current_path() / "");
-    // CHECK(!ec);
-    // CHECK(fs::absolute("foo", ec) == fs::current_path() / "foo");
-    // CHECK(!ec);
+    CHECK((fs::absolute("..") == fs::current_path().parent_path() || fs::absolute("..") == fs::current_path() / ".."));
+    CHECK(fs::absolute("foo").string() == (fs::current_path() / "foo").string());
+    ft::error_code ec;
+    CHECK(fs::absolute("", ec).string() == (fs::current_path() / "").string());
+    CHECK(!ec);
+    CHECK(fs::absolute("foo", ec).string() == (fs::current_path() / "foo").string());
+    CHECK(!ec);
 }
