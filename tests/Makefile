@@ -71,7 +71,7 @@ SRC+= TestsFilesystem.cpp 		filesystem.cpp filesystem_error.cpp
 SRC+= TestsHttpRequest.cpp
 SRC+= TestsScannerConfig.cpp
 SRC+= TestsServerConfig.cpp
-SRC+= TestsSystemError.cpp 		system_error.cpp error_cpde.cpp
+SRC+= TestsSystemError.cpp 		system_error.cpp error_code.cpp
 
 SRC+= AHttpMessage.cpp HttpRequest.cpp HttpResponse.cpp HttpStatus.cpp
 SRC+= ScannerStream.cpp ScannerBuffer.cpp ScannerHttpRequest.cpp

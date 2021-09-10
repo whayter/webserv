@@ -10,8 +10,9 @@ public:
 	// constructors
 	error_code() throw();
 	// error_code(int val, const error_category& cat) throw();
-	template<class ErrorCodeEnum>
-		error_code(ErrorCodeEnum e) throw();
+	// template<class ErrorCodeEnum>
+	// 	error_code(ErrorCodeEnum e) throw();
+	error_code(int errc) throw();
 
 	// modifiers
 	void assign(int val) throw();

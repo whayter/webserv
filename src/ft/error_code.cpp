@@ -7,9 +7,12 @@ namespace ft {
 error_code::error_code() throw()
 	: _val(0) {}
 
-template<class ErrorCodeEnum>
-error_code::error_code(ErrorCodeEnum e) throw()
-	: _val(e) {}
+// template<class ErrorCodeEnum>
+// error_code::error_code(ErrorCodeEnum e) throw()
+// 	: _val(e) {}
+
+error_code::error_code(int errc) throw()
+	: _val(errc) {}
 
 void	error_code::assign(int val) throw(){
 	_val = val;

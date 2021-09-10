@@ -1,6 +1,7 @@
 #include "catch_amalgamated.hpp"
 
 #include "filesystem.hpp"
+#include "path.hpp"
 
 namespace fs = ft::filesystem;
 

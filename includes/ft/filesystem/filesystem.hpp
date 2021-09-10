@@ -1,30 +1,27 @@
 #ifndef FILESYSTEM_HPP
 #define FILESYSTEM_HPP
 
-#include "ft/filesystem/path.hpp"
-
 //http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0218r0.html#path-replace_extension
-
-namespace ft { 
-
-
-namespace filesystem {
 
 // #include <limits.h> for linux
 #define PATH_MAX 1024 // For linux, don't care for now. Override macos define (but same len)
 
-// class path;
-  class error_code;
+namespace ft { 
+
+class error_code;
+
+namespace filesystem {
+  class path;
 
   void swap(path& lhs, path& rhs)  throw();
 
-  inline bool operator==(const path& lhs, const path& rhs) throw() {return lhs._path == rhs._path;}
-  inline bool operator< (const path& lhs, const path& rhs) throw() {return lhs._path < rhs._path;}
-  inline bool operator!=(const path& lhs, const path& rhs) throw() { return !(lhs == rhs); }
-  inline bool operator<=(const path& lhs, const path& rhs) throw() { return !(rhs < lhs); }
-  inline bool operator> (const path& lhs, const path& rhs) throw() { return rhs < lhs; }
-  inline bool operator>=(const path& lhs, const path& rhs) throw() { return !(lhs < rhs); }
-  inline path operator/ (const path& lhs, const path& rhs) { return path(lhs) /= rhs;}
+  bool operator==(const path& lhs, const path& rhs) throw();
+  bool operator< (const path& lhs, const path& rhs) throw();
+  bool operator!=(const path& lhs, const path& rhs) throw();
+  bool operator<=(const path& lhs, const path& rhs) throw();
+  bool operator> (const path& lhs, const path& rhs) throw();
+  bool operator>=(const path& lhs, const path& rhs) throw();
+  path operator/ (const path& lhs, const path& rhs);
  
   // template <class charT, class traits>
   // basic_ostream<charT, traits>&

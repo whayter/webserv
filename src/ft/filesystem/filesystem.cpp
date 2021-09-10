@@ -1,8 +1,8 @@
 #include "ft/filesystem/filesystem.hpp"
 
 #include "ft/filesystem/filesystem_error.hpp"
-#include "ft/error_code.hpp"
 #include "ft/system_error.hpp"
+#include "ft/error_code.hpp"
 
 namespace ft { namespace filesystem {
 
@@ -13,6 +13,14 @@ void swap(path& lhs, path& rhs) throw()
 	rhs = tmp;
 }
 
+bool operator==(const path& lhs, const path& rhs) throw() {return lhs._path == rhs._path;}
+bool operator< (const path& lhs, const path& rhs) throw() {return lhs._path < rhs._path;}
+bool operator!=(const path& lhs, const path& rhs) throw() { return !(lhs == rhs); }
+bool operator<=(const path& lhs, const path& rhs) throw() { return !(rhs < lhs); }
+bool operator> (const path& lhs, const path& rhs) throw() { return rhs < lhs; }
+bool operator>=(const path& lhs, const path& rhs) throw() { return !(lhs < rhs); }
+path operator/ (const path& lhs, const path& rhs) { return path(lhs) /= rhs;}
+ 
 path current_path()
 {
 	std::string result;
@@ -32,7 +40,7 @@ path current_path(error_code& ec)
 	else
 		ec.clear();
 	result = cwd;
-	// return path(result);
+	return path(result);
 	return path();
 }
 

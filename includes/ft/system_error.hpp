@@ -18,8 +18,8 @@ namespace ft {
 //   template<class T>
 //     struct is_error_condition_enum : public false_type {};
  
-struct _errcScoppedEnum{
-	enum errc {
+struct errc{
+	enum errcEnum {
 		none						    	= 0,
 		address_family_not_supported    	= EAFNOSUPPORT,
 		address_in_use                    	= EADDRINUSE,
@@ -101,12 +101,11 @@ struct _errcScoppedEnum{
 		wrong_protocol_type					= EPROTOTYPE,
 	};
 };
-typedef _errcScoppedEnum::errc errc;
  
 //   template<> struct is_error_condition_enum<errc> : true_type {};
  
   // non-member functions
-  error_code make_error_code(errc e) throw();
+  error_code make_error_code(int err) throw();
  
 //   template<class charT, class traits>
 //     basic_ostream<charT, traits>&

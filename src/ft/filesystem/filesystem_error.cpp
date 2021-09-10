@@ -29,3 +29,5 @@ const char* 	filesystem_error::what() const throw() { return std::runtime_error:
 
 } /* namespace filesystem */
 } /* namespace ft */
+
+#endif /* FILESYSTEM_ERROR_HPP */
