@@ -190,3 +190,11 @@
 
 
 - https://www.joelonsoftware.com/2000/04/06/things-you-should-never-do-part-i/
+
+
+#### filesystem
+- https://en.cppreference.com/w/cpp/header/filesystem
+- https://www.cppstories.com/2017/08/cpp17-details-filesystem/
+- https://stackoverflow.com/questions/40899267/how-similar-are-boost-filesystem-and-the-c-standard-filesystem-library
+- http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1030r1.pdf
+- http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0218r0.html

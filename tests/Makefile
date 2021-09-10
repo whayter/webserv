@@ -66,10 +66,12 @@ SRC = main.cpp catch_amalgamated.cpp
 
 # Our tests
 SRC+= TestsUri.cpp Uri.cpp
-SRC+= TestsPath.cpp Path.cpp
+SRC+= TestsFilesystemPath.cpp 	path.cpp 
+SRC+= TestsFilesystem.cpp 		filesystem.cpp filesystem_error.cpp
 SRC+= TestsHttpRequest.cpp
 SRC+= TestsScannerConfig.cpp
 SRC+= TestsServerConfig.cpp
+SRC+= TestsSystemError.cpp 		system_error.cpp error_code.cpp
 
 SRC+= AMessage.cpp HttpRequest.cpp HttpResponse.cpp HttpStatus.cpp
 SRC+= ScannerStream.cpp ScannerBuffer.cpp ScannerHttpRequest.cpp
@@ -94,7 +96,9 @@ IFLAGS  = $(foreach inc, $(INC_DIR),-I$(inc))
 #OS specific
 ifeq ($(UNAME), Darwin)
 	# mac
-	CXXFLAGS += -D DARWIN
+	CXXFLAGS += -D DARWIN -mmacosx-version-min=10.15
+	# To be able to use std::filesystem ...
+	# CXXFLAGS += -mmacosx-version-min=10.15
 else
 	#Linus and others...
 	CXXFLAGS += -D LINUX
