@@ -17,8 +17,9 @@ public:
 	// modifiers
 	void assign(int val) throw();
 	// void assign(int val, const error_category& cat) throw();
-	template<class ErrorCodeEnum>
-		error_code& operator=(ErrorCodeEnum e) throw();
+	// template<class ErrorCodeEnum>
+	// 	error_code& operator=(ErrorCodeEnum e) throw();
+	error_code& operator=(int e) throw();
 	void clear() throw();
 
 	// observers

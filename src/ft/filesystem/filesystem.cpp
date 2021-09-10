@@ -27,7 +27,7 @@ path current_path()
 {
 	error_code ec;
 	path result = current_path(ec);
-	if (ec)
+	if (ec.value())
 		throw filesystem_error("getcwd() failed", ec);
 	return result;
 }
@@ -36,7 +36,7 @@ path current_path(error_code& ec)
 {
 	std::string result;
 	char cwd[PATH_MAX];
-	if (!getcwd(cwd, sizeof(cwd)))
+	if (!::getcwd(cwd, sizeof(cwd)))
 	{
 		ec = make_error_code();
 		result = cwd;
@@ -48,12 +48,18 @@ path current_path(error_code& ec)
 
 void current_path(const path& p)
 {
-	(void)p;
+	error_code ec;
+	current_path(p, ec);
+	if (ec.value())
+		throw filesystem_error("chdir() failed", ec);
 }
+
 void current_path(const path& p, error_code& ec) throw()
 {
-	(void)p;
-	(void)ec;
+	if (::chdir(p.c_str()) ==  -1)
+		ec = make_error_code();
+	else
+		ec.clear();
 }
 
 

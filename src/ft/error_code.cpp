@@ -18,8 +18,13 @@ void	error_code::assign(int val) throw(){
 	_val = val;
 }
 
-template<class ErrorCodeEnum>
-error_code& error_code::operator=(ErrorCodeEnum e) throw(){
+// template<class ErrorCodeEnum>
+// error_code& error_code::operator=(ErrorCodeEnum e) throw(){
+// 	assign(e);
+// 	return *this;
+// }
+
+error_code& error_code::operator=(int e) throw(){
 	assign(e);
 	return *this;
 }
