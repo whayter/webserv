@@ -79,6 +79,17 @@ path absolute(const path& p, error_code& ec)
 	return result;
 }
 
+// bool exists(file_status s) throw(){
+
+// }
+// bool exists(const path& p);{
+
+// }
+// bool exists(const path& p, error_code& ec) throw(){
+
+// }
+
+
 
 } /* namespace filesystem */
 } /* namespace ft */
