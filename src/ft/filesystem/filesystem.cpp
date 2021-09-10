@@ -4,6 +4,8 @@
 #include "ft/system_error.hpp"
 #include "ft/error_code.hpp"
 
+#include <unistd.h>
+
 namespace ft { namespace filesystem {
 
 void swap(path& lhs, path& rhs) throw() 
