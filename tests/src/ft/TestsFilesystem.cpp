@@ -5,7 +5,9 @@
 #include "ft/system_error.hpp"
 #include "ft/filesystem/perms.hpp"
 #include "ft/filesystem/filesystem_error.hpp"
+#include "ft/filesystem/file_status.hpp"
 #include <filesystem>
+#include <fstream>
 
 namespace fs = ft::filesystem;
 namespace fx = std::filesystem;
@@ -49,6 +51,17 @@ private:
     fx::path _path;
     fx::path _orig_dir;
 };
+
+// static void generateFile(const fs::path& pathname, int withSize = -1)
+// {
+//     std::ofstream outfile(pathname);
+//     if (withSize < 0) {
+//         outfile << "Hello world!" << std::endl;
+//     }
+//     else {
+//         outfile << std::string(size_t(withSize), '*');
+//     }
+// }
 
 TEST_CASE("fs::current_path - current_path", "[namespace][ft][filesystem][current_path]")
 {
@@ -124,3 +137,44 @@ TEST_CASE("fs::perms ", "[namespace][ft][filesystem][struct][perms]")
 //     CHECK(ec);
 //     CHECK_THROWS_AS(fs::permissions("bar", fs::perms::owner_write, static_cast<fs::perm_options>(0)), fs::filesystem_error);
 // }
+
+TEST_CASE("fs.op.status_known - status_known", "[filesystem][operations][fs.op.status_known]")
+{
+    CHECK(!fs::status_known(fs::file_status()));
+    CHECK(fs::status_known(fs::file_status(fs::file_type::not_found)));
+    CHECK(fs::status_known(fs::file_status(fs::file_type::regular)));
+    CHECK(fs::status_known(fs::file_status(fs::file_type::directory)));
+    CHECK(fs::status_known(fs::file_status(fs::file_type::symlink)));
+    CHECK(fs::status_known(fs::file_status(fs::file_type::character)));
+    CHECK(fs::status_known(fs::file_status(fs::file_type::fifo)));
+    CHECK(fs::status_known(fs::file_status(fs::file_type::socket)));
+    CHECK(fs::status_known(fs::file_status(fs::file_type::unknown)));
+}
+
+TEST_CASE("fs.op.status - status", "[filesystem][operations][fs.op.status]")
+{
+//     TemporaryDirectory t(TempOpt::change_path);
+//     std::error_code ec;
+//     fs::file_status fs;
+//     CHECK_NOTHROW(fs = fs::status("foo"));
+//     CHECK(fs.type() == fs::file_type::not_found);
+//     CHECK(fs.permissions() == fs::perms::unknown);
+//     CHECK_NOTHROW(fs = fs::status("bar", ec));
+//     CHECK(fs.type() == fs::file_type::not_found);
+//     CHECK(fs.permissions() == fs::perms::unknown);
+//     CHECK(ec);
+//     ec.clear();
+//     fs = fs::status(t.path());
+//     CHECK(fs.type() == fs::file_type::directory);
+//     CHECK((fs.permissions() & (fs::perms::owner_read | fs::perms::owner_write)) == (fs::perms::owner_read | fs::perms::owner_write));
+//     generateFile("foobar");
+//     fs = fs::status(t.path() / "foobar");
+//     CHECK(fs.type() == fs::file_type::regular);
+//     CHECK((fs.permissions() & (fs::perms::owner_read | fs::perms::owner_write)) == (fs::perms::owner_read | fs::perms::owner_write));
+//     if (is_symlink_creation_supported()) {
+//         fs::create_symlink(t.path() / "foobar", t.path() / "barfoo");
+//         fs = fs::status(t.path() / "barfoo");
+//         CHECK(fs.type() == fs::file_type::regular);
+//         CHECK((fs.permissions() & (fs::perms::owner_read | fs::perms::owner_write)) == (fs::perms::owner_read | fs::perms::owner_write));
+//     }
+}
