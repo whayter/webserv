@@ -51,7 +51,7 @@ namespace filesystem {
   // recursive_directory_iterator begin(recursive_directory_iterator iter) throw() ;
   // recursive_directory_iterator end(const recursive_directory_iterator&) throw() ;
 
-  // class file_status;
+  class file_status;
 
   // struct space_info
   // {
