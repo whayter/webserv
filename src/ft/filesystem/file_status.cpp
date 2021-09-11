@@ -5,7 +5,7 @@ namespace filesystem {
 
 // constructors and destructor
 file_status::file_status() throw()
-	: _type(file_type::none), _perms(permsScopedEnum::unknown)
+	: _type(file_type::none), _perms(perms::unknown)
 {}
 
 file_status::file_status(const file_status& ft) throw()

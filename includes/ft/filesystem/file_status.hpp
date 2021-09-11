@@ -12,7 +12,7 @@ public:
 	// constructors and destructor
 	file_status() throw();
 	file_status(const file_status&) throw();
-	file_status(file_type ft, perms prms = permsScopedEnum::unknown) throw();
+	file_status(file_type ft, perms prms = perms::unknown) throw();
 	// file_status(file_status&&) throw();
 	~file_status();
  

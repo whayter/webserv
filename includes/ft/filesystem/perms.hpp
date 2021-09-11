@@ -3,7 +3,7 @@
 
 namespace ft { namespace filesystem { 
 
-struct permsScopedEnum{
+struct perms{
 	enum permsEnum {
 		none		=  0,		//
 		owner_read	=  0400,	// S_IRUSR
@@ -25,8 +25,19 @@ struct permsScopedEnum{
 		mask		= 07777,	// equivalent to: all | set_uid | set_gid | sticky_bit
 		unknown		= 0xFFFF,	// 
 	};
+	perms(permsEnum e): _e(e) {}
+	perms(unsigned int e) {
+		_e = static_cast<perms>(e);
+	}
+	operator permsEnum() const throw(){
+		return _e;
+    }
+    friend bool operator==(const perms& lhs, const perms& rhs){
+      return lhs._e == rhs._e;
+    }
+private:
+	permsEnum _e;
 };
-typedef permsScopedEnum::permsEnum perms;
 
 // perms  operator&(perms x, perms y) throw() {
 // 	return static_cast<perms>(

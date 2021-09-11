@@ -115,7 +115,8 @@ static file_status stModeToFileStatus(mode_t mode)
 		type = file_type::symlink;
 	else if (S_ISSOCK(mode))
 		type = file_type::socket;
-	return file_status(type, static_cast<perms>(mode & 0xfff));
+	// return file_status(type, static_cast<perms>(mode & 0xfff));
+	return file_status(type, mode & 0xfff);
 }
 
 file_status status(const path& p, error_code& ec) throw(){
