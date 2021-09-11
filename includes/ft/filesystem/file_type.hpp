@@ -1,7 +1,7 @@
 #ifndef FILE_TYPE_HPP
 #define FILE_TYPE_HPP
 
-struct file_type{
+struct file_typeScoped{
     enum file_typeEnum {
       none = 0,
       not_found = -1,
@@ -15,5 +15,6 @@ struct file_type{
       unknown = 8
     };
 };
+typedef file_typeScoped::file_typeEnum file_type;
 
 #endif /* FILE_TYPE_HPP */

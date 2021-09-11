@@ -3,7 +3,7 @@
 
 namespace ft { namespace filesystem { 
 
-struct perms{
+struct permsScopedEnum{
 	enum permsEnum {
 		none		=  0,		//
 		owner_read	=  0400,	// S_IRUSR
@@ -26,6 +26,35 @@ struct perms{
 		unknown		= 0xFFFF,	// 
 	};
 };
+typedef permsScopedEnum::permsEnum perms;
+
+// perms  operator&(perms x, perms y) throw() {
+// 	return static_cast<perms>(
+// 		static_cast<uint32_t>(x) & static_cast<uint32_t>(y)
+// 		);
+// }
+
+// perms operator|(perms x, perms y) throw() {
+// 	return static_cast<perms>(
+// 		static_cast<uint32_t>(x) | static_cast<uint32_t>(y)
+// 		);
+// }
+
+// perms operator^(perms x, perms y) throw() {
+// 	return static_cast<perms>(
+// 		static_cast<uint32_t>(x) ^ static_cast<uint32_t>(y)
+// 		);
+// }
+
+// perms operator~(perms x) throw(){
+// 	return static_cast<perms>(
+// 		~static_cast<uint32_t>(x)
+// 		);
+// }
+
+// inline perms& operator&=(perms& x, perms y) throw() { return x = x & y; }
+// inline perms& operator|=(perms& x, perms y) throw() { return x = x | y; }
+// inline perms& operator^=(perms& x, perms y) throw() { return x = x ^ y; }
 
 } /* namespace filesystem */
 } /* namespace ft */
