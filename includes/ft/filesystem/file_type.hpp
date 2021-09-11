@@ -17,6 +17,7 @@ struct file_type{
       socket = 7,
       unknown = 8
     };
+
     file_type(file_typeEnum e): _e(e) {}
     operator file_typeEnum() const throw(){
       return _e;
