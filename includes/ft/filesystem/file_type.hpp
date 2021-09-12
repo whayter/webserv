@@ -19,11 +19,14 @@ struct file_type{
     };
 
     file_type(file_typeEnum e): _e(e) {}
-    operator file_typeEnum() const throw(){
-      return _e;
-    }
+    // operator file_typeEnum() const throw(){
+    //   return _e;
+    // }
     friend bool operator==(const file_type& lhs, const file_type& rhs){
       return lhs._e == rhs._e;
+    }
+    friend bool operator!=(const file_type& lhs, const file_type& rhs){
+      return lhs._e != rhs._e;
     }
 private:
   file_typeEnum _e;

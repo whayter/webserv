@@ -138,7 +138,7 @@ TEST_CASE("fs::perms ", "[namespace][ft][filesystem][struct][perms]")
 //     CHECK_THROWS_AS(fs::permissions("bar", fs::perms::owner_write, static_cast<fs::perm_options>(0)), fs::filesystem_error);
 // }
 
-TEST_CASE("fs.op.status_known - status_known", "[filesystem][operations][fs.op.status_known]")
+TEST_CASE("fs::status_known - status_known", "[namespace][ft][filesystem][status_known]")
 {
     CHECK(!fs::status_known(fs::file_status()));
     CHECK(fs::status_known(fs::file_status(fs::file_type::not_found)));
@@ -151,22 +151,22 @@ TEST_CASE("fs.op.status_known - status_known", "[filesystem][operations][fs.op.s
     CHECK(fs::status_known(fs::file_status(fs::file_type::unknown)));
 }
 
-TEST_CASE("fs.op.status - status", "[filesystem][operations][fs.op.status]")
+TEST_CASE("fs::status - status", "[namespace][ft][filesystem][status]")
 {
-//     TemporaryDirectory t(TempOpt::change_path);
-//     std::error_code ec;
-//     fs::file_status fs;
-//     CHECK_NOTHROW(fs = fs::status("foo"));
-//     CHECK(fs.type() == fs::file_type::not_found);
-//     CHECK(fs.permissions() == fs::perms::unknown);
-//     CHECK_NOTHROW(fs = fs::status("bar", ec));
-//     CHECK(fs.type() == fs::file_type::not_found);
-//     CHECK(fs.permissions() == fs::perms::unknown);
-//     CHECK(ec);
-//     ec.clear();
-//     fs = fs::status(t.path());
-//     CHECK(fs.type() == fs::file_type::directory);
-//     CHECK((fs.permissions() & (fs::perms::owner_read | fs::perms::owner_write)) == (fs::perms::owner_read | fs::perms::owner_write));
+    TemporaryDirectory t(TempOpt::change_path);
+    ft::error_code ec;
+    fs::file_status fs;
+    CHECK_NOTHROW(fs = fs::status("foo"));
+    CHECK(fs.type() == fs::file_type::not_found);
+    CHECK(fs.permissions() == fs::perms::unknown);
+    CHECK_NOTHROW(fs = fs::status("bar", ec));
+    CHECK(fs.type() == fs::file_type::not_found);
+    CHECK(fs.permissions() == fs::perms::unknown);
+    CHECK(ec);
+    ec.clear();
+    fs = fs::status(t.path().c_str());
+    // CHECK(fs.type() == fs::file_type::directory);
+    // CHECK((fs.permissions() & (fs::perms::owner_read | fs::perms::owner_write)) == (fs::perms::owner_read | fs::perms::owner_write));
 //     generateFile("foobar");
 //     fs = fs::status(t.path() / "foobar");
 //     CHECK(fs.type() == fs::file_type::regular);

@@ -90,14 +90,6 @@ bool status_known(file_status s) throw()
 	return s.type() != file_type::none;
 }
 
-file_status status(const path& p){
-	error_code ec;
-	file_status result = status(p, ec);
-	if (ec.value())
-		throw filesystem_error("status(const path&): " + ec.message(), p, ec);
-	return result;
-}
-
 static file_status stModeToFileStatus(mode_t mode)
 {
 	file_type type = file_type::unknown;
@@ -115,8 +107,15 @@ static file_status stModeToFileStatus(mode_t mode)
 		type = file_type::symlink;
 	else if (S_ISSOCK(mode))
 		type = file_type::socket;
-	// return file_status(type, static_cast<perms>(mode & 0xfff));
 	return file_status(type, mode & 0xfff);
+}
+
+file_status status(const path& p){
+	error_code ec;
+	file_status result = status(p, ec);
+	if (ec.value() == file_type::none)
+		throw filesystem_error("status(const path&): " + ec.message(), p, ec);
+	return result;
 }
 
 file_status status(const path& p, error_code& ec) throw(){

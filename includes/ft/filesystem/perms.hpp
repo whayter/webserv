@@ -27,28 +27,31 @@ struct perms{
 	};
 	perms(permsEnum e): _e(e) {}
 	perms(unsigned int e) {
-		_e = static_cast<perms>(e);
+		_e = static_cast<permsEnum>(e);
 	}
-	operator permsEnum() const throw(){
-		return _e;
-    }
+	// operator permsEnum() const throw(){
+	// 	return _e;
+    // }
     friend bool operator==(const perms& lhs, const perms& rhs){
       return lhs._e == rhs._e;
     }
+	// friend perms  operator&(perms x, perms y) throw(){
+	// 	return x._e & y._e;
+	// }
+	// friend perms  operator|(perms x, perms y) throw(){
+	// 	return x._e | y._e;
+	// }
+
 private:
 	permsEnum _e;
 };
 
-// perms  operator&(perms x, perms y) throw() {
-// 	return static_cast<perms>(
-// 		static_cast<uint32_t>(x) & static_cast<uint32_t>(y)
-// 		);
+// perms  operator&(perms x, perms y) throw() 
+// {
+// 	return perms(x._x & y._e);
 // }
-
 // perms operator|(perms x, perms y) throw() {
-// 	return static_cast<perms>(
-// 		static_cast<uint32_t>(x) | static_cast<uint32_t>(y)
-// 		);
+	// return perms(x._e | y._e);
 // }
 
 // perms operator^(perms x, perms y) throw() {
