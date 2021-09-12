@@ -33,7 +33,7 @@ path current_path()
 {
 	error_code ec;
 	path result = current_path(ec);
-	if (ec.value())
+	if (ec)
 		throw filesystem_error("current_path(): " + ec.message() , ec);
 	return result;
 }
@@ -56,7 +56,7 @@ void current_path(const path& p)
 {
 	error_code ec;
 	current_path(p, ec);
-	if (ec.value())
+	if (ec)
 		throw filesystem_error("current_path(const path&): " + ec.message(), p, ec);
 }
 
@@ -72,7 +72,7 @@ path absolute(const path& p)
 {
 	error_code ec;
 	path result = absolute(p, ec);
-	if (ec.value())
+	if (ec)
 		throw filesystem_error("absolute(const path&): " + ec.message(), p, ec);
 	return result;
 }
@@ -80,7 +80,7 @@ path absolute(const path& p)
 path absolute(const path& p, error_code& ec)
 {
 	path result = current_path(ec) / p;
-	if (ec.value())
+	if (ec)
 		result = path();
 	return result;
 }
@@ -131,64 +131,20 @@ file_status status(const path& p, error_code& ec) throw(){
 	return stModeToFileStatus(st.st_mode);
 }
 
+bool exists(file_status s) throw(){
+	return status_known(s) && s.type() != file_type::not_found;
+}
 
-// void t(){
+bool exists(const path& p){
+	return exists(status(p));
+}
 
-//    ec.clear();
-//     struct ::stat st;
-//     auto result = ::lstat(p.c_str(), &st);
-//     if (result == 0) {
-//         ec.clear();
-//         file_status fs = detail::file_status_from_st_mode(st.st_mode);
-//         if (sls) {
-//             *sls = fs;
-//         }
-//         if (fs.type() == file_type::symlink) {
-//             result = ::stat(p.c_str(), &st);
-//             if (result == 0) {
-//                 fs = detail::file_status_from_st_mode(st.st_mode);
-//             }
-//             else {
-//                 ec = detail::make_system_error();
-//                 if (detail::is_not_found_error(ec)) {
-//                     return file_status(file_type::not_found, perms::unknown);
-//                 }
-//                 return file_status(file_type::none);
-//             }
-//         }
-//         if (sz) {
-//             *sz = static_cast<uintmax_t>(st.st_size);
-//         }
-//         if (nhl) {
-//             *nhl = st.st_nlink;
-//         }
-//         if (lwt) {
-//             *lwt = st.st_mtime;
-//         }
-//         return fs;
-//     }
-//     else {
-//         ec = detail::make_system_error();
-//         if (detail::is_not_found_error(ec)) {
-//             return file_status(file_type::not_found, perms::unknown);
-//         }
-//         return file_status(file_type::none);
-//     }
-//  }
-
-
-
-// bool exists(file_status s) throw(){
-// 	return status_known(s) && s.type() != file_type::not_found;
-// }
-
-// bool exists(const path& p){
-
-// }
-
-// bool exists(const path& p, error_code& ec) throw(){
-
-// }
+bool exists(const path& p, error_code& ec) throw(){
+	file_status s = status(p, ec);
+	if (status_known(s))
+		ec.clear();
+	return exists(s);
+}
 
 
 

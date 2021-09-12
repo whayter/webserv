@@ -52,6 +52,7 @@ private:
     fx::path _orig_dir;
 };
 
+
 static void generateFile(const fs::path& pathname, int withSize = -1)
 {
     std::ofstream outfile(pathname);
@@ -62,6 +63,18 @@ static void generateFile(const fs::path& pathname, int withSize = -1)
         outfile << std::string(size_t(withSize), '*');
     }
 }
+
+// TEST_CASE("Temporary Directory", "[tempdir]")
+// {
+//     fs::path tempPath;
+//     {
+//         TemporaryDirectory t;
+//         tempPath = t.path();
+//         REQUIRE(fs::exists(fs::path(t.path())));
+//         REQUIRE(fs::is_directory(t.path()));
+//     }
+//     REQUIRE(!fs::exists(tempPath));
+// }
 
 TEST_CASE("fs::current_path - current_path", "[namespace][ft][filesystem][current_path]")
 {
@@ -115,28 +128,6 @@ TEST_CASE("fs::perms ", "[namespace][ft][filesystem][struct][perms]")
     CHECK((fs::perms::owner_all | fs::perms::group_all | fs::perms::others_all) == fs::perms::all);
     CHECK((fs::perms::all | fs::perms::set_uid | fs::perms::set_gid | fs::perms::sticky_bit) == fs::perms::mask);
 }
-
-// TEST_CASE("fs::permissions - permissions", "[namespace][ft][filesystem][struct][perms]")
-// {
-//     TemporaryDirectory t(TempOpt::change_path);
-//     std::error_code ec;
-//     generateFile("foo", 512);
-//     auto allWrite = fs::perms::owner_write | fs::perms::group_write | fs::perms::others_write;
-//     CHECK_NOTHROW(fs::permissions("foo", allWrite, fs::perm_options::remove));
-//     CHECK((fs::status("foo").permissions() & fs::perms::owner_write) != fs::perms::owner_write);
-//     {
-//         CHECK_THROWS_AS(fs::resize_file("foo", 1024), fs::filesystem_error);
-//         CHECK(fs::file_size("foo") == 512);
-//     }
-//     CHECK_NOTHROW(fs::permissions("foo", fs::perms::owner_write, fs::perm_options::add));
-//     CHECK((fs::status("foo").permissions() & fs::perms::owner_write) == fs::perms::owner_write);
-//     CHECK_NOTHROW(fs::resize_file("foo", 2048));
-//     CHECK(fs::file_size("foo") == 2048);
-//     CHECK_THROWS_AS(fs::permissions("bar", fs::perms::owner_write, fs::perm_options::add), fs::filesystem_error);
-//     CHECK_NOTHROW(fs::permissions("bar", fs::perms::owner_write, fs::perm_options::add, ec));
-//     CHECK(ec);
-//     CHECK_THROWS_AS(fs::permissions("bar", fs::perms::owner_write, static_cast<fs::perm_options>(0)), fs::filesystem_error);
-// }
 
 TEST_CASE("fs::status_known - status_known", "[namespace][ft][filesystem][status_known]")
 {
