@@ -3,25 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   HttpStatus.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 17:24:53 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/07 11:48:56 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/09/12 19:23:38 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HTTP_STATUS_HPP
 #define HTTP_STATUS_HPP
 
+#include "http.hpp"
+
 #include <string>
 
-class HttpStatus
+namespace http
 {
-	public:
-
-	/* --- Enum ------------------------------------------------------------- */
-
-		enum Code
+	struct Status
+	{
+		enum StatusEnum
 		{
 			None							= 0, 
 		
@@ -92,29 +92,150 @@ class HttpStatus
 			NetworkAuthenticationRequired	= 511
 		};
 
-	/* --- Member functions ------------------------------------------------- */
+		Status(StatusEnum e): _e(e) {}
 
-		HttpStatus();
-		HttpStatus(int code);
-		~HttpStatus();
+		Status(unsigned int e)
+		{
+			_e = static_cast<StatusEnum>(e);
+		}
 
-		void			setValue(int code);
-	
-		int				getValue(void) const;
-		std::string		getMessage(int code) const;
+		int getValue()
+		{
+			return _e;
+		}
+		
+		// operator StatusEnum() const throw()
+		// {
+		// 	return _e;
+		// }
+		
+		friend bool operator==(const Status& lhs, const Status& rhs)
+		{
+			return lhs._e == rhs._e;
+		}
+		friend bool operator!=(const Status& lhs, const Status& rhs)
+		{
+			return !(lhs._e == rhs._e);
+		}
+		friend bool operator>=(const Status& lhs, const Status& rhs)
+		{
+			return lhs._e >= rhs._e;
+		}
+		friend bool operator<=(const Status& lhs, const Status& rhs)
+		{
+			return lhs._e <= rhs._e;
+		}
+		friend bool operator<(const Status& lhs, const Status& rhs)
+		{
+			return lhs._e < rhs._e;
+		}
+		friend bool operator>(const Status& lhs, const Status& rhs)
+		{
+			return lhs._e > rhs._e;
+		}
 
-		bool			isInformational(int code);
-		bool			isSuccessful(int code);
-		bool			isRedirection(int code);
-		bool			isClientError(int code);
-		bool			isServerError(int code);
-		bool			isError(int code);
+		private:
+		
+			StatusEnum _e;
+	};
 
-	private:
+	std::string getDefinition(Status statusCode)
+	{
+		switch (statusCode.getValue())
+		{
+			case 100: return "Continue";
+			case 101: return "Switching Protocols";
+			case 102: return "Processing";
+			case 103: return "Early Hints";
+			case 200: return "OK";
+			case 201: return "Created";
+			case 202: return "Accepted";
+			case 203: return "Non-Authoritative Information";
+			case 204: return "No Content";
+			case 205: return "Reset Content";
+			case 206: return "Partial Content";
+			case 207: return "Multi-Status";
+			case 208: return "Already Reported";
+			case 226: return "IM Used";
+			case 300: return "Multiple Choices";
+			case 301: return "Moved Permanently";
+			case 302: return "Found";
+			case 303: return "See Other";
+			case 304: return "Not Modified";
+			case 305: return "Use Proxy";
+			case 307: return "Temporary Redirect";
+			case 308: return "Permanent Redirect";
+			case 400: return "Bad Request";
+			case 401: return "Unauthorized";
+			case 402: return "Payment Required";
+			case 403: return "Forbidden";
+			case 404: return "Not Found";
+			case 405: return "Method Not Allowed";
+			case 406: return "Not Acceptable";
+			case 407: return "Proxy Authentication Required";
+			case 408: return "Request Timeout";
+			case 409: return "Conflict";
+			case 410: return "Gone";
+			case 411: return "Length Required";
+			case 412: return "Precondition Failed";
+			case 413: return "Payload Too Large";
+			case 414: return "URI Too Long";
+			case 415: return "Unsupported Media Type";
+			case 416: return "Range Not Satisfiable";
+			case 417: return "Expectation Failed";
+			case 418: return "I'm a teapot";
+			case 422: return "Unprocessable Entity";
+			case 423: return "Locked";
+			case 424: return "Failed Dependency";
+			case 426: return "Upgrade Required";
+			case 428: return "Precondition Required";
+			case 429: return "Too Many Requests";
+			case 431: return "Request Header Fields Too Large";
+			case 451: return "Unavailable For Legal Reasons";
+			case 500: return "Internal Server Error";
+			case 501: return "Not Implemented";
+			case 502: return "Bad Gateway";
+			case 503: return "Service Unavailable";
+			case 504: return "Gateway Time-out";
+			case 505: return "HTTP Version Not Supported";
+			case 506: return "Variant Also Negotiates";
+			case 507: return "Insufficient Storage";
+			case 508: return "Loop Detected";
+			case 510: return "Not Extended";
+			case 511: return "Network Authentication Required";
+			default: return "Unknown status code";
+		}
+	}
 
-	/* --- Member variables ------------------------------------------------- */
+	bool isInformational(Status statusCode)
+	{
+		return (statusCode >= 100 && statusCode < 200);
+	}
 
-		int				_value;
-};
+	bool isSuccessful(Status statusCode)
+	{
+		return (statusCode >= 200 && statusCode < 300);
+	}
 
-#endif /* HTTP_STATUS_HPP */
+	bool isRedirection(Status statusCode)
+	{
+		return (statusCode >= 300 && statusCode < 400);
+	}
+
+	bool isClientError(Status statusCode)
+	{
+		return (statusCode >= 400 && statusCode < 500);
+	}
+
+	bool isServerError(Status statusCode)
+	{
+		return (statusCode >= 500 && statusCode < 600);
+	}
+
+	bool isError(Status statusCode)
+	{
+		return (statusCode >= 400);
+	}
+}
+
+#endif

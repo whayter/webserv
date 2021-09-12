@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 11:04:34 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/05 15:54:36 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/12 19:24:33 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ class HttpRequest: public AMessage
 
 		std::string		_method, _version;
 		Uri				_uri;
-		HttpStatus		_code;
+		Status		_code;
 
 		bool	_isRequestLineParsed;
 		bool	_isHeaderParsed;
