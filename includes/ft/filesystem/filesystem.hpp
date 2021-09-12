@@ -36,7 +36,7 @@ namespace filesystem {
   // template <class InputIterator>
   //   path u8path(InputIterator first, InputIterator last);
 
-  // class filesystem_error;      
+  class filesystem_error;      
   // class directory_entry;
 
   // class directory_iterator;
