@@ -41,7 +41,7 @@ std::string error_code::message() const{
 }
 
 error_code::operator bool() const throw(){
-	return value() == 0;
+	return value();
 }
 
 } /* namespace ft*/

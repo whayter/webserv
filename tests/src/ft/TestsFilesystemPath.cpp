@@ -16,7 +16,7 @@ TEST_CASE( "ft::filesystem::path - Construction", "[class][path][filesystem][con
 	CHECK( fs::path().has_root_directory() == false );
 	CHECK( fs::path().has_root_path() == false );
 	CHECK( fs::path().has_relative_path() == false );
-	// CHECK( fs::path().has_parent_path() == false );
+	CHECK( fs::path().has_parent_path() == false );
 	CHECK( fs::path().has_filename() == false );
 	CHECK( fs::path().has_stem() == false );
 	CHECK( fs::path().has_extension() == false );
@@ -174,17 +174,17 @@ TEST_CASE( "fs::path - Decompose", "[class][path][filesystem][decompose]" ) {
     CHECK(fs::path("/foo/bar").relative_path() == "foo/bar");
     CHECK(fs::path("///foo/bar").relative_path() == "foo/bar");
 
-	// CHECK(fs::path("").parent_path() == "");
-    // CHECK(fs::path(".").parent_path() == "");
-    // CHECK(fs::path("..").parent_path() == "");  // unintuitive but as defined in the standard
-    // CHECK(fs::path("foo").parent_path() == "");
-    // CHECK(fs::path("/").parent_path() == "/");
-    // CHECK(fs::path("/foo").parent_path() == "/");
-    // CHECK(fs::path("foo/").parent_path() == "foo");
-    // CHECK(fs::path("/foo/").parent_path() == "/foo");
-    // CHECK(fs::path("foo/bar").parent_path() == "foo");
-    // CHECK(fs::path("/foo/bar").parent_path() == "/foo");
-    // REQUIRE(fs::path("///foo/bar").parent_path() == "/foo");
+	CHECK(fs::path("").parent_path() == "");
+    CHECK(fs::path(".").parent_path() == "");
+    CHECK(fs::path("..").parent_path() == "");  // unintuitive but as defined in the standard
+    CHECK(fs::path("foo").parent_path() == "");
+    CHECK(fs::path("/").parent_path() == "/");
+    CHECK(fs::path("/foo").parent_path().string() == "/");
+    CHECK(fs::path("foo/").parent_path().string() == "foo");
+    CHECK(fs::path("/foo/").parent_path().string() == "/foo");
+    CHECK(fs::path("foo/bar").parent_path().string() == "foo");
+    CHECK(fs::path("/foo/bar").parent_path().string() == "/foo");
+    REQUIRE(fs::path("///foo/bar").parent_path().string() == "/foo");
 
 	CHECK(fs::path("").filename() == "");
     CHECK(fs::path(".").filename() == ".");
@@ -234,14 +234,14 @@ TEST_CASE( "fs::path - Query", "[class][path][filesystem][query]" ) {
     CHECK(fs::path("/foo").has_relative_path());
 
     // has_parent_path()
-    // CHECK(!fs::path("").has_parent_path());
-    // CHECK(!fs::path(".").has_parent_path());
-    // CHECK(!fs::path("..").has_parent_path());  // unintuitive but as defined in the standard
-    // CHECK(!fs::path("foo").has_parent_path());
-    // CHECK(fs::path("/").has_parent_path());
-    // CHECK(fs::path("/foo").has_parent_path());
-    // CHECK(fs::path("foo/").has_parent_path());
-    // CHECK(fs::path("/foo/").has_parent_path());
+    CHECK(!fs::path("").has_parent_path());
+    CHECK(!fs::path(".").has_parent_path());
+    CHECK(!fs::path("..").has_parent_path());  // unintuitive but as defined in the standard
+    CHECK(!fs::path("foo").has_parent_path());
+    CHECK(fs::path("/").has_parent_path());
+    CHECK(fs::path("/foo").has_parent_path());
+    CHECK(fs::path("foo/").has_parent_path());
+    CHECK(fs::path("/foo/").has_parent_path());
 
     // has_filename()
     CHECK(fs::path("foo").has_filename());

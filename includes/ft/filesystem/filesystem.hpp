@@ -51,7 +51,7 @@ namespace filesystem {
   // recursive_directory_iterator begin(recursive_directory_iterator iter) throw() ;
   // recursive_directory_iterator end(const recursive_directory_iterator&) throw() ;
 
-  // class file_status;
+  class file_status;
 
   // struct space_info
   // {
@@ -69,8 +69,9 @@ namespace filesystem {
 
   // // operational functions
 
-  // path absolute(const path& p, const path& base=current_path());
-
+  path absolute(const path& p);
+  path absolute(const path& p, error_code& ec);
+ 
   // path canonical(const path& p, const path& base = current_path());
   // path canonical(const path& p, error_code& ec);
   // path canonical(const path& p, const path& base, error_code& ec);
@@ -118,9 +119,9 @@ namespace filesystem {
   void current_path(const path& p);
   void current_path(const path& p, error_code& ec) throw() ;
 
-  // bool exists(file_status s) throw() ;
-  // bool exists(const path& p);
-  // bool exists(const path& p, error_code& ec) throw() ;
+  bool exists(file_status s) throw();
+  bool exists(const path& p);
+  bool exists(const path& p, error_code& ec) throw();
 
   // bool equivalent(const path& p1, const path& p2);
   // bool equivalent(const path& p1, const path& p2, error_code& ec) throw() ;
@@ -193,10 +194,10 @@ namespace filesystem {
   // space_info space(const path& p);
   // space_info space(const path& p, error_code& ec) throw() ;
 
-  // file_status status(const path& p);
-  // file_status status(const path& p, error_code& ec) throw() ;
+  file_status status(const path& p);
+  file_status status(const path& p, error_code& ec) throw() ;
 
-  // bool status_known(file_status s) throw() ;
+  bool status_known(file_status s) throw() ;
 
   // file_status symlink_status(const path& p);
   // file_status symlink_status(const path& p, error_code& ec) throw() ;

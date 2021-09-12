@@ -17,7 +17,9 @@ namespace ft {
  
 //   template<class T>
 //     struct is_error_condition_enum : public false_type {};
- 
+
+
+// equivalent to enum class ... (c++98 don't have enum class)
 struct errc{
 	enum errcEnum {
 		none						    	= 0,
@@ -100,12 +102,21 @@ struct errc{
 		value_too_large						= EOVERFLOW,
 		wrong_protocol_type					= EPROTOTYPE,
 	};
+	errc(errcEnum e): _e(e) {}
+	operator errcEnum() const throw(){
+		return _e;
+    }
+    friend bool operator==(const errc& lhs, const errc& rhs){
+      return lhs._e == rhs._e;
+    }
+private:
+	errcEnum _e;
 };
  
 //   template<> struct is_error_condition_enum<errc> : true_type {};
  
   // non-member functions
-  error_code make_error_code(int err = 0) throw();
+  error_code make_error_code(errc e = errc::none) throw();
  
 //   template<class charT, class traits>
 //     basic_ostream<charT, traits>&
