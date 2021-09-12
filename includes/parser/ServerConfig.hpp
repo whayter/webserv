@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/30 18:38:34 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/12 16:22:56 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 
 #include "Uri.hpp"
 #include "parser/config/ScannerConfig.hpp"
+#include "filesystem.h"
 
 #define DEFAULT_CLIENT_MAX_BODY_SIZE 1000 * 1000 // = 1m
 
@@ -99,8 +100,8 @@ public:
 	inline std::string				getCgiExec() const		{ return _cgiExec; }
 	inline size_t					getClientMaxBodySize() const{ return _clientMaxBodySize; }
 	inline const ReturnDirective&	getReturnDirective() const	{ return _returnDirective; }
-	inline std::string				getRoot() const				{ return _root; }
-	inline std::string				getIndex() const			{ return _index; }
+	inline ft::filesystem::path		getRoot() const				{ return _root; }
+	inline ft::filesystem::path		getIndex() const			{ return _index; }
 
 	inline bool						hasAutoindex() const		{ return _hasAutoindex; }
 	inline bool						hasClientMaxBodySize() const{ return _hasClientMaxBodySize; }
@@ -118,10 +119,10 @@ public:
 		_returnDirective = returnDirective;
 		_hasReturnDirective = true;
 	}
-	void 	setUri(std::string uri)				{ _uri = uri; }
-	void 	setCgiExec(const std::string& exec)	{ _cgiExec = exec;}
-	void 	setRoot(std::string root)			{_root = root;}
-	void 	setIndex(std::string index)			{_index = index;}
+	void 	setUri(std::string uri)					{ _uri = uri; }
+	void 	setCgiExec(const std::string& exec)		{ _cgiExec = exec;}
+	void 	setRoot(ft::filesystem::path root)		{_root = root;}
+	void 	setIndex(ft::filesystem::path index)	{_index = index;}
 
 	void	addCgiParam(const std::string& name, const std::string& value) { _cgiParams[name] = value;}
 	void	addCgiParam(const std::pair<std::string,std::string> pair) 	{ _cgiParams[pair.first] = pair.second;}
@@ -150,10 +151,10 @@ private:
 	std::string							_cgiExec;
 	std::map<std::string, std::string> 	_cgiParams;
 
-	std::set<std::string>			_limitExceptMethods;
+	std::set<std::string>				_limitExceptMethods;
 
-	std::string							_root;
-	std::string							_index;
+	ft::filesystem::path				_root;
+	ft::filesystem::path				_index;
 }; /* class Location */
 
 class ServerBlock
@@ -163,9 +164,9 @@ public:
 		_clientMaxBodySize(DEFAULT_CLIENT_MAX_BODY_SIZE), _hasClientMaxBodySize(false),
 		_hasReturnDirective(false) {}
 
-	inline std::string				getIndex() const			{ return _index; }
+	inline ft::filesystem::path		getIndex() const			{ return _index; }
 	inline bool						getAutoindex() const		{ return _autoindex; }
-	inline std::string				getRoot() const				{ return _root; }
+	inline ft::filesystem::path		getRoot() const				{ return _root; }
 	inline std::string				getServerName() const		{ return _serverName; }
 	inline size_t					getClientMaxBodySize() const{ return _clientMaxBodySize; }
 	inline const ReturnDirective&	getReturnDirective() const	{ return _returnDirective; }
@@ -202,16 +203,16 @@ public:
 	void	addErrors(const std::map<u_short, std::string>& errors) { _errors.insert(errors.begin(), errors.end());}
 	
 
-	void 	setIndex(std::string index)				{ _index = index;}
-	void 	setRoot(std::string root)				{ _root = root;}
-	void 	setServerName(std::string serverName)	{ _serverName = serverName;}
+	void 	setIndex(ft::filesystem::path index)				{ _index = index;}
+	void 	setRoot(ft::filesystem::path root)					{ _root = root;}
+	void 	setServerName(std::string serverName)				{ _serverName = serverName;}
 
 private:
 	
 	std::vector<Host>					_listens;
 	std::vector<Location>				_locations;
 	std::map<u_short, std::string> 		_errors;
-	std::string							_index;
+	ft::filesystem::path				_index;
 
 	bool								_autoindex;
 	bool								_hasAutoindex;
@@ -223,7 +224,7 @@ private:
 	bool								_hasReturnDirective;
 
 	std::string							_serverName;
-	std::string							_root;
+	ft::filesystem::path				_root;
 }; /* class ServerBlock */
 
 /// @brief Singleton Class
@@ -232,13 +233,13 @@ class ServerConfig
 public:
 
 	/// Instanciate the singleton instance at first call with given file
-	static ServerConfig&	getInstance(std::string filepath);
+	static ServerConfig&	getInstance(ft::filesystem::path filepath);
 	/// Must instanciate the class before using this function.
 	static ServerConfig&	getInstance();
 	/// ONLY FOR TESTING PURPOSE
 	static void	__delete_singleton_instance();
 
-	inline std::string		getConfigFilePath() const { return _configFilePath;}
+	inline ft::filesystem::path		getConfigFilePath() const { return _configFilePath;}
 
 	/// return the vector of servers (usefull for testing)
 	inline const std::vector<ServerBlock>&	getServers() const			{ return _servers;}
@@ -253,7 +254,7 @@ public:
 	std::vector<uint32_t>			getPorts();
 
 private:
-	ServerConfig(const std::string & filepath);
+	ServerConfig(const ft::filesystem::path & filepath);
 	ServerConfig(ServerConfig&);
 	ServerConfig& operator=(const ServerConfig&);
 	
@@ -261,8 +262,8 @@ private:
 
 	ServerBlock							_parseServer(parser::config::ScannerConfig & scanner, parser::config::Token serverToken);
 	Host								_parseListen(parser::config::ScannerConfig & scanner);
-	std::string 						_parseRoot(parser::config::ScannerConfig & scanner);
-	std::string 						_parseIndex(parser::config::ScannerConfig & scanner);
+	ft::filesystem::path 				_parseRoot(parser::config::ScannerConfig & scanner);
+	ft::filesystem::path 				_parseIndex(parser::config::ScannerConfig & scanner);
 	bool								_parseAutoindex(parser::config::ScannerConfig & scanner);
 	std::string 						_parseServerName(parser::config::ScannerConfig & scanner);
 	std::map<u_short, std::string>		_parseErrorPage(parser::config::ScannerConfig & scanner);
@@ -286,7 +287,7 @@ private:
 
 	static ServerConfig*		_singleton;
 	std::vector<ServerBlock>	_servers;
-	std::string					_configFilePath;
+	ft::filesystem::path		_configFilePath;
 
 }; /* class ServerConfig */
 

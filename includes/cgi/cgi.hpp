@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/06 09:34:36 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/11 10:34:08 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/12 16:50:41 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "HttpRequest.hpp"
 #include "ServerConfig.hpp"
 #include "utility.hpp"
+#include "filesystem.h"
 
 #include <filesystem>
 
@@ -28,6 +29,8 @@
 #include <cstdlib>
 
 #include <istream>
+
+namespace fs = ft::filesystem;
 
 extern char** environ;
 
@@ -54,6 +57,9 @@ void setEnvironment(ServerBlock& sblock, HttpRequest& request)
 	std::string scriptFilename = getcwd(tmp, 256);
 	scriptFilename += sblock.getRoot();
 	scriptFilename += request.getUri().getPath();
+	// std::cout << "fs = " << fs::absolute(sblock.getRoot() / request.getUri().getPath()).c_str() << std::endl;
+	// std::cout << "sc = " << scriptFilename << std::endl;
+	
 	setenv("SCRIPT_FILENAME", scriptFilename.c_str(), 0);	// tmp
 	setenv("CONTENT_TYPE", request.getHeader("Content-type").c_str(), 0);
 	setenv("CONTENT_LENGTH", request.getHeader("Content-Length").c_str(), 0);
