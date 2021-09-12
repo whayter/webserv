@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 23:26:05 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/11 15:26:25 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/12 15:13:23 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 #include <cerrno>
 #include <ctime>
+#include <cstring>
 #include <iomanip>
 #include <unistd.h>
 
