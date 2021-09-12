@@ -52,16 +52,16 @@ private:
     fx::path _orig_dir;
 };
 
-// static void generateFile(const fs::path& pathname, int withSize = -1)
-// {
-//     std::ofstream outfile(pathname);
-//     if (withSize < 0) {
-//         outfile << "Hello world!" << std::endl;
-//     }
-//     else {
-//         outfile << std::string(size_t(withSize), '*');
-//     }
-// }
+static void generateFile(const fs::path& pathname, int withSize = -1)
+{
+    std::ofstream outfile(pathname);
+    if (withSize < 0) {
+        outfile << "Hello world!" << std::endl;
+    }
+    else {
+        outfile << std::string(size_t(withSize), '*');
+    }
+}
 
 TEST_CASE("fs::current_path - current_path", "[namespace][ft][filesystem][current_path]")
 {
@@ -165,16 +165,14 @@ TEST_CASE("fs::status - status", "[namespace][ft][filesystem][status]")
     CHECK(ec);
     ec.clear();
     fs = fs::status(t.path().c_str());
-    // CHECK(fs.type() == fs::file_type::directory);
-    // CHECK((fs.permissions() & (fs::perms::owner_read | fs::perms::owner_write)) == (fs::perms::owner_read | fs::perms::owner_write));
-//     generateFile("foobar");
-//     fs = fs::status(t.path() / "foobar");
-//     CHECK(fs.type() == fs::file_type::regular);
-//     CHECK((fs.permissions() & (fs::perms::owner_read | fs::perms::owner_write)) == (fs::perms::owner_read | fs::perms::owner_write));
-//     if (is_symlink_creation_supported()) {
-//         fs::create_symlink(t.path() / "foobar", t.path() / "barfoo");
-//         fs = fs::status(t.path() / "barfoo");
-//         CHECK(fs.type() == fs::file_type::regular);
-//         CHECK((fs.permissions() & (fs::perms::owner_read | fs::perms::owner_write)) == (fs::perms::owner_read | fs::perms::owner_write));
-//     }
+    CHECK(fs.type() == fs::file_type::directory);
+    CHECK((fs.permissions() & (fs::perms::owner_read | fs::perms::owner_write)) == (fs::perms::owner_read | fs::perms::owner_write));
+    generateFile("foobar");
+    fs = fs::status(fs::path(t.path().c_str()) / "foobar");
+    CHECK(fs.type() == fs::file_type::regular);
+    CHECK((fs.permissions() & (fs::perms::owner_read | fs::perms::owner_write)) == (fs::perms::owner_read | fs::perms::owner_write));
+    fx::create_symlink(t.path() / "foobar", t.path() / "barfoo");
+    fs = fs::status(fs::path(t.path().c_str()) / "barfoo");
+    CHECK(fs.type() == fs::file_type::regular);
+    CHECK((fs.permissions() & (fs::perms::owner_read | fs::perms::owner_write)) == (fs::perms::owner_read | fs::perms::owner_write));
 }

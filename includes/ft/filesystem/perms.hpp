@@ -35,36 +35,22 @@ struct perms{
     friend bool operator==(const perms& lhs, const perms& rhs){
       return lhs._e == rhs._e;
     }
-	// friend perms  operator&(perms x, perms y) throw(){
-	// 	return x._e & y._e;
-	// }
-	// friend perms  operator|(perms x, perms y) throw(){
-	// 	return x._e | y._e;
-	// }
+	friend perms  operator&(perms x, perms y) throw(){
+		return x._e & y._e;
+	}
+	friend perms  operator|(perms x, perms y) throw(){
+		return x._e | y._e;
+	}
+	friend perms  operator^(perms x, perms y) throw(){
+		return x._e ^ y._e;
+	}
+	friend perms  operator~(perms x) throw(){
+		return ~x._e;
+	}
 
 private:
 	permsEnum _e;
 };
-
-// perms  operator&(perms x, perms y) throw() 
-// {
-// 	return perms(x._x & y._e);
-// }
-// perms operator|(perms x, perms y) throw() {
-	// return perms(x._e | y._e);
-// }
-
-// perms operator^(perms x, perms y) throw() {
-// 	return static_cast<perms>(
-// 		static_cast<uint32_t>(x) ^ static_cast<uint32_t>(y)
-// 		);
-// }
-
-// perms operator~(perms x) throw(){
-// 	return static_cast<perms>(
-// 		~static_cast<uint32_t>(x)
-// 		);
-// }
 
 // inline perms& operator&=(perms& x, perms y) throw() { return x = x & y; }
 // inline perms& operator|=(perms& x, perms y) throw() { return x = x | y; }

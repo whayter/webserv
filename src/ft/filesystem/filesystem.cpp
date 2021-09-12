@@ -113,8 +113,8 @@ static file_status stModeToFileStatus(mode_t mode)
 file_status status(const path& p){
 	error_code ec;
 	file_status result = status(p, ec);
-	if (ec.value() == file_type::none)
-		throw filesystem_error("status(const path&): " + ec.message(), p, ec);
+	if (result.type() == file_type::none)
+		throw filesystem_error("status(const path& p=\""+ p.string() +"\"): " + ec.message(), p, ec);
 	return result;
 }
 
