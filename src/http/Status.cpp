@@ -1,42 +1,56 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpStatus.cpp                                     :+:      :+:    :+:   */
+/*   Status.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/04 14:43:13 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/07 11:52:30 by juligonz         ###   ########.fr       */
+/*   Created: 2021/09/12 21:23:56 by hwinston          #+#    #+#             */
+/*   Updated: 2021/09/12 23:03:16 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "http/HttpStatus.hpp"
+#include "Status.hpp"
 
-HttpStatus::HttpStatus() {}
-HttpStatus::HttpStatus(int code)
-	: _value(code) {}
+namespace http {
 
-HttpStatus::~HttpStatus() {}
-
-void HttpStatus::setValue(int code)
+Status::Status()
 {
-	_value = code;
+	_e = static_cast<StatusEnum>(0);
 }
 
-int HttpStatus::getValue(void) const
+Status::Status(StatusEnum e): _e(e) {}
+
+Status::Status(unsigned int e)
 {
-	return _value;
+	_e = static_cast<StatusEnum>(e);
 }
 
-std::string HttpStatus::getMessage(int code) const
+Status::~Status() {}
+
+void Status::setValue(StatusEnum e)
 {
-	switch (code)
+	_e = e;
+}
+
+void Status::setValue(int e)
+{
+	_e = static_cast<StatusEnum>(e);
+}
+
+int Status::getValue()
+{
+	return _e;
+}
+
+std::string Status::getDefinition()
+{
+	switch (getValue())
 	{
 		case 100: return "Continue";
 		case 101: return "Switching Protocols";
 		case 102: return "Processing";
 		case 103: return "Early Hints";
-
 		case 200: return "OK";
 		case 201: return "Created";
 		case 202: return "Accepted";
@@ -47,7 +61,6 @@ std::string HttpStatus::getMessage(int code) const
 		case 207: return "Multi-Status";
 		case 208: return "Already Reported";
 		case 226: return "IM Used";
-
 		case 300: return "Multiple Choices";
 		case 301: return "Moved Permanently";
 		case 302: return "Found";
@@ -56,7 +69,6 @@ std::string HttpStatus::getMessage(int code) const
 		case 305: return "Use Proxy";
 		case 307: return "Temporary Redirect";
 		case 308: return "Permanent Redirect";
-
 		case 400: return "Bad Request";
 		case 401: return "Unauthorized";
 		case 402: return "Payment Required";
@@ -84,7 +96,6 @@ std::string HttpStatus::getMessage(int code) const
 		case 429: return "Too Many Requests";
 		case 431: return "Request Header Fields Too Large";
 		case 451: return "Unavailable For Legal Reasons";
-
 		case 500: return "Internal Server Error";
 		case 501: return "Not Implemented";
 		case 502: return "Bad Gateway";
@@ -96,37 +107,38 @@ std::string HttpStatus::getMessage(int code) const
 		case 508: return "Loop Detected";
 		case 510: return "Not Extended";
 		case 511: return "Network Authentication Required";
-
-		default: return ("Unknown status code");
+		default: return "Unknown status code";
 	}
 }
 
-bool HttpStatus::isInformational(int code)
+bool isInformational(Status statusCode)
 {
-	return (code >= 100 && code < 200);
+	return (statusCode >= 100 && statusCode < 200);
 }
 
-bool HttpStatus::isSuccessful(int code)
+bool isSuccessful(Status statusCode)
 {
-	return (code >= 200 && code < 300);
+	return (statusCode >= 200 && statusCode < 300);
 }
 
-bool HttpStatus::isRedirection(int code)
+bool isRedirection(Status statusCode)
 {
-	return (code >= 300 && code < 400);
+	return (statusCode >= 300 && statusCode < 400);
 }
 
-bool HttpStatus::isClientError(int code)
+bool isClientError(Status statusCode)
 {
-	return (code >= 400 && code < 500);
+	return (statusCode >= 400 && statusCode < 500);
 }
 
-bool HttpStatus::isServerError(int code)
+bool isServerError(Status statusCode)
 {
-	return (code >= 500 && code < 600);
+	return (statusCode >= 500 && statusCode < 600);
 }
 
-bool HttpStatus::isError(int code)
+bool isError(Status statusCode)
 {
-	return (code >= 400);
+	return (statusCode >= 400);
 }
+
+} /* namespace http */

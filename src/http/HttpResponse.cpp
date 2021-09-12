@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:47:59 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/09 19:10:00 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/12 23:18:02 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,11 @@ void HttpResponse::setLocalContent()
 	ifs.open(file.c_str());
 	if (!ifs)
 	{
-		_code.setValue(HttpStatus::NotFound);
+		_code.setValue(http::Status::NotFound);
 		setErrorContent();
 		return ;
 	}
-	_code.setValue(HttpStatus::OK);		// set ici ?
+	_code.setValue(http::Status::OK);		// set ici ?
 	ifs.seekg(0, ifs.end);
 	int len = ifs.tellg();
 	ifs.seekg(0, ifs.beg);
@@ -72,7 +72,7 @@ void HttpResponse::setErrorContent()												// not complete yet
 	_content += "<body><h1>" + intToString(_getStatus());
 	_content += + " " + _getStatusMessage() + "</h1>";
 	_content += "<hr size=\"3\">";
-	if (_getStatus() == HttpStatus::MovedPermanently)
+	if (_getStatus() == http::Status::MovedPermanently)
 	{
 		_content += "<p>The document has moved ";
 		//_content ++ "<a href=\"" + new_location + "\">here</a></p>";				// a ajouter
@@ -114,8 +114,9 @@ std::string HttpResponse::toString()
 {
 	std::string s;
 	s = _statusLine + "\r\n";
-	headers_type::iterator header;
-	for (header = _headers.begin(); header != _headers.end(); header++)
+	http::headers_type headers(getHeaders());
+	http::headers_type::iterator header;
+	for (header = headers.begin(); header != headers.end(); header++)
 		s += header->first + ": " + header->second + "\n";
 	s += "\r\n" + _content;
 	return s;
@@ -148,7 +149,8 @@ void		HttpResponse::_parseCgiHeaders(std::vector<unsigned char>& cgiHeaders)
 
 std::string	HttpResponse::_getHeader(std::string key)
 {
-	headers_type::iterator header = _headers.find(key);
+	http::headers_type headers(getHeaders());
+	http::headers_type::iterator header = headers.find(key);
 	return header->first + ": " + header->second;	
 }
 
@@ -159,7 +161,7 @@ int			HttpResponse::_getStatus(void)
 
 std::string	HttpResponse::_getStatusMessage(void)
 {
-	return _code.getMessage(_getStatus());
+	return _code.getDefinition();
 }
 
 void		HttpResponse::_setStatus(int code)

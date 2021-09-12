@@ -6,53 +6,42 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 18:55:56 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/12 18:56:35 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/12 22:50:03 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "http.hpp"
 #include "Message.hpp"
+#include "Status.hpp"
 
-http::Message::Message() {}
+namespace http {
 
-http::Message::~Message() {}
+Message::Message() {}
 
-int					http::Message::getStatusCode()
+Message::~Message()
 {
-	return _statusCode;
+	_headers.clear();
+	_content.clear();
 }
 
-std::string			http::Message::getStatusMessage() const
-{
-	return http::Status::getDefinition(_statusCode);
-}
-
-http::headers_type	http::Message::getHeaders() const
-{
-	return _headers;
-}
-
-http::content_type	http::Message::getContent() const
-{
-	return _content;
-}
-
-std::string			http::Message::getHeader(std::string name)
+std::string	Message::getHeader(std::string name)
 {
 	return _headers[name];
 }
 
-void				http::Message::setStatusCode(int code)
+void Message::setStatus(Status::StatusEnum e)
 {
-	_statusCode = code;
+	_status = e;
 }
 
-void				http::Message::setHeader(std::string key, std::string val)
+void Message::setHeader(std::string key, std::string val)
 {
 	_headers[key] = val;
 }
 
-void				http::Message::setContent(content_type content)
+void Message::setContent(content_type content)
 {
 	_content = content;
 }
+
+} /* namespace http */
