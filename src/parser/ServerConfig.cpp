@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/30 18:38:27 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/12 16:25:06 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ ServerConfig* ServerConfig::_singleton = NULL;
 
 namespace pr = parser::config;
 
-ServerConfig::ServerConfig(const std::string& filepath)
+ServerConfig::ServerConfig(const ft::filesystem::path& filepath)
 	: _configFilePath(filepath)
 {
 	std::ifstream file;
@@ -38,7 +38,7 @@ ServerConfig::ServerConfig(const std::string& filepath)
 	file.close();
 }
 
-ServerConfig& ServerConfig::getInstance(std::string filepath){
+ServerConfig& ServerConfig::getInstance(ft::filesystem::path filepath){
 	if (_singleton == NULL)
 		_singleton = new ServerConfig(filepath);
 	return *_singleton;
@@ -124,7 +124,7 @@ void ServerConfig::_throw_SyntaxError(parser::config::Token t, const std::string
 {
 	std::string error;
 
-	error += _configFilePath + ':';
+	error += _configFilePath.string() + ':';
 	error += intToString(t.line);
 	error += ':';
 	error += intToString(t.column);
@@ -266,24 +266,24 @@ Host ServerConfig::_parseListen(parser::config::ScannerConfig & scanner)
 	return result;
 }
 
-std::string ServerConfig::_parseRoot(parser::config::ScannerConfig & scanner)
+ft::filesystem::path ServerConfig::_parseRoot(parser::config::ScannerConfig & scanner)
 {
 	pr::Token t;
 
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
 		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"root\".");
 	_skipSemiColonNewLine(scanner);
-	return t.value;
+	return ft::filesystem::path(t.value);
 }
 
-std::string ServerConfig::_parseIndex(parser::config::ScannerConfig & scanner)
+ft::filesystem::path ServerConfig::_parseIndex(parser::config::ScannerConfig & scanner)
 {
 	pr::Token t;
 
 	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
 		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"index\".");
 	_skipSemiColonNewLine(scanner);
-	return t.value;
+	return ft::filesystem::path(t.value);
 }
 
 std::string ServerConfig::_parseServerName(parser::config::ScannerConfig & scanner)
