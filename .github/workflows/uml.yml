@@ -33,8 +33,7 @@ jobs:
         git checkout -b uml
         git config user.name github-actions
         git config user.email github-actions@github.com
-        # hpp2plantuml -d -i "./includes/**/*.hpp" -o docs/diagrams/src/webserv.puml
-        hpp2plantuml -i "./includes/**/*.hpp" -o docs/diagrams/src/webserv.puml
+        hpp2plantuml -d -i "./includes/**/*.hpp" -o docs/diagrams/src/webserv.puml
         
         java -jar ../plantuml.jar "docs/diagrams/src/webserv.puml" -o ../out
         java -jar ../plantuml.jar "docs/diagrams/src/webserv.puml" -o ../out -tsvg
