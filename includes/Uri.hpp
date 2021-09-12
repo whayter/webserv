@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/03 13:01:23 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/30 16:29:02 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/12 17:53:19 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <iostream>
 
 #include "SyntaxError.hpp"
+#include "path.hpp"
 
 /**
  *    The following are two example URIs and their component parts:
@@ -67,7 +68,8 @@ public:
 	inline std::string		getScheme()			{ return _scheme;	}
 	inline std::string		getUserInfo()		{ return _userInfo; }
 	inline std::string		getHost() const		{ return _host; 	}
-	inline std::string		getPath()			{ return _path;		}
+	//inline std::string		getPath()			{ return _path;		}
+	inline ft::filesystem::path		getPath()			{ return ft::filesystem::path(_path);		}
 	inline u_short			getSpecifiedPort()	{ return _port;		}
 	inline std::string		getRawQuery()		{ return _query;	}
 	
