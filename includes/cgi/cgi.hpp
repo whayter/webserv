@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Cgi.hpp                                            :+:      :+:    :+:   */
+/*   cgi.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/06 09:34:36 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/07 19:17:02 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/11 10:34:08 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,8 @@ void callCgi(std::vector<unsigned char>* cgiHeaders, std::vector<unsigned char>*
 		// read data from parent here (if method=POST)
 
 		char filename[] = "/usr/local/bin/php-cgi";		// tmp
-		execve(filename, NULL, environ);				// exec cgi binary
+		char* arg = 0;
+		execve(filename, &arg, environ);				// exec cgi binary
 	}
 	else if (pid > 0)									// main process
 	{

@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 09:29:57 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/08 02:32:39 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/11 10:16:46 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "AMessage.hpp"
 # include "HttpRequest.hpp"
 # include "HttpStatus.hpp"
-# include "ServerHandler.hpp"
+# include "Server.hpp"
 # include "ServerConfig.hpp"
 
 # include <string>

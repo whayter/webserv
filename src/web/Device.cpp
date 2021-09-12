@@ -1,20 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Cgi.cpp                                            :+:      :+:    :+:   */
+/*   Device.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/06 01:10:29 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/06 01:38:29 by hwinston         ###   ########.fr       */
+/*   Created: 2021/09/11 10:18:09 by hwinston          #+#    #+#             */
+/*   Updated: 2021/09/11 10:18:58 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/cgi/Cgi.hpp"
+#include "Device.hpp"
 
-int main()
+void web::Device::setPort(uint32_t port)
 {
-    std::string res = callCgi();
-    std::cout << res << std::endl;
-	return 0;
+    _port = port;
 }
