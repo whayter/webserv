@@ -1,75 +1,73 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ServerHandler.cpp                                  :+:      :+:    :+:   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/15 19:22:37 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/30 22:24:47 by hwinston         ###   ########.fr       */
+/*   Created: 2021/09/08 23:26:05 by hwinston          #+#    #+#             */
+/*   Updated: 2021/09/12 15:13:23 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ServerHandler.hpp"
-#include "HttpRequest.hpp"
-
-#include "HttpResponse.hpp"
-
+#include "Server.hpp"
+#include "ServerConfig.hpp"
 #include "utility.hpp"
+#include "HttpResponse.hpp"
 
 #include <cerrno>
 #include <ctime>
+#include <cstring>
 #include <iomanip>
+#include <unistd.h>
 
-#define BUF_SIZE 1048
+#define BUFFER_SIZE 1048
 
 /* --- Public functions ----------------------------------------------------- */
 
-server::ServerHandler::ServerHandler()
+web::Server::Server()
 {
-	ServerConfig& config = ServerConfig::getInstance();
+    ServerConfig& config = ServerConfig::getInstance();
 	std::vector<uint32_t> ports = config.getPorts();
 	std::vector<uint32_t>::iterator port;
 	for (port = ports.begin(); port != ports.end(); port++)
 	{
-		server::Server newServer;
-		newServer.port = *port;
-		_servers.push_back(newServer);
+		Device newServer;
+		newServer.setPort(*port);
+		_devices.push_back(newServer);
 	}
 	memset(_fds, 0, sizeof(_fds));
 	_nfds = 0;
 }
 
-server::ServerHandler::~ServerHandler()
+web::Server::~Server()
 {
 	stop(0);
 }
 
-bool server::ServerHandler::start(void)
+bool web::Server::setup()
 {
-	std::vector<Server>::iterator server;
-	for (server = _servers.begin(); server != _servers.end(); server++)
+	std::vector<Device>::iterator device;
+	for (device = _devices.begin(); device != _devices.end(); device++)
 	{
-		if (!server->socket.setFd(AF_INET, SOCK_STREAM))
+		if (!device->getSocket().setFd(AF_INET, SOCK_STREAM))
 			return false;
-		server->socket.setAddr(AF_INET, INADDR_ANY, server->port);
-		if (!sckt::setNonBlocking(server->socket.getFd())
-		|| !sckt::setReusableAddr(server->socket.getFd())
-		|| !sckt::bindSocket(server->socket.getFd(), server->socket.getAddr())
-		|| !sckt::listenSocket(server->socket.getFd()))
+		device->getSocket().setAddr(AF_INET, INADDR_ANY, device->getPort());
+		if (!setNonBlocking(device->getSocket().getFd())
+		|| !setReusableAddr(device->getSocket().getFd())
+		|| !bindSocket(device->getSocket().getFd(), device->getSocket().getAddr())
+		|| !listenSocket(device->getSocket().getFd()))
 			stop(-1);
-		_fds[_nfds].fd = server->socket.getFd();
+		_fds[_nfds].fd = device->getSocket().getFd();
 		_fds[_nfds].events = POLLIN;
-		server->index = _nfds;
 		_nfds++;
 	}
 	_firstClientIndex = _nfds;
 	return true;
 }
 
-void server::ServerHandler::run(void)
+void web::Server::routine()
 {
-	_upToDateData = true;
 	int pollStatus;
 	if ((pollStatus = poll(_fds, _nfds, 0)) == -1)
 		stop(-1);
@@ -78,10 +76,10 @@ void server::ServerHandler::run(void)
 		if (_fds[i].revents == 0)
 			continue;
 		else if (_fds[i].revents & POLLHUP)
-			_disconnectClient(i);
+			_disconnectDevice(i);
 		else if (_fds[i].revents & POLLIN)
 		{
-			if (_isServerSocket(i))
+			if (_isServerIndex(i))
 				_connectClients(_fds[i].fd);
 			else
 			{
@@ -93,22 +91,16 @@ void server::ServerHandler::run(void)
 		else
 			stop(-1);
 	}
-	if (!_upToDateData)
-		_updateData();
 }
 
-void server::ServerHandler::stop(int status)
+void web::Server::stop(int status)
 {
 	for (int i = 0; i < _nfds; i++)
-	{
-		sckt::closeSocket(_fds[i].fd);
-		delete _requests[i];
-	}
-	_servers.clear();
+		_disconnectDevice(i);
+	_devices.clear();
 	if (status == -1)
 	{
-		_log(0, "An error has occurred.");
-		_log (0, "Shutting down...");
+		_log(0, "An error has occurred. Shutting down...");
 		exit(EXIT_FAILURE);
 	}
 	else
@@ -117,49 +109,54 @@ void server::ServerHandler::stop(int status)
 
 /* --- Private functions ---------------------------------------------------- */
 
-void server::ServerHandler::_connectClients(int serverSocket)
+void web::Server::_connectClients(int serverFd)
 {
-	while (_nfds < SOMAXCONN)
+	while (true)
 	{
-		sckt::fd_type newFd;
-		newFd = accept(serverSocket, NULL, NULL);
-		if (newFd == INVALID_FD)
+		if (_nfds == SOMAXCONN)
+			_disconnectDevice(_firstClientIndex);
+		Device newClient;
+		newClient.getSocket().setFd(accept(serverFd, NULL, NULL));
+		if (newClient.getSocket().getFd() == INVALID_FD)
 			break;
-		_log(newFd, "Connection accepted.");
+		_devices.push_back(newClient);
+		_log(newClient.getSocket().getFd(), "Connection accepted.");
 		_requests[_nfds] = new HttpRequest();
-		_fds[_nfds].fd = newFd;
+		_fds[_nfds].fd = newClient.getSocket().getFd();
 		_fds[_nfds].events = POLLIN;
 		_nfds++;
 	}
 }
 
-void server::ServerHandler::_disconnectClient(int index)
+void web::Server::_disconnectDevice(int deviceIndex)
 {
-	_log(_fds[index].fd, "Connection closed.");
-	sckt::closeSocket(_fds[index].fd);
-	delete _requests[index];
-	_requests[index] = NULL;
-	_fds[index].fd = -1;
-	_upToDateData = false;
+	_log(_fds[deviceIndex].fd, "Connection closed.");
+	closeSocket(_fds[deviceIndex].fd);
+	delete _requests[deviceIndex];
+	_requests[deviceIndex] = NULL;
+	_devices.erase(_devices.begin() + deviceIndex);
+	for (int i = deviceIndex; i < _nfds; i++)
+	{
+		_fds[i] = _fds[i + 1];
+		_requests[i] = _requests[i + 1];
+	}
+	_nfds--;
 }
 
-void server::ServerHandler::_serveClient(int index)
+void web::Server::_serveClient(int index)
 {
 	ServerConfig& config = ServerConfig::getInstance();
 	Uri uri = _requests[index]->getUri();
 	HttpResponse response(config.findServer(uri), *_requests[index]);
-	response.setMandatory();
+	response.build();
 	_sendResponse(index, response.toString().c_str());
 	_requests[index]->clear();
 }
 
-void server::ServerHandler::_getRequest(int index)
+void web::Server::_getRequest(int index)
 {
-
-	// send nbytes to read
-
-	char buffer[BUF_SIZE] = {0};
-	int nbytes = recv(_fds[index].fd, buffer, BUF_SIZE - 1, 0);
+	char buffer[BUFFER_SIZE] = {0};
+	int nbytes = recv(_fds[index].fd, buffer, BUFFER_SIZE - 1, 0);
 	if (nbytes < 0)
 		stop(-1);
 	else if (nbytes > 0)
@@ -168,7 +165,7 @@ void server::ServerHandler::_getRequest(int index)
 		_log(_fds[index].fd, "Request received.");
 }
 
-void server::ServerHandler::_sendResponse(int index, const char* response)
+void web::Server::_sendResponse(int index, const char* response)
 {
 	if (send(_fds[index].fd, response, strlen(response), 0) == -1)
 	{
@@ -178,30 +175,12 @@ void server::ServerHandler::_sendResponse(int index, const char* response)
 	_log(_fds[index].fd, "Response sent.");
 }
 
-bool server::ServerHandler::_isServerSocket(int index)
+bool web::Server::_isServerIndex(int index)
 {
 	return index < _firstClientIndex;
 }
 
-void server::ServerHandler::_updateData(void)
-{
-	for (int i = 0; i < _nfds; i++)
-	{
-		if (_fds[i].fd == -1)
-		{
-			for (int j = i; j < _nfds; j++)
-			{
-				_fds[j] = _fds[j + 1];
-				_requests[j] = _requests[j + 1];
-			}
-			_nfds--;
-			i--;
-		}
-	}
-	_upToDateData = true;
-}
-
-void server::ServerHandler::_log(int fd, std::string message)
+void web::Server::_log(int fd, std::string description)
 {
 	std::cout << std::setw(4) << std::setfill(' ') << ' ';
 	std::cout << "[" << getDate() << "]";
@@ -212,5 +191,5 @@ void server::ServerHandler::_log(int fd, std::string message)
 		std::cout << fd;
 		std::cout << std::setw(4) << std::setfill(' ') << ' ';
 	}
-	std::cout << message << std::endl;
+	std::cout << description << std::endl;
 }
