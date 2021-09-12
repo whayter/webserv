@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/06 09:34:36 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/12 16:50:41 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/12 17:58:59 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,9 @@ void setEnvironment(ServerBlock& sblock, HttpRequest& request)
 	setenv("QUERY_STRING", request.getUri().getQuery().c_str(), 0);
 	setenv("DOCUMENT_ROOT", sblock.getRoot().c_str(), 0);
 
-	char tmp[256];
-	std::string scriptFilename = getcwd(tmp, 256);
-	scriptFilename += sblock.getRoot();
-	scriptFilename += request.getUri().getPath();
-	// std::cout << "fs = " << fs::absolute(sblock.getRoot() / request.getUri().getPath()).c_str() << std::endl;
-	// std::cout << "sc = " << scriptFilename << std::endl;
-	
-	setenv("SCRIPT_FILENAME", scriptFilename.c_str(), 0);	// tmp
+	fs::path p = sblock.getRoot().relative_path() / request.getUri().getPath().relative_path();	// tmp
+
+	setenv("SCRIPT_FILENAME", fs::absolute(p).c_str(), 0);	// tmp
 	setenv("CONTENT_TYPE", request.getHeader("Content-type").c_str(), 0);
 	setenv("CONTENT_LENGTH", request.getHeader("Content-Length").c_str(), 0);
 }
