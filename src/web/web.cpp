@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 22:45:42 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/11 00:19:11 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/12 15:10:07 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,10 @@
 
 #include <iostream>
 #include <cerrno>
+#include <cstring>
 #include <unistd.h>
 #include <fcntl.h>
+
 
 void	web::closeSocket(fd_type fd)
 {
