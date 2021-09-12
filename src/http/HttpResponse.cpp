@@ -6,13 +6,16 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:47:59 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/02 11:15:23 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/09 19:10:00 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HttpResponse.hpp"
 #include "ServerConfig.hpp"
 #include "utility.hpp"
+#include "cgi.hpp"
+
+#include <algorithm>
 
 /* --- Public functions ----------------------------------------------------- */
 
@@ -20,26 +23,26 @@ HttpResponse::HttpResponse(ServerBlock serverBlock, HttpRequest& request)
 : _serverBlock(serverBlock), _request(request)
 {
 	int code = request.getHttpErrorCode();
-	if (code == 0)
-		_setStatus(HttpStatus::OK);
-	else
+	if (code != 0)
 		_setStatus(code);
 }
 
 HttpResponse::~HttpResponse() {}
 
-
 void HttpResponse::setLocalContent()
 {
 	std::ifstream ifs;
-	std::string path = "www" +  _request.getUri().getPathEtc();						// tmp
-	ifs.open(path.c_str());
+	std::string root = _serverBlock.getRoot();
+	std::string path = _request.getUri().getPath();
+	std::string file = "." + root + path;					// root will always start with '/' ?
+	ifs.open(file.c_str());
 	if (!ifs)
 	{
 		_code.setValue(HttpStatus::NotFound);
 		setErrorContent();
 		return ;
 	}
+	_code.setValue(HttpStatus::OK);		// set ici ?
 	ifs.seekg(0, ifs.end);
 	int len = ifs.tellg();
 	ifs.seekg(0, ifs.beg);
@@ -48,7 +51,18 @@ void HttpResponse::setLocalContent()
 	_content = buffer;
 }
 
-void HttpResponse::setErrorContent()
+void HttpResponse::setCgiContent()
+{
+	std::vector<unsigned char> cgiHeaders;
+	std::vector<unsigned char> cgiContent;
+	setEnvironment(_serverBlock, _request);
+	callCgi(&cgiHeaders, &cgiContent);
+	unsetEnvironment();
+	_parseCgiHeaders(cgiHeaders);
+	_content = std::string(cgiContent.begin(), cgiContent.end());
+}
+
+void HttpResponse::setErrorContent()												// not complete yet
 {
 	_content = "<!DOCTYPE html>";
 	_content += "<html lang=\"en\"><head><meta charset=\"utf-8\">";
@@ -67,37 +81,74 @@ void HttpResponse::setErrorContent()
 		_content += "<p>Webserv</p></body></html>";
 }
 
-void HttpResponse::setMandatory()
+void HttpResponse::build()
 {
+	/* PSEUDO-CODE */
+	
+	// if (cgi)
+	// 	callCgi();
+	// else if (GET)
+	// 	setLocalContent();
+	// else if (POST)
+	// 	post();
+	// else if (DELETE)
+	// 	delete();
+	// else
+	// 	err(not a valid method)
+	// setHeaders();
+
+	std::string path = _request.getUri().getPath();			// tmp
+	size_t pos = path.find_last_of('.') + 1;				// tmp
+	if (path.substr(pos) == "php")
+		setCgiContent();									// tmp
+	else
+		setLocalContent();
 	_setStatusLine();
 	_setDate();
 	_setServer();
-
-	setLocalContent();			// for local get
-
 	_setContentLength();
-
 	_setContentType(_request.getUri());
 }
-
-
 
 std::string HttpResponse::toString()
 {
 	std::string s;
-	s = _statusLine + "\n";
-	map_type::iterator header;
+	s = _statusLine + "\r\n";
+	headers_type::iterator header;
 	for (header = _headers.begin(); header != _headers.end(); header++)
 		s += header->first + ": " + header->second + "\n";
-	s += "\n" + _content;
+	s += "\r\n" + _content;
 	return s;
 }
 
 /* --- Private functions ---------------------------------------------------- */
 
+void		HttpResponse::_parseCgiHeaders(std::vector<unsigned char>& cgiHeaders)
+{
+	std::stringstream ss(std::string(cgiHeaders.begin(), cgiHeaders.end()));
+	size_t n = std::count(cgiHeaders.begin(), cgiHeaders.end(), '\r');
+	for (size_t i = 0; i < n - 1; i++)
+	{
+		std::string line;
+		getline(ss, line);
+		int firstPos = line.find(':');
+		std::string name = line.substr(0, firstPos);
+		int secondPos = line.find('\r');
+		std::string value = line.substr(firstPos + 2, secondPos);
+		if (name == "Status")
+		{
+			std::cout << "name = status !" << std::endl;
+			_setStatus(stringToInt(value.substr(0, value.find_first_of(' '))));
+			_setStatusLine();
+		}
+		else if (name == "Content-type")
+			setHeader(name, value);
+	}
+}
+
 std::string	HttpResponse::_getHeader(std::string key)
 {
-	map_type::iterator header = _headers.find(key);
+	headers_type::iterator header = _headers.find(key);
 	return header->first + ": " + header->second;	
 }
 
@@ -128,23 +179,23 @@ void		HttpResponse::_setStatusLine(void)
 
 void		HttpResponse::_setDate(void)
 {
-	this->addHeader("Date", getDate());
+	this->setHeader("Date", getDate());
 }
 
 void 		HttpResponse::_setServer(void)
 {
-	this->addHeader("Server", "Webserv");
+	this->setHeader("Server", "Webserv");
 }
 
 void 		HttpResponse::_setContentLength(void)
 {
-	this->addHeader("Content-Length", intToString(_content.size()));
+	this->setHeader("Content-Length", intToString(_content.size()));
 }
 
 void 		HttpResponse::_setContentType(const Uri& uri)
 {
 	(void)uri;
-	addHeader("Content-Type", "text/html"); // tmp
+	setHeader("Content-Type", "text/html"); // tmp
 
 	// scrapper le content-type dans le content demandé / retourné par cgi ?
 
@@ -158,10 +209,10 @@ void 		HttpResponse::_setContentType(const Uri& uri)
 	// int pos = path.find_last_of(".");
 	// if (!path.at(pos) || !path.at(pos + 1))
 	// {
-	// 	addHeader("Content-Type", "text/plain");
+	// 	setHeader("Content-Type", "text/plain");
 	// 	return ;
 	// }
 	// std::string type = path.substr(pos + 1);
 	// if (type == "html" || type == "htm" || type == "php")
-	// 	addHeader("Content-Type", "text/html");
+	// 	setHeader("Content-Type", "text/html");
 }

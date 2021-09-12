@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 16:10:02 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/30 08:47:39 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/08 01:25:04 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,15 @@ std::string intToString(int i)
 
 	ss << i;
 	result = ss.str();
+	return result;
+}
+
+int stringToInt(std::string integer)
+{
+	int result;
+	std::stringstream ss;
+	ss << integer;
+	ss >> result;
 	return result;
 }
 

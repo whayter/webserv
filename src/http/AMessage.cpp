@@ -1,26 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utility.hpp                                        :+:      :+:    :+:   */
+/*   AHttpMessage.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/16 16:06:58 by juligonz          #+#    #+#             */
-/*   Updated: 2021/09/08 01:25:20 by hwinston         ###   ########.fr       */
+/*   Created: 2021/08/04 13:20:58 by hwinston          #+#    #+#             */
+/*   Updated: 2021/09/05 15:56:21 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef UTILITY_HPP
-#define UTILITY_HPP
+#include "AMessage.hpp"
 
-#include <string>
-#include <sstream>
-#include <ctime>
+AMessage::AMessage() {}
+AMessage::~AMessage() {}
 
-std::string intToString(int i);
-int         stringToInt(std::string integer);
-void		lowerStringInPlace(std::string& s);
-bool		isInteger(std::string& s);
-std::string getDate();
+std::string& AMessage::getHeader(std::string name)
+{
+	return _headers[name];
+}
 
-#endif
+void AMessage::setHeader(std::string name, std::string value)
+{
+	_headers[name] = value;
+}
+
+void AMessage::setContent(content_type content)
+{
+	_content = content;
+}

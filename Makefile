@@ -63,9 +63,9 @@ SRC+= utility.cpp
 
 SRC+= ScannerHttpRequest.cpp ScannerConfig.cpp ServerConfig.cpp
 SRC+= ScannerStream.cpp ScannerBuffer.cpp
-SRC+= AHttpMessage.cpp HttpRequest.cpp HttpResponse.cpp HttpStatus.cpp
+SRC+= AMessage.cpp HttpRequest.cpp HttpResponse.cpp HttpStatus.cpp
 SRC+= Uri.cpp
-SRC+= Socket.cpp ServerHandler.cpp
+SRC+= web.cpp Device.cpp Socket.cpp Server.cpp
 
 # ft
 SRC+= system_error.cpp error_code.cpp

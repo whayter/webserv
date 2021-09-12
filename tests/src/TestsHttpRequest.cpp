@@ -29,9 +29,10 @@ TEST_CASE( "HttpRequest::read simple get", "[class][HttpRequest][read]" )
 	CHECK( req.getHeader("Accept-Encoding")	== "gzip, deflate, br");
 	CHECK( req.getHeader("Connection")		== "keep-alive");
 	CHECK( req.getHeader("Cookie")			== "ASPSESSIONIDQADTQAQR=JNJLAIGBPIMBDAJPJNIFKIEK");
-
-	CHECK( req.getContent() == "Test");
-
+	
+	std::string s("Test");
+	std::vector<unsigned char> comp(s.begin(), s.end());
+	CHECK( req.getContent() == comp );
 }
 
 // simple post
@@ -60,8 +61,9 @@ TEST_CASE( "HttpRequest::read simple post", "[class][HttpRequest][read]" )
 	CHECK( req.getHeader("Content-Length")		== "9");
 	CHECK( req.getHeader("Cookie")		== "ASPSESSIONIDQADTQAQR=JNJLAIGBPIMBDAJPJNIFKIEK");
 
-	CHECK( req.getContent() == "test test");
-
+	std::string s("test test");
+	std::vector<unsigned char> comp(s.begin(), s.end());
+	CHECK( req.getContent() == comp );
 }
 
 // two get in a row with payload
@@ -90,8 +92,9 @@ TEST_CASE( "HttpRequest::read3", "[class][HttpRequest][read]" )
 	CHECK( req.getHeader("Content-Length")		== "14");
 	CHECK( req.getHeader("Cookie")		== "ASPSESSIONIDQACCRAQT=MOOMNKOCMFKECOHGBEDGOEDP");
 
-
-	CHECK( req.getContent() == "hi\nhow\nare\nu ?");
+	std::string s("hi\nhow\nare\nu ?");
+	std::vector<unsigned char> comp(s.begin(), s.end());
+	CHECK( req.getContent() == comp );
 	CHECK( req.isComplete() );
 
 	req.clear();
@@ -113,10 +116,9 @@ TEST_CASE( "HttpRequest::read3", "[class][HttpRequest][read]" )
 	CHECK( req.getHeader("Connection")		== "keep-alive");
 	CHECK( req.getHeader("Content-Length")		== "23");
 
-
-	CHECK( req.getContent() == "Well and u ?\nWtf man !?");
-
-
+	std::string ss("Well and u ?\nWtf man !?");
+	std::vector<unsigned char> compp(ss.begin(), ss.end());
+	CHECK( req.getContent() == compp );
 }
 
 /// two get in a row without payload
@@ -206,7 +208,9 @@ TEST_CASE( "HttpRequest::read simple get, but cut in two read", "[class][HttpReq
 	CHECK( req.getHeader("Connection")		== "keep-alive");
 	CHECK( req.getHeader("Cookie")			== "ASPSESSIONIDQADTQAQR=JNJLAIGBPIMBDAJPJNIFKIEK");
 
-	CHECK( req.getContent() == "Test");
+	std::string s("Test");
+	std::vector<unsigned char> comp(s.begin(), s.end());
+	CHECK( req.getContent() == comp );
 
 	req.clear();
 	CHECK( req.getMethod().empty() );
@@ -256,8 +260,9 @@ TEST_CASE( "HttpRequest::read simple get, cut in two read - loop", "[class][Http
 			CHECK( req.getHeader("Connection")		== "keep-alive");
 			CHECK( req.getHeader("Cookie")			== "ASPSESSIONIDQADTQAQR=JNJLAIGBPIMBDAJPJNIFKIEK");
 
-			CHECK( req.getContent() == "Test"); 
-
+			std::string s("Test");
+			std::vector<unsigned char> comp(s.begin(), s.end());
+			CHECK( req.getContent() == comp );
 		}
     }
 

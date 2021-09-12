@@ -1,26 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utility.hpp                                        :+:      :+:    :+:   */
+/*   Device.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/16 16:06:58 by juligonz          #+#    #+#             */
-/*   Updated: 2021/09/08 01:25:20 by hwinston         ###   ########.fr       */
+/*   Created: 2021/09/11 10:18:09 by hwinston          #+#    #+#             */
+/*   Updated: 2021/09/11 10:18:58 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef UTILITY_HPP
-#define UTILITY_HPP
+#include "Device.hpp"
 
-#include <string>
-#include <sstream>
-#include <ctime>
-
-std::string intToString(int i);
-int         stringToInt(std::string integer);
-void		lowerStringInPlace(std::string& s);
-bool		isInteger(std::string& s);
-std::string getDate();
-
-#endif
+void web::Device::setPort(uint32_t port)
+{
+    _port = port;
+}

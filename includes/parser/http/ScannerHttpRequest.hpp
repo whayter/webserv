@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ScannerHttpRequest.hpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:36:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/21 18:54:22 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/09/05 13:16:51 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

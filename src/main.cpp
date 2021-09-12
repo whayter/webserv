@@ -6,12 +6,12 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/30 14:07:41 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/30 09:03:44 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/11 10:42:53 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ServerConfig.hpp"
-#include "ServerHandler.hpp"
+#include "Server.hpp"
 
 #include <iostream>
 #include <iomanip>
@@ -77,6 +77,8 @@ void prompt()
 	emptyLine(width, ornament);
 	solidLine(width, ornament);
 	std::cout << std::endl;
+	std::cout << "    _____________ [date] ____________ [id] _______ [status] _______"<< std::endl;
+	std::cout << std::endl;
 }
 
 void signalCallback(int signum) {
@@ -88,12 +90,12 @@ void signalCallback(int signum) {
 int main(int ac, char** av)
 {
 	parseArgs(ac, av);
-	server::ServerHandler sh;
+	web::Server sh;
 	signal(SIGINT, signalCallback);
-	sh.start();
+	sh.setup();
 	run = true;
 	prompt();
 	while (run)
-		sh.run();
+		sh.routine();
 	return 0;
 }

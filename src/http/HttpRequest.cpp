@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpRequest.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:36:30 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/21 19:24:42 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/09/05 15:56:48 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,32 +15,15 @@
 #include "parser/http/ScannerHttpRequest.hpp"
 
 HttpRequest::HttpRequest()
-	: AHttpMessage(), _code(HttpStatus::None), _isRequestLineParsed(false),
+	: AMessage(), _code(HttpStatus::None), _isRequestLineParsed(false),
 		_isHeaderParsed(false),	_isComplete(false), _scanner(NULL)
 {}
 
 HttpRequest::~HttpRequest() {}
 
-
-std::string& HttpRequest::getMethod()
-{
-	return _method;
-}
-
-Uri&	HttpRequest::getUri()
-{
-	return _uri;
-}
-
-
 void HttpRequest::setMethod(std::string method)
 {
 	_method = method;
-}
-
-void HttpRequest::setUri(const Uri &uri)
-{
-	_uri = uri;
 }
 
 void HttpRequest::setVersion(std::string version)
@@ -48,21 +31,10 @@ void HttpRequest::setVersion(std::string version)
 	_version = version;
 }
 
-std::string HttpRequest::toString()
+void HttpRequest::setUri(const Uri &uri)
 {
-	std::string s;
-	map_type header;
-	map_type::iterator it;
-
-	s = "Method:\n\t" + getMethod() + "\n";
-	s += "URI:\n\t" + _uri.toString() + "\n";
-	s += "Headers:\n";
-	header = this->getHeaders();
-	for (it = header.begin(); it != header.end(); it++)
-		s += "\t" + it->first + "\t" + it->second + "\n";
-	return s;
+	_uri = uri;
 }
-
 
 namespace ph = parser::http;
 
@@ -153,7 +125,7 @@ void HttpRequest::read(const char *buffer, size_t len)
 					throw std::invalid_argument("new line !>" + nl.value + "|" + ph::TokenKindToCstring(t.kind));
 
 				if (!name.empty())
-					this->addHeader(name, value);
+					this->setHeader(name, value);
 				else
 					_isHeaderParsed = true;
 				name.clear();
@@ -191,7 +163,7 @@ void HttpRequest::read(const char *buffer, size_t len)
 	char c;
 	size_t contentLength = this->getContentLength(); // - _content.size();
 	while (contentLength-- && (c = _scanner.getChar()))
-		_content += c;
+		_content.push_back(c);
 	if (_content.size() != this->getContentLength()) return ;
 	_isComplete = true;
 
@@ -200,30 +172,6 @@ void HttpRequest::read(const char *buffer, size_t len)
 	// 	_code.setValue(HttpStatus::PayloadTooLarge);
 	// if (this->getUri().getPathEtc().size() > 8000)
 	// 	_code.setValue(HttpStatus::URITooLong);
-}
-
-bool HttpRequest::_getCompleteToken(ph::Token& placeHolder, bool skipLWS)
-{
-	placeHolder = _scanner.getToken(skipLWS);
-	if (_scanner.peekNextToken().kind == ph::ScopedEnum::kEndOfInput)
-	{
-		_scanner.putback(placeHolder);
-		return false;
-	}
-	return true;
-}
-
-void HttpRequest::write(std::ostream os)
-{
-	map_type header;
-	map_type::iterator it;
-
-	os << _method << " ";
-	os << _uri.getPathEtc() << " ";
-	os << _version << "\n";
-	for (it = header.begin(); it != header.end(); it++)
-		os << it->first << ": " << it->second + "\n";
-	os.flush();
 }
 
 void	HttpRequest::clear(void)
@@ -246,4 +194,24 @@ bool	HttpRequest::isComplete(void)
 int	HttpRequest::getHttpErrorCode()
 {
 	return _code.getValue();
+}
+
+size_t HttpRequest::getContentLength()
+{
+	const char* key = "Content-Length";
+
+	if (_headers.find(key) != _headers.end())
+		return strtoul(_headers[key].c_str(), 0, 10);	
+	return 0;
+}
+
+bool HttpRequest::_getCompleteToken(ph::Token& placeHolder, bool skipLWS)
+{
+	placeHolder = _scanner.getToken(skipLWS);
+	if (_scanner.peekNextToken().kind == ph::ScopedEnum::kEndOfInput)
+	{
+		_scanner.putback(placeHolder);
+		return false;
+	}
+	return true;
 }

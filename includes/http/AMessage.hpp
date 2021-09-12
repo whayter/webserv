@@ -1,55 +1,52 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   AHttpMessage.hpp                                   :+:      :+:    :+:   */
+/*   AMessage.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 14:47:44 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/12 23:27:31 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/09/08 02:33:55 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef AHTTP_MESSAGE_HPP
-#define AHTTP_MESSAGE_HPP
+#ifndef AMESSAGE_HPP
+#define AMESSAGE_HPP
 
+#include <vector>
 #include <map>
-#include <sstream>
-#include <algorithm>
+#include <string>
 
-class AHttpMessage
+class AMessage
 {
 	public:
 
 	/* --- Member types ----------------------------------------------------- */
 
-		typedef std::map<std::string, std::string>	map_type;
+		typedef std::map<std::string, std::string>	headers_type;
+		typedef std::vector<unsigned char>			content_type;
 
 	/* --- Member functions ------------------------------------------------- */
 
-		AHttpMessage();
-		virtual ~AHttpMessage();
+		AMessage();
+		virtual ~AMessage();
 
-		std::string		getContent();
-		std::string 	getHeader(std::string name);
-		size_t			getContentLength();
-		map_type		getHeaders();
+		inline headers_type		getHeaders() { return _headers; }
+		inline content_type		getContent() { return _content; }
 
+		/// returns a reference to the value associated with name.
+		/// returns an empty string if name is not a valid header.
+		std::string& 			getHeader(std::string name);
 
-		void 			addHeader(std::string name, std::string value);
-		void			setContent(std::string content);
-		// void			setContentType(std::string type);
-		// void 			setHeaders(map_type headers);
+		void 					setHeader(std::string name, std::string value);
+		void					setContent(content_type content);
 
-        // virtual void	read(std::istream is) = 0;
-		void			readContent(std::istream is);
-	
 	protected:
 
 	/* --- Member variables ------------------------------------------------- */
 
-		std::string		_content;
-        map_type		_headers;
+		content_type		_content;
+        headers_type		_headers;
 };
 
 #endif

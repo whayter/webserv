@@ -6,23 +6,23 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 09:29:57 by hwinston          #+#    #+#             */
-/*   Updated: 2021/08/30 13:06:49 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/11 10:16:46 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HTTP_RESPONSE_HPP
 # define HTTP_RESPONSE_HPP
 
-# include "AHttpMessage.hpp"
+# include "AMessage.hpp"
 # include "HttpRequest.hpp"
 # include "HttpStatus.hpp"
-# include "ServerHandler.hpp"
+# include "Server.hpp"
 # include "ServerConfig.hpp"
 
 # include <string>
 # include <fstream>
 
-class HttpResponse: public AHttpMessage
+class HttpResponse: public AMessage
 {
 	public:
 
@@ -31,36 +31,44 @@ class HttpResponse: public AHttpMessage
 		HttpResponse(ServerBlock serverBlock, HttpRequest& request);
 		~HttpResponse();
 
-		void			setMandatory();
 
-		void			setLocalContent();
-		void			setErrorContent();
+		void		cgi();
+		void		get();
+		void		post();
+		void		del();
 
+		void		build();
 
-		std::string		toString();		
+		void		setLocalContent();
+		void		setCgiContent();
+		void		setErrorContent();
+
+		std::string	toString();		
 
 	private:
 
 	/* --- Private functions ------------------------------------------------ */
 
-		std::string		_getHeader(std::string key);
-		int				_getStatus(void); 
-		std::string		_getStatusMessage(void);
+		void		_parseCgiHeaders(std::vector<unsigned char>& cgiHeaders);
 
-		void			_setStatus(int code);
-		void			_setStatusLine(void);
-		void			_setDate(void);
-		void			_setServer(void);
-		void			_setContentType(const Uri& uri);
-		void			_setContentLength(void);
+		std::string	_getHeader(std::string key);
+		int			_getStatus(void); 
+		std::string	_getStatusMessage(void);
+
+		void		_setStatus(int code);
+		void		_setStatusLine(void);
+		void		_setDate(void);
+		void		_setServer(void);
+		void		_setContentType(const Uri& uri);
+		void		_setContentLength(void);
 
 	/* --- Member variables ------------------------------------------------- */
 
-		ServerBlock		_serverBlock;
-		HttpRequest		_request;
-		std::string		_statusLine;
-		std::string		_content;	
-		HttpStatus		_code;
+		ServerBlock	_serverBlock;
+		HttpRequest	_request;
+		std::string	_statusLine;
+		std::string	_content;	
+		HttpStatus	_code;
 };
 
 #endif
