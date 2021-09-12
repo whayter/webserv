@@ -6,21 +6,21 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 11:04:34 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/05 15:54:36 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/12 22:18:37 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HTTP_REQUEST
-# define HTTP_REQUEST
+#define HTTP_REQUEST
 
-# include <string>
+#include <string>
 
-# include "AMessage.hpp"
-# include "HttpStatus.hpp"
-# include "Uri.hpp"
-# include "parser/http/ScannerHttpRequest.hpp"
+#include "Message.hpp"
+#include "Status.hpp"
+#include "Uri.hpp"
+#include "parser/http/ScannerHttpRequest.hpp"
 
-class HttpRequest: public AMessage
+class HttpRequest: public http::Message
 {
 	public:
 
@@ -58,7 +58,7 @@ class HttpRequest: public AMessage
 
 		std::string		_method, _version;
 		Uri				_uri;
-		HttpStatus		_code;
+		http::Status	_code;
 
 		bool	_isRequestLineParsed;
 		bool	_isHeaderParsed;

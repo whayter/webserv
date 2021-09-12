@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 16:56:40 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/11 10:18:36 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/12 22:01:38 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,31 +15,37 @@
 
 #include "web.hpp"
 #include "Socket.hpp"
+#include "Message.hpp"
+
+#include <queue>
+#include <deque>
 
 //#define BUFFER_SIZE 4096
 
-class web::Device
+namespace web {
+
+class Device
 {
-	public:
+public:
 
-	/* --- Member functions ------------------------------------------------- */
+	Device() {}
+	~Device() {}
 
-		Device() {}
-		~Device() {}
+	void								setPort(uint32_t port);
 
-		void			setPort(uint32_t port);
+	inline uint32_t						getPort() { return _port; }
+	inline Socket&						getSocket() { return _socket; }
+	inline std::deque<unsigned char>	getBuffer() { return _buffer; }
 
-		inline uint32_t	getPort() { return _port; }
-		inline Socket&	getSocket() { return _socket; }
-		//inline char*	getBuffer() { return _buffer; }
+private:
 
-	private:
-
-	/* --- Member variables ------------------------------------------------- */
-
-		uint32_t		_port;
-		Socket			_socket;
-		//char			_buffer[BUFFER_SIZE];
+	uint32_t							_port;
+	Socket								_socket;
+	std::deque<unsigned char>			_buffer;
+	std::queue<http::Message>			_requests;
+	std::queue<http::Message>			_responses;
 };
+
+} /* namespace http */
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:36:30 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/05 15:56:48 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/12 23:15:57 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "parser/http/ScannerHttpRequest.hpp"
 
 HttpRequest::HttpRequest()
-	: AMessage(), _code(HttpStatus::None), _isRequestLineParsed(false),
+	: Message(), _isRequestLineParsed(false),
 		_isHeaderParsed(false),	_isComplete(false), _scanner(NULL)
 {}
 
@@ -61,7 +61,7 @@ void HttpRequest::read(const char *buffer, size_t len)
 			||	!t.value.compare("DELETE"))
 				this->setMethod(t.value);
 			else
-				_code.setValue(HttpStatus::BadRequest);
+				_code.setValue(http::Status::BadRequest);
 				// throw std::invalid_argument("Bad http request, No method specified");
 		}
 		if (_uri.empty())
@@ -79,7 +79,7 @@ void HttpRequest::read(const char *buffer, size_t len)
 			ph::Token cr;
 			if (!_getCompleteToken(cr)) return;
 			if (cr.kind != ph::ScopedEnum::kCarriage)
-				_code.setValue(HttpStatus::BadRequest);
+				_code.setValue(http::Status::BadRequest);
 				// throw std::invalid_argument("Method line not separated by return carriage");
 
 			if (!_getCompleteToken(t)) {
@@ -87,7 +87,7 @@ void HttpRequest::read(const char *buffer, size_t len)
 				return;
 			}
 			if (t.kind != ph::ScopedEnum::kNewLine)
-				_code.setValue(HttpStatus::BadRequest);
+				_code.setValue(http::Status::BadRequest);
 				// throw std::invalid_argument("Method line not separated by new line");
 		}
 		_isRequestLineParsed = true;
@@ -163,8 +163,8 @@ void HttpRequest::read(const char *buffer, size_t len)
 	char c;
 	size_t contentLength = this->getContentLength(); // - _content.size();
 	while (contentLength-- && (c = _scanner.getChar()))
-		_content.push_back(c);
-	if (_content.size() != this->getContentLength()) return ;
+		getContent().push_back(c);
+	if (getContent().size() != this->getContentLength()) return ;
 	_isComplete = true;
 
 
@@ -179,8 +179,8 @@ void	HttpRequest::clear(void)
 	_method.clear();
 	_uri.clear();
 	_version.clear();
-	_content.clear();
-	_headers.clear();
+	getContent().clear();
+	getHeaders().clear();
 	_isRequestLineParsed = false;
 	_isHeaderParsed = false;
 	_isComplete = false;
@@ -200,8 +200,10 @@ size_t HttpRequest::getContentLength()
 {
 	const char* key = "Content-Length";
 
-	if (_headers.find(key) != _headers.end())
-		return strtoul(_headers[key].c_str(), 0, 10);	
+	http::headers_type headers = getHeaders();
+
+	if (headers.find(key) != headers.end())
+		return strtoul(headers[key].c_str(), 0, 10);	
 	return 0;
 }
 

@@ -6,23 +6,23 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 09:29:57 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/11 10:16:46 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/12 23:10:58 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HTTP_RESPONSE_HPP
 # define HTTP_RESPONSE_HPP
 
-# include "AMessage.hpp"
+# include "Message.hpp"
 # include "HttpRequest.hpp"
-# include "HttpStatus.hpp"
+# include "Status.hpp"
 # include "Server.hpp"
 # include "ServerConfig.hpp"
 
 # include <string>
 # include <fstream>
 
-class HttpResponse: public AMessage
+class HttpResponse: public http::Message
 {
 	public:
 
@@ -68,7 +68,7 @@ class HttpResponse: public AMessage
 		HttpRequest	_request;
 		std::string	_statusLine;
 		std::string	_content;	
-		HttpStatus	_code;
+		http::Status _code;
 };
 
 #endif
