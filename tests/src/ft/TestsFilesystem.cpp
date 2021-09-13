@@ -6,6 +6,7 @@
 #include "ft/filesystem/perms.hpp"
 #include "ft/filesystem/filesystem_error.hpp"
 #include "ft/filesystem/file_status.hpp"
+#include "ft/filesystem/directory_entry.hpp"
 #include <filesystem>
 #include <fstream>
 
@@ -52,6 +53,7 @@ private:
     fx::path _orig_dir;
 };
 
+
 static void generateFile(const fs::path& pathname, int withSize = -1)
 {
     std::ofstream outfile(pathname);
@@ -62,6 +64,18 @@ static void generateFile(const fs::path& pathname, int withSize = -1)
         outfile << std::string(size_t(withSize), '*');
     }
 }
+
+// TEST_CASE("Temporary Directory", "[tempdir]")
+// {
+//     fs::path tempPath;
+//     {
+//         TemporaryDirectory t;
+//         tempPath = t.path();
+//         REQUIRE(fs::exists(fs::path(t.path())));
+//         REQUIRE(fs::is_directory(t.path()));
+//     }
+//     REQUIRE(!fs::exists(tempPath));
+// }
 
 TEST_CASE("fs::current_path - current_path", "[namespace][ft][filesystem][current_path]")
 {
@@ -116,28 +130,6 @@ TEST_CASE("fs::perms ", "[namespace][ft][filesystem][struct][perms]")
     CHECK((fs::perms::all | fs::perms::set_uid | fs::perms::set_gid | fs::perms::sticky_bit) == fs::perms::mask);
 }
 
-// TEST_CASE("fs::permissions - permissions", "[namespace][ft][filesystem][struct][perms]")
-// {
-//     TemporaryDirectory t(TempOpt::change_path);
-//     std::error_code ec;
-//     generateFile("foo", 512);
-//     auto allWrite = fs::perms::owner_write | fs::perms::group_write | fs::perms::others_write;
-//     CHECK_NOTHROW(fs::permissions("foo", allWrite, fs::perm_options::remove));
-//     CHECK((fs::status("foo").permissions() & fs::perms::owner_write) != fs::perms::owner_write);
-//     {
-//         CHECK_THROWS_AS(fs::resize_file("foo", 1024), fs::filesystem_error);
-//         CHECK(fs::file_size("foo") == 512);
-//     }
-//     CHECK_NOTHROW(fs::permissions("foo", fs::perms::owner_write, fs::perm_options::add));
-//     CHECK((fs::status("foo").permissions() & fs::perms::owner_write) == fs::perms::owner_write);
-//     CHECK_NOTHROW(fs::resize_file("foo", 2048));
-//     CHECK(fs::file_size("foo") == 2048);
-//     CHECK_THROWS_AS(fs::permissions("bar", fs::perms::owner_write, fs::perm_options::add), fs::filesystem_error);
-//     CHECK_NOTHROW(fs::permissions("bar", fs::perms::owner_write, fs::perm_options::add, ec));
-//     CHECK(ec);
-//     CHECK_THROWS_AS(fs::permissions("bar", fs::perms::owner_write, static_cast<fs::perm_options>(0)), fs::filesystem_error);
-// }
-
 TEST_CASE("fs::status_known - status_known", "[namespace][ft][filesystem][status_known]")
 {
     CHECK(!fs::status_known(fs::file_status()));
@@ -175,4 +167,119 @@ TEST_CASE("fs::status - status", "[namespace][ft][filesystem][status]")
     fs = fs::status(fs::path(t.path().c_str()) / "barfoo");
     CHECK(fs.type() == fs::file_type::regular);
     CHECK((fs.permissions() & (fs::perms::owner_read | fs::perms::owner_write)) == (fs::perms::owner_read | fs::perms::owner_write));
+}
+
+TEST_CASE("fs::directory_entry - class directory_entry", "[namespace][ft][filesystem][directory_entry]")
+{
+    TemporaryDirectory t;
+    ft::error_code ec;
+    fs::directory_entry de = fs::directory_entry(t.path().c_str());
+    CHECK(de.path().string() == t.path().string());
+    CHECK((fs::path)de == fs::path(t.path().c_str()));
+    CHECK(de.exists());
+    CHECK(!de.is_block_file());
+    CHECK(!de.is_character_file());
+    CHECK(de.is_directory());
+    CHECK(!de.is_fifo());
+    CHECK(!de.is_other());
+    CHECK(!de.is_regular_file());
+    CHECK(!de.is_socket());
+    CHECK(!de.is_symlink());
+    CHECK(de.status().type() == fs::file_type::directory);
+    ec.clear();
+    CHECK(de.status(ec).type() == fs::file_type::directory);
+    CHECK(!ec);
+    CHECK_NOTHROW(de.refresh());
+
+    fs::directory_entry none;
+    CHECK_THROWS_AS(none.refresh(), fs::filesystem_error);
+    ec.clear();
+    CHECK_NOTHROW(none.refresh(ec));
+    CHECK(ec);
+    CHECK_THROWS_AS(de.assign(""), fs::filesystem_error);
+    ec.clear();
+    CHECK_NOTHROW(de.assign("", ec));
+    CHECK(ec);
+    generateFile(fs::path(t.path().c_str()) / "foo", 1234);
+//     auto now = fs::file_time_type::clock::now();
+    CHECK_NOTHROW(de.assign(fs::path(t.path().c_str()) / "foo"));
+    CHECK_NOTHROW(de.assign(fs::path(t.path().c_str()) / "foo", ec));
+    CHECK(!ec);
+    de = fs::directory_entry(fs::path(t.path().c_str()) / "foo");
+    CHECK(de.path() == fs::path(t.path().c_str()) / "foo");
+    CHECK(de.exists());
+    CHECK(de.exists(ec));
+    CHECK(!ec);
+    CHECK(!de.is_block_file());
+    CHECK(!de.is_block_file(ec));
+    CHECK(!ec);
+    CHECK(!de.is_character_file());
+    CHECK(!de.is_character_file(ec));
+    CHECK(!ec);
+    CHECK(!de.is_directory());
+    CHECK(!de.is_directory(ec));
+    CHECK(!ec);
+    CHECK(!de.is_fifo());
+    CHECK(!de.is_fifo(ec));
+    CHECK(!ec);
+    CHECK(!de.is_other());
+    CHECK(!de.is_other(ec));
+    CHECK(!ec);
+    CHECK(de.is_regular_file());
+    CHECK(de.is_regular_file(ec));
+    CHECK(!ec);
+    CHECK(!de.is_socket());
+    CHECK(!de.is_socket(ec));
+    CHECK(!ec);
+    CHECK(!de.is_symlink());
+    CHECK(!de.is_symlink(ec));
+    CHECK(!ec);
+    CHECK(de.file_size() == 1234);
+    CHECK(de.file_size(ec) == 1234);
+//     CHECK(std::abs(std::chrono::duration_cast<std::chrono::seconds>(de.last_write_time() - now).count()) < 3);
+    ec.clear();
+//     CHECK(std::abs(std::chrono::duration_cast<std::chrono::seconds>(de.last_write_time(ec) - now).count()) < 3);
+    CHECK(!ec);
+    CHECK(de.hard_link_count() == 1);
+    CHECK(de.hard_link_count(ec) == 1);
+    CHECK(!ec);
+//     CHECK_THROWS_AS(de.replace_filename("bar"), fs::filesystem_error);
+//     CHECK_NOTHROW(de.replace_filename("foo"));
+//     ec.clear();
+//     CHECK_NOTHROW(de.replace_filename("bar", ec));
+//     CHECK(ec);
+
+    fs::directory_entry de2none = fs::directory_entry();
+    ec.clear();
+    CHECK(de2none.hard_link_count(ec) == static_cast<uintmax_t>(-1));
+    CHECK_THROWS_AS(de2none.hard_link_count(), fs::filesystem_error);
+    CHECK(ec);
+    ec.clear();
+//     CHECK_NOTHROW(de2none.last_write_time(ec));
+//     CHECK_THROWS_AS(de2none.last_write_time(), fs::filesystem_error);
+//     CHECK(ec);
+    ec.clear();
+    CHECK_THROWS_AS(de2none.file_size(), fs::filesystem_error);
+    CHECK(de2none.file_size(ec) == static_cast<uintmax_t>(-1));
+    CHECK(ec);
+    ec.clear();
+    CHECK(de2none.status().type() == fs::file_type::not_found);
+    CHECK(de2none.status(ec).type() == fs::file_type::not_found);
+    CHECK(ec);
+    generateFile(fs::path(t.path().c_str()) / "a");
+    generateFile(fs::path(t.path().c_str()) / "b");
+    fs::directory_entry  d1 = fs::directory_entry(fs::path(t.path().c_str()) / "a");
+    fs::directory_entry  d2 = fs::directory_entry(fs::path(t.path().c_str()) / "b");
+    CHECK(d1 < d2);
+    CHECK(!(d2 < d1));
+    CHECK(d1 <= d2);
+    CHECK(!(d2 <= d1));
+    CHECK(d2 > d1);
+    CHECK(!(d1 > d2));
+    CHECK(d2 >= d1);
+    CHECK(!(d1 >= d2));
+    CHECK(d1 != d2);
+    CHECK(!(d2 != d2));
+    CHECK(d1 == d1);
+    CHECK(!(d1 == d2));
 }
