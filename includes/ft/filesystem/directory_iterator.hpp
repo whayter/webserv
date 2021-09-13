@@ -36,7 +36,7 @@ namespace filesystem
 		directory_iterator(const path& p, error_code& ec) throw();
 		directory_iterator(const path& p, directory_options options, error_code& ec) throw();
 		directory_iterator(const directory_iterator& rhs);
-		directory_iterator(directory_iterator&& rhs) throw();
+		// directory_iterator(directory_iterator&& rhs) throw();
 		~directory_iterator();
 
 		directory_iterator& operator=(const directory_iterator& rhs);
@@ -54,7 +54,7 @@ namespace filesystem
 
 	private:
 		path				_path;
-		DIR					*_dirP;
+		DIR					*_dirp;
 		directory_entry		_dirEntry;
 		directory_options	_options;
 

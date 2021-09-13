@@ -1,5 +1,5 @@
-#ifndef FILE_TYPE_HPP
-#define FILE_TYPE_HPP
+#ifndef DIRECTORY_OPTION_HPP
+#define DIRECTORY_OPTION_HPP
 
 namespace ft {
 namespace filesystem { 
@@ -13,6 +13,9 @@ struct directory_options{
 	};
 
 	directory_options(directory_optionsEnum e): _e(e) {}
+	perms(unsigned int e) {
+		_e = static_cast<directory_optionsEnum>(e);
+	}
 	// operator directory_optionsEnum() const throw(){
 	//   return _e;
 	// }
@@ -22,6 +25,18 @@ struct directory_options{
 	friend bool operator!=(const directory_options& lhs, const directory_options& rhs){
 	  return lhs._e != rhs._e;
 	}
+	friend directory_options  operator&(directory_options x, directory_options y) throw(){
+		return x._e & y._e;
+	}
+	friend directory_options  operator|(directory_options x, directory_options y) throw(){
+		return x._e | y._e;
+	}
+	friend directory_options  operator^(directory_options x, directory_options y) throw(){
+		return x._e ^ y._e;
+	}
+	friend directory_options  operator~(directory_options x) throw(){
+		return ~x._e;
+	}
 private:
   directory_optionsEnum _e;
 };
@@ -29,4 +44,4 @@ private:
 } /* namespace filesystem */
 } /* namespace ft */
 
-#endif /* FILE_TYPE_HPP */
+#endif /* DIRECTORY_OPTION_HPP */
