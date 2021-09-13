@@ -218,10 +218,33 @@ bool			directory_entry::is_symlink(error_code& ec) const throw()
 		return filesystem::status(_path, ec).type() == file_type::symlink;
 	return _status.type() == file_type::symlink;
 }
-// uintmax_t        directory_entry::file_size() const{}
-// uintmax_t        directory_entry::file_size(error_code& ec) const throw(){}
-// uintmax_t        directory_entry::hard_link_count() const{}
-// uintmax_t        directory_entry::hard_link_count(error_code& ec) const throw(){}
+
+uintmax_t        directory_entry::file_size() const
+{
+	error_code ec;
+	uintmax_t result = file_size(ec);
+	if (ec)
+		throw filesystem_error("directory_entry::file_size(): " + ec.message(), _path, ec);
+	return result;
+}
+uintmax_t        directory_entry::file_size(error_code& ec) const throw()
+{
+	return filesystem::file_size(_path, ec);
+}
+
+uintmax_t        directory_entry::hard_link_count() const
+{
+	error_code ec;
+	uintmax_t result = hard_link_count(ec);
+	if (ec)
+		throw filesystem_error("directory_entry::hard_link_count(): " + ec.message(), _path, ec);
+	return result;
+}
+uintmax_t        directory_entry::hard_link_count(error_code& ec) const throw()
+{
+	return filesystem::hard_link_count(_path, ec);
+}
+
 // file_time_type   directory_entry::last_write_time() const{}
 // file_time_type   directory_entry::last_write_time(error_code& ec) const throw(){}
 file_status directory_entry::status() const {

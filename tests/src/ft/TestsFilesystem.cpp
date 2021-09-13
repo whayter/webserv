@@ -239,25 +239,22 @@ TEST_CASE("fs::directory_entry - class directory_entry", "[namespace][ft][filesy
 //     CHECK(std::abs(std::chrono::duration_cast<std::chrono::seconds>(de.last_write_time() - now).count()) < 3);
     ec.clear();
 //     CHECK(std::abs(std::chrono::duration_cast<std::chrono::seconds>(de.last_write_time(ec) - now).count()) < 3);
-//     CHECK(!ec);
-// // #ifndef GHC_OS_WEB
-// //     CHECK(de.hard_link_count() == 1);
-// //     CHECK(de.hard_link_count(ec) == 1);
-// //     CHECK(!ec);
-// // #endif
+    CHECK(!ec);
+    CHECK(de.hard_link_count() == 1);
+    CHECK(de.hard_link_count(ec) == 1);
+    CHECK(!ec);
 //     CHECK_THROWS_AS(de.replace_filename("bar"), fs::filesystem_error);
 //     CHECK_NOTHROW(de.replace_filename("foo"));
 //     ec.clear();
 //     CHECK_NOTHROW(de.replace_filename("bar", ec));
 //     CHECK(ec);
-//     auto de2none = fs::directory_entry();
-//     ec.clear();
-// // #ifndef GHC_OS_WEB
-// //     CHECK(de2none.hard_link_count(ec) == static_cast<uintmax_t>(-1));
-// //     CHECK_THROWS_AS(de2none.hard_link_count(), fs::filesystem_error);
-// //     CHECK(ec);
-// // #endif
-//     ec.clear();
+
+    fs::directory_entry de2none = fs::directory_entry();
+    ec.clear();
+    CHECK(de2none.hard_link_count(ec) == static_cast<uintmax_t>(-1));
+    CHECK_THROWS_AS(de2none.hard_link_count(), fs::filesystem_error);
+    CHECK(ec);
+    ec.clear();
 //     CHECK_NOTHROW(de2none.last_write_time(ec));
 //     CHECK_THROWS_AS(de2none.last_write_time(), fs::filesystem_error);
 //     CHECK(ec);

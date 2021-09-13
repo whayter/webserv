@@ -185,6 +185,48 @@ bool is_symlink(file_status s) throw() { return s.type() == file_type::symlink; 
 // bool is_symlink(const path& p, error_code& ec) throw() ;
 
 
+uintmax_t file_size(const path& p)
+{
+	error_code ec;
+	uintmax_t result = file_size(p, ec);
+	if (ec)
+		throw filesystem_error("file_size(const path& p=\""+ p.string() +"\"): " + ec.message(), p, ec);
+	return result;
+}
+
+uintmax_t file_size(const path& p, error_code& ec) throw()
+{
+	struct stat st;
+	if (::stat(p.c_str(), &st) == -1)
+	{
+		ec = make_error_code();
+		return static_cast<std::uintmax_t>(-1);
+	}
+	ec.clear();
+	return st.st_size;
+}
+
+uintmax_t hard_link_count(const path& p)
+{
+	error_code ec;
+	uintmax_t result = hard_link_count(p, ec);
+	if (ec)
+		throw filesystem_error("hard_link_count(const path& p=\""+ p.string() +"\"): " + ec.message(), p, ec);
+	return result;
+}
+
+uintmax_t hard_link_count(const path& p, error_code& ec) throw()
+{
+	struct stat st;
+	if (::stat(p.c_str(), &st) == -1)
+	{
+		ec = make_error_code();
+		return static_cast<std::uintmax_t>(-1);
+	}
+	ec.clear();
+	return st.st_nlink;
+}
+
 
 } /* namespace filesystem */
 } /* namespace ft */

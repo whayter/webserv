@@ -59,10 +59,10 @@ namespace ft
 			bool is_socket(error_code& ec) const throw();
 			bool is_symlink() const;
 			bool is_symlink(error_code& ec) const throw();
-			// uintmax_t file_size() const;
-			// uintmax_t file_size(error_code& ec) const throw();
-			// uintmax_t hard_link_count() const;
-			// uintmax_t hard_link_count(error_code& ec) const throw();
+			uintmax_t file_size() const;
+			uintmax_t file_size(error_code& ec) const throw();
+			uintmax_t hard_link_count() const;
+			uintmax_t hard_link_count(error_code& ec) const throw();
 			// file_time_type last_write_time() const;
 			// file_time_type last_write_time(error_code& ec) const throw();
 			file_status status() const;

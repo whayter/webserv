@@ -1,6 +1,9 @@
 #ifndef FILESYSTEM_HPP
 #define FILESYSTEM_HPP
 
+#include <stdint.h>
+
+
 //http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0218r0.html#path-replace_extension
 
 // #include <limits.h> for linux
@@ -126,11 +129,11 @@ namespace filesystem {
   // bool equivalent(const path& p1, const path& p2);
   // bool equivalent(const path& p1, const path& p2, error_code& ec) throw() ;
 
-  // uintmax_t file_size(const path& p);
-  // uintmax_t file_size(const path& p, error_code& ec) throw() ;
+  uintmax_t file_size(const path& p);
+  uintmax_t file_size(const path& p, error_code& ec) throw() ;
 
-  // uintmax_t hard_link_count(const path& p);
-  // uintmax_t hard_link_count(const path& p, error_code& ec) throw() ;
+  uintmax_t hard_link_count(const path& p);
+  uintmax_t hard_link_count(const path& p, error_code& ec) throw() ;
 
   bool is_block_file(file_status s) throw() ;
   // bool is_block_file(const path& p);
