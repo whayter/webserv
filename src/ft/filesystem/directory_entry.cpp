@@ -12,7 +12,7 @@ namespace filesystem {
 
 // constructors and destructor
 directory_entry::directory_entry() throw()
-	: _path(path())
+	: _path(filesystem::path())
 {}
 directory_entry::directory_entry(const directory_entry& other):
 	_path(other._path),
@@ -70,6 +70,7 @@ void directory_entry::refresh(){
 }
 void directory_entry::refresh(error_code& ec) throw()
 {
+	ec.clear();
 	_status = filesystem::status(_path, ec);
 }
 
@@ -81,8 +82,21 @@ directory_entry::operator const class path&() const throw()
 {
 	return _path;
 }
-// bool			directory_entry::exists() const{}
-// bool			directory_entry::exists(error_code& ec) const throw(){}
+bool			directory_entry::exists() const
+{
+	error_code ec;
+	bool result = exists(ec);
+	if (ec)
+		throw filesystem_error("directory_entry::exists() : " + ec.message(), _path, ec);
+	return result;
+}
+bool			directory_entry::exists(error_code& ec) const throw()
+{
+	ec.clear();
+	if (!status_known(_status.type()))
+		return filesystem::exists(_status);
+	return filesystem::exists(_path, ec);
+}
 bool			directory_entry::is_block_file() const
 {
 	error_code ec;

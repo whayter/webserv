@@ -41,8 +41,8 @@ namespace ft
 			// observers
 			const path& 	path() const throw();
 			operator const class  path&() const throw();
-			// bool exists() const;
-			// bool exists(error_code &ec) const throw();
+			bool exists() const;
+			bool exists(error_code &ec) const throw();
 			bool is_block_file() const;
 			bool is_block_file(error_code& ec) const throw();
 			bool is_character_file() const;
