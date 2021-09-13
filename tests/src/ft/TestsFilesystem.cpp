@@ -7,6 +7,7 @@
 #include "ft/filesystem/filesystem_error.hpp"
 #include "ft/filesystem/file_status.hpp"
 #include "ft/filesystem/directory_entry.hpp"
+#include "ft/filesystem/directory_iterator.hpp"
 #include <filesystem>
 #include <fstream>
 
@@ -282,4 +283,65 @@ TEST_CASE("fs::directory_entry - class directory_entry", "[namespace][ft][filesy
     CHECK(!(d2 != d2));
     CHECK(d1 == d1);
     CHECK(!(d1 == d2));
+}
+
+TEST_CASE("fs::directory_iterator - class directory_iterator", "[namespace][ft][filesystem][directory_iterator]")
+{
+    {
+        TemporaryDirectory t;
+        CHECK(fs::directory_iterator(t.path()) == fs::directory_iterator());
+        generateFile(t.path() / "test", 1234);
+        REQUIRE(fs::directory_iterator(t.path()) != fs::directory_iterator());
+        auto iter = fs::directory_iterator(t.path());
+        fs::directory_iterator iter2(iter);
+        fs::directory_iterator iter3, iter4;
+        iter3 = iter;
+        CHECK(iter->path().filename() == "test");
+        CHECK(iter2->path().filename() == "test");
+        CHECK(iter3->path().filename() == "test");
+        iter4 = std::move(iter3);
+        CHECK(iter4->path().filename() == "test");
+        CHECK(iter->path() == t.path() / "test");
+        CHECK(!iter->is_symlink());
+        CHECK(iter->is_regular_file());
+        CHECK(!iter->is_directory());
+        CHECK(iter->file_size() == 1234);
+        CHECK(++iter == fs::directory_iterator());
+        CHECK_THROWS_AS(fs::directory_iterator(t.path() / "non-existing"), fs::filesystem_error);
+        int cnt = 0;
+        for(auto de : fs::directory_iterator(t.path())) {
+            ++cnt;
+        }
+        CHECK(cnt == 1);
+    }
+    // if (is_symlink_creation_supported()) {
+    //     TemporaryDirectory t;
+    //     fs::path td = t.path() / "testdir";
+    //     CHECK(fs::directory_iterator(t.path()) == fs::directory_iterator());
+    //     generateFile(t.path() / "test", 1234);
+    //     fs::create_directory(td);
+    //     REQUIRE_NOTHROW(fs::create_symlink(t.path() / "test", td / "testlink"));
+    //     std::error_code ec;
+    //     REQUIRE(fs::directory_iterator(td) != fs::directory_iterator());
+    //     auto iter = fs::directory_iterator(td);
+    //     CHECK(iter->path().filename() == "testlink");
+    //     CHECK(iter->path() == td / "testlink");
+    //     CHECK(iter->is_symlink());
+    //     CHECK(iter->is_regular_file());
+    //     CHECK(!iter->is_directory());
+    //     CHECK(iter->file_size() == 1234);
+    //     CHECK(++iter == fs::directory_iterator());
+    // }
+    // {
+    //     // Issue #8: check if resources are freed when iterator reaches end()
+    //     TemporaryDirectory t(TempOpt::change_path);
+    //     auto p = fs::path("test/");
+    //     fs::create_directory(p);
+    //     auto iter = fs::directory_iterator(p);
+    //     while (iter != fs::directory_iterator()) {
+    //         ++iter;
+    //     }
+    //     CHECK(fs::remove_all(p) == 1);
+    //     CHECK_NOTHROW(fs::create_directory(p));
+    // }
 }
