@@ -200,7 +200,7 @@ uintmax_t file_size(const path& p, error_code& ec) throw()
 	if (::stat(p.c_str(), &st) == -1)
 	{
 		ec = make_error_code();
-		return static_cast<std::uintmax_t>(-1);
+		return static_cast<uintmax_t>(-1);
 	}
 	ec.clear();
 	return st.st_size;
@@ -221,7 +221,7 @@ uintmax_t hard_link_count(const path& p, error_code& ec) throw()
 	if (::stat(p.c_str(), &st) == -1)
 	{
 		ec = make_error_code();
-		return static_cast<std::uintmax_t>(-1);
+		return static_cast<uintmax_t>(-1);
 	}
 	ec.clear();
 	return st.st_nlink;

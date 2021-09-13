@@ -13,8 +13,6 @@ namespace ft
 
 	namespace filesystem
 	{
-		// class file_status;
-		// class path;
 		class directory_entry
 		{
 		public:
