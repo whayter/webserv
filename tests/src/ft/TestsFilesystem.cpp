@@ -6,6 +6,7 @@
 #include "ft/filesystem/perms.hpp"
 #include "ft/filesystem/filesystem_error.hpp"
 #include "ft/filesystem/file_status.hpp"
+#include "ft/filesystem/directory_entry.hpp"
 #include <filesystem>
 #include <fstream>
 
@@ -168,33 +169,34 @@ TEST_CASE("fs::status - status", "[namespace][ft][filesystem][status]")
     CHECK((fs.permissions() & (fs::perms::owner_read | fs::perms::owner_write)) == (fs::perms::owner_read | fs::perms::owner_write));
 }
 
-TEST_CASE("fs.dir.entry - class directory_entry", "[filesystem][directory_entry][fs.dir.entry]")
+TEST_CASE("fs::directory_entry - class directory_entry", "[namespace][ft][filesystem][directory_entry]")
 {
-    // TemporaryDirectory t;
-    // std::error_code ec;
-    // auto de = fs::directory_entry(t.path());
-    // CHECK(de.path() == t.path());
-    // CHECK((fs::path)de == t.path());
-//     CHECK(de.exists());
-//     CHECK(!de.is_block_file());
-//     CHECK(!de.is_character_file());
-//     CHECK(de.is_directory());
-//     CHECK(!de.is_fifo());
-//     CHECK(!de.is_other());
-//     CHECK(!de.is_regular_file());
-//     CHECK(!de.is_socket());
-//     CHECK(!de.is_symlink());
-//     CHECK(de.status().type() == fs::file_type::directory);
-//     ec.clear();
-//     CHECK(de.status(ec).type() == fs::file_type::directory);
-//     CHECK(!ec);
-//     CHECK_NOTHROW(de.refresh());
-//     fs::directory_entry none;
-//     CHECK_THROWS_AS(none.refresh(), fs::filesystem_error);
-//     ec.clear();
-//     CHECK_NOTHROW(none.refresh(ec));
-//     CHECK(ec);
-//     CHECK_THROWS_AS(de.assign(""), fs::filesystem_error);
+    TemporaryDirectory t;
+    ft::error_code ec;
+    fs::directory_entry de = fs::directory_entry(t.path().c_str());
+    CHECK(de.path().string() == t.path().string());
+    CHECK((fs::path)de == fs::path(t.path().c_str()));
+    // CHECK(de.exists());
+    CHECK(!de.is_block_file());
+    CHECK(!de.is_character_file());
+    CHECK(de.is_directory());
+    CHECK(!de.is_fifo());
+    CHECK(!de.is_other());
+    CHECK(!de.is_regular_file());
+    CHECK(!de.is_socket());
+    CHECK(!de.is_symlink());
+    CHECK(de.status().type() == fs::file_type::directory);
+    ec.clear();
+    CHECK(de.status(ec).type() == fs::file_type::directory);
+    CHECK(!ec);
+    CHECK_NOTHROW(de.refresh());
+
+    fs::directory_entry none;
+    CHECK_THROWS_AS(none.refresh(), fs::filesystem_error);
+    ec.clear();
+    CHECK_NOTHROW(none.refresh(ec));
+    CHECK(ec);
+    CHECK_THROWS_AS(de.assign(""), fs::filesystem_error);
 //     ec.clear();
 //     CHECK_NOTHROW(de.assign("", ec));
 //     CHECK(ec);
