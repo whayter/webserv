@@ -4,7 +4,6 @@
 #include "ft/filesystem/path.hpp"
 #include "ft/filesystem/filesystem_error.hpp"
 #include "ft/filesystem/directory_option.hpp"
-#include "ft/error_code.hpp"
 #include "ft/system_error.hpp"
 
 
@@ -15,26 +14,37 @@ namespace filesystem
 {
 
 directory_iterator::directory_iterator() throw()
-	: _basePath(path()), _dirp(0), _dirEntry(0), _options(directory_options::none)
+	: _basePath(path()), _dirp(0), _dirEntry(directory_entry()), _options(directory_options::none)
+{}
+
+directory_iterator::directory_iterator(const path &p)
+	: _basePath(p), _dirp(0), _dirEntry(directory_entry()), _options(directory_options::none)
+{
+	if (_basePath.empty())
+		return ;
+	_dirp = ::opendir(_basePath.c_str());
+	if (_dirp == NULL)
+	{
+		_ec = make_error_code();
+		if (_ec)
+			throw filesystem_error("directory_iterator::directory_iterator(const path& p=\""+ p.string() +"\"): " + _ec.message(), p, _ec);
+	}
+			
+}
+
+directory_iterator::directory_iterator(const path &p, directory_options options)
+	: _basePath(p), _dirp(0), _dirEntry(directory_entry()), _options(options)
 {
 
 }
 
-directory_iterator::directory_iterator(const path &p)
-	: _basePath(p), _dirp(0), _dirEntry(0), _options(directory_options::none)
-{}
-
-directory_iterator::directory_iterator(const path &p, directory_options options)
-	: _basePath(p), _dirp(0), _dirEntry(0), _options(options)
-{}
-
 directory_iterator::directory_iterator(const path &p, error_code &ec) throw()
-	: _basePath(p), _dirp(0), _dirEntry(0), _options(directory_options::none)
+	: _basePath(p), _dirp(0), _dirEntry(directory_entry()), _options(directory_options::none)
 {
 	(void)ec;
 }
 directory_iterator::directory_iterator(const path &p, directory_options options, error_code &ec) throw()
-	: _basePath(p), _dirp(0), _dirEntry(0), _options(options)
+	: _basePath(p), _dirp(0), _dirEntry(directory_entry()), _options(options)
 {
 	(void)ec;
 }
@@ -106,6 +116,17 @@ directory_iterator& directory_iterator::increment(error_code &ec) throw()
 
 	return *this;
 }
+
+
+bool directory_iterator::operator==(const directory_iterator& other) const
+{
+	return _dirEntry._path == other._dirEntry._path;
+}
+bool directory_iterator::operator!=(const directory_iterator& other) const
+{
+	return !this->operator==(other);
+}
+
 
 
 }; /* namespace filesystem */

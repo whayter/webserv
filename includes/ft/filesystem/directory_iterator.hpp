@@ -9,10 +9,11 @@
 #include "ft/filesystem/directory_entry.hpp"
 #include "ft/filesystem/directory_option.hpp"
 #include "ft/filesystem/path.hpp"
+#include "ft/error_code.hpp"
 
 namespace ft
 {
-class error_code;
+// class error_code;
 
 namespace filesystem
 {
@@ -49,8 +50,8 @@ namespace filesystem
 
 		// other members as required by input iterators
 
-		bool operator==(const directory_iterator& rhs) const;
-	    bool operator!=(const directory_iterator& rhs) const;
+		bool operator==(const directory_iterator& other) const;
+	    bool operator!=(const directory_iterator& other) const;
 
 	private:
 		path				_basePath;
@@ -58,6 +59,7 @@ namespace filesystem
 		directory_entry		_dirEntry;
 		directory_options	_options;
 		struct dirent*		_dirent;
+		error_code			_ec;
 
 	}; /* class directory_iterator */
 }; /* namespace filesystem */

@@ -44,11 +44,11 @@ namespace filesystem {
   class filesystem_error;      
   // class directory_entry;
 
-  // class directory_iterator;
+  class directory_iterator;
 
   // // enable directory_iterator range-based for statements
-  // directory_iterator begin(directory_iterator iter) throw() ;
-  // directory_iterator end(const directory_iterator&) throw() ;
+  directory_iterator begin(directory_iterator iter) throw() ;
+  directory_iterator end(const directory_iterator&) throw() ;
 
   // class recursive_directory_iterator;
 
