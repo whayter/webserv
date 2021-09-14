@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 22:40:53 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/13 11:28:53 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/14 11:09:13 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,6 @@ typedef socklen_t			addrLen_type;
 class 						Socket;
 class						Device;
 class 						Server;
-
-/* --- Functions ------------------------------------------------------------ */
-
-void						closeSocket(fd_type fd);
-bool						setNonBlocking(fd_type fd);
-bool						setReusableAddr(fd_type fd);
-bool						bindSocket(fd_type fd, const addr_type& addr);
-bool						listenSocket(fd_type fd);
 
 }; /* namespace web */
 

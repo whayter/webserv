@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 16:56:40 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/13 11:19:42 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/14 10:59:15 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,12 @@ public:
 	inline uint32_t						getPort() { return _port; }
 	inline Socket&						getSocket() { return _socket; }
 	inline std::deque<unsigned char>	getBuffer() { return _buffer; }
+
+	void								closeSocket();
+	bool								setNonBlocking();
+	bool								setReusableAddr();
+	bool								bindSocket();
+	bool								listenSocket();
 
 private:
 

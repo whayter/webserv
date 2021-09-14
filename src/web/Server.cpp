@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 23:26:05 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/13 11:46:15 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/14 11:06:50 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,16 +55,11 @@ bool Server::setup()
 		if (!device->getSocket().setFd(AF_INET, SOCK_STREAM))
 			return false;
 		device->getSocket().setAddr(AF_INET, INADDR_ANY, device->getPort());
-		if (!setNonBlocking(device->getSocket().getFd())
-		|| !setReusableAddr(device->getSocket().getFd())
-		|| !bindSocket(device->getSocket().getFd(), device->getSocket().getAddr())
-		|| !listenSocket(device->getSocket().getFd()))
+		if (!device->setNonBlocking() || !device->setReusableAddr()
+		|| !device->bindSocket() || !device->listenSocket())
 			stop(-1);
 		_fds[_nfds].fd = device->getSocket().getFd();
 		_fds[_nfds].events = POLLIN;
-
-
-		std::cout << "new server on (fd = " << _fds[_nfds].fd << ")" << std::endl;
 		_nfds++;
 	}
 	_firstClientIndex = _nfds;
@@ -137,7 +132,7 @@ void Server::_connectClients(int serverIndex)
 void Server::_disconnectDevice(int deviceIndex)
 {
 	_log(deviceIndex, "Connection closed.");
-	closeSocket(_fds[deviceIndex].fd);
+	_devices[deviceIndex].closeSocket();
 	delete _requests[deviceIndex];
 	_requests[deviceIndex] = NULL;
 	_devices.erase(_devices.begin() + deviceIndex);
