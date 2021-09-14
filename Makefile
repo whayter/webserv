@@ -61,7 +61,7 @@ vpath %.hpp $(INCS_DIR)
 SRC = main.cpp
 SRC+= utility.cpp
 
-SRC+= ScannerHttpRequest.cpp ScannerConfig.cpp ServerConfig.cpp
+SRC+= ScannerMessage.cpp ScannerConfig.cpp ServerConfig.cpp
 SRC+= ScannerStream.cpp ScannerBuffer.cpp
 SRC+= Uri.cpp
 SRC+= Message.cpp Status.cpp HttpRequest.cpp HttpResponse.cpp

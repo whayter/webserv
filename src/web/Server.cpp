@@ -189,7 +189,7 @@ void Server::_log(int deviceIndex, std::string description)
 	if (deviceIndex != -1)
 	{
 		std::cout << std::setw(2) << std::setfill('0');
-		std::cout << _devices[deviceIndex].getSocket().getIp();
+		std::cout << _devices[deviceIndex].getSocket().getFd();
 		std::cout << std::setw(4) << std::setfill(' ') << ' ';
 	}
 	std::cout << description << std::endl;

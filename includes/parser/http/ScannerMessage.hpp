@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ScannerHttpRequest.hpp                             :+:      :+:    :+:   */
+/*   ScannerMessage.hpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -21,29 +21,66 @@ namespace http{
 
 // LWS = " " | "\t"
 
-struct ScopedEnum
-{
-	enum TokenKind
+
+struct TokenKind {
+
+	enum TokenKindEnum
 	{
 		kEndOfInput = 0, kError,
 		kString, kNewLine, kCarriage,
 		kLeftBrace, kRightBrace,
 		kComma, kColon, kLWS
 	};
+
+	TokenKind(TokenKindEnum e): _e(e) {}
+	TokenKind(unsigned int e) {
+		_e = static_cast<TokenKindEnum>(e);
+	}
+	// operator TokenKindEnum() const throw(){
+	// 	return _e;
+    // }
+
+	int getValue() const { return _e; }
+
+    friend bool operator==(const TokenKind& lhs, const TokenKind& rhs){
+      return lhs._e == rhs._e;
+    }
+	 friend bool operator!=(const TokenKind& lhs, const TokenKind& rhs){
+      return lhs._e != rhs._e;
+    }
+
+private:
+	TokenKindEnum _e;
 };
-typedef ScopedEnum::TokenKind TokenKind;
+
+
+
+// struct ScopedEnum
+// {
+// 	enum TokenKind
+// 	{
+// 		kEndOfInput = 0, kError,
+// 		kString, kNewLine, kCarriage,
+// 		kLeftBrace, kRightBrace,
+// 		kComma, kColon, kLWS
+// 	};
+// };
+// typedef ScopedEnum::TokenKind TokenKind;
+
 struct Token
 {
+	Token(): kind(TokenKind::kEndOfInput) {};
+
 	TokenKind	kind;
 	std::string	value;
 };
 
 
-class ScannerHttpRequest
+class ScannerMessage
 {
 public:
-	ScannerHttpRequest(const char *buffer);
-	~ScannerHttpRequest();
+	ScannerMessage(const char *buffer);
+	~ScannerMessage();
 
 	Token getToken(bool skipLWS = false);
 	char getChar();
@@ -61,7 +98,7 @@ private:
 
 	ScannerBuffer _scan;
 	Token	_nextToken;
-}; /* class ScannerHttpRequest */
+}; /* class ScannerMessage */
 
 const char* TokenKindToCstring(TokenKind type);
 std::ostream & operator <<(std::ostream& os, const Token &t);

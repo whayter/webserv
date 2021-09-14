@@ -12,7 +12,7 @@
 
 #include "http/HttpRequest.hpp"
 #include "ServerConfig.hpp"
-#include "parser/http/ScannerHttpRequest.hpp"
+#include "parser/http/ScannerMessage.hpp"
 
 HttpRequest::HttpRequest()
 	: Message(), _isRequestLineParsed(false),
@@ -78,7 +78,7 @@ void HttpRequest::read(const char *buffer, size_t len)
 		{
 			ph::Token cr;
 			if (!_getCompleteToken(cr)) return;
-			if (cr.kind != ph::ScopedEnum::kCarriage)
+			if (cr.kind != ph::TokenKind::kCarriage)
 				_code.setValue(http::Status::BadRequest);
 				// throw std::invalid_argument("Method line not separated by return carriage");
 
@@ -86,7 +86,7 @@ void HttpRequest::read(const char *buffer, size_t len)
 				_scanner.putback(cr);
 				return;
 			}
-			if (t.kind != ph::ScopedEnum::kNewLine)
+			if (t.kind != ph::TokenKind::kNewLine)
 				_code.setValue(http::Status::BadRequest);
 				// throw std::invalid_argument("Method line not separated by new line");
 		}
@@ -100,7 +100,7 @@ void HttpRequest::read(const char *buffer, size_t len)
 	std::string value;
 	bool isValueField = false;
 
-		// while (isHeader && (t = _scanner.getToken()).kind != ph::ScopedEnum::kEndOfInput)
+		// while (isHeader && (t = _scanner.getToken()).kind != ph::TokenKind::kEndOfInput)
 	// while (!_isHeaderParsed && _getCompleteToken(t) == true)
 	while (!_isHeaderParsed)
 	{
@@ -115,13 +115,13 @@ void HttpRequest::read(const char *buffer, size_t len)
 			}
 			return ;
 		}
-		switch (t.kind)
+		switch (t.kind.getValue())
 		{
-			case ph::ScopedEnum::kCarriage:
+			case ph::TokenKind::kCarriage:
 			{
 				ph::Token nl;
 				nl = _scanner.getToken();
-				if (nl.kind != ph::ScopedEnum::kNewLine)
+				if (nl.kind != ph::TokenKind::kNewLine)
 					throw std::invalid_argument("new line !>" + nl.value + "|" + ph::TokenKindToCstring(t.kind));
 
 				if (!name.empty())
@@ -133,20 +133,20 @@ void HttpRequest::read(const char *buffer, size_t len)
 				isValueField = false;
 				break;
 			}
-			case ph::ScopedEnum::kNewLine :
+			case ph::TokenKind::kNewLine :
 				throw std::invalid_argument("MISSING carriage before new line !!!");
 				break;
-			case ph::ScopedEnum::kColon :
+			case ph::TokenKind::kColon :
 				if (isValueField)
 					value += t.value;
 				else
 					isValueField = true;
 				break;
-			case ph::ScopedEnum::kLWS :
+			case ph::TokenKind::kLWS :
 				if (isValueField && !value.empty())
 					value += t.value;
 				break;
-			case ph::ScopedEnum::kString :
+			case ph::TokenKind::kString :
 				if (isValueField == false)
 					name += t.value;
 				else
@@ -210,7 +210,7 @@ size_t HttpRequest::getContentLength()
 bool HttpRequest::_getCompleteToken(ph::Token& placeHolder, bool skipLWS)
 {
 	placeHolder = _scanner.getToken(skipLWS);
-	if (_scanner.peekNextToken().kind == ph::ScopedEnum::kEndOfInput)
+	if (_scanner.peekNextToken().kind == ph::TokenKind::kEndOfInput)
 	{
 		_scanner.putback(placeHolder);
 		return false;

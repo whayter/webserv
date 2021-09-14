@@ -27,6 +27,10 @@ public:
 	http::Message			buildRequest();
 	http::Message			buildResponse();
 
+	void parseStatusLine();
+	void parseHeaders();
+	void parseContent();
+
 	std::string				stringifyContent(content_type& content);
 	std::string				stringifyMessage(Message& message);
 
