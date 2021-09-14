@@ -11,12 +11,11 @@
 #include "ft/filesystem/path.hpp"
 #include "ft/error_code.hpp"
 
-namespace ft
-{
+namespace ft {
 // class error_code;
 
-namespace filesystem
-{
+namespace filesystem {
+
 	// class path;
 	// class directory_entry;
 	// struct directory_options; // enum class
@@ -62,7 +61,9 @@ namespace filesystem
 		error_code			_ec;
 
 	}; /* class directory_iterator */
+
 }; /* namespace filesystem */
+
 }; /* namespace ft */
 
 #endif /* DIRECTORY_ITERATOR_HPP */
