@@ -13,7 +13,7 @@ struct directory_options{
 	};
 
 	directory_options(directory_optionsEnum e): _e(e) {}
-	perms(unsigned int e) {
+	directory_options(unsigned int e) {
 		_e = static_cast<directory_optionsEnum>(e);
 	}
 	// operator directory_optionsEnum() const throw(){

@@ -35,12 +35,12 @@ namespace filesystem
 		directory_iterator(const path& p, directory_options options);
 		directory_iterator(const path& p, error_code& ec) throw();
 		directory_iterator(const path& p, directory_options options, error_code& ec) throw();
-		directory_iterator(const directory_iterator& rhs);
+		directory_iterator(const directory_iterator& other);
 		// directory_iterator(directory_iterator&& rhs) throw();
 		~directory_iterator();
 
-		directory_iterator& operator=(const directory_iterator& rhs);
-		directory_iterator& operator=(directory_iterator&& rhs) throw();
+		directory_iterator& operator=(const directory_iterator& other);
+		// directory_iterator& operator=(directory_iterator&& other) throw();
 		
 		const directory_entry& operator*() const;
 		const directory_entry* operator->() const;
@@ -53,10 +53,11 @@ namespace filesystem
 	    bool operator!=(const directory_iterator& rhs) const;
 
 	private:
-		path				_path;
-		DIR					*_dirp;
+		path				_basePath;
+		DIR*				_dirp;
 		directory_entry		_dirEntry;
 		directory_options	_options;
+		struct dirent*		_dirent;
 
 	}; /* class directory_iterator */
 }; /* namespace filesystem */

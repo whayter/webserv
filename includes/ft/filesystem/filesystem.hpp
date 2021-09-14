@@ -7,7 +7,9 @@
 //http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0218r0.html#path-replace_extension
 
 // #include <limits.h> for linux
+#ifndef PATH_MAX
 #define PATH_MAX 1024 // For linux, don't care for now. Override macos define (but same len)
+#endif
 
 namespace ft { 
 
