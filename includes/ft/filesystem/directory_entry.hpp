@@ -76,9 +76,9 @@ namespace ft
 			// 	operator<<(basic_ostream<charT, traits>& os, const directory_entry& d);
 
 		private:
-			friend class directory_iterator; // exposition only
+			friend class directory_iterator;
 
-			class path			_path;		 // exposition only
+			class path			_path;
 			file_status 		_status;
 			uintmax_t			_fileSize;
 			uintmax_t			_hardLinkCount;

@@ -3,6 +3,7 @@
 #include "ft/filesystem/filesystem_error.hpp"
 #include "ft/filesystem/file_status.hpp"
 #include "ft/filesystem/file_type.hpp"
+#include "ft/filesystem/directory_iterator.hpp"
 #include "ft/system_error.hpp"
 #include "ft/error_code.hpp"
 
@@ -225,6 +226,15 @@ uintmax_t hard_link_count(const path& p, error_code& ec) throw()
 	}
 	ec.clear();
 	return st.st_nlink;
+}
+
+directory_iterator begin(directory_iterator iter) throw()
+{
+	return iter;
+}
+directory_iterator end(const directory_iterator&) throw()
+{
+	return directory_iterator();
 }
 
 
