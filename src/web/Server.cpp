@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 23:26:05 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/12 15:13:23 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/13 11:46:15 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,11 @@
 
 #define BUFFER_SIZE 1048
 
+namespace web {
+
 /* --- Public functions ----------------------------------------------------- */
 
-web::Server::Server()
+Server::Server()
 {
     ServerConfig& config = ServerConfig::getInstance();
 	std::vector<uint32_t> ports = config.getPorts();
@@ -40,12 +42,12 @@ web::Server::Server()
 	_nfds = 0;
 }
 
-web::Server::~Server()
+Server::~Server()
 {
 	stop(0);
 }
 
-bool web::Server::setup()
+bool Server::setup()
 {
 	std::vector<Device>::iterator device;
 	for (device = _devices.begin(); device != _devices.end(); device++)
@@ -60,13 +62,16 @@ bool web::Server::setup()
 			stop(-1);
 		_fds[_nfds].fd = device->getSocket().getFd();
 		_fds[_nfds].events = POLLIN;
+
+
+		std::cout << "new server on (fd = " << _fds[_nfds].fd << ")" << std::endl;
 		_nfds++;
 	}
 	_firstClientIndex = _nfds;
 	return true;
 }
 
-void web::Server::routine()
+void Server::routine()
 {
 	int pollStatus;
 	if ((pollStatus = poll(_fds, _nfds, 0)) == -1)
@@ -80,7 +85,7 @@ void web::Server::routine()
 		else if (_fds[i].revents & POLLIN)
 		{
 			if (_isServerIndex(i))
-				_connectClients(_fds[i].fd);
+				_connectClients(i);
 			else
 			{
 				_getRequest(i);
@@ -93,34 +98,35 @@ void web::Server::routine()
 	}
 }
 
-void web::Server::stop(int status)
+void Server::stop(int status)
 {
-	for (int i = 0; i < _nfds; i++)
+	for (int i = _nfds - 1; i >= 0; i--)
 		_disconnectDevice(i);
 	_devices.clear();
 	if (status == -1)
 	{
-		_log(0, "An error has occurred. Shutting down...");
+		_log(-1, "An error has occurred. Shutting down...");
 		exit(EXIT_FAILURE);
 	}
 	else
-		_log (0, "Shutting down...");
+		_log(-1, "Shutting down...");
 }
 
 /* --- Private functions ---------------------------------------------------- */
 
-void web::Server::_connectClients(int serverFd)
+void Server::_connectClients(int serverIndex)
 {
 	while (true)
 	{
 		if (_nfds == SOMAXCONN)
 			_disconnectDevice(_firstClientIndex);
 		Device newClient;
-		newClient.getSocket().setFd(accept(serverFd, NULL, NULL));
+		newClient.getSocket().setFd(accept(_devices[serverIndex].getSocket().getFd(), NULL, NULL));
 		if (newClient.getSocket().getFd() == INVALID_FD)
 			break;
+		newClient.setPort(_devices[serverIndex].getPort());
 		_devices.push_back(newClient);
-		_log(newClient.getSocket().getFd(), "Connection accepted.");
+		_log(_nfds, "Connection accepted.");
 		_requests[_nfds] = new HttpRequest();
 		_fds[_nfds].fd = newClient.getSocket().getFd();
 		_fds[_nfds].events = POLLIN;
@@ -128,9 +134,9 @@ void web::Server::_connectClients(int serverFd)
 	}
 }
 
-void web::Server::_disconnectDevice(int deviceIndex)
+void Server::_disconnectDevice(int deviceIndex)
 {
-	_log(_fds[deviceIndex].fd, "Connection closed.");
+	_log(deviceIndex, "Connection closed.");
 	closeSocket(_fds[deviceIndex].fd);
 	delete _requests[deviceIndex];
 	_requests[deviceIndex] = NULL;
@@ -143,53 +149,55 @@ void web::Server::_disconnectDevice(int deviceIndex)
 	_nfds--;
 }
 
-void web::Server::_serveClient(int index)
+void Server::_serveClient(int deviceIndex)
 {
 	ServerConfig& config = ServerConfig::getInstance();
-	Uri uri = _requests[index]->getUri();
-	HttpResponse response(config.findServer(uri), *_requests[index]);
+	Uri uri = _requests[deviceIndex]->getUri();
+	HttpResponse response(config.findServer(uri), *_requests[deviceIndex]);
 	response.build();
-	_sendResponse(index, response.toString().c_str());
-	_requests[index]->clear();
+	_sendResponse(deviceIndex, response.toString().c_str());
+	_requests[deviceIndex]->clear();
 }
 
-void web::Server::_getRequest(int index)
+void Server::_getRequest(int deviceIndex)
 {
 	char buffer[BUFFER_SIZE] = {0};
-	int nbytes = recv(_fds[index].fd, buffer, BUFFER_SIZE - 1, 0);
+	int nbytes = recv(_fds[deviceIndex].fd, buffer, BUFFER_SIZE - 1, 0);
 	if (nbytes < 0)
 		stop(-1);
 	else if (nbytes > 0)
-		_requests[index]->read(buffer, nbytes);
-	if (_requests[index]->isComplete())
-		_log(_fds[index].fd, "Request received.");
+		_requests[deviceIndex]->read(buffer, nbytes);
+	if (_requests[deviceIndex]->isComplete())
+		_log(deviceIndex, "Request received.");
 }
 
-void web::Server::_sendResponse(int index, const char* response)
+void Server::_sendResponse(int deviceIndex, const char* response)
 {
-	if (send(_fds[index].fd, response, strlen(response), 0) == -1)
+	if (send(_fds[deviceIndex].fd, response, strlen(response), 0) == -1)
 	{
-		_log(_fds[index].fd, "Could not send the response.");
+		_log(deviceIndex, "Could not send the response.");
 		stop(-1);
 	}
-	_log(_fds[index].fd, "Response sent.");
+	_log(deviceIndex, "Response sent.");
 }
 
-bool web::Server::_isServerIndex(int index)
+bool Server::_isServerIndex(int deviceIndex)
 {
-	return index < _firstClientIndex;
+	return deviceIndex < _firstClientIndex;
 }
 
-void web::Server::_log(int fd, std::string description)
+void Server::_log(int deviceIndex, std::string description)
 {
-	std::cout << std::setw(4) << std::setfill(' ') << ' ';
 	std::cout << "[" << getDate() << "]";
 	std::cout << std::setw(4) << std::setfill(' ') << ' ';
-	if (fd)
+	//if (!_isServerIndex(deviceIndex))
+	if (deviceIndex != -1)
 	{
 		std::cout << std::setw(2) << std::setfill('0');
-		std::cout << fd;
+		std::cout << _devices[deviceIndex].getSocket().getIp();
 		std::cout << std::setw(4) << std::setfill(' ') << ' ';
 	}
 	std::cout << description << std::endl;
 }
+
+}; /* namespace web */

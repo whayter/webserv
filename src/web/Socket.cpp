@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 16:38:15 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/12 15:12:00 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/13 11:48:03 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,27 +16,29 @@
 #include <cstring>
 #include <arpa/inet.h>
 
-web::Socket::Socket() {}
+namespace web {
 
-web::Socket::~Socket() {}
+Socket::Socket() {}
 
-std::string	web::Socket::getIp()
+Socket::~Socket() {}
+
+std::string	Socket::getIp()
 {
 	std::string ip(inet_ntoa(_addr.sin_addr));
 	return ip;
 }
 
-bool web::Socket::setFd(int domain, int type)
+bool Socket::setFd(int domain, int type)
 {
 	return (_fd = socket(domain, type, 0)) != INVALID_FD;
 }
 
-void web::Socket::setFd(fd_type fd)
+void Socket::setFd(fd_type fd)
 {
 	_fd = fd;
 }
 					
-void web::Socket::setAddr(int domain, int interface, int port)
+void Socket::setAddr(int domain, int interface, int port)
 {
 	_addr.sin_family = domain;
 	_addr.sin_addr.s_addr = interface;
@@ -45,7 +47,9 @@ void web::Socket::setAddr(int domain, int interface, int port)
 	_addrLen = static_cast<addrLen_type>(sizeof(_addr));
 }
 		
-void web::Socket::setAddr(const addr_type& addr)
+void Socket::setAddr(const addr_type& addr)
 {
 	_addr = addr;
 }
+
+}; /* namespace web */

@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/30 14:07:41 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/11 10:42:53 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/13 09:59:11 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void textLine(int width, char ornament, std::string text)
 void prompt()
 {
 	int		width = 70;
-	char	ornament = '/';
+	char	ornament = '.';
 
 	std::cout << std::endl;
 	solidLine(width, ornament);
@@ -76,8 +76,6 @@ void prompt()
 	textLine(width, ornament, "authors: hwinston, juligonz");
 	emptyLine(width, ornament);
 	solidLine(width, ornament);
-	std::cout << std::endl;
-	std::cout << "    _____________ [date] ____________ [id] _______ [status] _______"<< std::endl;
 	std::cout << std::endl;
 }
 

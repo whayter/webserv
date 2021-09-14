@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 22:40:53 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/11 00:21:40 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/13 11:28:53 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,27 +15,28 @@
 
 #include <netinet/in.h>
 
-namespace web
-{
-	/* --- Types ------------------------------------------------------------ */
+namespace web {
 
-	typedef int					fd_type;
-	typedef struct sockaddr_in	addr_type;
-	typedef socklen_t			addrLen_type;
+/* --- Types ---------------------------------------------------------------- */
 
-	/* --- Classes ---------------------------------------------------------- */
-	
-	class 						Socket;
-	class						Device;
-	class 						Server;
+typedef int					fd_type;
+typedef struct sockaddr_in	addr_type;
+typedef socklen_t			addrLen_type;
 
-	/* --- Functions -------------------------------------------------------- */
+/* --- Classes -------------------------------------------------------------- */
 
-	void						closeSocket(fd_type fd);
-	bool						setNonBlocking(fd_type fd);
-	bool						setReusableAddr(fd_type fd);
-	bool						bindSocket(fd_type fd, const addr_type& addr);
-	bool						listenSocket(fd_type fd);
-};
+class 						Socket;
+class						Device;
+class 						Server;
 
-#endif
+/* --- Functions ------------------------------------------------------------ */
+
+void						closeSocket(fd_type fd);
+bool						setNonBlocking(fd_type fd);
+bool						setReusableAddr(fd_type fd);
+bool						bindSocket(fd_type fd, const addr_type& addr);
+bool						listenSocket(fd_type fd);
+
+}; /* namespace web */
+
+#endif /* WEB_HPP */

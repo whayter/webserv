@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 18:53:31 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/13 00:04:55 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/14 10:46:04 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@
 
 namespace http {
 
-class Message
-{
+class Message {
 	
 public:
 
@@ -41,7 +40,8 @@ private:
 	Status					_status;
 	headers_type			_headers;
 	content_type			_content;
-};
+
+}; /* class Message */
 
 } /* namespace http */
 

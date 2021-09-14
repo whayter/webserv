@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 16:56:40 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/12 22:01:38 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/13 11:19:42 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,10 @@
 #include <queue>
 #include <deque>
 
-//#define BUFFER_SIZE 4096
-
 namespace web {
 
-class Device
-{
+class Device {
+
 public:
 
 	Device() {}
@@ -46,6 +44,6 @@ private:
 	std::queue<http::Message>			_responses;
 };
 
-} /* namespace http */
+} /* namespace web */
 
-#endif
+#endif /* DEVICE_HPP */
