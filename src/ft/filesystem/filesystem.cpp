@@ -3,6 +3,7 @@
 #include "ft/filesystem/filesystem_error.hpp"
 #include "ft/filesystem/file_status.hpp"
 #include "ft/filesystem/file_type.hpp"
+#include "ft/filesystem/directory_iterator.hpp"
 #include "ft/system_error.hpp"
 #include "ft/error_code.hpp"
 
@@ -33,7 +34,7 @@ path current_path()
 {
 	error_code ec;
 	path result = current_path(ec);
-	if (ec.value())
+	if (ec)
 		throw filesystem_error("current_path(): " + ec.message() , ec);
 	return result;
 }
@@ -56,7 +57,7 @@ void current_path(const path& p)
 {
 	error_code ec;
 	current_path(p, ec);
-	if (ec.value())
+	if (ec)
 		throw filesystem_error("current_path(const path&): " + ec.message(), p, ec);
 }
 
@@ -72,7 +73,7 @@ path absolute(const path& p)
 {
 	error_code ec;
 	path result = absolute(p, ec);
-	if (ec.value())
+	if (ec)
 		throw filesystem_error("absolute(const path&): " + ec.message(), p, ec);
 	return result;
 }
@@ -80,7 +81,7 @@ path absolute(const path& p)
 path absolute(const path& p, error_code& ec)
 {
 	path result = current_path(ec) / p;
-	if (ec.value())
+	if (ec)
 		result = path();
 	return result;
 }
@@ -131,65 +132,110 @@ file_status status(const path& p, error_code& ec) throw(){
 	return stModeToFileStatus(st.st_mode);
 }
 
+bool exists(file_status s) throw(){
+	return status_known(s) && s.type() != file_type::not_found;
+}
 
-// void t(){
+bool exists(const path& p){
+	return exists(status(p));
+}
 
-//    ec.clear();
-//     struct ::stat st;
-//     auto result = ::lstat(p.c_str(), &st);
-//     if (result == 0) {
-//         ec.clear();
-//         file_status fs = detail::file_status_from_st_mode(st.st_mode);
-//         if (sls) {
-//             *sls = fs;
-//         }
-//         if (fs.type() == file_type::symlink) {
-//             result = ::stat(p.c_str(), &st);
-//             if (result == 0) {
-//                 fs = detail::file_status_from_st_mode(st.st_mode);
-//             }
-//             else {
-//                 ec = detail::make_system_error();
-//                 if (detail::is_not_found_error(ec)) {
-//                     return file_status(file_type::not_found, perms::unknown);
-//                 }
-//                 return file_status(file_type::none);
-//             }
-//         }
-//         if (sz) {
-//             *sz = static_cast<uintmax_t>(st.st_size);
-//         }
-//         if (nhl) {
-//             *nhl = st.st_nlink;
-//         }
-//         if (lwt) {
-//             *lwt = st.st_mtime;
-//         }
-//         return fs;
-//     }
-//     else {
-//         ec = detail::make_system_error();
-//         if (detail::is_not_found_error(ec)) {
-//             return file_status(file_type::not_found, perms::unknown);
-//         }
-//         return file_status(file_type::none);
-//     }
-//  }
+bool exists(const path& p, error_code& ec) throw(){
+	file_status s = status(p, ec);
+	if (status_known(s))
+		ec.clear();
+	return exists(s);
+}
 
 
+bool is_block_file(file_status s) throw() { return s.type() == file_type::block; }
+// bool is_block_file(const path& p);
+// bool is_block_file(const path& p, error_code& ec) throw() ;
 
-// bool exists(file_status s) throw(){
-// 	return status_known(s) && s.type() != file_type::not_found;
-// }
+bool is_character_file(file_status s) throw() { return s.type() == file_type::character; }
+// bool is_character_file(const path& p);
+// bool is_character_file(const path& p, error_code& ec) throw() ;
 
-// bool exists(const path& p){
+bool is_directory(file_status s) throw() { return s.type() == file_type::directory; }
+// bool is_directory(const path& p);
+// bool is_directory(const path& p, error_code& ec) throw() ;
 
-// }
+// bool is_empty(const path& p);
+// bool is_empty(const path& p, error_code& ec) throw() ;
 
-// bool exists(const path& p, error_code& ec) throw(){
+bool is_fifo(file_status s) throw() { return s.type() == file_type::fifo; }
+// bool is_fifo(const path& p);
+// bool is_fifo(const path& p, error_code& ec) throw() ;
 
-// }
+bool is_other(file_status s) throw() {
+	return exists(s) && !is_regular_file(s) && !is_directory(s) && !is_symlink(s);
+}
+// bool is_other(const path& p);
+// bool is_other(const path& p, error_code& ec) throw() ;
 
+bool is_regular_file(file_status s) throw() { return s.type() == file_type::regular; } 
+// bool is_regular_file(const path& p);
+// bool is_regular_file(const path& p, error_code& ec) throw() ;
+
+bool is_socket(file_status s) throw() { return s.type() == file_type::socket; }
+// bool is_socket(const path& p);
+// bool is_socket(const path& p, error_code& ec) throw() ;
+
+bool is_symlink(file_status s) throw() { return s.type() == file_type::symlink; }
+// bool is_symlink(const path& p);
+// bool is_symlink(const path& p, error_code& ec) throw() ;
+
+
+uintmax_t file_size(const path& p)
+{
+	error_code ec;
+	uintmax_t result = file_size(p, ec);
+	if (ec)
+		throw filesystem_error("file_size(const path& p=\""+ p.string() +"\"): " + ec.message(), p, ec);
+	return result;
+}
+
+uintmax_t file_size(const path& p, error_code& ec) throw()
+{
+	struct stat st;
+	if (::stat(p.c_str(), &st) == -1)
+	{
+		ec = make_error_code();
+		return static_cast<uintmax_t>(-1);
+	}
+	ec.clear();
+	return st.st_size;
+}
+
+uintmax_t hard_link_count(const path& p)
+{
+	error_code ec;
+	uintmax_t result = hard_link_count(p, ec);
+	if (ec)
+		throw filesystem_error("hard_link_count(const path& p=\""+ p.string() +"\"): " + ec.message(), p, ec);
+	return result;
+}
+
+uintmax_t hard_link_count(const path& p, error_code& ec) throw()
+{
+	struct stat st;
+	if (::stat(p.c_str(), &st) == -1)
+	{
+		ec = make_error_code();
+		return static_cast<uintmax_t>(-1);
+	}
+	ec.clear();
+	return st.st_nlink;
+}
+
+directory_iterator begin(directory_iterator iter) throw()
+{
+	return iter;
+}
+directory_iterator end(const directory_iterator&) throw()
+{
+	return directory_iterator();
+}
 
 
 } /* namespace filesystem */
