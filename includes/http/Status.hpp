@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/31 17:24:53 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/12 23:03:01 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/13 11:26:36 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,10 @@
 
 namespace http {
 
-struct Status
-{
+struct Status {
+
+public:
+
 	enum StatusEnum
 	{
 		None							= 0, 
@@ -91,10 +93,10 @@ struct Status
 	Status(unsigned int e);
 	~Status();
 
-	void		setValue(StatusEnum e);
-	void		setValue(int e);
+	void setValue(StatusEnum e);
+	void setValue(int e);
 
-	int			getValue();
+	int	getValue();
 
 	std::string getDefinition();
 	
@@ -124,8 +126,10 @@ struct Status
 	}
 
 private:
+
 	StatusEnum _e;
-};
+
+}; /* struct Status */
 
 bool		isInformational(Status statusCode);
 bool		isSuccessful(Status statusCode);

@@ -18,7 +18,7 @@
 #include "Message.hpp"
 #include "Status.hpp"
 #include "Uri.hpp"
-#include "parser/http/ScannerHttpRequest.hpp"
+#include "parser/http/ScannerMessage.hpp"
 
 class HttpRequest: public http::Message
 {
@@ -64,7 +64,7 @@ class HttpRequest: public http::Message
 		bool	_isHeaderParsed;
 		bool	_isComplete;
 
-		parser::http::ScannerHttpRequest _scanner;
+		parser::http::ScannerMessage _scanner;
 };
 
 #endif

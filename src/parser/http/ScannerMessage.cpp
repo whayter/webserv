@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ScannerHttpRequest.cpp                             :+:      :+:    :+:   */
+/*   ScannerMessage.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,20 +10,20 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/http/ScannerHttpRequest.hpp"
+#include "parser/http/ScannerMessage.hpp"
 
 namespace parser
 {
 namespace http
 {
 
-ScannerHttpRequest::ScannerHttpRequest(const char *buffer)
+ScannerMessage::ScannerMessage(const char *buffer)
 	: _scan(buffer)
 {}
 
-ScannerHttpRequest::~ScannerHttpRequest() {}
+ScannerMessage::~ScannerMessage() {}
 
-Token ScannerHttpRequest::getToken(bool skipLWS)
+Token ScannerMessage::getToken(bool skipLWS)
 {
 	char c = 0;
 
@@ -38,13 +38,13 @@ Token ScannerHttpRequest::getToken(bool skipLWS)
 	switch (c)
 	{
 		case  -1:
-		case  0 :	return _makeToken(ScopedEnum::kEndOfInput, "");
-		case ':':	return _makeToken(ScopedEnum::kColon, ":");
-		case ',':	return _makeToken(ScopedEnum::kComma, ",");
-		case '\n':	return _makeToken(ScopedEnum::kNewLine, "\n");
-		case '\r':	return _makeToken(ScopedEnum::kCarriage, "\r");
-		case ' ':	return _makeToken(ScopedEnum::kLWS, " ");
-		case '\t':	return _makeToken(ScopedEnum::kLWS, "\t");
+		case  0 :	return _makeToken(TokenKind::kEndOfInput, "");
+		case ':':	return _makeToken(TokenKind::kColon, ":");
+		case ',':	return _makeToken(TokenKind::kComma, ",");
+		case '\n':	return _makeToken(TokenKind::kNewLine, "\n");
+		case '\r':	return _makeToken(TokenKind::kCarriage, "\r");
+		case ' ':	return _makeToken(TokenKind::kLWS, " ");
+		case '\t':	return _makeToken(TokenKind::kLWS, "\t");
 		default:
 			std::string lexeme = "";
 			if (_charIsString(c))
@@ -56,35 +56,35 @@ Token ScannerHttpRequest::getToken(bool skipLWS)
 				}
 				if (!_charIsString(c))
 					_scan.putback(c);
-				return _makeToken(ScopedEnum::kString, lexeme);
+				return _makeToken(TokenKind::kString, lexeme);
 			}
-			return _makeToken(ScopedEnum::kError,
+			return _makeToken(TokenKind::kError,
 						std::string("Cant parse lexeme:\"" + lexeme +"\", char:'" + c+ "'  "));
 	}
 }
 
-char ScannerHttpRequest::getChar()
+char ScannerMessage::getChar()
 {
 	return _scan.get();
 }
-Token ScannerHttpRequest::peekNextToken(bool skipLWS)
+Token ScannerMessage::peekNextToken(bool skipLWS)
 {
 	Token result = getToken(skipLWS);
 	putback(result);
 	return result;
 }
 
-void ScannerHttpRequest::pushNewBuffer(const char* buffer, size_t len)
+void ScannerMessage::pushNewBuffer(const char* buffer, size_t len)
 {
 	_scan.pushNewBuffer(buffer, len);
 }
 
-void ScannerHttpRequest::putback(Token token)
+void ScannerMessage::putback(Token token)
 {
 	this->putback(token.value);
 }
 
-void ScannerHttpRequest::putback(std::string str)
+void ScannerMessage::putback(std::string str)
 {
 	std::string::reverse_iterator it = str.rbegin();
 	std::string::reverse_iterator end = str.rend();
@@ -96,7 +96,7 @@ void ScannerHttpRequest::putback(std::string str)
 }
 
 /// Must only be called in the switch statement
-bool ScannerHttpRequest::_charIsString(char c){
+bool ScannerMessage::_charIsString(char c){
 	if (c == ':' || isspace(c))
 		return false;
 	if (isprint(c))
@@ -104,7 +104,7 @@ bool ScannerHttpRequest::_charIsString(char c){
 	return false;
 }
 
-Token ScannerHttpRequest::_makeToken(TokenKind kind, std::string value)
+Token ScannerMessage::_makeToken(TokenKind kind, std::string value)
 {
 	Token t;
 
@@ -116,10 +116,10 @@ Token ScannerHttpRequest::_makeToken(TokenKind kind, std::string value)
 std::ostream & operator <<(std::ostream& os, const Token &t)
 {
 	os << "<" << TokenKindToCstring(t.kind);
-	switch (t.kind)
+	switch (t.kind.getValue())
 	{
-		case (ScopedEnum::kString)		:	os << "=\"" << t.value << "\"> ";	break;
-		case (ScopedEnum::kError)		:	os << "=\"" << t.value << "\"> ";	break;
+		case (TokenKind::kString)		:	os << "=\"" << t.value << "\"> ";	break;
+		case (TokenKind::kError)		:	os << "=\"" << t.value << "\"> ";	break;
 		default							:	os << "> "; break;
 	}
 	return os;
@@ -133,7 +133,7 @@ const char* TokenKindToCstring(TokenKind type)
 		"kLeftBrace", "kRightBrace",
 		"kComma", "kColon", "kLWS"
 	};
-	return str[type];
+	return str[type.getValue()];
 }
 
 } /* namespace http */

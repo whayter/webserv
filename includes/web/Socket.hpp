@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 16:20:05 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/11 10:19:26 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/13 14:42:13 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,34 +18,34 @@
 
 #define INVALID_FD -1
 
-class web::Socket
-{
-	public:
+namespace web {
 
-	/* --- Member functions ------------------------------------------------- */
+class Socket {
 
-		Socket();
-		~Socket();
+public:
 
-		inline fd_type		getFd() const { return _fd; }
-		inline addr_type	getAddr() const { return _addr; }
-		inline addrLen_type	getAddrLen() const { return _addrLen; }
+	Socket();
+	~Socket();
 
-		std::string			getIp();
-		
-		bool				setFd(int domain, int type);
-		void				setFd(fd_type fd);
-		void				setAddr(int domain, int interface, int port);
-		void				setAddr(const addr_type& addr);
+	inline fd_type		getFd() const { return _fd; }
+	inline addr_type	getAddr() const { return _addr; }
+	inline addrLen_type	getAddrLen() const { return _addrLen; }
 
-	private:
+	std::string			getIp();
+	
+	bool				setFd(int domain, int type);
+	void				setFd(fd_type fd);
+	void				setAddr(int domain, int interface, int port);
+	void				setAddr(const addr_type& addr);
 
-	/* --- Member variables ------------------------------------------------- */
+private:
 
-		fd_type				_fd;
-		addr_type			_addr;
-		addrLen_type		_addrLen;
-};
+	fd_type				_fd;
+	addr_type			_addr;
+	addrLen_type		_addrLen;
 
+}; /* class Socket */
 
-#endif
+}; /* namespace web */
+
+#endif /* SOCKET_HPP */
