@@ -20,9 +20,10 @@ namespace parser{
 
 namespace config{
 
-struct ScopedEnum
-{
-	enum TokenKind
+
+struct TokenKind {
+
+	enum TokenKindEnum
 	{
 		kEndOfInput = 0, kError,
 		kString, kInteger, kComment,
@@ -30,8 +31,41 @@ struct ScopedEnum
 		kComma, kColon, kSemiColon,
 		kNewLine,
 	};
+
+	TokenKind(TokenKindEnum e): _e(e) {}
+	TokenKind(unsigned int e) {
+		_e = static_cast<TokenKindEnum>(e);
+	}
+	// operator TokenKindEnum() const throw(){
+	// 	return _e;
+    // }
+
+	int getValue() const { return _e; }
+
+    friend bool operator==(const TokenKind& lhs, const TokenKind& rhs){
+      return lhs._e == rhs._e;
+    }
+	 friend bool operator!=(const TokenKind& lhs, const TokenKind& rhs){
+      return lhs._e != rhs._e;
+    }
+
+private:
+	TokenKindEnum _e;
 };
-typedef ScopedEnum::TokenKind TokenKind;
+
+
+// struct ScopedEnum
+// {
+// 	enum TokenKind
+// 	{
+// 		kEndOfInput = 0, kError,
+// 		kString, kInteger, kComment,
+// 		kLeftBrace, kRightBrace,
+// 		kComma, kColon, kSemiColon,
+// 		kNewLine,
+// 	};
+// };
+// typedef ScopedEnum::TokenKind TokenKind;
 
 struct Token
 {
