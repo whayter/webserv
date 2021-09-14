@@ -288,10 +288,14 @@ TEST_CASE("fs::directory_entry - class directory_entry", "[namespace][ft][filesy
 TEST_CASE("fs::directory_iterator - class directory_iterator", "[namespace][ft][filesystem][directory_iterator]")
 {
     {
-        // TemporaryDirectory t;
-        // CHECK( fs::directory_iterator( fs::path(t.path().c_str()) ) == fs::directory_iterator());
-        // generateFile(fs::path(t.path().c_str()) / "test", 1234);
-        // REQUIRE(fs::directory_iterator(fs::path(t.path().c_str())) != fs::directory_iterator());
+        TemporaryDirectory t;
+        {
+            fs::directory_iterator e = fs::directory_iterator();
+            (void)e;
+        }
+        CHECK( fs::directory_iterator( fs::path(t.path().c_str()) ) == fs::directory_iterator());
+        generateFile(fs::path(t.path().c_str()) / "test", 1234);
+        REQUIRE(fs::directory_iterator( fs::path(t.path().c_str())) != fs::directory_iterator());
         // auto iter = fs::directory_iterator(fs::path(t.path().c_str()));
         // fs::directory_iterator iter2(iter);
         // fs::directory_iterator iter3, iter4;

@@ -14,37 +14,39 @@ namespace filesystem
 {
 
 directory_iterator::directory_iterator() throw()
-	: _basePath(path()), _dirp(0), _dirEntry(directory_entry()), _options(directory_options::none)
+	: _basePath(path()), _dirp(NULL), _dirEntry(directory_entry()), _options(directory_options::none)
 {}
 
 directory_iterator::directory_iterator(const path &p)
-	: _basePath(p), _dirp(0), _dirEntry(directory_entry()), _options(directory_options::none)
+	: _basePath(p), _dirp(NULL), _dirEntry(directory_entry()), _options(directory_options::none)
 {
 	if (_basePath.empty())
 		return ;
 	_dirp = ::opendir(_basePath.c_str());
 	if (_dirp == NULL)
 	{
+		_basePath = path();
 		_ec = make_error_code();
 		if (_ec)
 			throw filesystem_error("directory_iterator::directory_iterator(const path& p=\""+ p.string() +"\"): " + _ec.message(), p, _ec);
+		return ;
 	}
-			
+	increment(_ec);	
 }
 
 directory_iterator::directory_iterator(const path &p, directory_options options)
-	: _basePath(p), _dirp(0), _dirEntry(directory_entry()), _options(options)
+	: _basePath(p), _dirp(NULL), _dirEntry(directory_entry()), _options(options)
 {
 
 }
 
 directory_iterator::directory_iterator(const path &p, error_code &ec) throw()
-	: _basePath(p), _dirp(0), _dirEntry(directory_entry()), _options(directory_options::none)
+	: _basePath(p), _dirp(NULL), _dirEntry(directory_entry()), _options(directory_options::none)
 {
 	(void)ec;
 }
 directory_iterator::directory_iterator(const path &p, directory_options options, error_code &ec) throw()
-	: _basePath(p), _dirp(0), _dirEntry(directory_entry()), _options(options)
+	: _basePath(p), _dirp(NULL), _dirEntry(directory_entry()), _options(options)
 {
 	(void)ec;
 }
