@@ -285,7 +285,7 @@ TEST_CASE("fs::directory_entry - class directory_entry", "[namespace][ft][filesy
     CHECK(!(d1 == d2));
 }
 
-TEST_CASE("fs::directory_iterator - class directory_iterator", "[namespace][ft][filesystem][directory_iterator]")
+TEST_CASE("fs::directory_iterator - class directory_iterator", "[namespace][ft][filesystem][directory_iterator][.]")
 {
     {
         TemporaryDirectory t;
