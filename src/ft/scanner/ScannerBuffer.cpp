@@ -12,9 +12,12 @@
 
 #include "ScannerBuffer.hpp"
 
-parser::ScannerBuffer::ScannerBuffer() : _c(0) {}
+namespace ft {
+namespace scanner {
 
-parser::ScannerBuffer::ScannerBuffer(const char *buffer)
+ScannerBuffer::ScannerBuffer() : _c(0) {}
+
+ScannerBuffer::ScannerBuffer(const char *buffer)
 	: _c(0)
 {
 	std::size_t i = 0;
@@ -24,9 +27,9 @@ parser::ScannerBuffer::ScannerBuffer(const char *buffer)
 			_buffer.push_back(buffer[i++]);
 }
 
-parser::ScannerBuffer::~ScannerBuffer() {}
+ScannerBuffer::~ScannerBuffer() {}
 
-char parser::ScannerBuffer::get()
+char ScannerBuffer::get()
 {
 	if (_buffer.begin() == _buffer.end())
 		_c = 0;
@@ -38,12 +41,12 @@ char parser::ScannerBuffer::get()
 	return _c;
 }
 
-void parser::ScannerBuffer::putback(char c)
+void ScannerBuffer::putback(char c)
 {
 	_buffer.push_front(c);
 }
 
-void parser::ScannerBuffer::pushNewBuffer(const char *buffer, size_t len)
+void ScannerBuffer::pushNewBuffer(const char *buffer, size_t len)
 {
 	std::size_t i = 0;
 
@@ -51,7 +54,7 @@ void parser::ScannerBuffer::pushNewBuffer(const char *buffer, size_t len)
 		_buffer.push_back(buffer[i++]);
 }
 
-std::string parser::ScannerBuffer::toString()
+std::string ScannerBuffer::toString()
 {
 	std::string result;
 	std::deque<char>::iterator it = _buffer.begin();
@@ -65,3 +68,7 @@ std::string parser::ScannerBuffer::toString()
 
 	return result;
 }
+
+
+} /* namespace scanner */
+} /* namespace ft */

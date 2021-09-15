@@ -14,7 +14,7 @@
 #define SCANNER_HTTP_REQUEST_HPP
 
 #include <istream>
-#include <parser/ScannerBuffer.hpp>
+#include <ft/scanner/ScannerBuffer.hpp>
 
 namespace parser{
 namespace http{
@@ -96,7 +96,7 @@ private:
 	bool _charIsString(char c);
 	Token _makeToken(TokenKind kind, std::string value);
 
-	ScannerBuffer _scan;
+	ft::scanner::ScannerBuffer _scan;
 	Token	_nextToken;
 }; /* class ScannerMessage */
 
