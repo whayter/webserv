@@ -56,6 +56,11 @@ unsigned char ScannerMessage2::getChar()
 	return _scan.get();
 }
 
+void ScannerMessage2::eraseBeforeCurrentIndex()
+{
+	_scan.eraseBeforeCurrentIndex();
+}
+
 /// Must only be called in the switch statement
 bool ScannerMessage2::_charIsString(char c){
 	if (c == ':' || isspace(c))

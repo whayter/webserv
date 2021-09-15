@@ -20,6 +20,8 @@ namespace ft
 			/// @brief Unget the last character.
 			void unget();
 
+			void eraseBeforeCurrentIndex();
+
 			std::string toString();
 
 		private:

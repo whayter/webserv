@@ -43,6 +43,11 @@ void ScannerBuffer2::unget()
 	--_idx;
 }
 
+void ScannerBuffer2::eraseBeforeCurrentIndex()
+{
+	_buffer.erase(_buffer.begin(), _buffer.begin() + _idx);
+}
+
 
 std::string ScannerBuffer2::toString()
 {

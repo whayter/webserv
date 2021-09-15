@@ -74,6 +74,8 @@ public:
 	unsigned char getChar();
 	// Token peekNextToken(bool skipLWS = false);
 
+	void eraseBeforeCurrentIndex();
+
 	// spaghetti fix
 	// void pushNewBuffer(const char *buffer, size_t len);
 	// void putback(Token token);

@@ -125,6 +125,7 @@ namespace http2
 			req.getContent().push_back(c);
 		if (req.getContent().size() != req.getContentLength())
 			return false;
+		scan.eraseBeforeCurrentIndex();
 		return true;
 	}
 
