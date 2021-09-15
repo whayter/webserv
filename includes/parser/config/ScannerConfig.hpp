@@ -14,7 +14,7 @@
 #define SCANNER_CONFIG_HPP
 
 #include <istream>
-#include "parser/ScannerStream.hpp"
+#include "ft/scanner/ScannerStream.hpp"
 
 namespace parser{
 
@@ -92,7 +92,7 @@ private:
 	Token _makeToken(TokenKind kind, std::string value);
 	Token _makeToken(TokenKind kind, std::string value, int column, int line);
 
-	ScannerStream _scan;
+	ft::scanner::ScannerStream _scan;
 }; /* class ScannerConfig */
 
 const char* tokenKindToCstring(TokenKind kind);
