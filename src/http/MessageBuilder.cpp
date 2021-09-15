@@ -6,12 +6,13 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 23:42:16 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/14 10:51:05 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/15 14:59:52 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "MessageBuilder.hpp"
-#include "Message.hpp"
+#include "Request.hpp"
+#include "Response.hpp"
 #include "utility.hpp"
 
 namespace http {
@@ -25,6 +26,7 @@ std::string	MessageBuilder::stringifyContent(content_type& content)
 	return std::string(content.begin(), content.end());
 }
 
+template <class Message>
 std::string MessageBuilder::stringifyMessage(Message& message)
 {
 	std::string stringMessage;

@@ -12,55 +12,58 @@
 #include "ft/error_code.hpp"
 
 namespace ft {
+
 // class error_code;
 
 namespace filesystem {
 
-	// class path;
-	// class directory_entry;
-	// struct directory_options; // enum class
+// class path;
+// class directory_entry;
+// struct directory_options; // enum class
 
-	class directory_iterator
-	{
-	public:
-		typedef directory_entry       	value_type;
-		typedef std::ptrdiff_t  		difference_type;
-		typedef const directory_entry*	pointer;
-		typedef const directory_entry&	reference;
-		typedef std::input_iterator_tag	iterator_category;
+class directory_iterator {
 
-		// member functions
-		directory_iterator() throw();
-		directory_iterator(const path& p);
-		directory_iterator(const path& p, directory_options options);
-		directory_iterator(const path& p, error_code& ec) throw();
-		directory_iterator(const path& p, directory_options options, error_code& ec) throw();
-		directory_iterator(const directory_iterator& other);
-		// directory_iterator(directory_iterator&& rhs) throw();
-		~directory_iterator();
+public:
 
-		directory_iterator& operator=(const directory_iterator& other);
-		// directory_iterator& operator=(directory_iterator&& other) throw();
-		
-		const directory_entry& operator*() const;
-		const directory_entry* operator->() const;
-		directory_iterator&    operator++();
-		directory_iterator&    increment(error_code& ec) throw();
+	typedef directory_entry       	value_type;
+	typedef std::ptrdiff_t  		difference_type;
+	typedef const directory_entry*	pointer;
+	typedef const directory_entry&	reference;
+	typedef std::input_iterator_tag	iterator_category;
 
-		// other members as required by input iterators
+	// member functions
+	directory_iterator() throw();
+	directory_iterator(const path& p);
+	// directory_iterator(const path& p, directory_options options);
+	directory_iterator(const path& p, error_code& ec) throw();
+	// directory_iterator(const path& p, directory_options options, error_code& ec) throw();
+	directory_iterator(const directory_iterator& other);
+	// directory_iterator(directory_iterator&& rhs) throw();
+	~directory_iterator();
 
-		bool operator==(const directory_iterator& other) const;
-	    bool operator!=(const directory_iterator& other) const;
+	directory_iterator& operator=(const directory_iterator& other);
+	// directory_iterator& operator=(directory_iterator&& other) throw();
+	
+	const directory_entry& operator*() const;
+	const directory_entry* operator->() const;
+	directory_iterator&    increment(error_code& ec) throw();
+	directory_iterator&    operator++();
 
-	private:
-		path				_basePath;
-		DIR*				_dirp;
-		directory_entry		_dirEntry;
-		directory_options	_options;
-		struct dirent*		_dirent;
-		error_code			_ec;
+	// other members as required by input iterators
 
-	}; /* class directory_iterator */
+	bool operator==(const directory_iterator& other) const;
+	bool operator!=(const directory_iterator& other) const;
+
+private:
+
+	path				_basePath;
+	DIR*				_dirp;
+	directory_entry		_dirEntry;
+	directory_options	_options;
+	struct dirent*		_dirent;
+	error_code			_ec;
+
+}; /* class directory_iterator */
 
 }; /* namespace filesystem */
 

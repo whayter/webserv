@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 16:56:40 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/14 10:59:15 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/15 14:51:34 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 
 #include "web.hpp"
 #include "Socket.hpp"
-#include "Message.hpp"
+#include "Request.hpp"
+#include "Response.hpp"
 
 #include <queue>
 #include <deque>
@@ -46,8 +47,8 @@ private:
 	uint32_t							_port;
 	Socket								_socket;
 	std::deque<unsigned char>			_buffer;
-	std::queue<http::Message>			_requests;
-	std::queue<http::Message>			_responses;
+	std::queue<http::Request>			_requests;
+	std::queue<http::Response>			_responses;
 };
 
 } /* namespace web */

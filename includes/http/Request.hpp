@@ -1,43 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   MessageBuilder.hpp                                 :+:      :+:    :+:   */
+/*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/12 23:38:35 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/15 15:00:55 by hwinston         ###   ########.fr       */
+/*   Created: 2021/09/15 14:43:29 by hwinston          #+#    #+#             */
+/*   Updated: 2021/09/15 14:53:55 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MESSAGE_BUILDER_HPP
-#define MESSAGE_BUILDER_HPP
+#ifndef REQUEST_HPP
+#define REQUEST_HPP
 
 #include "http.hpp"
+#include "AMessage.hpp"
+#include "Uri.hpp"
 
 namespace http {
 
-class MessageBuilder {
-	
+class Request: public AMessage {
+
 public:
 
-	MessageBuilder();
-	~MessageBuilder();
+	Request();
+	~Request();
 
-	http::Request			buildRequest();
-	http::Response			buildResponse();
+	inline std::string		getMethod() { return _method; }
+	inline Uri&				getUri() { return _uri; }
 
-	void parseStatusLine();
-	void parseHeaders();
-	void parseContent();
+	void					setMethod(std::string method);
+	void					setUri(const Uri& uri);
 
-	std::string				stringifyContent(content_type& content);
+private:
 
-	template <class Message>
-	std::string				stringifyMessage(Message& message);
+	std::string				_method;
+	Uri						_uri;
 
-}; /* class MessageBuilder */
-	
+}; /* class Request */
+
 }; /* namespace http */
 
-#endif /* SUPERVISOR_HPP */
+#endif /* REQUEST_HPP */

@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 18:54:05 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/12 22:53:33 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/15 14:57:45 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,11 @@ namespace http
 		
 	/* --- Classes & structures --------------------------------------------- */
 
-	class										Message;
+	class										AMessage;
+	class										Request;
+	class										Response;
 	struct										Status;
-	// class										MessageBuilder;
+	class										MessageBuilder;
 	// class										Supervisor;
 	
 };

@@ -1,47 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Message.cpp                                        :+:      :+:    :+:   */
+/*   Response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/12 18:55:56 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/12 22:50:03 by hwinston         ###   ########.fr       */
+/*   Created: 2021/09/15 14:45:08 by hwinston          #+#    #+#             */
+/*   Updated: 2021/09/15 14:53:39 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef RESPONSE_HPP
+#define RESPONSE_HPP
+
 #include "http.hpp"
-#include "Message.hpp"
+#include "AMessage.hpp"
 #include "Status.hpp"
 
 namespace http {
 
-Message::Message() {}
+class Response: public AMessage {
 
-Message::~Message()
-{
-	_headers.clear();
-	_content.clear();
-}
+public:
 
-std::string	Message::getHeader(std::string name)
-{
-	return _headers[name];
-}
+	Response();
+	~Response();
 
-void Message::setStatus(Status::StatusEnum e)
-{
-	_status = e;
-}
+	inline Status&			getStatus() { return _status; }
+	
+	void					setStatus(Status::StatusEnum e);
 
-void Message::setHeader(std::string key, std::string val)
-{
-	_headers[key] = val;
-}
+private:
 
-void Message::setContent(content_type content)
-{
-	_content = content;
-}
+	Status					_status;
 
-} /* namespace http */
+}; /* class Response */
+
+}; /* namespace http */
+
+#endif /* REPSONSE_HPP */
