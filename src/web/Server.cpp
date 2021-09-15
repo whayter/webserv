@@ -183,7 +183,7 @@ bool Server::_isServerIndex(int deviceIndex)
 
 void Server::_log(int deviceIndex, std::string description)
 {
-	std::cout << "[" << getDate() << "]";
+	std::cout << "[" << ft::getDate() << "]";
 	std::cout << std::setw(4) << std::setfill(' ') << ' ';
 	//if (!_isServerIndex(deviceIndex))
 	if (deviceIndex != -1)

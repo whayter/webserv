@@ -125,9 +125,9 @@ void ServerConfig::_throw_SyntaxError(config::Token t, const std::string &error_
 	std::string error;
 
 	error += _configFilePath.string() + ':';
-	error += intToString(t.line);
+	error += ft::intToString(t.line);
 	error += ':';
-	error += intToString(t.column);
+	error += ft::intToString(t.column);
 	error += ": error: ";
 	error += error_str;
 	error += '\n';
@@ -418,7 +418,7 @@ Host ServerConfig::_parseListenValue(const pr::Token& host)
 	}
 	else
 	{
-	    lowerStringInPlace(tmp);
+	    ft::lowerStringInPlace(tmp);
 		result.setHostname(tmp);
 		it++;
 	}
@@ -457,7 +457,7 @@ Host ServerConfig::_parseHost(config::ScannerConfig & scanner)
             it++;
         }
     }
-    lowerStringInPlace(host);
+    ft::lowerStringInPlace(host);
 	_skipSemiColonNewLine(scanner);
 	return Host(host, port);
 }
@@ -574,7 +574,7 @@ ReturnDirective	ServerConfig::_parseReturn(config::ScannerConfig & scanner)
 		|| code == 413 || code == 416 || code == 500 || code == 504)
 			result.setText(argTwo.value);
 		else
-			_throw_SyntaxError(argOne, "Can't use code " + intToString(code) + " in context \"return\". RTFM !");
+			_throw_SyntaxError(argOne, "Can't use code " + ft::intToString(code) + " in context \"return\". RTFM !");
 		result.setCode(code);
 	}
 	else
