@@ -71,7 +71,7 @@ public:
 	~ScannerMessage2();
 
 	Token getToken(bool skipLWS = false);
-	char getChar();
+	unsigned char getChar();
 	// Token peekNextToken(bool skipLWS = false);
 
 	// spaghetti fix

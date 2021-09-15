@@ -51,7 +51,7 @@ Token ScannerMessage2::getToken(bool skipLWS)
 	}
 }
 
-char ScannerMessage2::getChar()
+unsigned char ScannerMessage2::getChar()
 {
 	return _scan.get();
 }

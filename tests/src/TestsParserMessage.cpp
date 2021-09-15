@@ -8,7 +8,7 @@
 #include <vector>
 #include <stdexcept>
 
-std::vector<unsigned char>	vectorFromStr(const std::string &s)
+static std::vector<unsigned char>	vectorFromStr(const std::string &s)
 {
 	std::vector<unsigned char> result;
 
