@@ -69,6 +69,8 @@ private:
 
 struct Token
 {
+	Token(): kind(TokenKind::kEndOfInput) {};
+
 	TokenKind	kind;
 	std::string	value;
 	int			line;

@@ -48,13 +48,13 @@ Token ScannerConfig::getToken(bool skipNL)
 	switch (c)
 	{
 		case  -1:
-		case  0 :	return _makeToken(ScopedEnum::kEndOfInput, "");
-		// case ':':	return _makeToken(ScopedEnum::kColon, ":");
-		// case ',':	return _makeToken(ScopedEnum::kComma, ",");
-		case ';':	return _makeToken(ScopedEnum::kSemiColon, ";");
-		case '{':	return _makeToken(ScopedEnum::kLeftBrace, "{");
-		case '}':	return _makeToken(ScopedEnum::kRightBrace, "}");
-		case '\n':	return _makeToken(ScopedEnum::kNewLine, "\n");
+		case  0 :	return _makeToken(TokenKind::kEndOfInput, "");
+		// case ':':	return _makeToken(TokenKind::kColon, ":");
+		// case ',':	return _makeToken(TokenKind::kComma, ",");
+		case ';':	return _makeToken(TokenKind::kSemiColon, ";");
+		case '{':	return _makeToken(TokenKind::kLeftBrace, "{");
+		case '}':	return _makeToken(TokenKind::kRightBrace, "}");
+		case '\n':	return _makeToken(TokenKind::kNewLine, "\n");
 		case '#': 
 		{
 			std::string lexeme = "";
@@ -67,7 +67,7 @@ Token ScannerConfig::getToken(bool skipNL)
 			}
 			if (c == '\n')
 				_scan.putback(c);
-			return _makeToken(ScopedEnum::kComment, lexeme, column, line);
+			return _makeToken(TokenKind::kComment, lexeme, column, line);
 		}
 		case '\'':
 		case '"':
@@ -83,12 +83,12 @@ Token ScannerConfig::getToken(bool skipNL)
 				c = _scan.get();
 			}
 			if (c == '\n' || c == 0 || c== -1)
-				return _makeToken(ScopedEnum::kError,
+				return _makeToken(TokenKind::kError,
 					std::string("Missing closing quote."), column, line);
 			else if (!isprint(c))
-				return _makeToken(ScopedEnum::kError,
+				return _makeToken(TokenKind::kError,
 					std::string("Wtf, characters that are not printable."), column, line);
-			return _makeToken(ScopedEnum::kString, lexeme, column, line);
+			return _makeToken(TokenKind::kString, lexeme, column, line);
 		}
 		default:
 		{
@@ -108,10 +108,10 @@ Token ScannerConfig::getToken(bool skipNL)
 				if (!_charIsString(c))
 					_scan.putback(c);
 				if (isInteger)
-					return _makeToken(ScopedEnum::kInteger, lexeme, column, line);
-				return _makeToken(ScopedEnum::kString, lexeme, column, line);
+					return _makeToken(TokenKind::kInteger, lexeme, column, line);
+				return _makeToken(TokenKind::kString, lexeme, column, line);
 			}
-			return _makeToken(ScopedEnum::kError,
+			return _makeToken(TokenKind::kError,
 						std::string("Cant parse lexeme:\"" + lexeme +"\", char:'" + c+ "'  "));
 		}
 	}
@@ -150,11 +150,11 @@ Token ScannerConfig::_makeToken(TokenKind kind, std::string value)
 std::ostream & operator <<(std::ostream& os, const Token &t)
 {
 	os << "<" << tokenKindToCstring(t.kind);
-	switch (t.kind)
+	switch (t.kind.getValue())
 	{
-		case (ScopedEnum::kString)		:
-		case (ScopedEnum::kInteger)		:
-		case (ScopedEnum::kError)		:	os << "=\"" << t.value << "\"> ";	break;
+		case (TokenKind::kString)		:
+		case (TokenKind::kInteger)		:
+		case (TokenKind::kError)		:	os << "=\"" << t.value << "\"> ";	break;
 		default							:	os << "> "; break;
 	}
 	return os;
@@ -169,7 +169,7 @@ const char* tokenKindToCstring(TokenKind kind)
 		"kComma", "kColon", "kSemiColon",
 		"kNewLine",
 	};
-	return str[kind];
+	return str[kind.getValue()];
 }
 
 std::string tokenToString(Token token)
@@ -177,10 +177,10 @@ std::string tokenToString(Token token)
 	std::string result("<");
 	
 	result += tokenKindToCstring(token.kind);
-	switch (token.kind)
+	switch (token.kind.getValue())
 	{
-		case (ScopedEnum::kString)		:
-		case (ScopedEnum::kError)		:
+		case (TokenKind::kString)		:
+		case (TokenKind::kError)		:
 			result += "=\"" + token.value + "\"> ";
 			break;
 		default							:

@@ -138,10 +138,10 @@ void ServerConfig::_skipSemiColonNewLine(parser::config::ScannerConfig & scanner
 {
 	pr::Token t;
 
-	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kSemiColon)
+	if ((t = scanner.getToken()).kind != pr::TokenKind::kSemiColon)
 		_throw_SyntaxError(t, "Missing semi-colon.");
-	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kNewLine)
-		if (t.kind != pr::ScopedEnum::kComment)
+	if ((t = scanner.getToken()).kind != pr::TokenKind::kNewLine)
+		if (t.kind != pr::TokenKind::kComment)
 		_throw_SyntaxError(t, "Missing new line after semi-colon.");
 }
 
@@ -182,13 +182,13 @@ void ServerConfig::_parse(std::istream & in)
 	pr::ScannerConfig scanner(in);
 
 	pr::Token t;
-	while ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kEndOfInput)
+	while ((t = scanner.getToken(true)).kind != pr::TokenKind::kEndOfInput)
 	{
-		switch (t.kind)
+		switch (t.kind.getValue())
 		{
-			case pr::ScopedEnum::kComment:
+			case pr::TokenKind::kComment:
 				continue;
-			case pr::ScopedEnum::kString:
+			case pr::TokenKind::kString:
 				if (t.value == "server")
 					_servers.push_back(_parseServer(scanner, t));
 				else
@@ -207,15 +207,15 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner, pr::Token se
 	ServerBlock result;
 	pr::Token t;
 
-	if ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kLeftBrace)
+	if ((t = scanner.getToken(true)).kind != pr::TokenKind::kLeftBrace)
 		_throw_SyntaxError(t, "Missing open brace at server block.");
-	while ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kRightBrace)
+	while ((t = scanner.getToken(true)).kind != pr::TokenKind::kRightBrace)
 	{
-		switch (t.kind)
+		switch (t.kind.getValue())
 		{
-			case pr::ScopedEnum::kComment :
+			case pr::TokenKind::kComment :
 				continue;
-			case pr::ScopedEnum::kString :
+			case pr::TokenKind::kString :
 				if (t.value == "server")
 					_throw_SyntaxError(serverToken, "Missing closing bracket at end of server directive");
 				else if (t.value == "listen")
@@ -240,10 +240,10 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner, pr::Token se
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in context 'server'");
 				break;
-			case pr::ScopedEnum::kSemiColon :
+			case pr::TokenKind::kSemiColon :
 				_throw_SyntaxError(t, "Unexpected semi-colon.");
 				break;
-			case pr::ScopedEnum::kEndOfInput :
+			case pr::TokenKind::kEndOfInput :
 				_throw_SyntaxError(serverToken, "Missing closing bracket at end of server directive");
 				break;
 			default:
@@ -259,7 +259,7 @@ Host ServerConfig::_parseListen(parser::config::ScannerConfig & scanner)
 	Host result;
 	pr::Token t =  scanner.getToken();
 
-	if (t.kind != pr::ScopedEnum::kString && t.kind != pr::ScopedEnum::kInteger)
+	if (t.kind != pr::TokenKind::kString && t.kind != pr::TokenKind::kInteger)
 		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"listen\".");
 	result = _parseListenValue(t);
 	_skipSemiColonNewLine(scanner);
@@ -270,7 +270,7 @@ ft::filesystem::path ServerConfig::_parseRoot(parser::config::ScannerConfig & sc
 {
 	pr::Token t;
 
-	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
+	if ((t = scanner.getToken()).kind != pr::TokenKind::kString)
 		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"root\".");
 	_skipSemiColonNewLine(scanner);
 	return ft::filesystem::path(t.value);
@@ -280,7 +280,7 @@ ft::filesystem::path ServerConfig::_parseIndex(parser::config::ScannerConfig & s
 {
 	pr::Token t;
 
-	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
+	if ((t = scanner.getToken()).kind != pr::TokenKind::kString)
 		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"index\".");
 	_skipSemiColonNewLine(scanner);
 	return ft::filesystem::path(t.value);
@@ -290,7 +290,7 @@ std::string ServerConfig::_parseServerName(parser::config::ScannerConfig & scann
 {
 	pr::Token t;
 
-	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
+	if ((t = scanner.getToken()).kind != pr::TokenKind::kString)
 		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"server_name\".");
 	_skipSemiColonNewLine(scanner);
 	return t.value;	
@@ -304,15 +304,15 @@ std::map<u_short, std::string> ServerConfig::_parseErrorPage(parser::config::Sca
 	pr::Token			t;
 	
 	t = scanner.getToken();
-	if (t.kind != pr::ScopedEnum::kInteger)
+	if (t.kind != pr::TokenKind::kInteger)
 		_throw_SyntaxError(t, "No error code specified.");
 	do {
 		codes.push_back(strtoul(t.value.c_str(), 0, 10));
-	} while ((t = scanner.getToken()).kind == pr::ScopedEnum::kInteger);
+	} while ((t = scanner.getToken()).kind == pr::TokenKind::kInteger);
 	
-	if (t.kind == pr::ScopedEnum::kString)
+	if (t.kind == pr::TokenKind::kString)
 		path = t.value;
-	else if (t.kind == pr::ScopedEnum::kSemiColon)
+	else if (t.kind == pr::TokenKind::kSemiColon)
 		_throw_SyntaxError(t, "Missing Uri in context \"error\".");
 	else
 		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"error\".");
@@ -332,19 +332,19 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner, pr::Token loc
 	pr::Token	t;
 	Location result;
 	
-	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
+	if ((t = scanner.getToken()).kind != pr::TokenKind::kString)
 		_throw_SyntaxError(t, "Location directive: invalid uri");
 	result.setUri(t.value);
-	if ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kLeftBrace)
+	if ((t = scanner.getToken(true)).kind != pr::TokenKind::kLeftBrace)
 		_throw_SyntaxError(t, "Location directive: No scope defined. Add braces...");
 
-	while ((t = scanner.getToken(true)).kind != pr::ScopedEnum::kRightBrace)
+	while ((t = scanner.getToken(true)).kind != pr::TokenKind::kRightBrace)
 	{
-		switch (t.kind)
+		switch (t.kind.getValue())
 		{
-			case pr::ScopedEnum::kComment :
+			case pr::TokenKind::kComment :
 				continue;
-			case pr::ScopedEnum::kString :
+			case pr::TokenKind::kString :
 				if (t.value == "include"){
 					scanner.getToken();
 					_skipSemiColonNewLine(scanner);
@@ -373,7 +373,7 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner, pr::Token loc
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in location context");
 				break;
-			case pr::ScopedEnum::kEndOfInput :
+			case pr::TokenKind::kEndOfInput :
 				_throw_SyntaxError(locationToken, "Missing closing bracket at end of location directive");
 				break;
 			default:
@@ -387,7 +387,7 @@ bool	ServerConfig::_parseAutoindex(parser::config::ScannerConfig & scanner)
 {
 	pr::Token t;
 
-	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
+	if ((t = scanner.getToken()).kind != pr::TokenKind::kString)
 		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"autoindex\".");
 	_skipSemiColonNewLine(scanner);
 	if (t.value == "on")
@@ -439,7 +439,7 @@ Host ServerConfig::_parseHost(parser::config::ScannerConfig & scanner)
 	pr::Token	t;
 	uint32_t 	port = 0;
 	
-	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
+	if ((t = scanner.getToken()).kind != pr::TokenKind::kString)
 		_throw_SyntaxError(t, "Invalid value host.");
 
     std::string::const_iterator it = t.value.begin();
@@ -467,7 +467,7 @@ std::string ServerConfig::_parseCgiExec(parser::config::ScannerConfig & scanner)
 	std::string	exec;
 	pr::Token	t;
 
-	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString)
+	if ((t = scanner.getToken()).kind != pr::TokenKind::kString)
 		_throw_SyntaxError(t, "Invalid value exec.");
 	exec = t.value;
 	_skipSemiColonNewLine(scanner);
@@ -480,9 +480,9 @@ std::pair<std::string, std::string>	ServerConfig::_parseCgiParam(parser::config:
 	pr::Token tValue;
 	std::pair<std::string, std::string> result;
 
-	if ((tName = scanner.getToken()).kind != pr::ScopedEnum::kString)
+	if ((tName = scanner.getToken()).kind != pr::TokenKind::kString)
 		_throw_SyntaxError(tName, "Bad cgi parameter name");
-	if ((tValue = scanner.getToken()).kind != pr::ScopedEnum::kString)
+	if ((tValue = scanner.getToken()).kind != pr::TokenKind::kString)
 		_throw_SyntaxError(tValue, "Bad cgi parameter value");
 	result.first = tName.value;
 	result.second = tValue.value;
@@ -496,11 +496,11 @@ size_t	ServerConfig::_parseClientMaxBodySize(parser::config::ScannerConfig & sca
 	char unit = 0;
 	pr::Token t;
 
-	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kString && t.kind != pr::ScopedEnum::kInteger)
+	if ((t = scanner.getToken()).kind != pr::TokenKind::kString && t.kind != pr::TokenKind::kInteger)
 		_throw_SyntaxError(t, "Unexpected token: " + pr::tokenToString(t) + " in context \"client_max_body_size\".");
 	_skipSemiColonNewLine(scanner);
 	
-	if (t.kind == pr::ScopedEnum::kInteger)
+	if (t.kind == pr::TokenKind::kInteger)
 		return strtoul(t.value.c_str(), 0, 10);
 	
     std::string::const_iterator it = t.value.begin();
@@ -544,12 +544,12 @@ ReturnDirective	ServerConfig::_parseReturn(parser::config::ScannerConfig & scann
 	pr::Token argTwo;
 	size_t code = 0;
 
-	if ((argOne = scanner.getToken()).kind != pr::ScopedEnum::kString && argOne.kind != pr::ScopedEnum::kInteger)
+	if ((argOne = scanner.getToken()).kind != pr::TokenKind::kString && argOne.kind != pr::TokenKind::kInteger)
 		_throw_SyntaxError(argOne, "Unexpected token: " + pr::tokenToString(argOne) + " in context \"return\".");
 
-	if (argOne.kind == pr::ScopedEnum::kInteger)
+	if (argOne.kind == pr::TokenKind::kInteger)
 	{
-		if ((argTwo = scanner.getToken()).kind != pr::ScopedEnum::kString)
+		if ((argTwo = scanner.getToken()).kind != pr::TokenKind::kString)
 			_throw_SyntaxError(argTwo, "Unexpected token: " + pr::tokenToString(argTwo) + " in context \"return\".");
 
 		std::string::const_iterator it = argOne.value.begin();
@@ -604,17 +604,17 @@ std::set<std::string> ServerConfig::_parseLimitExceptMethods(parser::config::Sca
 	allowedMethods.insert("DELETE"); 
 	
 	t = scanner.getToken();
-	if (t.kind == pr::ScopedEnum::kSemiColon)
+	if (t.kind == pr::TokenKind::kSemiColon)
 		_throw_SyntaxError(t, "No allowed method specified. There is no point of doing this.");
 	do {
 		if (!allowedMethods.count(t.value))
 			_throw_SyntaxError(t, "Unknown method \"" + t.value + "\".");
 		result.insert(t.value);
-	} while ((t = scanner.getToken()).kind == pr::ScopedEnum::kString);
-	if (t.kind != pr::ScopedEnum::kSemiColon)
+	} while ((t = scanner.getToken()).kind == pr::TokenKind::kString);
+	if (t.kind != pr::TokenKind::kSemiColon)
 		_throw_SyntaxError(t, "Missing semi-colon.");
-	if ((t = scanner.getToken()).kind != pr::ScopedEnum::kNewLine)
-		if (t.kind != pr::ScopedEnum::kComment)
+	if ((t = scanner.getToken()).kind != pr::TokenKind::kNewLine)
+		if (t.kind != pr::TokenKind::kComment)
 		_throw_SyntaxError(t, "Missing new line after semi-colon.");
 	return result;	
 }
