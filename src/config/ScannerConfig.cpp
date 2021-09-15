@@ -10,10 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/config/ScannerConfig.hpp"
+#include "config/ScannerConfig.hpp"
 
-namespace parser
-{
 namespace config
 {
 
@@ -191,5 +189,3 @@ std::string tokenToString(Token token)
 }
 
 } /* namespace config */
-
-} /* namespace parser */

@@ -16,10 +16,7 @@
 #include <istream>
 #include "ft/scanner/ScannerStream.hpp"
 
-namespace parser{
-
 namespace config{
-
 
 struct TokenKind {
 
@@ -100,6 +97,5 @@ std::string tokenToString(Token token);
 std::ostream & operator <<(std::ostream& os, const Token &t);
 
 } /* namespace config */
-} /* namespace parser */
 
 #endif /* SCANNER_CONFIG_HPP */

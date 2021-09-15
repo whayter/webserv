@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/ServerConfig.hpp"
+#include "config/ServerConfig.hpp"
 
-#include "parser/config/ScannerConfig.hpp"
+#include "config/ScannerConfig.hpp"
 #include "utility.hpp"
 #include  "SyntaxError.hpp"
 
@@ -23,7 +23,7 @@
 
 ServerConfig* ServerConfig::_singleton = NULL;
 
-namespace pr = parser::config;
+namespace pr = config;
 
 ServerConfig::ServerConfig(const ft::filesystem::path& filepath)
 	: _configFilePath(filepath)
@@ -120,7 +120,7 @@ std::vector<uint32_t> ServerConfig::getPorts()
 
 
 
-void ServerConfig::_throw_SyntaxError(parser::config::Token t, const std::string &error_str)
+void ServerConfig::_throw_SyntaxError(config::Token t, const std::string &error_str)
 {
 	std::string error;
 
@@ -134,7 +134,7 @@ void ServerConfig::_throw_SyntaxError(parser::config::Token t, const std::string
 	throw SyntaxError(error);
 }
 
-void ServerConfig::_skipSemiColonNewLine(parser::config::ScannerConfig & scanner)
+void ServerConfig::_skipSemiColonNewLine(config::ScannerConfig & scanner)
 {
 	pr::Token t;
 
@@ -254,7 +254,7 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner, pr::Token se
 	return result;
 }
 
-Host ServerConfig::_parseListen(parser::config::ScannerConfig & scanner)
+Host ServerConfig::_parseListen(config::ScannerConfig & scanner)
 {
 	Host result;
 	pr::Token t =  scanner.getToken();
@@ -266,7 +266,7 @@ Host ServerConfig::_parseListen(parser::config::ScannerConfig & scanner)
 	return result;
 }
 
-ft::filesystem::path ServerConfig::_parseRoot(parser::config::ScannerConfig & scanner)
+ft::filesystem::path ServerConfig::_parseRoot(config::ScannerConfig & scanner)
 {
 	pr::Token t;
 
@@ -276,7 +276,7 @@ ft::filesystem::path ServerConfig::_parseRoot(parser::config::ScannerConfig & sc
 	return ft::filesystem::path(t.value);
 }
 
-ft::filesystem::path ServerConfig::_parseIndex(parser::config::ScannerConfig & scanner)
+ft::filesystem::path ServerConfig::_parseIndex(config::ScannerConfig & scanner)
 {
 	pr::Token t;
 
@@ -286,7 +286,7 @@ ft::filesystem::path ServerConfig::_parseIndex(parser::config::ScannerConfig & s
 	return ft::filesystem::path(t.value);
 }
 
-std::string ServerConfig::_parseServerName(parser::config::ScannerConfig & scanner)
+std::string ServerConfig::_parseServerName(config::ScannerConfig & scanner)
 {
 	pr::Token t;
 
@@ -296,7 +296,7 @@ std::string ServerConfig::_parseServerName(parser::config::ScannerConfig & scann
 	return t.value;	
 }
 
-std::map<u_short, std::string> ServerConfig::_parseErrorPage(parser::config::ScannerConfig & scanner)
+std::map<u_short, std::string> ServerConfig::_parseErrorPage(config::ScannerConfig & scanner)
 {
 	std::map<u_short, std::string> result;
 	std::vector<u_short> codes;
@@ -383,7 +383,7 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner, pr::Token loc
 	return result;
 }
 
-bool	ServerConfig::_parseAutoindex(parser::config::ScannerConfig & scanner)
+bool	ServerConfig::_parseAutoindex(config::ScannerConfig & scanner)
 {
 	pr::Token t;
 
@@ -433,7 +433,7 @@ Host ServerConfig::_parseListenValue(const pr::Token& host)
 	return result;
 }
 
-Host ServerConfig::_parseHost(parser::config::ScannerConfig & scanner)
+Host ServerConfig::_parseHost(config::ScannerConfig & scanner)
 {
 	std::string	host;
 	pr::Token	t;
@@ -462,7 +462,7 @@ Host ServerConfig::_parseHost(parser::config::ScannerConfig & scanner)
 	return Host(host, port);
 }
 
-std::string ServerConfig::_parseCgiExec(parser::config::ScannerConfig & scanner)
+std::string ServerConfig::_parseCgiExec(config::ScannerConfig & scanner)
 {
 	std::string	exec;
 	pr::Token	t;
@@ -474,7 +474,7 @@ std::string ServerConfig::_parseCgiExec(parser::config::ScannerConfig & scanner)
 	return exec;
 }
 
-std::pair<std::string, std::string>	ServerConfig::_parseCgiParam(parser::config::ScannerConfig & scanner)
+std::pair<std::string, std::string>	ServerConfig::_parseCgiParam(config::ScannerConfig & scanner)
 {
 	pr::Token tName;
 	pr::Token tValue;
@@ -490,7 +490,7 @@ std::pair<std::string, std::string>	ServerConfig::_parseCgiParam(parser::config:
 	return result;
 }
 
-size_t	ServerConfig::_parseClientMaxBodySize(parser::config::ScannerConfig & scanner)
+size_t	ServerConfig::_parseClientMaxBodySize(config::ScannerConfig & scanner)
 {
 	size_t bytes = 0;
 	char unit = 0;
@@ -537,7 +537,7 @@ size_t	ServerConfig::_parseClientMaxBodySize(parser::config::ScannerConfig & sca
 	return bytes;
 }
 
-ReturnDirective	ServerConfig::_parseReturn(parser::config::ScannerConfig & scanner)
+ReturnDirective	ServerConfig::_parseReturn(config::ScannerConfig & scanner)
 {
 	ReturnDirective result;
 	pr::Token argOne;
@@ -591,7 +591,7 @@ ReturnDirective	ServerConfig::_parseReturn(parser::config::ScannerConfig & scann
 	return result;
 }
 
-std::set<std::string> ServerConfig::_parseLimitExceptMethods(parser::config::ScannerConfig & scanner)
+std::set<std::string> ServerConfig::_parseLimitExceptMethods(config::ScannerConfig & scanner)
 {
 	std::set<std::string> result;
 	// std::set<std::string> allowedMethods = {"GET", "POST", "DELETE"}; // c++98 sucks :@
