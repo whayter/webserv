@@ -1,10 +1,12 @@
 #include "catch_amalgamated.hpp"
 
 #include "parserMessage.hpp"
+#include "ScannerBuffer2.hpp"
 
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <stdexcept>
 
 std::vector<unsigned char>	vectorFromStr(const std::string &s)
 {
@@ -31,6 +33,31 @@ TEST_CASE( "http2::hasTwoConsecutiverCRNL", "[namespace][http2][hasTwoConsecutiv
 
 	CHECK(http2::hasTwoConsecutiverCRNL(vec));
 }
+
+TEST_CASE( "ScannerBuffer2 - test vite fait", "[ScannerBuffer2]" )
+{
+	std::vector<unsigned char> vec = vectorFromStr("test");
+	
+	ft::scanner::ScannerBuffer2 scan(vec);
+
+
+	REQUIRE(scan.get() == 't');
+	scan.unget();
+	REQUIRE(scan.get() == 't');
+	REQUIRE(scan.get() == 'e');
+	scan.unget();
+	scan.unget();
+	REQUIRE_THROWS_AS( scan.unget(), std::out_of_range);
+	REQUIRE(scan.get() == 't');
+	REQUIRE(scan.get() == 'e');
+	REQUIRE(scan.get() == 's');
+	REQUIRE(scan.get() == 't');
+	REQUIRE(scan.get() == '\0');
+	REQUIRE_NOTHROW(scan.unget());
+	REQUIRE(scan.get() == '\0');
+	REQUIRE_THROWS_AS( scan.get(), std::out_of_range);
+}
+
 
 // /// simple get
 // TEST_CASE( "HttpRequest::read simple get", "[class][HttpRequest][read]" )
