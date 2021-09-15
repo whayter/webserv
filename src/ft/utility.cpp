@@ -10,8 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utility.hpp"
+#include "ft/utility.hpp"
 #include <algorithm>
+
+namespace ft {
 
 std::string intToString(int i)
 {
@@ -58,3 +60,5 @@ std::string getDate()
 	strftime(date, sizeof(date), "%a, %d %b %Y %k:%M:%S GMT", lt);
 	return date;
 }
+
+} /* namespace ft */

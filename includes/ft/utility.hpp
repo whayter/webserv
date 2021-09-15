@@ -17,10 +17,14 @@
 #include <sstream>
 #include <ctime>
 
+namespace ft {
+
 std::string intToString(int i);
 int         stringToInt(std::string integer);
 void		lowerStringInPlace(std::string& s);
 bool		isInteger(std::string& s);
 std::string getDate();
+
+} /* namespace ft */
 
 #endif

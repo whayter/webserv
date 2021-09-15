@@ -6,7 +6,7 @@
 #include <fstream>
 #include <string>
 
-using namespace parser::config;
+using namespace config;
 
 TEST_CASE( "ScannerConfig1 - from stream", "[class][ScannerConfig]" )
 {

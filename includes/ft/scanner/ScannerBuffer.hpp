@@ -16,33 +16,35 @@
 #include <deque>
 #include <string>
 
-
-namespace parser {
-
-class ScannerBuffer
+namespace ft
 {
-public:
-	ScannerBuffer();
-	ScannerBuffer(const char *buffer);
-	~ScannerBuffer();
+	namespace scanner
+	{
 
-	/// @brief Get the next character
-	char		get();
-	/// @brief putback the given character.
-	void		putback(char c);
+		class ScannerBuffer
+		{
+		public:
+			ScannerBuffer();
+			ScannerBuffer(const char *buffer);
+			~ScannerBuffer();
 
-	// spaghetti fix
-	void		pushNewBuffer(const char *buffer, size_t len);
+			/// @brief Get the next character
+			char get();
+			/// @brief putback the given character.
+			void putback(char c);
 
-	std::string toString();
+			// spaghetti fix
+			void pushNewBuffer(const char *buffer, size_t len);
 
-private:
+			std::string toString();
 
-	char _c;
-	
-	std::deque<char> _buffer;
-}; /* class ScannerBuffer */
+		private:
+			char _c;
 
-} /* namespace parser */
+			std::deque<char> _buffer;
+		}; /* class ScannerBuffer */
+
+	} /* namespace scanner */
+} /* namespace ft */
 
 #endif /* SCANNER_BUFFER_HPP */

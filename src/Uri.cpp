@@ -24,7 +24,7 @@ Uri::Uri(const std::string& uri):
 Uri::Uri(const std::string& scheme, const std::string& pathEtc):
     _scheme(scheme), _port(0)
 {
-    lowerStringInPlace(_scheme);
+    ft::lowerStringInPlace(_scheme);
     std::string::const_iterator it = pathEtc.begin();
     std::string::const_iterator end = pathEtc.end();
     _parsePathEtc(it, end);   
@@ -33,7 +33,7 @@ Uri::Uri(const std::string& scheme, const std::string& pathEtc):
 Uri::Uri(const std::string& scheme, const std::string& authority, const std::string& pathEtc)
     : _scheme(scheme)
 {
-    lowerStringInPlace(_scheme);
+    ft::lowerStringInPlace(_scheme);
     std::string::const_iterator it = authority.begin();
     std::string::const_iterator end = authority.end();
     _parseAuthority(it, end);
@@ -45,7 +45,7 @@ Uri::Uri(const std::string& scheme, const std::string& authority, const std::str
 Uri::Uri(const std::string& scheme, const std::string& authority, const std::string& path, const std::string& query)
     : _scheme(scheme), _path(path), _query(query)
 {
-    lowerStringInPlace(_scheme);
+    ft::lowerStringInPlace(_scheme);
     std::string::const_iterator it = authority.begin();
     std::string::const_iterator end = authority.end();
     _parseAuthority(it, end);
@@ -54,7 +54,7 @@ Uri::Uri(const std::string& scheme, const std::string& authority, const std::str
 Uri::Uri(const std::string& scheme, const std::string& authority, const std::string& path, const std::string& query, const std::string& fragment)
     : _scheme(scheme), _path(path), _query(query), _fragment(fragment)
 {
-    lowerStringInPlace(_scheme);
+    ft::lowerStringInPlace(_scheme);
     std::string::const_iterator it = authority.begin();
     std::string::const_iterator end = authority.end();
     _parseAuthority(it, end);
@@ -107,7 +107,7 @@ void Uri::_parseUri(const std::string& uri){
             if (it == end)
                 throw SyntaxError();
             _scheme = scheme;
-            lowerStringInPlace(_scheme);
+            ft::lowerStringInPlace(_scheme);
             if (*it == '/')
             {
                 it++;
@@ -203,7 +203,7 @@ void Uri::_parseHostAndPort(std::string::const_iterator& it, const std::string::
         }
     }
     _host =  host;
-    lowerStringInPlace(_host);
+    ft::lowerStringInPlace(_host);
     _port = port;
 }
 
@@ -266,7 +266,7 @@ std::string		Uri::getFragment()
 void					Uri::setScheme(const std::string& scheme)
 {
     _scheme = scheme;
-    lowerStringInPlace(_scheme);
+    ft::lowerStringInPlace(_scheme);
 }
 void					Uri::setUserInfo(const std::string& userInfo)
 {

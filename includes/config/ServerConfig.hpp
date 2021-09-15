@@ -20,7 +20,7 @@
 #include <stdint.h>
 
 #include "Uri.hpp"
-#include "parser/config/ScannerConfig.hpp"
+#include "config/ScannerConfig.hpp"
 #include "filesystem.h"
 
 #define DEFAULT_CLIENT_MAX_BODY_SIZE 1000 * 1000 // = 1m
@@ -260,35 +260,36 @@ private:
 	
 	void								_parse(std::istream &);
 
-	ServerBlock							_parseServer(parser::config::ScannerConfig & scanner, parser::config::Token serverToken);
-	Host								_parseListen(parser::config::ScannerConfig & scanner);
-	ft::filesystem::path 				_parseRoot(parser::config::ScannerConfig & scanner);
-	ft::filesystem::path 				_parseIndex(parser::config::ScannerConfig & scanner);
-	bool								_parseAutoindex(parser::config::ScannerConfig & scanner);
-	std::string 						_parseServerName(parser::config::ScannerConfig & scanner);
-	std::map<u_short, std::string>		_parseErrorPage(parser::config::ScannerConfig & scanner);
-	Location							_parseLocation(parser::config::ScannerConfig & scanner, parser::config::Token locationToken);
-	Host 								_parseHost(parser::config::ScannerConfig & scanner);
-	std::string							_parseCgiExec(parser::config::ScannerConfig & scanner);
-	std::pair<std::string, std::string>	_parseCgiParam(parser::config::ScannerConfig & scanner);
-	size_t								_parseClientMaxBodySize(parser::config::ScannerConfig & scanner);
-	ReturnDirective						_parseReturn(parser::config::ScannerConfig & scanner);
-	std::set<std::string>				_parseLimitExceptMethods(parser::config::ScannerConfig & scanner);
+	ServerBlock							_parseServer(config::ScannerConfig & scanner, config::Token serverToken);
+	Host								_parseListen(config::ScannerConfig & scanner);
+	ft::filesystem::path 				_parseRoot(config::ScannerConfig & scanner);
+	ft::filesystem::path 				_parseIndex(config::ScannerConfig & scanner);
+	bool								_parseAutoindex(config::ScannerConfig & scanner);
+	std::string 						_parseServerName(config::ScannerConfig & scanner);
+	std::map<u_short, std::string>		_parseErrorPage(config::ScannerConfig & scanner);
+	Location							_parseLocation(config::ScannerConfig & scanner, config::Token locationToken);
+	Host 								_parseHost(config::ScannerConfig & scanner);
+	std::string							_parseCgiExec(config::ScannerConfig & scanner);
+	std::pair<std::string, std::string>	_parseCgiParam(config::ScannerConfig & scanner);
+	size_t								_parseClientMaxBodySize(config::ScannerConfig & scanner);
+	ReturnDirective						_parseReturn(config::ScannerConfig & scanner);
+	std::set<std::string>				_parseLimitExceptMethods(config::ScannerConfig & scanner);
 	
-	Host _parseListenValue(const parser::config::Token& host);
+	Host _parseListenValue(const config::Token& host);
 
 	void _postParser();
 	void _postParserSetAutoindexInChilds();
 	void _postParserSetClientMaxBodySizeInChilds();
 	void _postParserSet();
 
-	void _skipSemiColonNewLine(parser::config::ScannerConfig & scanner);
-	void _throw_SyntaxError(parser::config::Token t, const std::string &error_str);
+	void _skipSemiColonNewLine(config::ScannerConfig & scanner);
+	void _throw_SyntaxError(config::Token t, const std::string &error_str);
 
 	static ServerConfig*		_singleton;
 	std::vector<ServerBlock>	_servers;
 	ft::filesystem::path		_configFilePath;
 
 }; /* class ServerConfig */
+
 
 #endif /* SERVER_CONFIG_HPP */

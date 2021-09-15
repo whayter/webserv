@@ -15,7 +15,8 @@
 
 #include <istream>
 
-namespace parser {
+namespace ft {
+namespace scanner {
 
 class ScannerStream
 {
@@ -46,6 +47,7 @@ private:
 	char			_c;
 }; /* class ScannerStream */
 
-} /* namespace parser */
+} /* namespace scanner */
+} /* namespace ft */
 
 #endif /* SCANNER_STREAM_HPP */
