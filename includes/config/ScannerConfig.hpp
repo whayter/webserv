@@ -14,15 +14,13 @@
 #define SCANNER_CONFIG_HPP
 
 #include <istream>
-#include "parser/ScannerStream.hpp"
-
-namespace parser{
+#include "ft/scanner/ScannerStream.hpp"
 
 namespace config{
 
-struct ScopedEnum
-{
-	enum TokenKind
+struct TokenKind {
+
+	enum TokenKindEnum
 	{
 		kEndOfInput = 0, kError,
 		kString, kInteger, kComment,
@@ -30,11 +28,46 @@ struct ScopedEnum
 		kComma, kColon, kSemiColon,
 		kNewLine,
 	};
+
+	TokenKind(TokenKindEnum e): _e(e) {}
+	TokenKind(unsigned int e) {
+		_e = static_cast<TokenKindEnum>(e);
+	}
+	// operator TokenKindEnum() const throw(){
+	// 	return _e;
+    // }
+
+	int getValue() const { return _e; }
+
+    friend bool operator==(const TokenKind& lhs, const TokenKind& rhs){
+      return lhs._e == rhs._e;
+    }
+	 friend bool operator!=(const TokenKind& lhs, const TokenKind& rhs){
+      return lhs._e != rhs._e;
+    }
+
+private:
+	TokenKindEnum _e;
 };
-typedef ScopedEnum::TokenKind TokenKind;
+
+
+// struct ScopedEnum
+// {
+// 	enum TokenKind
+// 	{
+// 		kEndOfInput = 0, kError,
+// 		kString, kInteger, kComment,
+// 		kLeftBrace, kRightBrace,
+// 		kComma, kColon, kSemiColon,
+// 		kNewLine,
+// 	};
+// };
+// typedef ScopedEnum::TokenKind TokenKind;
 
 struct Token
 {
+	Token(): kind(TokenKind::kEndOfInput) {};
+
 	TokenKind	kind;
 	std::string	value;
 	int			line;
@@ -56,7 +89,7 @@ private:
 	Token _makeToken(TokenKind kind, std::string value);
 	Token _makeToken(TokenKind kind, std::string value, int column, int line);
 
-	ScannerStream _scan;
+	ft::scanner::ScannerStream _scan;
 }; /* class ScannerConfig */
 
 const char* tokenKindToCstring(TokenKind kind);
@@ -64,6 +97,5 @@ std::string tokenToString(Token token);
 std::ostream & operator <<(std::ostream& os, const Token &t);
 
 } /* namespace config */
-} /* namespace parser */
 
 #endif /* SCANNER_CONFIG_HPP */

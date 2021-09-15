@@ -10,13 +10,16 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/ScannerStream.hpp"
+#include "ft/scanner/ScannerStream.hpp"
 
-parser::ScannerStream::ScannerStream (std::istream &inputStream):
+namespace ft{
+namespace scanner{
+
+ScannerStream::ScannerStream (std::istream &inputStream):
 	_line(1), _column(0), _inStream(inputStream), _c(0) {}
-parser::ScannerStream::~ScannerStream(){};
+ScannerStream::~ScannerStream(){};
 
-void parser::ScannerStream::moveForward()
+void ScannerStream::moveForward()
 {
 	if (_c == '\n')
 	{
@@ -29,7 +32,7 @@ void parser::ScannerStream::moveForward()
 	_c = _inStream.get();
 }
 
-void parser::ScannerStream::moveBackward(char charToPutBack)
+void ScannerStream::moveBackward(char charToPutBack)
 {
 	if (charToPutBack == '\n')
 	{
@@ -41,13 +44,16 @@ void parser::ScannerStream::moveBackward(char charToPutBack)
 	_inStream.putback(charToPutBack);
 }
 
-char parser::ScannerStream::get()
+char ScannerStream::get()
 {
 	moveForward();
 	return _c;
 }
 
-void parser::ScannerStream::putback(char c)
+void ScannerStream::putback(char c)
 {
 	moveBackward(c);
 }
+
+} /* namespace scanner */
+} /* namespace ft */

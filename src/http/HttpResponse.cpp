@@ -66,10 +66,10 @@ void HttpResponse::setErrorContent()												// not complete yet
 {
 	_content = "<!DOCTYPE html>";
 	_content += "<html lang=\"en\"><head><meta charset=\"utf-8\">";
-	_content += "<title>" + intToString(_getStatus());
+	_content += "<title>" + ft::intToString(_getStatus());
 	_content += " " + _getStatusMessage() + "</title>";
 	_content += "<style>body{text-align:center}</style></head>";
-	_content += "<body><h1>" + intToString(_getStatus());
+	_content += "<body><h1>" + ft::intToString(_getStatus());
 	_content += + " " + _getStatusMessage() + "</h1>";
 	_content += "<hr size=\"3\">";
 	if (_getStatus() == http::Status::MovedPermanently)
@@ -139,7 +139,7 @@ void		HttpResponse::_parseCgiHeaders(std::vector<unsigned char>& cgiHeaders)
 		if (name == "Status")
 		{
 			std::cout << "name = status !" << std::endl;
-			_setStatus(stringToInt(value.substr(0, value.find_first_of(' '))));
+			_setStatus(ft::stringToInt(value.substr(0, value.find_first_of(' '))));
 			_setStatusLine();
 		}
 		else if (name == "Content-type")
@@ -181,7 +181,7 @@ void		HttpResponse::_setStatusLine(void)
 
 void		HttpResponse::_setDate(void)
 {
-	this->setHeader("Date", getDate());
+	this->setHeader("Date", ft::getDate());
 }
 
 void 		HttpResponse::_setServer(void)
@@ -191,7 +191,7 @@ void 		HttpResponse::_setServer(void)
 
 void 		HttpResponse::_setContentLength(void)
 {
-	this->setHeader("Content-Length", intToString(_content.size()));
+	this->setHeader("Content-Length", ft::intToString(_content.size()));
 }
 
 void 		HttpResponse::_setContentType(const Uri& uri)
