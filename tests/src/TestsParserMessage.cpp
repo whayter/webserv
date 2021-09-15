@@ -223,3 +223,69 @@ TEST_CASE( "http::parseRequest - two get in a row no payload", "[namespace][http
 
 	CHECK( req.getContent().empty());
 }
+
+// simple get cut in half
+TEST_CASE( "http::parseRequest - simple get cut in half", "[namespace][http2][parseRequest][simple][get][cut_half][.]" )
+{
+	std::ifstream file;
+	file.open("./http_requests/simple_get", std::ifstream::in);
+	std::string data((std::istreambuf_iterator<char>(file)),
+                 std::istreambuf_iterator<char>());
+
+	http::Request req;
+	http::Status error;
+	
+	size_t idx = 75;
+	// std::string one = data.substr(0,idx);
+	// std::string two = data.substr(idx);
+	// REQUIRE( one + two == data);
+
+
+	std::vector<unsigned char> one = vectorFromStr(data.substr(0,idx));
+	std::vector<unsigned char> two = vectorFromStr(data.substr(idx));
+	std::vector<unsigned char> all = one;
+	all.insert(all.end(), one.begin(), one.end());
+	all.insert(all.end(), two.begin(), two.end());
+
+	REQUIRE( !http2::parseRequest(req, error, one) );
+	REQUIRE( error == http::Status::None);
+
+
+	REQUIRE( http2::parseRequest(req, error, all) );
+	REQUIRE( error == http::Status::None);
+	
+
+	// req.read(one.c_str(), one.length());
+	// CHECK( req.isComplete() == false);
+	// CHECK( req.getHttpErrorCode() == 0);
+	// req.read(two.c_str(), two.length());
+	// CHECK( req.isComplete() == true);
+
+
+	CHECK( req.getMethod() == "GET" );
+	CHECK( req.getUri().getPathEtc() == "/getip");
+	CHECK( req.getUri().toString() == "http://dynamicdns.park-your-domain.com:8080/getip");
+
+	CHECK( req.getHeaders().size() == 8);
+	
+	CHECK( req.getHeader("User-Agent")		== "PostmanRuntime/7.26.10");
+	CHECK( req.getHeader("Accept")			== "*/*");
+	CHECK( req.getHeader("Postman-Token")	== "ec250329-5eb0-4d4b-8150-39f294b6aea2");
+	CHECK( req.getHeader("Host") 			== "dynamicdns.park-your-domain.com:8080");
+	CHECK( req.getHeader("Accept-Encoding")	== "gzip, deflate, br");
+	CHECK( req.getHeader("Connection")		== "keep-alive");
+	CHECK( req.getHeader("Cookie")			== "ASPSESSIONIDQADTQAQR=JNJLAIGBPIMBDAJPJNIFKIEK");
+
+	std::string body = "Test";
+	CHECK( req.getContent() == std::vector<unsigned char>(body.begin(), body.end()) );
+
+
+	req.clear();
+	CHECK( req.getMethod().empty() );
+	CHECK( req.getContentLength() == 0 );
+	CHECK( req.getUri().empty());
+
+	CHECK( req.getHeaders().size() == 0);
+	CHECK( req.getContent().empty());
+
+}
