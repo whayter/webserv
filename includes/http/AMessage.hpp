@@ -23,16 +23,18 @@ public:
 
 	AMessage();
 	virtual ~AMessage() {}
+	
 
 	inline headers_type&	getHeaders() { return _headers; }
 	inline content_type&	getContent() { return _content; }
 	inline std::string		getVersion() { return _version; }
 
 	std::string 			getHeader(std::string name);
+	size_t 					getContentLength();
 
 	void 					setHeader(std::string key, std::string val);
-	void					setContent(content_type content);
-	void					setVersion(std::string version);
+	void					setContent(const content_type &content);
+	void					setVersion(const std::string &version);
 
 protected:
 
