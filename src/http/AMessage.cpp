@@ -12,6 +12,7 @@
 
 #include "AMessage.hpp"
 #include "utility.hpp"
+#include <cstdlib>
 
 namespace http {
 
@@ -45,7 +46,7 @@ size_t AMessage::getContentLength()
 	http::headers_type	headers = getHeaders();
 
 	if (headers.find(key) != headers.end())
-		return strtoul(headers[key].c_str(), 0, 10);	
+		return ::strtoul(headers[key].c_str(), 0, 10);	
 	return 0;
 }
 

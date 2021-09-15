@@ -36,6 +36,9 @@ public:
 	void					setContent(const content_type &content);
 	void					setVersion(const std::string &version);
 
+	virtual bool			empty() const = 0;
+	virtual void			clear() = 0;
+
 protected:
 
 	headers_type			_headers;

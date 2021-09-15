@@ -39,6 +39,7 @@ namespace http2
 	{
 		ph::Token t;
 
+		req.clear();
 		error = http::Status::None;
 		if (!hasTwoConsecutiverCRNL(buffer))
 			return false;

@@ -28,7 +28,10 @@ public:
 
 	inline Status&			getStatus() { return _status; }
 	
-	void					setStatus(Status::StatusEnum e);
+	void					setStatus(Status e);
+
+	bool					empty() const;
+	void					clear();
 
 private:
 

@@ -32,6 +32,9 @@ public:
 	void					setMethod(std::string method);
 	void					setUri(const Uri& uri);
 
+	bool					empty() const;
+	void					clear();
+
 private:
 
 	std::string				_method;

@@ -39,9 +39,7 @@ TEST_CASE( "http2::hasTwoConsecutiverCRNL", "[namespace][http2][hasTwoConsecutiv
 TEST_CASE( "ScannerBuffer2 - test vite fait", "[ScannerBuffer2]" )
 {
 	std::vector<unsigned char> vec = vectorFromStr("test");
-	
 	ft::scanner::ScannerBuffer2 scan(vec);
-
 
 	REQUIRE(scan.get() == 't');
 	scan.unget();
@@ -62,19 +60,17 @@ TEST_CASE( "ScannerBuffer2 - test vite fait", "[ScannerBuffer2]" )
 
 
 /// simple get
-TEST_CASE( "parse http request simple get", "[namespace][http2][parseRequest]" )
+TEST_CASE( "http::parseRequest - simple get", "[namespace][http2][parseRequest][get][simple]" )
 {
 	std::ifstream file;
-
 	file.open("./http_requests/simple_get", std::ifstream::in);
-	
 	std::vector<unsigned char> buffer((std::istreambuf_iterator<char>(file)),
                  std::istreambuf_iterator<char>());
-
 
 	http::Request req;
 	http::Status error;
 	REQUIRE( http2::parseRequest(req, error, buffer) );
+	REQUIRE( error == http::Status::None);
 
 	CHECK( req.getMethod() == "GET" );
 	CHECK( req.getUri().getPathEtc() == "/getip");
@@ -90,7 +86,95 @@ TEST_CASE( "parse http request simple get", "[namespace][http2][parseRequest]" )
 	CHECK( req.getHeader("Connection")		== "keep-alive");
 	CHECK( req.getHeader("Cookie")			== "ASPSESSIONIDQADTQAQR=JNJLAIGBPIMBDAJPJNIFKIEK");
 	
-	std::string s("Test");
-	std::vector<unsigned char> comp(s.begin(), s.end());
-	CHECK( req.getContent() == comp );
+	std::string body = "Test";
+	CHECK( req.getContent() == std::vector<unsigned char>(body.begin(), body.end()) );
+}
+
+// simple post
+TEST_CASE( "http::parseRequest - simple post", "[namespace][http2][parseRequest][post]" )
+{
+	std::ifstream file;
+	file.open("./http_requests/simple_post", std::ifstream::in);
+	std::vector<unsigned char> buffer((std::istreambuf_iterator<char>(file)),
+                 std::istreambuf_iterator<char>());
+
+	http::Request req;
+	http::Status error;
+	REQUIRE( http2::parseRequest(req, error, buffer) );
+	REQUIRE( error == http::Status::None);
+
+
+	CHECK( req.getMethod() == "POST" );
+	CHECK( req.getUri().getPathEtc() == "/getip");
+
+	CHECK( req.getHeaders().size() == 9);
+	
+	CHECK( req.getHeader("Content-Type")		== "text/plain");
+	CHECK( req.getHeader("User-Agent")		== "PostmanRuntime/7.26.10");
+	CHECK( req.getHeader("Accept")		== "*/*");
+	CHECK( req.getHeader("Postman-Token")		== "969ffb76-2d3a-42cd-9b1b-701aca68ecdf");
+	CHECK( req.getHeader("Host")		== "dynamicdns.park-your-domain.com");
+	CHECK( req.getHeader("Accept-Encoding")		== "gzip, deflate, br");
+	CHECK( req.getHeader("Connection")		== "keep-alive");
+	CHECK( req.getHeader("Content-Length")		== "9");
+	CHECK( req.getHeader("Cookie")		== "ASPSESSIONIDQADTQAQR=JNJLAIGBPIMBDAJPJNIFKIEK");
+
+	std::string body = "test test";
+	CHECK( req.getContent() == std::vector<unsigned char>(body.begin(), body.end()) );
+}
+
+
+// two get in a row with payload
+TEST_CASE( "http::parseRequest - two get in a row", "[namespace][http2][parseRequest][two][get][payload]" )
+{
+	std::ifstream file;
+	file.open("./http_requests/two_requests", std::ifstream::in);
+	std::vector<unsigned char> buffer((std::istreambuf_iterator<char>(file)),
+                 std::istreambuf_iterator<char>());
+
+	http::Request req;
+	http::Status error;
+	REQUIRE (req.empty());
+	REQUIRE( http2::parseRequest(req, error, buffer) );
+	REQUIRE( error == http::Status::None);
+
+	CHECK( req.getMethod() == "GET" );
+	CHECK( req.getUri().getPathEtc() == "/getip");
+
+	CHECK( req.getHeaders().size() == 9);
+	
+	CHECK( req.getHeader("Content-Type")		== "text/plain");
+	CHECK( req.getHeader("User-Agent")		== "PostmanRuntime/7.26.8");
+	CHECK( req.getHeader("Accept")		== "*/*");
+	CHECK( req.getHeader("Postman-Token")		== "ea45c23e-da12-465a-808b-fa9de79bd675");
+	CHECK( req.getHeader("Host")		== "dynamicdns.park-your-domain.com");
+	CHECK( req.getHeader("Accept-Encoding")		== "gzip, deflate, br");
+	CHECK( req.getHeader("Connection")		== "keep-alive");
+	CHECK( req.getHeader("Content-Length")		== "14");
+	CHECK( req.getHeader("Cookie")		== "ASPSESSIONIDQACCRAQT=MOOMNKOCMFKECOHGBEDGOEDP");
+
+	std::string body = "hi\nhow\nare\nu ?";
+	CHECK( req.getContent() == std::vector<unsigned char>(body.begin(), body.end()) );
+
+	req.clear();
+	REQUIRE (req.empty());
+	REQUIRE( http2::parseRequest(req, error, buffer) );
+	REQUIRE( error == http::Status::None);
+
+	CHECK( req.getMethod() == "GET" );
+	CHECK( req.getUri().getPathEtc() == "/");
+
+	CHECK( req.getHeaders().size() == 8);
+	
+	CHECK( req.getHeader("Content-Type")		== "text/plain");
+	CHECK( req.getHeader("User-Agent")		== "PostmanRuntime/7.26.8");
+	CHECK( req.getHeader("Accept")		== "*/*");
+	CHECK( req.getHeader("Postman-Token")		== "533c1ccd-2255-444a-88df-a2c82b126eee");
+	CHECK( req.getHeader("Host")		== "google.com");
+	CHECK( req.getHeader("Accept-Encoding")		== "gzip, deflate, br");
+	CHECK( req.getHeader("Connection")		== "keep-alive");
+	CHECK( req.getHeader("Content-Length")		== "23");
+
+	body = "Well and u ?\nWtf man !?";
+	CHECK( req.getContent() == std::vector<unsigned char>(body.begin(), body.end()) );
 }

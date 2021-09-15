@@ -32,4 +32,21 @@ void Request::setUri(const Uri& uri)
 	_uri = uri;
 }
 
+bool Request::empty() const
+{
+	if (_headers.empty() && _content.empty() && _version.empty()
+		&& _method.empty() && _uri.empty())
+		return true;
+	return false;
+}
+
+void Request::clear()
+{
+	_headers.clear();
+	_content.clear();
+	_version.clear();
+	_method.clear();
+	_uri.clear();
+}
+
 } /* namespace http */
