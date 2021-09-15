@@ -6,12 +6,9 @@
 #include "ft/filesystem/directory_option.hpp"
 #include "ft/system_error.hpp"
 
+namespace ft {
 
-
-namespace ft
-{
-namespace filesystem
-{
+namespace filesystem {
 
 directory_iterator::directory_iterator() throw()
 	: _basePath(path()), _dirp(NULL), _dirEntry(directory_entry()), _options(directory_options::none)
@@ -34,22 +31,21 @@ directory_iterator::directory_iterator(const path &p)
 	increment(_ec);	
 }
 
-directory_iterator::directory_iterator(const path &p, directory_options options)
-	: _basePath(p), _dirp(NULL), _dirEntry(directory_entry()), _options(options)
-{
-
-}
+// directory_iterator::directory_iterator(const path &p, directory_options options)
+// 	: _basePath(p), _dirp(NULL), _dirEntry(directory_entry()), _options(options) {}
 
 directory_iterator::directory_iterator(const path &p, error_code &ec) throw()
 	: _basePath(p), _dirp(NULL), _dirEntry(directory_entry()), _options(directory_options::none)
 {
 	(void)ec;
 }
-directory_iterator::directory_iterator(const path &p, directory_options options, error_code &ec) throw()
-	: _basePath(p), _dirp(NULL), _dirEntry(directory_entry()), _options(options)
-{
-	(void)ec;
-}
+
+// directory_iterator::directory_iterator(const path &p, directory_options options, error_code &ec) throw()
+// 	: _basePath(p), _dirp(NULL), _dirEntry(directory_entry()), _options(options)
+// {
+// 	(void)ec;
+// }
+
 directory_iterator::directory_iterator(const directory_iterator &other)
 	: _basePath( other._basePath), _dirp(other._dirp), 
 	_dirEntry(other._dirEntry), _options(other._options), _dirent(other._dirent)
@@ -83,24 +79,12 @@ const directory_entry& directory_iterator::operator*() const
 {
 	return _dirEntry;
 }
+
 const directory_entry* directory_iterator::operator->() const
 {
 	return &_dirEntry;
 }
-directory_iterator& directory_iterator::operator++()
-{
-	// _dirent = ::readdir(_dirp);
-	// if (_dirent == NULL)
-	// {
-	// 	this->~directory_iterator();
-	// 	return ;
-	// }
-	error_code ec;
-	directory_iterator& result = increment(ec);
-	if (ec)
-		throw filesystem_error("directory_iterator::operator++(): " + ec.message(), _basePath / _dirEntry.path() , ec);
-	return result;
-}
+
 directory_iterator& directory_iterator::increment(error_code &ec) throw()
 {
 	errno = 0;
@@ -115,21 +99,27 @@ directory_iterator& directory_iterator::increment(error_code &ec) throw()
 	ec.clear();
 	_dirEntry._path = _basePath / _dirent->d_name;
 	// _dirEntry._fileSize = _dirent.
-
 	return *this;
 }
 
+directory_iterator& directory_iterator::operator++()
+{
+	error_code ec;
+	*this = increment(ec);
+	if (ec)
+		throw filesystem_error("directory_iterator::operator++(): " + ec.message(), _basePath / _dirEntry.path() , ec);
+	return *this;
+}
 
 bool directory_iterator::operator==(const directory_iterator& other) const
 {
 	return _dirEntry._path == other._dirEntry._path;
 }
+
 bool directory_iterator::operator!=(const directory_iterator& other) const
 {
 	return !this->operator==(other);
 }
-
-
 
 }; /* namespace filesystem */
 }; /* namespace ft */
