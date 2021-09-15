@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 11:04:34 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/12 22:18:37 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/15 14:51:52 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 
 #include <string>
 
-#include "Message.hpp"
+#include "Request.hpp"
 #include "Status.hpp"
 #include "Uri.hpp"
 #include "parser/http/ScannerMessage.hpp"
 
-class HttpRequest: public http::Message
+class HttpRequest: public http::Request
 {
 	public:
 
