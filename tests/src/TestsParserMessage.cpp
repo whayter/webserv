@@ -178,3 +178,48 @@ TEST_CASE( "http::parseRequest - two get in a row", "[namespace][http2][parseReq
 	body = "Well and u ?\nWtf man !?";
 	CHECK( req.getContent() == std::vector<unsigned char>(body.begin(), body.end()) );
 }
+
+/// two get in a row without payload
+TEST_CASE( "http::parseRequest - two get in a row no payload", "[namespace][http2][parseRequest][two][get][no_payload]" )
+{
+	std::ifstream file;
+	file.open("./http_requests/two_requests_no_payload", std::ifstream::in);
+	std::vector<unsigned char> buffer((std::istreambuf_iterator<char>(file)),
+                 std::istreambuf_iterator<char>());
+
+	http::Request req;
+	http::Status error;
+	REQUIRE (req.empty());
+	REQUIRE( http2::parseRequest(req, error, buffer) );
+	REQUIRE( error == http::Status::None);
+
+	CHECK( req.getMethod() == "GET" );
+	CHECK( req.getUri().getPathEtc() == "/getip");
+	CHECK( req.getHeaders().size() == 8);
+	CHECK( req.getHeader("Content-Type")		== "text/plain");
+	CHECK( req.getHeader("User-Agent")		== "PostmanRuntime/7.26.8");
+	CHECK( req.getHeader("Accept")		== "*/*");
+	CHECK( req.getHeader("Postman-Token")		== "ea45c23e-da12-465a-808b-fa9de79bd675");
+	CHECK( req.getHeader("Host")		== "dynamicdns.park-your-domain.com");
+	CHECK( req.getHeader("Accept-Encoding")		== "gzip, deflate, br");
+	CHECK( req.getHeader("Connection")		== "keep-alive");
+	CHECK( req.getHeader("Cookie")		== "ASPSESSIONIDQACCRAQT=MOOMNKOCMFKECOHGBEDGOEDP");
+	CHECK( req.getContent().empty());
+
+
+	REQUIRE( http2::parseRequest(req, error, buffer) );
+	REQUIRE( error == http::Status::None);
+
+	CHECK( req.getMethod() == "GET" );
+	CHECK( req.getUri().getPathEtc() == "/");
+	CHECK( req.getHeaders().size() == 7);	
+	CHECK( req.getHeader("Content-Type")		== "text/plain");
+	CHECK( req.getHeader("User-Agent")		== "PostmanRuntime/7.26.8");
+	CHECK( req.getHeader("Accept")		== "*/*");
+	CHECK( req.getHeader("Postman-Token")		== "533c1ccd-2255-444a-88df-a2c82b126eee");
+	CHECK( req.getHeader("Host")		== "google.com");
+	CHECK( req.getHeader("Accept-Encoding")		== "gzip, deflate, br");
+	CHECK( req.getHeader("Connection")		== "keep-alive");
+
+	CHECK( req.getContent().empty());
+}
