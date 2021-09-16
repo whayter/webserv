@@ -292,5 +292,5 @@ TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][Serv
 	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindLocation.conf");
 	(void)config;
 
-	// CHECK( config.getServer(0).findLocation("/youtube/") != )
+	CHECK( config.getServer(0).findLocation("/youtube/") != );
 }

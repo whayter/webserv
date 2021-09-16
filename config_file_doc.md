@@ -45,6 +45,7 @@ https://nginx.org/en/docs/http/ngx_http_core_module.html#server_name
 
 
 Syntax:	**location** uri { ... }
+**location** = .extention { ... }
 Default:	—
 Context: server
 https://nginx.org/en/docs/http/ngx_http_core_module.html#location
