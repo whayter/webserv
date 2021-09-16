@@ -68,15 +68,14 @@ SRC = main.cpp catch_amalgamated.cpp
 SRC+= TestsUri.cpp Uri.cpp
 SRC+= TestsFilesystemPath.cpp 	path.cpp 
 SRC+= TestsFilesystem.cpp 		filesystem.cpp filesystem_error.cpp file_status.cpp directory_entry.cpp directory_iterator.cpp
-SRC+= TestsHttpRequest.cpp
 SRC+= TestsScannerConfig.cpp
 SRC+= TestsServerConfig.cpp
 SRC+= TestsSystemError.cpp 		system_error.cpp error_code.cpp
 SRC+= TestsParserMessage.cpp	parserMessage.cpp
 
-SRC+= TestsScannerMessage.cpp ScannerBuffer2.cpp ScannerMessage2.cpp
+SRC+= TestsScannerMessage.cpp
 
-SRC+= AMessage.cpp Request.cpp Response.cpp HttpRequest.cpp HttpResponse.cpp Status.cpp
+SRC+= AMessage.cpp Request.cpp Response.cpp Status.cpp MessageBuilder.cpp
 SRC+= ScannerStream.cpp ScannerBuffer.cpp ScannerMessage.cpp
 SRC+= ScannerConfig.cpp ServerConfig.cpp
 SRC+= Socket.cpp Device.cpp Server.cpp

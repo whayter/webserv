@@ -1,5 +1,5 @@
 #include "parserMessage.hpp"
-#include "ScannerMessage2.hpp"
+#include "ScannerMessage.hpp"
 #include "Status.hpp"
 #include "Uri.hpp"
 #include "Request.hpp"
@@ -8,7 +8,7 @@ namespace ph = parser::http;
 
 namespace http
 {
-	bool    hasTwoConsecutiverCRNL(const std::vector<unsigned char> &buffer)
+	bool    hasTwoConsecutiveCRNL(const std::vector<unsigned char> &buffer)
 	{
 		std::vector<unsigned char>::const_iterator it = buffer.begin();
 		std::vector<unsigned char>::const_iterator end = buffer.end();
@@ -32,10 +32,10 @@ namespace http
 		error = value;
 	}
 
-	static void parseRequestLine(ph::ScannerMessage2 &scan, http::Request &req, http::Status &error)
+	static void parseRequestLine(ph::ScannerMessage &scan, http::Request &req, http::Status &error)
 	{
 		ph::Token t = scan.getToken(true);
-		if (!t.value.compare("GET") ||	!t.value.compare("POST") ||	!t.value.compare("DELETE"))
+		if (!t.value.compare("GET") || !t.value.compare("POST") || !t.value.compare("DELETE"))
 			req.setMethod(t.value);
 		else
 			setError(error, http::Status::BadRequest); // throw std::invalid_argument("Bad http request, No method specified");
@@ -52,10 +52,9 @@ namespace http
 		t = scan.getToken(true);
 		if (t.kind != ph::TokenKind::kNewLine)
 			setError(error, http::Status::BadRequest); // throw std::invalid_argument("Method line not separated by new line");
-
 	}
 
-	void parseHeaders(ph::ScannerMessage2 &scan, http::Request &req, http::Status &error)
+	void parseHeaders(ph::ScannerMessage &scan, http::Request &req, http::Status &error)
 	{
 		ph::Token t;
 
@@ -118,10 +117,9 @@ namespace http
 
 		req.clear();
 		error = http::Status::None;
-		if (!hasTwoConsecutiverCRNL(buffer))
+		if (!hasTwoConsecutiveCRNL(buffer))
 			return false;
-
-		ph::ScannerMessage2 scan(buffer);
+		ph::ScannerMessage scan(buffer);
 		parseRequestLine(scan, req, error);
 		parseHeaders(scan, req, error);
 		req.getUri().setAuthority(req.getHeader("Host"));

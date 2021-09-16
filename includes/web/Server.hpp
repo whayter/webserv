@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 23:15:15 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/13 11:21:37 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/16 16:06:06 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 #include "web.hpp"
 #include "Device.hpp"
-#include "HttpRequest.hpp"
 
 #include <vector>
 #include <poll.h>
@@ -39,10 +38,11 @@ private:
 
 	void					_connectClients(int servrIndex);
 	void					_disconnectDevice(int deviceIndex);
-	void					_serveClient(int deviceIndex);
 
-	void					_getRequest(int deviceIndex);
-	void					_sendResponse(int deviceIndex, const char* response);
+	void					_getRequests(int deviceIndex);
+	void					_buildRequests(int deviceIndex);
+	void					_buildResponses(int deviceIndex);
+	void					_sendResponses(int deviceIndex);
 
 	bool					_isServerIndex(int deviceIndex);
 	void					_log(int fd, std::string description);
@@ -57,7 +57,6 @@ private:
 	struct pollfd			_fds[SOMAXCONN];
 	int						_nfds;
 	int						_firstClientIndex;
-	HttpRequest*			_requests[SOMAXCONN];
 
 }; /* class Server */
 

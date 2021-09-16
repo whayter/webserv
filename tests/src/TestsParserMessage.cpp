@@ -1,7 +1,7 @@
 #include "catch_amalgamated.hpp"
 
 #include "parserMessage.hpp"
-#include "ScannerBuffer2.hpp"
+#include "ScannerBuffer.hpp"
 #include "http/Request.hpp"
 #include "http/Status.hpp"
 
@@ -18,28 +18,28 @@ static std::vector<unsigned char>	vectorFromStr(const std::string &s)
 	return result;
 }
 
-TEST_CASE( "http::hasTwoConsecutiverCRNL", "[namespace][http][hasTwoConsecutiverCRNL]" )
+TEST_CASE( "http::hasTwoConsecutiveCRNL", "[namespace][http][hasTwoConsecutiveCRNL]" )
 {
-	CHECK(!http::hasTwoConsecutiverCRNL(vectorFromStr("test")));
-	CHECK(!http::hasTwoConsecutiverCRNL(vectorFromStr("test\r\n\r ")));
-	CHECK(!http::hasTwoConsecutiverCRNL(vectorFromStr("test\r\ntest\r\n")));
-	CHECK(!http::hasTwoConsecutiverCRNL(vectorFromStr("test\r\ntest\r\ntest\r\n")));
+	CHECK(!http::hasTwoConsecutiveCRNL(vectorFromStr("test")));
+	CHECK(!http::hasTwoConsecutiveCRNL(vectorFromStr("test\r\n\r ")));
+	CHECK(!http::hasTwoConsecutiveCRNL(vectorFromStr("test\r\ntest\r\n")));
+	CHECK(!http::hasTwoConsecutiveCRNL(vectorFromStr("test\r\ntest\r\ntest\r\n")));
 
-	CHECK(http::hasTwoConsecutiverCRNL(vectorFromStr("test\r\n\r\n")));
-	CHECK(http::hasTwoConsecutiverCRNL(vectorFromStr("test\r\ntest\r\n\r\ntest\r\n")));
+	CHECK(http::hasTwoConsecutiveCRNL(vectorFromStr("test\r\n\r\n")));
+	CHECK(http::hasTwoConsecutiveCRNL(vectorFromStr("test\r\ntest\r\n\r\ntest\r\n")));
 
 	std::ifstream file;
 	file.open("./http_requests/simple_get", std::ifstream::in);
 	std::vector<unsigned char> vec((std::istreambuf_iterator<char>(file)),
                  std::istreambuf_iterator<char>());
 
-	CHECK(http::hasTwoConsecutiverCRNL(vec));
+	CHECK(http::hasTwoConsecutiveCRNL(vec));
 }
 
 TEST_CASE( "ScannerBuffer2 - test vite fait", "[ScannerBuffer2]" )
 {
 	std::vector<unsigned char> vec = vectorFromStr("test");
-	ft::scanner::ScannerBuffer2 scan(vec);
+	ft::scanner::ScannerBuffer scan(vec);
 
 	REQUIRE(scan.get() == 't');
 	scan.unget();

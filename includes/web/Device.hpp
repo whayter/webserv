@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 16:56:40 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/15 14:51:34 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/16 16:21:34 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,11 @@ public:
 
 	inline uint32_t						getPort() { return _port; }
 	inline Socket&						getSocket() { return _socket; }
-	inline std::deque<unsigned char>	getBuffer() { return _buffer; }
+	inline std::vector<unsigned char>&	getInputBuffer() { return _inputBuffer; }
+	inline std::vector<unsigned char>&	getOutputBuffer() { return _outputBuffer; }
+
+	inline std::queue<http::Request>&	getRequestsQueue() { return _requests; }
+	inline std::queue<http::Response>&	getResponsesQueue() { return _responses; }
 
 	void								closeSocket();
 	bool								setNonBlocking();
@@ -46,7 +50,8 @@ private:
 
 	uint32_t							_port;
 	Socket								_socket;
-	std::deque<unsigned char>			_buffer;
+	std::vector<unsigned char>			_inputBuffer;
+	std::vector<unsigned char>			_outputBuffer;
 	std::queue<http::Request>			_requests;
 	std::queue<http::Response>			_responses;
 };

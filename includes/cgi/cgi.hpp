@@ -6,14 +6,13 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/06 09:34:36 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/12 17:58:59 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/16 16:10:38 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CGI_HPP
 #define CGI_HPP
 
-#include "HttpRequest.hpp"
 #include "ServerConfig.hpp"
 #include "utility.hpp"
 #include "filesystem.h"

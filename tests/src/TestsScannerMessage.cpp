@@ -1,6 +1,6 @@
 #include "catch_amalgamated.hpp"
 
-#include "ScannerMessage2.hpp"
+#include "ScannerMessage.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -16,7 +16,7 @@ static std::vector<unsigned char>	vectorFromStr(const std::string &s)
 	return result;
 }
 
-void requireToken(ScannerMessage2 &scanner, TokenKind kind, const std::string &value, bool skipLWS = true)
+void requireToken(ScannerMessage &scanner, TokenKind kind, const std::string &value, bool skipLWS = true)
 {
 	Token t;
 
@@ -25,13 +25,13 @@ void requireToken(ScannerMessage2 &scanner, TokenKind kind, const std::string &v
 	CHECK( t.kind == kind);
 }
 
-void requireCRLF(ScannerMessage2 &scanner)
+void requireCRLF(ScannerMessage &scanner)
 {
 	requireToken(scanner, TokenKind::kCarriage, "\r");
 	requireToken(scanner, TokenKind::kNewLine, "\n");
 }
 
-void requireHeaderCRLF(ScannerMessage2 &scanner,const std::string &name, const std::string &value)
+void requireHeaderCRLF(ScannerMessage &scanner,const std::string &name, const std::string &value)
 {
 	requireToken(scanner, TokenKind::kString, name);
 	requireToken(scanner, TokenKind::kColon, ":");
@@ -39,14 +39,14 @@ void requireHeaderCRLF(ScannerMessage2 &scanner,const std::string &name, const s
 	requireCRLF(scanner);	
 }
 
-TEST_CASE( "ScannerMessage ", "[class][ScannerMessage2]" )
+TEST_CASE( "ScannerMessage ", "[class][ScannerMessage]" )
 {
 	std::ifstream file;
 
 	file.open("./http_requests/simple_get", std::ifstream::in);
 	std::vector<unsigned char> vec((std::istreambuf_iterator<char>(file)),
                  std::istreambuf_iterator<char>());
-	ScannerMessage2 scanner(vec);
+	ScannerMessage scanner(vec);
 	Token t;
 
 	requireToken(scanner, TokenKind::kString, "GET");

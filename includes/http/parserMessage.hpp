@@ -4,16 +4,16 @@
 #include <vector>
 
 namespace parser{ namespace http {
-	class ScannerMessage2;
+	class ScannerMessage;
 }} /* namespace parser::http */
 
 namespace http{
 	class Request;
 	struct Status;
 
-	bool	hasTwoConsecutiverCRNL(const std::vector<unsigned char> &buffer);
+	bool	hasTwoConsecutiveCRNL(const std::vector<unsigned char> &buffer);
 
-	void	parseHeaders(parser::http::ScannerMessage2 &scan, http::Request &req, http::Status &error);
+	void	parseHeaders(parser::http::ScannerMessage &scan, http::Request &req, http::Status &error);
 	bool	parseRequest(http::Request &request, http::Status &error, std::vector<unsigned char> &buffer);
 
 } /* namespace http */

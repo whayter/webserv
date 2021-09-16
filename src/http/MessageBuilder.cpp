@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 23:42:16 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/16 14:18:28 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/16 16:40:36 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ http::Response MessageBuilder::buildResponse(Request& request)
 	else if (request.getMethod() == "GET")
 	{
 		std::cout << "later..." << std::endl;
+		response.setStatus(Status::NotFound);	
 	}
 	else if (request.getMethod() == "POST")
 	{

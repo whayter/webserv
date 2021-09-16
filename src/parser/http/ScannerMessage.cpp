@@ -1,23 +1,10 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ScannerMessage.cpp                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/06 13:39:02 by juligonz          #+#    #+#             */
-/*   Updated: 2021/09/05 13:16:58 by hwinston         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include "ScannerMessage.hpp"
 
-#include "parser/http/ScannerMessage.hpp"
+namespace parser {
 
-namespace parser
-{
-namespace http
-{
+namespace http {
 
-ScannerMessage::ScannerMessage(const char *buffer)
+ScannerMessage::ScannerMessage(std::vector<unsigned char> &buffer)
 	: _scan(buffer)
 {}
 
@@ -55,7 +42,7 @@ Token ScannerMessage::getToken(bool skipLWS)
 					c = _scan.get();
 				}
 				if (!_charIsString(c))
-					_scan.putback(c);
+					_scan.unget();
 				return _makeToken(TokenKind::kString, lexeme);
 			}
 			return _makeToken(TokenKind::kError,
@@ -63,36 +50,14 @@ Token ScannerMessage::getToken(bool skipLWS)
 	}
 }
 
-char ScannerMessage::getChar()
+unsigned char ScannerMessage::getChar()
 {
 	return _scan.get();
 }
-Token ScannerMessage::peekNextToken(bool skipLWS)
-{
-	Token result = getToken(skipLWS);
-	putback(result);
-	return result;
-}
 
-void ScannerMessage::pushNewBuffer(const char* buffer, size_t len)
+void ScannerMessage::eraseBeforeCurrentIndex()
 {
-	_scan.pushNewBuffer(buffer, len);
-}
-
-void ScannerMessage::putback(Token token)
-{
-	this->putback(token.value);
-}
-
-void ScannerMessage::putback(std::string str)
-{
-	std::string::reverse_iterator it = str.rbegin();
-	std::string::reverse_iterator end = str.rend();
-	while (it != end)
-	{
-		_scan.putback(*it);
-		it++;
-	}
+	_scan.eraseBeforeCurrentIndex();
 }
 
 /// Must only be called in the switch statement
@@ -113,28 +78,28 @@ Token ScannerMessage::_makeToken(TokenKind kind, std::string value)
 	return t;
 }
 
-// std::ostream & operator <<(std::ostream& os, const Token &t)
-// {
-// 	os << "<" << TokenKindToCstring(t.kind);
-// 	switch (t.kind.getValue())
-// 	{
-// 		case (TokenKind::kString)		:	os << "=\"" << t.value << "\"> ";	break;
-// 		case (TokenKind::kError)		:	os << "=\"" << t.value << "\"> ";	break;
-// 		default							:	os << "> "; break;
-// 	}
-// 	return os;
-// }
+std::ostream & operator <<(std::ostream& os, const Token &t)
+{
+	os << "<" << TokenKindToCstring(t.kind);
+	switch (t.kind.getValue())
+	{
+		case (TokenKind::kString)		:	os << "=\"" << t.value << "\"> ";	break;
+		case (TokenKind::kError)		:	os << "=\"" << t.value << "\"> ";	break;
+		default							:	os << "> "; break;
+	}
+	return os;
+}
 
-// const char* TokenKindToCstring(TokenKind type)
-// {
-// 	static const char* str[] = {
-// 		"kEnfOfInput", "kError",
-// 		"kString", "kNewLine", "kCarriage",
-// 		"kLeftBrace", "kRightBrace",
-// 		"kComma", "kColon", "kLWS"
-// 	};
-// 	return str[type.getValue()];
-// }
+const char* TokenKindToCstring(TokenKind type)
+{
+	static const char* str[] = {
+		"kEnfOfInput", "kError",
+		"kString", "kNewLine", "kCarriage",
+		"kLeftBrace", "kRightBrace",
+		"kComma", "kColon", "kLWS"
+	};
+	return str[type.getValue()];
+}
 
 } /* namespace http */
 } /* namespace parser */

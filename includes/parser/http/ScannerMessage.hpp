@@ -1,17 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ScannerMessage.hpp                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/06 13:36:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/09/05 13:16:51 by hwinston         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#ifndef SCANNER_HTTP_REQUEST_HPP
-#define SCANNER_HTTP_REQUEST_HPP
+#ifndef SCANNER_MESSAGE_HPP
+#define SCANNER_MESSAGE_HPP
 
 #include <istream>
 #include <ft/scanner/ScannerBuffer.hpp>
@@ -79,31 +67,33 @@ struct Token
 class ScannerMessage
 {
 public:
-	ScannerMessage(const char *buffer);
+	ScannerMessage(std::vector<unsigned char> &buffer);
 	~ScannerMessage();
 
 	Token getToken(bool skipLWS = false);
-	char getChar();
-	Token peekNextToken(bool skipLWS = false);
+	unsigned char getChar();
+	// Token peekNextToken(bool skipLWS = false);
+
+	void eraseBeforeCurrentIndex();
 
 	// spaghetti fix
-	void pushNewBuffer(const char *buffer, size_t len);
-	void putback(Token token);
-	void putback(std::string str);
+	// void pushNewBuffer(const char *buffer, size_t len);
+	// void putback(Token token);
+	// void putback(std::string str);
 
 private:
+	ScannerMessage();
 
 	bool _charIsString(char c);
 	Token _makeToken(TokenKind kind, std::string value);
 
 	ft::scanner::ScannerBuffer _scan;
-	Token	_nextToken;
 }; /* class ScannerMessage */
 
 const char* TokenKindToCstring(TokenKind type);
-std::ostream & operator <<(std::ostream& os, const Token &t);
+std::ostream & operator<<(std::ostream& os, const Token &t);
 
 } /* namespace http */
 } /* namespace parser */
 
-#endif /* SCANNER_HTTP_REQUEST_HPP */
+#endif /* SCANNER_MESSAGE_HPP */

@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 18:53:31 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/15 14:46:05 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/16 15:40:07 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ public:
 
 	AMessage();
 	virtual ~AMessage() {}
-	
 
 	inline headers_type&	getHeaders() { return _headers; }
 	inline content_type&	getContent() { return _content; }
