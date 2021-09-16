@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 23:42:16 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/15 17:14:28 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/16 10:09:52 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include "utility.hpp"
 
 #include "filesystem.hpp"
+
+#include <stdio.h>
 
 namespace http {
 
