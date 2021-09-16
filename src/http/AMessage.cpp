@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 18:55:56 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/15 14:48:39 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/15 16:20:58 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,11 @@ void AMessage::setHeader(std::string key, std::string val)
 void AMessage::setContent(content_type content)
 {
 	_content = content;
+}
+
+void AMessage::setVersion(std::string version)
+{
+	_version = version;
 }
 
 } /* namespace http */
