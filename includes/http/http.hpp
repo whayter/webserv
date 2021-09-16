@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 18:54:05 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/15 14:57:45 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/16 14:14:01 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,6 @@ namespace http
 	class										Response;
 	struct										Status;
 	class										MessageBuilder;
-	// class										Supervisor;
-	
 };
 
 #endif

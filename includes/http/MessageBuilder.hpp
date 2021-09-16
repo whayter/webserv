@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 23:38:35 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/15 17:14:55 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/16 14:12:57 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,13 @@ public:
 	std::string				stringifyMessage(Message& message)
 	{
 		std::string stringMessage;
-		headers_type headers;
+		stringMessage = message.getVersion() + " ";
+		stringMessage += ft::intToString(message.getStatus().getValue());
+		stringMessage += " " + message.getStatus().getDefinition() + "\r\n";
 		headers_type::iterator it;
-		stringMessage = message.getVersion() + " " + ft::intToString(message.getStatus().getValue());
-		stringMessage += ' ' + message.getStatus().getDefinition() + "\r\n";
-		for (it = headers.begin(); it != headers.end(); it++)
-			stringMessage += it->first + ":\t" + it->second + "\r\n";
-		content_type content = message.getContent();
-		stringMessage += "\r\n" + stringifyContent(content) + "\r\n";
+		for (it = message.getHeaders().begin(); it != message.getHeaders().end(); it++)
+			stringMessage += it->first + ": " + it->second + "\r\n";
+		stringMessage += "\r\n" + stringifyContent(message.getContent());
 		return stringMessage;
 	}
 

@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 23:26:05 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/15 17:17:50 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/16 14:14:35 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,12 +154,6 @@ void Server::_serveClient(int deviceIndex)
 	HttpResponse response(config.findServer(uri), *_requests[deviceIndex]);
 	response.build();
 	_sendResponse(deviceIndex, response.toString().c_str());
-
-	// http::MessageBuilder builder;
-	// http::Response response = builder.buildResponse(*_requests[deviceIndex]);
-	// _sendResponse(deviceIndex, builder.stringifyMessage(response).c_str());
-
-
 	_requests[deviceIndex]->clear();
 }
 
