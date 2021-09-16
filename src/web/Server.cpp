@@ -6,17 +6,18 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 23:26:05 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/16 14:14:35 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/16 16:38:10 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "ServerConfig.hpp"
 #include "utility.hpp"
-#include "HttpResponse.hpp"
 
 #include "MessageBuilder.hpp"
 #include "Response.hpp"
+
+#include "parserMessage.hpp"
 
 #include <cerrno>
 #include <ctime>
@@ -86,9 +87,12 @@ void Server::routine()
 				_connectClients(i);
 			else
 			{
-				_getRequest(i);
-				if (_requests[i]->isComplete())
-					_serveClient(i);
+				_getRequests(i);
+				_buildRequests(i);
+				_buildResponses(i);
+				_sendResponses(i);
+				// get request
+				// serve client if request is complete
 			}
 		}
 		else
@@ -125,7 +129,6 @@ void Server::_connectClients(int serverIndex)
 		newClient.setPort(_devices[serverIndex].getPort());
 		_devices.push_back(newClient);
 		_log(_nfds, "Connection accepted.");
-		_requests[_nfds] = new HttpRequest();
 		_fds[_nfds].fd = newClient.getSocket().getFd();
 		_fds[_nfds].events = POLLIN;
 		_nfds++;
@@ -136,46 +139,71 @@ void Server::_disconnectDevice(int deviceIndex)
 {
 	_log(deviceIndex, "Connection closed.");
 	_devices[deviceIndex].closeSocket();
-	delete _requests[deviceIndex];
-	_requests[deviceIndex] = NULL;
 	_devices.erase(_devices.begin() + deviceIndex);
 	for (int i = deviceIndex; i < _nfds; i++)
-	{
 		_fds[i] = _fds[i + 1];
-		_requests[i] = _requests[i + 1];
-	}
 	_nfds--;
 }
 
-void Server::_serveClient(int deviceIndex)
+void Server::_getRequests(int deviceIndex)
 {
-	ServerConfig& config = ServerConfig::getInstance();
-	Uri uri = _requests[deviceIndex]->getUri();
-	HttpResponse response(config.findServer(uri), *_requests[deviceIndex]);
-	response.build();
-	_sendResponse(deviceIndex, response.toString().c_str());
-	_requests[deviceIndex]->clear();
-}
-
-void Server::_getRequest(int deviceIndex)
-{
-	char buffer[BUFFER_SIZE] = {0};
+	unsigned char buffer[BUFFER_SIZE] = {0};
 	int nbytes = recv(_fds[deviceIndex].fd, buffer, BUFFER_SIZE - 1, 0);
 	if (nbytes < 0)
 		stop(-1);
 	else if (nbytes > 0)
-		_requests[deviceIndex]->read(buffer, nbytes);
-	if (_requests[deviceIndex]->isComplete())
-		_log(deviceIndex, "Request received.");
+	{
+		// add a function for this 
+		for (int i = 0; i < nbytes; i++)
+		_devices[deviceIndex].getInputBuffer().push_back(buffer[i]);
+	}
 }
 
-void Server::_sendResponse(int deviceIndex, const char* response)
+void Server::_buildRequests(int deviceIndex)
 {
-	if (send(_fds[deviceIndex].fd, response, strlen(response), 0) == -1)
+	http::Request request;
+	http::Status errorCode;
+
+	while (http::parseRequest(request, errorCode, _devices[deviceIndex].getInputBuffer()))
+	{
+		_devices[deviceIndex].getRequestsQueue().push(request);
+		_log(deviceIndex, "Request received.");
+	}
+}
+
+void Server::_buildResponses(int deviceIndex)
+{
+	http::MessageBuilder builder;
+	std::queue<http::Request>& requests = _devices[deviceIndex].getRequestsQueue();
+
+	while (!requests.empty())
+	{
+		http::Response response = builder.buildResponse(requests.front());
+		requests.pop();
+		_devices[deviceIndex].getResponsesQueue().push(response);
+	}
+}
+
+void Server::_sendResponses(int deviceIndex)
+{
+	http::MessageBuilder builder;
+	std::queue<http::Response>& responses = _devices[deviceIndex].getResponsesQueue();
+	std::vector<unsigned char> outputBuffer = _devices[deviceIndex].getOutputBuffer();
+
+	while (!responses.empty())
+	{
+		http::Response r = responses.front();
+		std::string stringResponse = builder.stringifyMessage(r);
+		outputBuffer.insert(outputBuffer.end(), stringResponse.begin(), stringResponse.end());
+		responses.pop();
+	}
+	int nbytes = 0;
+	if ((nbytes = send(_fds[deviceIndex].fd, &outputBuffer[0], outputBuffer.size(), 0)) == -1)
 	{
 		_log(deviceIndex, "Could not send the response.");
 		stop(-1);
 	}
+	outputBuffer.erase(outputBuffer.begin(), outputBuffer.begin() + nbytes);
 	_log(deviceIndex, "Response sent.");
 }
 

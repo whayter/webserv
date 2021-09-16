@@ -1,50 +1,42 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ScannerBuffer.hpp                                  :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/07/31 21:45:53 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/21 18:55:56 by juligonz         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef SCANNER_BUFFER_HPP
 #define SCANNER_BUFFER_HPP
 
-#include <deque>
+#include <vector>
 #include <string>
 
-namespace ft
+namespace ft {
+	
+namespace scanner {
+
+class ScannerBuffer
 {
-	namespace scanner
-	{
+public:
 
-		class ScannerBuffer
-		{
-		public:
-			ScannerBuffer();
-			ScannerBuffer(const char *buffer);
-			~ScannerBuffer();
+	ScannerBuffer(std::vector<unsigned char> &buffer);
+	~ScannerBuffer();
 
-			/// @brief Get the next character
-			char get();
-			/// @brief putback the given character.
-			void putback(char c);
+	/// @brief Get the next character
+	unsigned char get();
+	/// @brief Unget the last character.
+	void unget();
 
-			// spaghetti fix
-			void pushNewBuffer(const char *buffer, size_t len);
+	void eraseBeforeCurrentIndex();
 
-			std::string toString();
+	std::string toString();
 
-		private:
-			char _c;
+private:
 
-			std::deque<char> _buffer;
-		}; /* class ScannerBuffer */
+	ScannerBuffer();
 
-	} /* namespace scanner */
+	unsigned char	_c;
+	size_t			_idx;
+
+	std::vector<unsigned char>& _buffer;
+
+}; /* class ScannerBuffer */
+
+} /* namespace scanner */
+
 } /* namespace ft */
 
 #endif /* SCANNER_BUFFER_HPP */
