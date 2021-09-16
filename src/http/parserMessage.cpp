@@ -25,8 +25,6 @@ namespace http2
 		return false;
 	}
 
-	namespace ph = parser::http;
-
 	static void setError(http::Status &error, http::Status value)
 	{
 		if (error != http::Status::None)
@@ -34,20 +32,9 @@ namespace http2
 		error = value;
 	}
 
-	/// return true if a request has been parsed, else, false.
-	bool parseRequest(http::Request &req, http::Status &error, std::vector<unsigned char> &buffer)
+	static void parseRequestLine(ph::ScannerMessage2 &scan, http::Request &req, http::Status &error)
 	{
-		ph::Token t;
-
-		req.clear();
-		error = http::Status::None;
-		if (!hasTwoConsecutiverCRNL(buffer))
-			return false;
-		ph::ScannerMessage2 scan(buffer);
-
-////////////////First line//////////////////////////
-///////////////////////////////////////////
-		t = scan.getToken(true);
+		ph::Token t = scan.getToken(true);
 		if (!t.value.compare("GET") ||	!t.value.compare("POST") ||	!t.value.compare("DELETE"))
 			req.setMethod(t.value);
 		else
@@ -58,7 +45,7 @@ namespace http2
 
 		t = scan.getToken(true);
 		req.setVersion(t.value);
-		
+
 		t = scan.getToken(true);
 		if (t.kind != ph::TokenKind::kCarriage)
 			setError(error, http::Status::BadRequest); // throw std::invalid_argument("Method line not separated by return carriage");
@@ -66,8 +53,13 @@ namespace http2
 		if (t.kind != ph::TokenKind::kNewLine)
 			setError(error, http::Status::BadRequest); // throw std::invalid_argument("Method line not separated by new line");
 
-//////////////////// Headers //////////////////////
-///////////////////////////////////////////
+	}
+
+	static void parseHeaders(ph::ScannerMessage2 &scan, http::Request &req, http::Status &error)
+	{
+		ph::Token t;
+
+		(void)error;
 		std::string name;
 		std::string value;
 		bool isValueField = false;
@@ -117,14 +109,30 @@ namespace http2
 					break;
 			}
 		}
-		req.getUri().setAuthority(req.getHeader("Host"));
+	}
 
-		char c;
-		size_t contentLength = req.getContentLength();
-		while (contentLength-- && (c = scan.getChar()))
-			req.getContent().push_back(c);
-		if (req.getContent().size() != req.getContentLength())
+	// return true if a request has been parsed, else, false.
+	bool parseRequest(http::Request &req, http::Status &error, std::vector<unsigned char> &buffer)
+	{
+		ph::Token t;
+
+		req.clear();
+		error = http::Status::None;
+		if (!hasTwoConsecutiverCRNL(buffer))
 			return false;
+
+		ph::ScannerMessage2 scan(buffer);
+		parseRequestLine(scan, req, error);
+		parseHeaders(scan, req, error);
+		req.getUri().setAuthority(req.getHeader("Host"));
+		{
+			char c;
+			size_t contentLength = req.getContentLength();
+			while (contentLength-- && (c = scan.getChar()))
+				req.getContent().push_back(c);
+			if (req.getContent().size() != req.getContentLength())
+				return false;
+		}
 		scan.eraseBeforeCurrentIndex();
 		return true;
 	}
