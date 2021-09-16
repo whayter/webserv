@@ -6,7 +6,7 @@
 
 namespace ph = parser::http;
 
-namespace http2
+namespace http
 {
 	bool    hasTwoConsecutiverCRNL(const std::vector<unsigned char> &buffer)
 	{
@@ -137,4 +137,4 @@ namespace http2
 		return true;
 	}
 
-} /*namespace http2 */
+} /*namespace http */

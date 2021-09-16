@@ -18,22 +18,22 @@ static std::vector<unsigned char>	vectorFromStr(const std::string &s)
 	return result;
 }
 
-TEST_CASE( "http2::hasTwoConsecutiverCRNL", "[namespace][http2][hasTwoConsecutiverCRNL]" )
+TEST_CASE( "http::hasTwoConsecutiverCRNL", "[namespace][http][hasTwoConsecutiverCRNL]" )
 {
-	CHECK(!http2::hasTwoConsecutiverCRNL(vectorFromStr("test")));
-	CHECK(!http2::hasTwoConsecutiverCRNL(vectorFromStr("test\r\n\r ")));
-	CHECK(!http2::hasTwoConsecutiverCRNL(vectorFromStr("test\r\ntest\r\n")));
-	CHECK(!http2::hasTwoConsecutiverCRNL(vectorFromStr("test\r\ntest\r\ntest\r\n")));
+	CHECK(!http::hasTwoConsecutiverCRNL(vectorFromStr("test")));
+	CHECK(!http::hasTwoConsecutiverCRNL(vectorFromStr("test\r\n\r ")));
+	CHECK(!http::hasTwoConsecutiverCRNL(vectorFromStr("test\r\ntest\r\n")));
+	CHECK(!http::hasTwoConsecutiverCRNL(vectorFromStr("test\r\ntest\r\ntest\r\n")));
 
-	CHECK(http2::hasTwoConsecutiverCRNL(vectorFromStr("test\r\n\r\n")));
-	CHECK(http2::hasTwoConsecutiverCRNL(vectorFromStr("test\r\ntest\r\n\r\ntest\r\n")));
+	CHECK(http::hasTwoConsecutiverCRNL(vectorFromStr("test\r\n\r\n")));
+	CHECK(http::hasTwoConsecutiverCRNL(vectorFromStr("test\r\ntest\r\n\r\ntest\r\n")));
 
 	std::ifstream file;
 	file.open("./http_requests/simple_get", std::ifstream::in);
 	std::vector<unsigned char> vec((std::istreambuf_iterator<char>(file)),
                  std::istreambuf_iterator<char>());
 
-	CHECK(http2::hasTwoConsecutiverCRNL(vec));
+	CHECK(http::hasTwoConsecutiverCRNL(vec));
 }
 
 TEST_CASE( "ScannerBuffer2 - test vite fait", "[ScannerBuffer2]" )
@@ -60,7 +60,7 @@ TEST_CASE( "ScannerBuffer2 - test vite fait", "[ScannerBuffer2]" )
 
 
 /// simple get
-TEST_CASE( "http::parseRequest - simple get", "[namespace][http2][parseRequest][get][simple]" )
+TEST_CASE( "http::parseRequest - simple get", "[namespace][http][parseRequest][get][simple]" )
 {
 	std::ifstream file;
 	file.open("./http_requests/simple_get", std::ifstream::in);
@@ -69,7 +69,7 @@ TEST_CASE( "http::parseRequest - simple get", "[namespace][http2][parseRequest][
 
 	http::Request req;
 	http::Status error;
-	REQUIRE( http2::parseRequest(req, error, buffer) );
+	REQUIRE( http::parseRequest(req, error, buffer) );
 	REQUIRE( error == http::Status::None);
 
 	CHECK( req.getMethod() == "GET" );
@@ -91,7 +91,7 @@ TEST_CASE( "http::parseRequest - simple get", "[namespace][http2][parseRequest][
 }
 
 // simple post
-TEST_CASE( "http::parseRequest - simple post", "[namespace][http2][parseRequest][post]" )
+TEST_CASE( "http::parseRequest - simple post", "[namespace][http][parseRequest][post]" )
 {
 	std::ifstream file;
 	file.open("./http_requests/simple_post", std::ifstream::in);
@@ -100,7 +100,7 @@ TEST_CASE( "http::parseRequest - simple post", "[namespace][http2][parseRequest]
 
 	http::Request req;
 	http::Status error;
-	REQUIRE( http2::parseRequest(req, error, buffer) );
+	REQUIRE( http::parseRequest(req, error, buffer) );
 	REQUIRE( error == http::Status::None);
 
 
@@ -125,7 +125,7 @@ TEST_CASE( "http::parseRequest - simple post", "[namespace][http2][parseRequest]
 
 
 // two get in a row with payload
-TEST_CASE( "http::parseRequest - two get in a row", "[namespace][http2][parseRequest][two][get][payload]" )
+TEST_CASE( "http::parseRequest - two get in a row", "[namespace][http][parseRequest][two][get][payload]" )
 {
 	std::ifstream file;
 	file.open("./http_requests/two_requests", std::ifstream::in);
@@ -135,7 +135,7 @@ TEST_CASE( "http::parseRequest - two get in a row", "[namespace][http2][parseReq
 	http::Request req;
 	http::Status error;
 	REQUIRE (req.empty());
-	REQUIRE( http2::parseRequest(req, error, buffer) );
+	REQUIRE( http::parseRequest(req, error, buffer) );
 	REQUIRE( error == http::Status::None);
 
 	CHECK( req.getMethod() == "GET" );
@@ -158,7 +158,7 @@ TEST_CASE( "http::parseRequest - two get in a row", "[namespace][http2][parseReq
 
 	req.clear();
 	REQUIRE (req.empty());
-	REQUIRE( http2::parseRequest(req, error, buffer) );
+	REQUIRE( http::parseRequest(req, error, buffer) );
 	REQUIRE( error == http::Status::None);
 
 	CHECK( req.getMethod() == "GET" );
@@ -180,7 +180,7 @@ TEST_CASE( "http::parseRequest - two get in a row", "[namespace][http2][parseReq
 }
 
 /// two get in a row without payload
-TEST_CASE( "http::parseRequest - two get in a row no payload", "[namespace][http2][parseRequest][two][get][no_payload]" )
+TEST_CASE( "http::parseRequest - two get in a row no payload", "[namespace][http][parseRequest][two][get][no_payload]" )
 {
 	std::ifstream file;
 	file.open("./http_requests/two_requests_no_payload", std::ifstream::in);
@@ -190,7 +190,7 @@ TEST_CASE( "http::parseRequest - two get in a row no payload", "[namespace][http
 	http::Request req;
 	http::Status error;
 	REQUIRE (req.empty());
-	REQUIRE( http2::parseRequest(req, error, buffer) );
+	REQUIRE( http::parseRequest(req, error, buffer) );
 	REQUIRE( error == http::Status::None);
 
 	CHECK( req.getMethod() == "GET" );
@@ -207,7 +207,7 @@ TEST_CASE( "http::parseRequest - two get in a row no payload", "[namespace][http
 	CHECK( req.getContent().empty());
 
 
-	REQUIRE( http2::parseRequest(req, error, buffer) );
+	REQUIRE( http::parseRequest(req, error, buffer) );
 	REQUIRE( error == http::Status::None);
 
 	CHECK( req.getMethod() == "GET" );
@@ -225,7 +225,7 @@ TEST_CASE( "http::parseRequest - two get in a row no payload", "[namespace][http
 }
 
 // simple get cut in half
-TEST_CASE( "http::parseRequest - simple get cut in half", "[namespace][http2][parseRequest][simple][get][cut_half][.]" )
+TEST_CASE( "http::parseRequest - simple get cut in half", "[namespace][http][parseRequest][simple][get][cut_half][.]" )
 {
 	std::ifstream file;
 	file.open("./http_requests/simple_get", std::ifstream::in);
@@ -247,11 +247,11 @@ TEST_CASE( "http::parseRequest - simple get cut in half", "[namespace][http2][pa
 	all.insert(all.end(), one.begin(), one.end());
 	all.insert(all.end(), two.begin(), two.end());
 
-	REQUIRE( !http2::parseRequest(req, error, one) );
+	REQUIRE( !http::parseRequest(req, error, one) );
 	REQUIRE( error == http::Status::None);
 
 
-	REQUIRE( http2::parseRequest(req, error, all) );
+	REQUIRE( http::parseRequest(req, error, all) );
 	REQUIRE( error == http::Status::None);
 	
 
