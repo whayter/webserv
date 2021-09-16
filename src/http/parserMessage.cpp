@@ -55,7 +55,7 @@ namespace http2
 
 	}
 
-	static void parseHeaders(ph::ScannerMessage2 &scan, http::Request &req, http::Status &error)
+	void parseHeaders(ph::ScannerMessage2 &scan, http::Request &req, http::Status &error)
 	{
 		ph::Token t;
 
