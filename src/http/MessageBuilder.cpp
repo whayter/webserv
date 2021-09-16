@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 23:42:16 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/16 10:09:52 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/16 14:18:28 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,6 @@ http::Response MessageBuilder::buildResponse(Request& request)
 {
 	Response response;
 
-	std::cout << "METHOD = " << request.getMethod() << std::endl;
-
 	if (request.getMethod() == "DELETE")
 	{
 		if (remove(request.getUri().getPath().c_str()) == 0)
@@ -38,16 +36,18 @@ http::Response MessageBuilder::buildResponse(Request& request)
 		else
 			response.setStatus(Status::NoContent);
 	}
-	else
+	else if (request.getMethod() == "GET")
 	{
 		std::cout << "later..." << std::endl;
 	}
+	else if (request.getMethod() == "POST")
+	{
+		std::cout << "later..." << std::endl;
+	}
+	else
+		response.setStatus(Status::MethodNotAllowed);	
 	response.setVersion("HTTP/1.1");
-	response.setHeader("Date", ft::getDate());
-
-	// else
-	// 	response.setStatus(Status::MethodeNotAllowed);
-	
+	response.setHeader("Date", ft::getDate());	
 	return response;
 }
 
