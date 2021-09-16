@@ -14,7 +14,7 @@
 
 namespace http {
 
-Response::Response() {}
+Response::Response() : _status(Status::None) {}
 
 Response::~Response()
 {
@@ -22,9 +22,24 @@ Response::~Response()
 	_content.clear();
 }
 
-void Response::setStatus(Status::StatusEnum e)
+void Response::setStatus(Status e)
 {
 	_status = e;
+}
+
+bool Response::empty() const
+{
+	if (_headers.empty() && _content.empty() && _version.empty()
+		&& _status == Status::None)
+		return true;
+	return false;
+}
+
+void Response::clear()
+{
+	_headers.clear();
+	_content.clear();
+	_version.clear();
 }
 
 } /* namespace http */

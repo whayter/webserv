@@ -66,6 +66,8 @@ SRC+= ScannerStream.cpp ScannerBuffer.cpp
 SRC+= Uri.cpp
 SRC+= AMessage.cpp Request.cpp Response.cpp Status.cpp MessageBuilder.cpp HttpRequest.cpp HttpResponse.cpp
 SRC+= Device.cpp Socket.cpp Server.cpp
+SRC+= parserMessage.cpp ScannerBuffer2.cpp ScannerMessage2.cpp
+
 
 # ft
 SRC+= system_error.cpp error_code.cpp

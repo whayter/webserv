@@ -113,28 +113,28 @@ Token ScannerMessage::_makeToken(TokenKind kind, std::string value)
 	return t;
 }
 
-std::ostream & operator <<(std::ostream& os, const Token &t)
-{
-	os << "<" << TokenKindToCstring(t.kind);
-	switch (t.kind.getValue())
-	{
-		case (TokenKind::kString)		:	os << "=\"" << t.value << "\"> ";	break;
-		case (TokenKind::kError)		:	os << "=\"" << t.value << "\"> ";	break;
-		default							:	os << "> "; break;
-	}
-	return os;
-}
+// std::ostream & operator <<(std::ostream& os, const Token &t)
+// {
+// 	os << "<" << TokenKindToCstring(t.kind);
+// 	switch (t.kind.getValue())
+// 	{
+// 		case (TokenKind::kString)		:	os << "=\"" << t.value << "\"> ";	break;
+// 		case (TokenKind::kError)		:	os << "=\"" << t.value << "\"> ";	break;
+// 		default							:	os << "> "; break;
+// 	}
+// 	return os;
+// }
 
-const char* TokenKindToCstring(TokenKind type)
-{
-	static const char* str[] = {
-		"kEnfOfInput", "kError",
-		"kString", "kNewLine", "kCarriage",
-		"kLeftBrace", "kRightBrace",
-		"kComma", "kColon", "kLWS"
-	};
-	return str[type.getValue()];
-}
+// const char* TokenKindToCstring(TokenKind type)
+// {
+// 	static const char* str[] = {
+// 		"kEnfOfInput", "kError",
+// 		"kString", "kNewLine", "kCarriage",
+// 		"kLeftBrace", "kRightBrace",
+// 		"kComma", "kColon", "kLWS"
+// 	};
+// 	return str[type.getValue()];
+// }
 
 } /* namespace http */
 } /* namespace parser */
