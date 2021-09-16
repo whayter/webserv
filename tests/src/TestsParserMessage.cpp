@@ -243,7 +243,7 @@ TEST_CASE( "http::parseRequest - simple get cut in half", "[namespace][http][par
 
 	std::vector<unsigned char> one = vectorFromStr(data.substr(0,idx));
 	std::vector<unsigned char> two = vectorFromStr(data.substr(idx));
-	std::vector<unsigned char> all = one;
+	std::vector<unsigned char> all;
 	all.insert(all.end(), one.begin(), one.end());
 	all.insert(all.end(), two.begin(), two.end());
 
