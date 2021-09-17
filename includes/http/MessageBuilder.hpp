@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 23:38:35 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/16 15:51:55 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/17 15:29:32 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include "http.hpp"
 #include "utility.hpp"
+#include "ServerConfig.hpp"
 
 namespace http {
 
@@ -26,7 +27,13 @@ public:
 	~MessageBuilder();
 
 	http::Request			buildRequest();
+
+
 	http::Response			buildResponse(Request& request);
+	void					setLocalContent(ServerConfig& config, http::Request& request, http::Response &response);
+	void					setCgiContent(http::Request& request, http::Response& response, ServerConfig& config);
+	void					parseCgiHeaders(std::vector<unsigned char>& cgiHeaders, http::Response& response);
+	void					setErrorContent(http::Response& response);
 
 	void parseStatusLine();
 	void parseHeaders();
