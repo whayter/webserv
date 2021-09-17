@@ -14,7 +14,7 @@
 
 #include "config/ScannerConfig.hpp"
 #include "utility.hpp"
-#include  "SyntaxError.hpp"
+#include "SyntaxError.hpp"
 
 
 #include <fstream>
@@ -103,6 +103,14 @@ ServerBlock& ServerConfig::findServer(const Uri& uri)
 	}
 	return bestMatch;
 }
+
+// Location& ServerConfig::findLocation(const Uri& uri)
+// {
+// 	ServerBlock& server = findServer(uri);
+// 	std::vector<Location>::iterator it = server.getListens().begin();
+
+// 	return;	
+// }
 
 std::vector<uint32_t> ServerConfig::getPorts()
 {
@@ -332,10 +340,21 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner, pr::Token loc
 	pr::Token	t;
 	Location result;
 	
-	if ((t = scanner.getToken()).kind != pr::TokenKind::kString)
-		_throw_SyntaxError(t, "Location directive: invalid uri");
-	result.setUri(t.value);
-	if ((t = scanner.getToken(true)).kind != pr::TokenKind::kLeftBrace)
+	{
+		pr::Token	t2;
+		if ((t = scanner.getToken()).kind != pr::TokenKind::kString)
+			_throw_SyntaxError(t, "Location directive: invalid first argument. RTFM");
+		if ((t2 = scanner.getToken()).kind == pr::TokenKind::kLeftBrace)
+		{
+			result.setUri(t.value);
+			t = t2;
+		}
+		else if (t2.kind == pr::TokenKind::kString)
+			result.setUri(t2.value);
+		else
+			_throw_SyntaxError(t2, "Location directive: invalid second argument. RTFM");
+	}
+	if (t.kind != pr::TokenKind::kLeftBrace)
 		_throw_SyntaxError(t, "Location directive: No scope defined. Add braces...");
 
 	while ((t = scanner.getToken(true)).kind != pr::TokenKind::kRightBrace)

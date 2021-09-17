@@ -286,11 +286,11 @@ TEST_CASE( "ServerConfig4 - ./config_files/testParser_directive_limit_except.con
 	CHECK( config.getServer(0).getLocations()[3].getLimitExceptMethods().size() == 0);
 }
 
-TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][ServerConfig][findLocation]" )
-{
-	ServerConfig::__delete_singleton_instance();
-	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindLocation.conf");
-	(void)config;
+// TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][ServerConfig][findLocation]" )
+// {
+// 	ServerConfig::__delete_singleton_instance();
+// 	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindLocation.conf");
+// 	(void)config;
 
-	CHECK( config.getServer(0).findLocation("/youtube/") != );
-}
+// 	CHECK( config.getServer(0).findLocation("/youtube/") != );
+// }

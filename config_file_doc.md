@@ -37,15 +37,16 @@ Syntax: **listen** address[:port];
 Default: listen *:80;
 Context: server
 http://nginx.org/en/docs/http/ngx_http_core_module.html#listen
+http://nginx.org/en/docs/http/request_processing.html
 
 Syntax:	server_name name;
 Default: server_name "";
 Context: server
 https://nginx.org/en/docs/http/ngx_http_core_module.html#server_name
-
+http://nginx.org/en/docs/http/server_names.html
 
 Syntax:	**location** uri { ... }
-**location** = .extention { ... }
+**location** ext .extention { ... }
 Default:	—
 Context: server
 https://nginx.org/en/docs/http/ngx_http_core_module.html#location
