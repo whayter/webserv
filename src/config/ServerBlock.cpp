@@ -38,14 +38,14 @@ Location&	ServerBlock::findLocation(const Uri& uri)
 	ft::filesystem::path p =  uri.getPath();
 
 	Location* bestMatch = _getLocationIfMatchExtention(uri);
-	if (bestMatch)
-		return *bestMatch;
-	while (it != end)
-	{
-		// const Location& loc = *it;
-		
-		it++;
-	}
-
+	if (bestMatch == NULL)
+		while (it != end)
+		{
+			// const Location& loc = *it;
+			
+			it++;
+		}
+	if (bestMatch == NULL)
+		return _locations[0];
 	return *bestMatch;
 }
