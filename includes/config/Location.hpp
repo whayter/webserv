@@ -2,6 +2,7 @@
 #define LOCATION_HPP
 
 #include <string>
+#include <set>
 #include "Uri.hpp"
 #include "ReturnDirective.hpp"
 

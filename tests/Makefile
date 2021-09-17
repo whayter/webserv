@@ -77,11 +77,10 @@ SRC+= TestsScannerMessage.cpp
 
 SRC+= AMessage.cpp Request.cpp Response.cpp Status.cpp MessageBuilder.cpp
 SRC+= ScannerStream.cpp ScannerBuffer.cpp ScannerMessage.cpp
-SRC+= ScannerConfig.cpp ServerConfig.cpp
+SRC+= ScannerConfig.cpp ServerConfig.cpp ServerBlock.cpp
 SRC+= Socket.cpp Device.cpp Server.cpp
 
 SRC+= utility.cpp
-
 
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))

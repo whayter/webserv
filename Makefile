@@ -61,13 +61,14 @@ vpath %.hpp $(INCS_DIR)
 SRC = main.cpp
 SRC+= utility.cpp
 
-SRC+= ScannerMessage.cpp ScannerConfig.cpp ServerConfig.cpp
+SRC+= ScannerMessage.cpp
 SRC+= ScannerStream.cpp ScannerBuffer.cpp
 SRC+= Uri.cpp
 SRC+= AMessage.cpp Request.cpp Response.cpp Status.cpp MessageBuilder.cpp
 SRC+= Device.cpp Socket.cpp Server.cpp
 SRC+= parserMessage.cpp
 
+SRC+= ScannerConfig.cpp ServerConfig.cpp ServerBlock.cpp
 
 # ft
 SRC+= system_error.cpp error_code.cpp

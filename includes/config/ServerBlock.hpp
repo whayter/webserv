@@ -4,6 +4,8 @@
 #include "filesystem.h"
 #include "Location.hpp"
 
+#include "Host.hpp"
+
 class ServerBlock
 {
 public:
@@ -18,22 +20,13 @@ public:
 	inline size_t					getClientMaxBodySize() const{ return _clientMaxBodySize; }
 	inline const ReturnDirective&	getReturnDirective() const	{ return _returnDirective; }
 
-	inline bool						hasAutoindex() const		{ return _hasAutoindex; }
-	inline bool						hasClientMaxBodySize() const{ return _hasClientMaxBodySize; }
-	inline bool						hasReturnDirective() const	{ return _hasReturnDirective; }
+	inline bool		hasAutoindex() const		{ return _hasAutoindex; }
+	inline bool		hasClientMaxBodySize() const{ return _hasClientMaxBodySize; }
+	inline bool		hasReturnDirective() const	{ return _hasReturnDirective; }
 
-	void 	setAutoindex(bool autoindex) {
-		 _autoindex = autoindex;
-		 _hasAutoindex = true;
-	}
-	void 	setClientMaxBodySize(size_t size) {
-		_clientMaxBodySize = size;
-		_hasClientMaxBodySize = true;
-	}
-	void 	setReturnDirective(const ReturnDirective& returnDirective)	{
-		_returnDirective = returnDirective;
-		_hasReturnDirective = true;
-	}
+	void	setAutoindex(bool autoindex);
+	void	setClientMaxBodySize(size_t size);
+	void	setReturnDirective(const ReturnDirective& returnDirective);
 
 	/// return listen from given index (usefull for testing purpose)
 	inline const Host&				getListen(uint32_t index) const	{ return _listens[index];}
