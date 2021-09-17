@@ -2,6 +2,7 @@
 #define HOST_HPP
 
 #include <string>
+#include <stdint.h>
 
 class Host
 {
@@ -11,15 +12,18 @@ public:
 	Host(uint32_t port) : _port(port) {} 
 	Host(std::string hostname) : _hostname(hostname), _port(0) {} 
 
-	inline std::string	getHostname() const	{ return _hostname; }
-	inline uint32_t		getPort() const		{ return _port; }
+	std::string	getHostname() const;
+	uint32_t	getPort() const;
 
-	void setHostname(std::string hostname)	{ _hostname = hostname; }
-	void setPort(uint32_t port) 			{ _port = port; }
+	void setHostname(std::string hostname);
+	void setPort(uint32_t port);
 
 private:
 	std::string _hostname;
 	uint32_t	_port;
 }; /* class Host */
+
+inline std::string	Host::getHostname() const	{ return _hostname; }
+inline uint32_t		Host::getPort() const		{ return _port; }
 
 #endif /* HOST_HPP */

@@ -3,33 +3,36 @@
 
 #include <string>
 #include "Uri.hpp"
+#include <stdint.h>
 
 class ReturnDirective
 {
 public:
 	ReturnDirective() : _code(0), _uri() {}
-	// ReturnDirective(const ReturnDirective& other) :
-	// 	_code(other._code),
-	// 	_uri(other._uri),
-	// 	_text(other._text)
-	// {}
 
-	inline u_short 				getCode() const	{ return _code; }
-	inline const Uri&			getUri() const	{ return _uri; }
-	inline const std::string& 	getText() const	{ return _text; }
+	inline u_short 				getCode() const;
+	inline const Uri&			getUri() const;
+	inline const std::string& 	getText() const;
 
-	void setCode(u_short code)				{ _code = code; }
-	void setUri(const std::string& uri)		{ _uri = uri; }
-	void setText(const std::string& text)	{ _text = text; }
+	void setCode(u_short code);
+	void setUri(const std::string& uri);
+	void setText(const std::string& text);
 
-	inline bool hasCode() const	{ return _code != 0; }
-	inline bool hasUri() const	{ return !_uri.empty(); }
-	inline bool hasText() const { return !_text.empty(); }
+	inline bool hasCode() const;
+	inline bool hasUri() const;
+	inline bool hasText() const;
 
 private:
 	u_short 	_code;
 	Uri			_uri;
 	std::string _text;
 }; /* class ReturnDirective */
+
+inline bool 				ReturnDirective::hasCode() const	{ return _code != 0; }
+inline bool 				ReturnDirective::hasUri() const		{ return !_uri.empty(); }
+inline bool 				ReturnDirective::hasText() const	{ return !_text.empty(); }
+inline u_short 				ReturnDirective::getCode() const	{ return _code; }
+inline const Uri&			ReturnDirective::getUri() const		{ return _uri; }
+inline const std::string& 	ReturnDirective::getText() const	{ return _text; }
 
 #endif /* RETURN_DIRECTIVE_HPP */
