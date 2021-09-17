@@ -71,7 +71,7 @@ public:
 	inline std::string		getUserInfo()		{ return _userInfo; }
 	inline std::string		getHost() const		{ return _host; 	}
 	//inline std::string		getPath()			{ return _path;		}
-	inline ft::filesystem::path		getPath()			{ return ft::filesystem::path(_path);		}
+	inline ft::filesystem::path	getPath() const	{ return ft::filesystem::path(_path);		}
 	inline u_short			getSpecifiedPort()	{ return _port;		}
 	inline std::string		getRawQuery()		{ return _query;	}
 	

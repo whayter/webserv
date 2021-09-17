@@ -1,4 +1,5 @@
 #include "ServerBlock.hpp"
+#include "filesystem"
 
 void 	ServerBlock::setAutoindex(bool autoindex) {
 	_autoindex = autoindex;
@@ -13,8 +14,38 @@ void 	ServerBlock::setReturnDirective(const ReturnDirective& returnDirective)	{
 	_hasReturnDirective = true;
 }
 
+Location*	ServerBlock::_getLocationIfMatchExtention(const Uri& uri)
+{
+	std::vector<Location>::iterator it = _locations.begin();
+	std::vector<Location>::iterator end = _locations.end();
+
+	while (it != end)
+	{
+		Location& loc = *it;
+		if (loc.isMatchExtentionFile()
+		&& loc.getExtentionFile() ==  uri.getPath().extension())
+			return &loc;
+		it++;
+	}
+	return NULL;
+}
+
 Location&	ServerBlock::findLocation(const Uri& uri)
 {
-	(void)uri;
-	return _locations[0];
+	std::vector<Location>::iterator it = _locations.begin();
+	std::vector<Location>::iterator end = _locations.end();
+
+	ft::filesystem::path p =  uri.getPath();
+
+	Location* bestMatch = _getLocationIfMatchExtention(uri);
+	if (bestMatch)
+		return *bestMatch;
+	while (it != end)
+	{
+		// const Location& loc = *it;
+		
+		it++;
+	}
+
+	return *bestMatch;
 }

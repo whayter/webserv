@@ -50,7 +50,8 @@ public:
 	Location&	findLocation(const Uri& uri);
 
 private:
-	
+	Location*	_getLocationIfMatchExtention(const Uri& uri);
+
 	std::vector<Host>					_listens;
 	std::vector<Location>				_locations;
 	std::map<u_short, std::string> 		_errors;

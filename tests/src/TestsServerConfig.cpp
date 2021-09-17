@@ -286,7 +286,7 @@ TEST_CASE( "ServerConfig4 - ./config_files/testParser_directive_limit_except.con
 	CHECK( config.getServer(0).getLocations()[3].getLimitExceptMethods().size() == 0);
 }
 
-TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][ServerConfig][findLocation]" )
+TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][ServerConfig][findLocation][.]" )
 {
 	ServerConfig::__delete_singleton_instance();
 	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindLocation.conf");
@@ -300,4 +300,8 @@ TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][Serv
 	CHECK( srv.findLocation("/youtube").getReturnDirective().getUri() == srv.getLocations()[2].getReturnDirective().getUri() );
 	CHECK( srv.findLocation("/youtube/").getReturnDirective().getUri() == srv.getLocations()[2].getReturnDirective().getUri() );
 	CHECK( srv.findLocation("/youtube/test").getReturnDirective().getUri() == srv.getLocations()[2].getReturnDirective().getUri() );
+	CHECK( srv.findLocation("/youtube/test.php").getReturnDirective().getUri() == srv.getLocations()[6].getReturnDirective().getUri() );
+	CHECK( srv.findLocation("/youtube/test.rb").getReturnDirective().getUri() == srv.getLocations()[7].getReturnDirective().getUri() );
+
+
 }
