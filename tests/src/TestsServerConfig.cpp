@@ -295,6 +295,8 @@ TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][Serv
 	ServerBlock srv = config.getServer(0);
 	(void)srv;
 
+	REQUIRE( srv.getLocations()[0].getReturnDirective().getUri() == "Default");
+
 	CHECK( srv.findLocation("/noMatch").getReturnDirective().getUri() == srv.getLocations()[0].getReturnDirective().getUri() );
 
 	CHECK( srv.findLocation("/youtube").getReturnDirective().getUri() == srv.getLocations()[2].getReturnDirective().getUri() );

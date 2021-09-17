@@ -1,5 +1,6 @@
 #include "ServerBlock.hpp"
 #include "filesystem"
+#include "cstdlib"
 
 void 	ServerBlock::setAutoindex(bool autoindex) {
 	_autoindex = autoindex;
@@ -35,17 +36,31 @@ Location&	ServerBlock::findLocation(const Uri& uri)
 	std::vector<Location>::iterator it = _locations.begin();
 	std::vector<Location>::iterator end = _locations.end();
 
-	ft::filesystem::path p =  uri.getPath();
+	{
+		Location* bestMatch = _getLocationIfMatchExtention(uri);
+		if (bestMatch != NULL)
+			return *bestMatch;
+	}
+	{
+		Location&	bestMatch = _locations[0];
+		int			bestMatchLen = 0;
 
-	Location* bestMatch = _getLocationIfMatchExtention(uri);
-	if (bestMatch == NULL)
+		ft::filesystem::path p =  uri.getPath();
 		while (it != end)
 		{
-			// const Location& loc = *it;
-			
+			Location& loc = *it;
+			if (loc.isMatchExtentionFile() == false)
+			{
+				int i = ::abs(loc.getUri().compare(p.string()));
+				std::cout << loc.getUri() << " vs " << p.string() << std::endl;
+				if (i > bestMatchLen)
+				{
+					bestMatch = loc;
+					bestMatchLen = i;
+				}
+			}
 			it++;
 		}
-	if (bestMatch == NULL)
-		return _locations[0];
-	return *bestMatch;
+		return bestMatch;
+	}
 }
