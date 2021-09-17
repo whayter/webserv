@@ -34,6 +34,7 @@ public:
 	void 	setReturnDirective(const ReturnDirective& returnDirective);
 
 	void 	setUri(std::string uri);
+	void 	setExtentionFile(std::string ext);
 	void 	setCgiExec(const std::string& exec);
 	void 	setRoot(ft::filesystem::path root);
 	void 	setIndex(ft::filesystem::path index);

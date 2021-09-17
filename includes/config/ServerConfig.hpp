@@ -49,7 +49,7 @@ public:
 	//ServerBlock&					findServer(uint32_t port);
 
 	ServerBlock&					findServer(const Uri& uri);
-	// Location&						findLocation(const Uri& uri);
+	Location&						findLocation(const Uri& uri);
 
 	/// return all ports defined in listen directives.
 	std::vector<uint32_t>			getPorts();

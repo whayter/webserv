@@ -104,13 +104,10 @@ ServerBlock& ServerConfig::findServer(const Uri& uri)
 	return bestMatch;
 }
 
-// Location& ServerConfig::findLocation(const Uri& uri)
-// {
-// 	ServerBlock& server = findServer(uri);
-// 	std::vector<Location>::iterator it = server.getListens().begin();
-
-// 	return;	
-// }
+Location& ServerConfig::findLocation(const Uri& uri)
+{
+	return findServer(uri).findLocation(uri);
+}
 
 std::vector<uint32_t> ServerConfig::getPorts()
 {
@@ -350,7 +347,10 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner, pr::Token loc
 			t = t2;
 		}
 		else if (t2.kind == pr::TokenKind::kString)
-			result.setUri(t2.value);
+		{
+			result.setExtentionFile(t2.value);
+			t = scanner.getToken();
+		}
 		else
 			_throw_SyntaxError(t2, "Location directive: invalid second argument. RTFM");
 	}

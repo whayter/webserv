@@ -47,7 +47,7 @@ public:
 	void 	setRoot(ft::filesystem::path root)					{ _root = root;}
 	void 	setServerName(std::string serverName)				{ _serverName = serverName;}
 
-	// Location&						findLocation(const Uri& uri);
+	Location&	findLocation(const Uri& uri);
 
 private:
 	

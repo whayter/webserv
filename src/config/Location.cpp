@@ -25,6 +25,8 @@ void 	Location::setReturnDirective(const ReturnDirective& returnDirective)	{
 }
 
 void 	Location::setUri(std::string uri)				{ _uri = uri; }
+void 	Location::setExtentionFile(std::string ext)		{ _extentionFile = ext;}
+
 void 	Location::setCgiExec(const std::string& exec)	{ _cgiExec = exec;}
 void 	Location::setRoot(ft::filesystem::path root)	{ _root = root;}
 void 	Location::setIndex(ft::filesystem::path index)	{ _index = index;}
