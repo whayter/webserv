@@ -11,69 +11,44 @@
 class Location
 {
 public:
-	Location(): _autoindex(false), _hasAutoindex(false), 
-		_clientMaxBodySize(DEFAULT_CLIENT_MAX_BODY_SIZE), _hasClientMaxBodySize(false),
-		_hasReturnDirective(false)
-	{}
-	// Location (const Location& other):
-	// 	_uri(other._uri),
-	// 	_autoindex(other._autoindex),
-	// 	_hasAutoindex(other._hasAutoindex),
-	// 	_clientMaxBodySize(other._clientMaxBodySize),
-	// 	_hasClientMaxBodySize(other._hasClientMaxBodySize),
-	// 	_returnDirective(other._returnDirective),
-	// 	_hasReturnDirective(other._hasReturnDirective),
-	// 	_cgiExec(other._cgiExec),
-	// 	_cgiParams(other._cgiParams),
-	// 	_limitExceptMethods(other._limitExceptMethods),
-	// 	_root(other._root),
-	// 	_index(other._index)
-	// {}
+	Location();
 
-	inline std::string				getUri() const				{ return _uri; }
-	inline std::string				getExtentionFile() const	{ return _extentionFile; }
-	inline bool						isMatchExtentionFile() const{ return _uri.empty(); }
+	inline std::string				getUri() const;
+	inline std::string				getExtentionFile() const;
+	inline bool						isMatchExtentionFile() const;
 
-	inline bool						getAutoindex() const		{ return _autoindex; }
+	inline bool						getAutoindex() const;
 
-	inline std::string				getCgiExec() const		{ return _cgiExec; }
-	inline size_t					getClientMaxBodySize() const{ return _clientMaxBodySize; }
-	inline const ReturnDirective&	getReturnDirective() const	{ return _returnDirective; }
-	inline ft::filesystem::path		getRoot() const				{ return _root; }
-	inline ft::filesystem::path		getIndex() const			{ return _index; }
+	inline std::string				getCgiExec() const;
+	inline size_t					getClientMaxBodySize() const;
+	inline const ReturnDirective&	getReturnDirective() const;
+	inline ft::filesystem::path		getRoot() const;
+	inline ft::filesystem::path		getIndex() const;
 
-	inline bool						hasAutoindex() const		{ return _hasAutoindex; }
-	inline bool						hasClientMaxBodySize() const{ return _hasClientMaxBodySize; }
-	inline bool						hasReturnDirective() const	{ return _hasReturnDirective; }
+	inline bool						hasAutoindex() const;
+	inline bool						hasClientMaxBodySize() const;
+	inline bool						hasReturnDirective() const;
 
-	void 	setAutoindex(bool autoindex) {
-		 _autoindex = autoindex;
-		 _hasAutoindex = true;
-	}
-	void 	setClientMaxBodySize(size_t size)	{
-		_clientMaxBodySize = size;
-		_hasClientMaxBodySize = true;
-	}
-	void 	setReturnDirective(const ReturnDirective& returnDirective)	{
-		_returnDirective = returnDirective;
-		_hasReturnDirective = true;
-	}
-	void 	setUri(std::string uri)					{ _uri = uri; }
-	void 	setCgiExec(const std::string& exec)		{ _cgiExec = exec;}
-	void 	setRoot(ft::filesystem::path root)		{_root = root;}
-	void 	setIndex(ft::filesystem::path index)	{_index = index;}
+	void 	setAutoindex(bool autoindex);
+	void 	setClientMaxBodySize(size_t size);
+	void 	setReturnDirective(const ReturnDirective& returnDirective);
 
-	void	addCgiParam(const std::string& name, const std::string& value) { _cgiParams[name] = value;}
-	void	addCgiParam(const std::pair<std::string,std::string> pair) 	{ _cgiParams[pair.first] = pair.second;}
+	void 	setUri(std::string uri);
+	void 	setCgiExec(const std::string& exec);
+	void 	setRoot(ft::filesystem::path root);
+	void 	setIndex(ft::filesystem::path index);
+
+	void	addCgiParam(const std::string& name, const std::string& value);
+	void	addCgiParam(const std::pair<std::string,std::string> pair);
 
 	/// return the map of cgiParam (usefull for testing purpose)
-	inline std::map<std::string, std::string>&	getCgiParams() 	{ return _cgiParams;}
-	inline std::string	getCgiParam(std::string param) 			{ return _cgiParams[param];}
+	inline std::map<std::string, std::string>&	getCgiParams();
+	inline std::string							getCgiParam(std::string param);
 
-	void	addLimitExceptMethod(const std::string& method)			{_limitExceptMethods.insert(method);}
-	void	addLimitExceptMethods(const std::set<std::string>& l)	{ _limitExceptMethods.insert(l.begin(), l.end());}
-	inline	std::set<std::string>&	getLimitExceptMethods() 		{ return _limitExceptMethods;}
-	bool	hasLimitExceptMethods(const std::string& method)		{ return _limitExceptMethods.count(method);}
+	void	addLimitExceptMethod(const std::string& method);
+	void	addLimitExceptMethods(const std::set<std::string>& l);
+	inline	std::set<std::string>&	getLimitExceptMethods();
+	bool	hasLimitExceptMethods(const std::string& method);
 
 private:
 	std::string							_uri;
@@ -96,5 +71,35 @@ private:
 	ft::filesystem::path				_root;
 	ft::filesystem::path				_index;
 }; /* class Location */
+
+inline std::string				Location::getUri() const				{ return _uri; }
+inline std::string				Location::getExtentionFile() const	{ return _extentionFile; }
+inline bool						Location::isMatchExtentionFile() const{ return _uri.empty(); }
+
+inline bool						Location::getAutoindex() const		{ return _autoindex; }
+
+inline std::string				Location::getCgiExec() const		{ return _cgiExec; }
+inline size_t					Location::getClientMaxBodySize() const{ return _clientMaxBodySize; }
+inline const ReturnDirective&	Location::getReturnDirective() const	{ return _returnDirective; }
+inline ft::filesystem::path		Location::getRoot() const				{ return _root; }
+inline ft::filesystem::path		Location::getIndex() const			{ return _index; }
+
+inline bool						Location::hasAutoindex() const		{ return _hasAutoindex; }
+inline bool						Location::hasClientMaxBodySize() const{ return _hasClientMaxBodySize; }
+inline bool						Location::hasReturnDirective() const	{ return _hasReturnDirective; }
+
+inline std::map<std::string, std::string>&	Location::getCgiParams()
+{
+	return _cgiParams;
+}
+inline std::string		Location::getCgiParam(std::string param)
+{
+	return _cgiParams[param];
+}
+
+inline	std::set<std::string>&	Location::getLimitExceptMethods()
+{
+	return _limitExceptMethods;
+}
 
 #endif /* LOCATION_HPP */

@@ -82,7 +82,7 @@ SRC+= Socket.cpp Device.cpp Server.cpp
 SRC+= utility.cpp
 
 SRC+= ScannerConfig.cpp ServerConfig.cpp ServerBlock.cpp Host.cpp
-SRC+= ReturnDirective.cpp
+SRC+= ReturnDirective.cpp Location.cpp
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))
 vpath %.cpp $(SRCS_DIR)
