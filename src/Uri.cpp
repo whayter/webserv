@@ -21,6 +21,12 @@ Uri::Uri(const std::string& uri):
     _parseUri(uri);
 }
 
+Uri::Uri(const char* uri):
+    _port(0)
+{
+    _parseUri(uri);
+}
+
 Uri::Uri(const std::string& scheme, const std::string& pathEtc):
     _scheme(scheme), _port(0)
 {
@@ -83,12 +89,12 @@ Uri& Uri::operator=(const Uri& other)
     _fragment = other._fragment;
     return *this;
 }
-Uri& Uri::operator=(const std::string& uri)
-{
-    clear();
-    _parseUri(uri);
-    return *this;
-}
+// Uri& Uri::operator=(const std::string& uri)
+// {
+//     clear();
+//     _parseUri(uri);
+//     return *this;
+// }
 
 void Uri::_parseUri(const std::string& uri){
     std::string scheme;
@@ -422,4 +428,22 @@ void Uri::clear()
     _path.clear();
     _query.clear();
     _fragment.clear();
+}
+
+bool operator==(const Uri& lhs, const Uri& rhs) throw()
+{
+    if (lhs._scheme == rhs._scheme && lhs._userInfo == rhs._userInfo
+    && lhs._host == rhs._host && lhs._port == rhs._port && lhs._path == rhs._path
+    && lhs._query == rhs._query && lhs._fragment == rhs._fragment)
+        return true;
+    return false;
+}
+bool operator!=(const Uri& lhs, const Uri& rhs) throw()
+{
+    return !(lhs == rhs);
+}
+
+std::ostream& operator << ( std::ostream& os, const Uri& uri ) {
+    os << uri.toString();
+    return os;
 }
