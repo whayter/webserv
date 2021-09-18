@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 23:26:05 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/17 15:29:37 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/18 12:37:53 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 #include <iomanip>
 #include <unistd.h>
 
-#define BUFFER_SIZE 1048
+#define BUFFER_SIZE 10
 
 namespace web {
 
@@ -200,8 +200,11 @@ void Server::_sendResponses(int deviceIndex)
 		_log(deviceIndex, "Could not send the response.");
 		stop(-1);
 	}
-	outputBuffer.erase(outputBuffer.begin(), outputBuffer.begin() + nbytes);
-	_log(deviceIndex, "Response sent.");
+	else if (nbytes)
+	{
+		outputBuffer.erase(outputBuffer.begin(), outputBuffer.begin() + nbytes);
+		_log(deviceIndex, "Response sent.");
+	}
 }
 
 bool Server::_isServerIndex(int deviceIndex)
