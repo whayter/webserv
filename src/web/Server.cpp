@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 23:26:05 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/18 12:37:53 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/18 13:00:32 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 #include <iomanip>
 #include <unistd.h>
 
-#define BUFFER_SIZE 10
+#define BUFFER_SIZE 1024
 
 namespace web {
 
@@ -194,14 +194,14 @@ void Server::_sendResponses(int deviceIndex)
 		outputBuffer.insert(outputBuffer.end(), stringResponse.begin(), stringResponse.end());
 		responses.pop();
 	}
-	int nbytes = send(_fds[deviceIndex].fd, &outputBuffer[0], outputBuffer.size(), 0);
-	if (nbytes == -1)
+	if (!outputBuffer.empty())
 	{
-		_log(deviceIndex, "Could not send the response.");
-		stop(-1);
-	}
-	else if (nbytes)
-	{
+		int nbytes = send(_fds[deviceIndex].fd, &outputBuffer[0], outputBuffer.size(), 0);
+		if (nbytes == -1)
+		{
+			_log(deviceIndex, "Could not send the response.");
+			stop(-1);
+		}
 		outputBuffer.erase(outputBuffer.begin(), outputBuffer.begin() + nbytes);
 		_log(deviceIndex, "Response sent.");
 	}
