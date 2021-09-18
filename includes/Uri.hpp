@@ -47,6 +47,8 @@ public:
 	Uri();
 	/// @brief Create uri from string
 	Uri(const std::string& uri);
+	/// @brief Create uri from char *
+	Uri(const char* uri);
 	/// @brief Create uri from scheme and path (including authority, query and fragment in path)
 	Uri(const std::string& scheme, const std::string& pathEtc);
 	/// @brief Create uri from scheme, authority, and path (including query and fragment in path)
@@ -60,8 +62,8 @@ public:
 	Uri(const Uri&);
 	/// @brief Assignment operator
 	Uri& operator=(const Uri&);
-	/// @brief Parse string and assign it
-	Uri& operator=(const std::string& uri);
+	// /// @brief Parse string and assign it
+	// Uri& operator=(const std::string& uri);
 
 	~Uri();
 
@@ -69,7 +71,7 @@ public:
 	inline std::string		getUserInfo()		{ return _userInfo; }
 	inline std::string		getHost() const		{ return _host; 	}
 	//inline std::string		getPath()			{ return _path;		}
-	inline ft::filesystem::path		getPath()			{ return ft::filesystem::path(_path);		}
+	inline ft::filesystem::path	getPath() const	{ return ft::filesystem::path(_path);		}
 	inline u_short			getSpecifiedPort()	{ return _port;		}
 	inline std::string		getRawQuery()		{ return _query;	}
 	
@@ -111,6 +113,8 @@ private:
 	void 	_parseAuthority(std::string::const_iterator& it, const std::string::const_iterator & end);
 	void 	_parsePathEtc(std::string::const_iterator& it, const std::string::const_iterator& end);
 
+	friend bool operator==(const Uri& lhs, const Uri& rhs) throw();
+
 	std::string _scheme;
 	std::string _userInfo;
 	std::string _host;
@@ -119,5 +123,10 @@ private:
 	std::string _query;
 	std::string _fragment;
 };
+
+bool 			operator==(const Uri& lhs, const Uri& rhs) throw();
+bool 			operator!=(const Uri& lhs, const Uri& rhs) throw();
+std::ostream&	operator<<(std::ostream& os, const Uri& uri);
+
 
 #endif /* URI_HPP */
