@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 23:26:05 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/18 13:00:32 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/18 13:27:23 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,12 +146,11 @@ void Server::_disconnectDevice(int deviceIndex)
 void Server::_getRequests(int deviceIndex)
 {
 	unsigned char buffer[BUFFER_SIZE] = {0};
-	int nbytes = recv(_fds[deviceIndex].fd, buffer, BUFFER_SIZE - 1, 0);
+	int nbytes = recv(_fds[deviceIndex].fd, buffer, BUFFER_SIZE, 0);
 	if (nbytes < 0)
 		stop(-1);
 	else if (nbytes > 0)
 	{
-		// add a function for this 
 		for (int i = 0; i < nbytes; i++)
 			_devices[deviceIndex].getInputBuffer().push_back(buffer[i]);
 	}
