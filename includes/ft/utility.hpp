@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 16:06:58 by juligonz          #+#    #+#             */
-/*   Updated: 2021/09/08 01:25:20 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/18 11:59:28 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,17 @@
 #include <string>
 #include <sstream>
 #include <ctime>
+#include <vector>
 
 namespace ft {
 
-std::string intToString(int i);
-int         stringToInt(std::string integer);
-void		lowerStringInPlace(std::string& s);
-bool		isInteger(std::string& s);
-std::string getDate();
+std::string					intToString(int i);
+int							stringifyInteger(std::string integer);
+std::string					stringifyVector(std::vector<unsigned char> v);
+std::vector<unsigned char>	vectorizeString(std::string s);
+void						lowerStringInPlace(std::string& s);
+bool						isInteger(std::string& s);
+std::string					getDate();
 
 } /* namespace ft */
 

@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/06 09:34:36 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/16 16:10:38 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/18 13:34:17 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,7 @@
 #include "ServerConfig.hpp"
 #include "utility.hpp"
 #include "filesystem.h"
-
-#include <filesystem>
+#include "Request.hpp"
 
 #include <unistd.h>
 #include <sys/wait.h>
@@ -33,7 +32,7 @@ namespace fs = ft::filesystem;
 
 extern char** environ;
 
-void setEnvironment(ServerBlock& sblock, HttpRequest& request)
+void setEnvironment(ServerBlock& sblock, http::Request& request)
 {
 	setenv("GATEWAY_INTERFACE", "CGI/1.1", 0);
 	setenv("SERVER_NAME", sblock.getServerName().c_str(), 0);
@@ -123,6 +122,15 @@ void callCgi(std::vector<unsigned char>* cgiHeaders, std::vector<unsigned char>*
 		close(parentToChild[1]);						// close writing end of parentToChild
 		waitpid(pid, NULL, 0);							// wait for child process to end.
 		replacePipeEnd(childToParent[0], 0);			// replace stdin with incoming pipe
+
+
+		// std::vector<unsigned char> buf;
+		// char buffer[4096];							// tmp buf size
+
+		// size_t nbytes;
+		// while ((nbytes = read(STDIN_FILENO, buffer, 4096)) > 0)
+		// 	for (size_t i = 0; i < nbytes; i++)
+		// 		buf.push_back(buffer[i]);
 
 		char lastBitRead = 0;
 		while (read(STDIN_FILENO, buffer, 1) > 0)

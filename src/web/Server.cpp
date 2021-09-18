@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 23:26:05 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/16 16:38:10 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/18 13:27:23 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 #include <iomanip>
 #include <unistd.h>
 
-#define BUFFER_SIZE 1048
+#define BUFFER_SIZE 1024
 
 namespace web {
 
@@ -91,8 +91,6 @@ void Server::routine()
 				_buildRequests(i);
 				_buildResponses(i);
 				_sendResponses(i);
-				// get request
-				// serve client if request is complete
 			}
 		}
 		else
@@ -148,14 +146,13 @@ void Server::_disconnectDevice(int deviceIndex)
 void Server::_getRequests(int deviceIndex)
 {
 	unsigned char buffer[BUFFER_SIZE] = {0};
-	int nbytes = recv(_fds[deviceIndex].fd, buffer, BUFFER_SIZE - 1, 0);
+	int nbytes = recv(_fds[deviceIndex].fd, buffer, BUFFER_SIZE, 0);
 	if (nbytes < 0)
 		stop(-1);
 	else if (nbytes > 0)
 	{
-		// add a function for this 
 		for (int i = 0; i < nbytes; i++)
-		_devices[deviceIndex].getInputBuffer().push_back(buffer[i]);
+			_devices[deviceIndex].getInputBuffer().push_back(buffer[i]);
 	}
 }
 
@@ -175,7 +172,6 @@ void Server::_buildResponses(int deviceIndex)
 {
 	http::MessageBuilder builder;
 	std::queue<http::Request>& requests = _devices[deviceIndex].getRequestsQueue();
-
 	while (!requests.empty())
 	{
 		http::Response response = builder.buildResponse(requests.front());
@@ -192,19 +188,22 @@ void Server::_sendResponses(int deviceIndex)
 
 	while (!responses.empty())
 	{
-		http::Response r = responses.front();
-		std::string stringResponse = builder.stringifyMessage(r);
+		http::Response response = responses.front();
+		std::string stringResponse = builder.stringifyMessage(response);
 		outputBuffer.insert(outputBuffer.end(), stringResponse.begin(), stringResponse.end());
 		responses.pop();
 	}
-	int nbytes = 0;
-	if ((nbytes = send(_fds[deviceIndex].fd, &outputBuffer[0], outputBuffer.size(), 0)) == -1)
+	if (!outputBuffer.empty())
 	{
-		_log(deviceIndex, "Could not send the response.");
-		stop(-1);
+		int nbytes = send(_fds[deviceIndex].fd, &outputBuffer[0], outputBuffer.size(), 0);
+		if (nbytes == -1)
+		{
+			_log(deviceIndex, "Could not send the response.");
+			stop(-1);
+		}
+		outputBuffer.erase(outputBuffer.begin(), outputBuffer.begin() + nbytes);
+		_log(deviceIndex, "Response sent.");
 	}
-	outputBuffer.erase(outputBuffer.begin(), outputBuffer.begin() + nbytes);
-	_log(deviceIndex, "Response sent.");
 }
 
 bool Server::_isServerIndex(int deviceIndex)
@@ -216,7 +215,6 @@ void Server::_log(int deviceIndex, std::string description)
 {
 	std::cout << "[" << ft::getDate() << "]";
 	std::cout << std::setw(4) << std::setfill(' ') << ' ';
-	//if (!_isServerIndex(deviceIndex))
 	if (deviceIndex != -1)
 	{
 		std::cout << std::setw(2) << std::setfill('0');

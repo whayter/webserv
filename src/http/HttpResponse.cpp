@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 14:47:59 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/12 23:18:02 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/18 11:57:24 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ void		HttpResponse::_parseCgiHeaders(std::vector<unsigned char>& cgiHeaders)
 		if (name == "Status")
 		{
 			std::cout << "name = status !" << std::endl;
-			_setStatus(ft::stringToInt(value.substr(0, value.find_first_of(' '))));
+			_setStatus(ft::stringifyInteger(value.substr(0, value.find_first_of(' '))));
 			_setStatusLine();
 		}
 		else if (name == "Content-type")

@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 23:38:35 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/16 15:51:55 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/18 12:06:22 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include "http.hpp"
 #include "utility.hpp"
+#include "ServerConfig.hpp"
 
 namespace http {
 
@@ -26,14 +27,18 @@ public:
 	~MessageBuilder();
 
 	http::Request			buildRequest();
+
+
 	http::Response			buildResponse(Request& request);
+	void					setLocalContent(ServerConfig& config, http::Request& request, http::Response &response);
+	void					setCgiContent(http::Request& request, http::Response& response, ServerConfig& config);
+	void					parseCgiHeaders(std::vector<unsigned char>& cgiHeaders, http::Response& response);
+	void					setErrorContent(http::Response& response);
 
 	void parseStatusLine();
 	void parseHeaders();
 	void parseContent();
 
-
-	std::string				stringifyContent(content_type& content);
 
 	template <class Message>
 	std::string				stringifyMessage(Message& message)
@@ -45,7 +50,7 @@ public:
 		headers_type::iterator it;
 		for (it = message.getHeaders().begin(); it != message.getHeaders().end(); it++)
 			stringMessage += it->first + ": " + it->second + "\r\n";
-		stringMessage += "\r\n" + stringifyContent(message.getContent());
+		stringMessage += "\r\n" + ft::stringifyVector(message.getContent());
 		return stringMessage;
 	}
 
