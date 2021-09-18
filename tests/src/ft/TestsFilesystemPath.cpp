@@ -317,3 +317,25 @@ TEST_CASE( "fs::path - Non member functions", "[class][path][filesystem][non-mem
     CHECK(p1 != p2);
     CHECK((p1 / p2).string() == "some/other/foo/bar");
 }
+
+TEST_CASE( "fs::path - path compare", "[class][path][filesystem][compare]" )
+{
+    CHECK(fs::path("/foo/b").compare("/foo/a") > 0);
+    CHECK(fs::path("/foo/b").compare("/foo/b") == 0);
+    CHECK(fs::path("/foo/b").compare("/foo/c") < 0);
+
+    CHECK(fs::path("/foo/b").compare(std::string("/foo/a")) > 0);
+    CHECK(fs::path("/foo/b").compare(std::string("/foo/b")) == 0);
+    CHECK(fs::path("/foo/b").compare(std::string("/foo/c")) < 0);
+
+    CHECK(fs::path("/foo/b").compare(fs::path("/foo/a")) > 0);
+    CHECK(fs::path("/foo/b").compare(fs::path("/foo/b")) == 0);
+    CHECK(fs::path("/foo/b").compare(fs::path("/foo/c")) < 0);
+
+    CHECK(fs::path("/a/b/").compare("/a/b/") == 0);
+    CHECK(fs::path("/a/b/").compare("/a/b/c") < 0);
+    CHECK(fs::path("/a/b/../b").compare("/a/b") > 0);
+    CHECK(fs::path("/a/b").compare("/a/b/.") < 0);
+    CHECK(fs::path("/a/b/").compare("a/c") > 0);
+
+}

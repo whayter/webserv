@@ -17,6 +17,7 @@
 #include <vector>
 #include <iostream>
 #include <exception>
+#include <cstring>
 
 namespace ft{ 
 namespace filesystem{ 
@@ -108,18 +109,22 @@ public:
 	}
 
     // compare
-    // inline int  compare(const path& p) const throw()
-	// {
-	// 	return strcmp(_path.c_str(), p._path.c_str());
-	// }	
-    // inline int  compare(const string_type& s) const
-	// {
-	// 	return compare(path(s));
-	// }
-    // inline int  compare(const char* s) const
-	// {
-	// 	return compare(path(s));
-	// }
+    int  compare(const path& p) const throw()
+	{
+		if (!this->has_root_directory() && p.has_root_directory())
+			return -1;
+		if (this->has_root_directory() && !p.has_root_directory())
+			return +1;
+		return strcmp(_path.c_str(), p._path.c_str());
+	}	
+    inline int  compare(const string_type& s) const
+	{
+		return compare(path(s));
+	}
+    inline int  compare(const char* s) const
+	{
+		return compare(path(s));
+	}
 
 	// decomposition
 	path root_directory()	const;
