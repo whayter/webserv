@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 23:38:35 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/17 15:29:32 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/18 12:06:22 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,6 @@ public:
 	void parseContent();
 
 
-	std::string				stringifyContent(content_type& content);
-
 	template <class Message>
 	std::string				stringifyMessage(Message& message)
 	{
@@ -52,7 +50,7 @@ public:
 		headers_type::iterator it;
 		for (it = message.getHeaders().begin(); it != message.getHeaders().end(); it++)
 			stringMessage += it->first + ": " + it->second + "\r\n";
-		stringMessage += "\r\n" + stringifyContent(message.getContent());
+		stringMessage += "\r\n" + ft::stringifyVector(message.getContent());
 		return stringMessage;
 	}
 

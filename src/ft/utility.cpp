@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 16:10:02 by juligonz          #+#    #+#             */
-/*   Updated: 2021/09/08 01:25:04 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/18 11:59:12 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,23 @@ std::string intToString(int i)
 	return result;
 }
 
-int stringToInt(std::string integer)
+int stringifyInteger(std::string integer)
 {
 	int result;
 	std::stringstream ss;
 	ss << integer;
 	ss >> result;
 	return result;
+}
+
+std::string stringifyVector(std::vector<unsigned char> v)
+{
+    return std::string(v.begin(), v.end());
+}
+
+std::vector<unsigned char> vectorizeString(std::string s)
+{
+	return std::vector<unsigned char>(s.begin(), s.end());
 }
 
 void lowerStringInPlace(std::string& s)

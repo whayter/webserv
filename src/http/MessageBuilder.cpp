@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 23:42:16 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/17 15:42:46 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/18 12:06:14 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@ void MessageBuilder::parseCgiHeaders(std::vector<unsigned char>& cgiHeaders, htt
 		int secondPos = line.find('\r');
 		std::string value = line.substr(firstPos + 2, secondPos);
 		if (name == "Status")
-			response.setStatus(ft::stringToInt(value.substr(0, value.find_first_of(' '))));
+			response.setStatus(ft::stringifyInteger(value.substr(0, value.find_first_of(' '))));
 		else if (name == "Content-type")
 			response.setHeader(name, value);
 	}
@@ -157,11 +157,6 @@ void MessageBuilder::setErrorContent(http::Response& response)			// not complete
 	else
 		content += "<p>Webserv</p></body></html>";
 	response.setContent(http::content_type(content.begin(), content.end()));
-}
-
-std::string	MessageBuilder::stringifyContent(content_type& content)
-{
-	return std::string(content.begin(), content.end());
 }
 
 }; /* namespace http */
