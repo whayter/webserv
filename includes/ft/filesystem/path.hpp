@@ -126,6 +126,12 @@ public:
 		return compare(path(s));
 	}
 
+    // generation
+    path lexically_normal() const;
+    path lexically_relative(const path& base) const;
+    path lexically_proximate(const path& base) const;
+
+
 	// decomposition
 	path root_directory()	const;
 	path root_path()		const; 
@@ -163,7 +169,92 @@ private:
 	void _formatPathInPlace();
 
 	string_type _path;
-};
+public:
+class iterator
+{
+  public:
+ 	typedef size_t							difference_type;
+    typedef path							value_type;
+    typedef const path&						reference;
+    typedef const path*					 	pointer;
+    typedef std::bidirectional_iterator_tag	iterator_category;
+
+    // iterator(): _M_path(nullptr), _M_cur(), _M_at_end() { }
+    iterator(): _M_path(nullptr), _M_cur() { }
+
+    iterator(const iterator&);
+    iterator& operator=(const iterator&) = default;
+
+    reference operator*() const;
+    pointer   operator->() const { return std::__addressof(**this); }
+
+    iterator& operator++();
+    iterator  operator++(int) { auto __tmp = *this; ++*this; return __tmp; }
+
+    iterator& operator--();
+    iterator  operator--(int) { auto __tmp = *this; --*this; return __tmp; }
+
+    friend bool operator==(const iterator& __lhs, const iterator& __rhs)
+    { return __lhs._M_equals(__rhs); }
+
+    friend bool operator!=(const iterator& __lhs, const iterator& __rhs)
+    { return !__lhs._M_equals(__rhs); }
+
+  private:
+    friend class path;
+
+    // bool _M_is_multi() const { return _M_path->_M_type() == _Type::_Multi; }
+
+    // friend difference_type
+    // __path_iter_distance(const iterator& __first, const iterator& __last)
+    // {
+    //   __glibcxx_assert(__first._M_path != nullptr);
+    //   __glibcxx_assert(__first._M_path == __last._M_path);
+    //   if (__first._M_is_multi())
+	// return std::distance(__first._M_cur, __last._M_cur);
+    //   else if (__first._M_at_end == __last._M_at_end)
+	// return 0;
+    //   else
+	// return __first._M_at_end ? -1 : 1;
+    // }
+
+    // friend void
+    // __path_iter_advance(iterator& __i, difference_type __n)
+    // {
+    //   if (__n == 1)
+	// ++__i;
+    //   else if (__n == -1)
+	// --__i;
+    //   else if (__n != 0)
+	// {
+	//   __glibcxx_assert(__i._M_path != nullptr);
+	//   __glibcxx_assert(__i._M_is_multi());
+	//   // __glibcxx_assert(__i._M_path->_M_cmpts.end() - __i._M_cur >= __n);
+	//   __i._M_cur += __n;
+	// }
+    // }
+
+    // iterator(const path* __path, path::_List::const_iterator __iter)
+    // : _M_path(__path), _M_cur(__iter), _M_at_end()
+    // { }
+
+    // iterator(const path* __path, bool __at_end)
+    // : _M_path(__path), _M_cur(), _M_at_end(__at_end)
+    // { }
+
+    // bool _M_equals(iterator) const;
+
+    // const path* 		_M_path;
+    // path::_List::const_iterator _M_cur;
+    // bool			_M_at_end;  // only used when type != _Multi
+    const path* 		_M_path;
+	std::vector<path>::const_iterator _M_cur;
+  };
+
+
+ };
+
+
 
 } /* namespace filesystem */
 } /* namespace ft */

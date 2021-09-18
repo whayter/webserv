@@ -219,6 +219,43 @@ std::vector<path::string_type> path::_splitPath()
 	return result;
 }
 
+path path::lexically_normal() const
+{
+	  /*
+  C++17 [fs.path.generic] p6
+  - If the path is empty, stop.
+  - Replace each slash character in the root-name with a preferred-separator.
+  - Replace each directory-separator with a preferred-separator.
+  - Remove each dot filename and any immediately following directory-separator.
+  - As long as any appear, remove a non-dot-dot filename immediately followed
+    by a directory-separator and a dot-dot filename, along with any immediately
+    following directory-separator.
+  - If there is a root-directory, remove all dot-dot filenames and any
+    directory-separators immediately following them.
+  - If the last filename is dot-dot, remove any trailing directory-separator.
+  - If the path is empty, add a dot.
+  */
+ 	path result;
+ 	if (_path.empty())
+		return path();
+	const_iterator it = begin();
+	const_iterator end = this->end();
+
+	while (it != end)
+		std::cout << *it++ << "|" ;
+		return result;
+}
+
+path path::lexically_relative(const path& base) const
+{
+	(void)base;
+	return path();
+}
+path path::lexically_proximate(const path& base) const
+{
+	(void)base;
+	return path();
+}
 
 } /* namespace filesystem */
 } /* namespace ft */
