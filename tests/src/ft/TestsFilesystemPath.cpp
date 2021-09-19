@@ -347,6 +347,7 @@ static std::string iterateResult(const fs::path& path)
         if (i != path.begin()) {
             result << ",";
         }
+        i->
         result << i->string();
     }
     return result.str();

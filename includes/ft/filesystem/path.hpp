@@ -174,7 +174,7 @@ class iterator
     typedef const path*					 	pointer;
     typedef std::bidirectional_iterator_tag	iterator_category;
 
-    iterato() {}
+    iterator() {}
     iterator(const path& p)
 	{
 		path base = p;
@@ -186,11 +186,11 @@ class iterator
 		_cur = _arr.begin();
 	}
 
-    iterator(const iterator& other): _arr(other._arr), _cur(other._cur) {}
-    iterator& operator=(const iterator&) = default;
+    // iterator(const iterator& other): _arr(other._arr), _cur(other._cur) {}
+    // iterator& operator=(const iterator&) = default;
 
     reference operator*() const	{ return *_cur;}
-    pointer   operator->() const{ return &(*_cur); }
+    pointer   operator->() const{ return &**this;}
 
     iterator& operator++()
 	{
@@ -217,7 +217,7 @@ class iterator
 
     friend bool operator==(const iterator& lhs, const iterator& rhs)
     {
-		return lhs._cur == rhs._cur || lhs._atEnd == rhs._atEnd;
+		return lhs._cur == rhs._cur;
 	}
 
     friend bool operator!=(const iterator& lhs, const iterator& rhs)
