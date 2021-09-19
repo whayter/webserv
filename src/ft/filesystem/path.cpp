@@ -197,8 +197,8 @@ std::vector<path::string_type> path::_splitPath()
 {
 	std::vector<string_type> result;
 
-	string_type::const_iterator it = begin();
-	string_type::const_iterator end = this->end();
+	string_type::const_iterator it = _path.begin();
+	string_type::const_iterator end = _path.end();
 
 	string_type tmp;
 	while (it != end)
@@ -214,7 +214,7 @@ std::vector<path::string_type> path::_splitPath()
 	}
 	if (!tmp.empty())
 		result.push_back(tmp);
-	if (!_path.empty() && *--this->end() == '/')
+	if (!_path.empty() && *--_path.end() == '/')
 		result.push_back("");
 	return result;
 }
@@ -238,8 +238,8 @@ path path::lexically_normal() const
  	path result;
  	if (_path.empty())
 		return path();
-	const_iterator it = begin();
-	const_iterator end = this->end();
+	iterator it = begin();
+	iterator end = this->end();
 
 	while (it != end)
 		std::cout << *it++ << "|" ;
@@ -256,6 +256,13 @@ path path::lexically_proximate(const path& base) const
 	(void)base;
 	return path();
 }
+
+std::ostream&	operator<<(std::ostream& os, const path& path)
+{
+	os << path.string();
+	return os;
+}
+
 
 } /* namespace filesystem */
 } /* namespace ft */
