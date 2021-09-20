@@ -315,13 +315,13 @@ TEST_CASE( "fs::path - path compare", "[class][path][filesystem][compare]" )
 TEST_CASE( "fs::path - Generation", "[class][path][filesystem][generation]" ) {
 
     // lexically_normal()
-    // CHECK(fs::path("foo/./bar/..").lexically_normal() == "foo/");
-    // CHECK(fs::path("foo/.///bar/../").lexically_normal() == "foo/");
-    // CHECK(fs::path("/foo/../..").lexically_normal() == "/");
-    // CHECK(fs::path("foo/..").lexically_normal() == ".");
-    // CHECK(fs::path("ab/cd/ef/../../qw").lexically_normal() == "ab/qw");
-    // CHECK(fs::path("a/b/../../../c").lexically_normal() == "../c");
-    // CHECK(fs::path("../").lexically_normal() == "..");
+    CHECK(fs::path("foo/./bar/..").lexically_normal() == "foo/");
+    CHECK(fs::path("foo/.///bar/../").lexically_normal() == "foo/");
+    CHECK(fs::path("/foo/../..").lexically_normal() == "/");
+    CHECK(fs::path("foo/..").lexically_normal() == ".");
+    CHECK(fs::path("ab/cd/ef/../../qw").lexically_normal() == "ab/qw");
+    CHECK(fs::path("a/b/../../../c").lexically_normal() == "../c");
+    CHECK(fs::path("../").lexically_normal() == "..");
 
 	// lexically_relative()
 //     CHECK(fs::path("/a/d").lexically_relative("/a/b/c") == "../../d");
@@ -347,13 +347,12 @@ static std::string iterateResult(const fs::path& path)
         if (i != path.begin()) {
             result << ",";
         }
-        i->
         result << i->string();
     }
     return result.str();
 }
 
-static std::string reverseIterateResult(const fs::path& path)
+std::string reverseIterateResult(const fs::path& path)
 {
     std::ostringstream result;
     fs::path::iterator iter = path.end();
@@ -377,56 +376,50 @@ TEST_CASE("fs.path.itr - path iterators", "[filesystem][class][path][iterator][.
     CHECK("." == iterateResult(fs::path(".")));
     CHECK(".." == iterateResult(fs::path("..")));
     CHECK("foo" == iterateResult(fs::path("foo")));
-    return;
     CHECK("/" == iterateResult(fs::path("/")));
     CHECK("/,foo" == iterateResult(fs::path("/foo")));
     CHECK("foo," == iterateResult(fs::path("foo/")));
     CHECK("/,foo," == iterateResult(fs::path("/foo/")));
     CHECK("foo,bar" == iterateResult(fs::path("foo/bar")));
     CHECK("/,foo,bar" == iterateResult(fs::path("/foo/bar")));
-    // ghc::filesystem enforces redundant slashes to be reduced to one
     CHECK("/,foo,bar" == iterateResult(fs::path("///foo/bar")));
-    // typically std::filesystem keeps them
-    CHECK("///,foo,bar" == iterateResult(fs::path("///foo/bar")));
-    CHECK("/,foo,bar," == iterateResult(fs::path("/foo/bar///")));
-    CHECK("foo,.,bar,..," == iterateResult(fs::path("foo/.///bar/../")));
 
-    CHECK(reverseIterateResult(fs::path()).empty());
-    CHECK("." == reverseIterateResult(fs::path(".")));
-    CHECK(".." == reverseIterateResult(fs::path("..")));
-    CHECK("foo" == reverseIterateResult(fs::path("foo")));
-    CHECK("/" == reverseIterateResult(fs::path("/")));
-    CHECK("foo,/" == reverseIterateResult(fs::path("/foo")));
-    CHECK(",foo" == reverseIterateResult(fs::path("foo/")));
-    CHECK(",foo,/" == reverseIterateResult(fs::path("/foo/")));
-    CHECK("bar,foo" == reverseIterateResult(fs::path("foo/bar")));
-    CHECK("bar,foo,/" == reverseIterateResult(fs::path("/foo/bar")));
+    // CHECK(reverseIterateResult(fs::path()).empty());
+    // CHECK("." == reverseIterateResult(fs::path(".")));
+    // CHECK(".." == reverseIterateResult(fs::path("..")));
+    // CHECK("foo" == reverseIterateResult(fs::path("foo")));
+    // CHECK("/" == reverseIterateResult(fs::path("/")));
+    // CHECK("foo,/" == reverseIterateResult(fs::path("/foo")));
+    // CHECK(",foo" == reverseIterateResult(fs::path("foo/")));
+    // CHECK(",foo,/" == reverseIterateResult(fs::path("/foo/")));
+    // CHECK("bar,foo" == reverseIterateResult(fs::path("foo/bar")));
+    // CHECK("bar,foo,/" == reverseIterateResult(fs::path("/foo/bar")));
 #ifndef USE_STD_FS
     // ghc::filesystem enforces redundant slashes to be reduced to one
-    CHECK("bar,foo,/" == reverseIterateResult(fs::path("///foo/bar")));
+    // CHECK("bar,foo,/" == reverseIterateResult(fs::path("///foo/bar")));
 #else
     // typically std::filesystem keeps them
     CHECK("bar,foo,///" == reverseIterateResult(fs::path("///foo/bar")));
 #endif
-    CHECK(",bar,foo,/" == reverseIterateResult(fs::path("/foo/bar///")));
-    CHECK(",..,bar,.,foo" == reverseIterateResult(fs::path("foo/.///bar/../")));
+    // CHECK(",bar,foo,/" == reverseIterateResult(fs::path("/foo/bar///")));
+    // CHECK(",..,bar,.,foo" == reverseIterateResult(fs::path("foo/.///bar/../")));
 #ifdef GHC_OS_WINDOWS
     CHECK("foo,/,C:" == reverseIterateResult(fs::path("C:/foo")));
     CHECK("foo,C:" == reverseIterateResult(fs::path("C:foo")));
 #endif
-    {
-        fs::path p1 = "/foo/bar/test.txt";
-        fs::path p2;
-        for (auto pe : p1) {
-            p2 /= pe;
-        }
-        CHECK(p1 == p2);
-        CHECK("bar" == *(--fs::path("/foo/bar").end()));
-        auto p = fs::path("/foo/bar");
-        auto pi = p.end();
-        pi--;
-        CHECK("bar" == *pi);
-    }
+    // {
+    //     fs::path p1 = "/foo/bar/test.txt";
+    //     fs::path p2;
+    //     for (auto pe : p1) {
+    //         p2 /= pe;
+    //     }
+    //     CHECK(p1 == p2);
+    //     CHECK("bar" == *(--fs::path("/foo/bar").end()));
+    //     auto p = fs::path("/foo/bar");
+    //     auto pi = p.end();
+    //     pi--;
+    //     CHECK("bar" == *pi);
+    // }
 
     // if (has_host_root_name_support()) {
     //     CHECK("foo" == *(--fs::path("//host/foo").end()));

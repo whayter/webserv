@@ -18,6 +18,7 @@
 #include <iostream>
 #include <exception>
 #include <cstring>
+#include <algorithm>
 
 namespace ft{ 
 namespace filesystem{ 
@@ -155,6 +156,10 @@ public:
 	inline bool is_relative() const 		{ return !is_absolute();};
 
 
+	class iterator;
+	// typedef iterator const const_iterator;
+	iterator 		begin() const;//			{ return iterator(*this, _path.begin());}
+	iterator 		end() const;//		{ return iterator(*this, _path.end());}
 
 private:
 	friend bool operator==(const path& lhs, const path& rhs) throw();
@@ -164,104 +169,60 @@ private:
 	void _formatPathInPlace();
 
 	string_type _path;
-public:
-class iterator
+
+};
+
+std::ostream&	operator<<(std::ostream&, const path&);
+
+class path::iterator
 {
+    friend class path;
   public:
- 	// typedef size_t							difference_type;
+ 	typedef std::ptrdiff_t					difference_type;
     typedef path							value_type;
     typedef const path&						reference;
     typedef const path*					 	pointer;
     typedef std::bidirectional_iterator_tag	iterator_category;
+    typedef value_type::string_type			string_type;
 
-    iterator() {}
-    iterator(const path& p)
+    iterator();
+    iterator(const path& p, const std::string::const_iterator& pos)
+		: _first(p._path.begin()), _last(p._path.end()), _iter(pos)
 	{
-		path base = p;
-
-		while (base.has_parent_path())
-			_arr.push_back(_bruh(base));
-		if (!base.empty())
-			_arr.push_back(base);
-		_cur = _arr.begin();
+		updateCurrent();
 	}
-
-    // iterator(const iterator& other): _arr(other._arr), _cur(other._cur) {}
-    // iterator& operator=(const iterator&) = default;
-
-    reference operator*() const	{ return *_cur;}
-    pointer   operator->() const{ return &**this;}
-
-    iterator& operator++()
-	{
-		++_cur;
+    iterator& operator++(){
+		_iter = increment(_iter);
+		while (_iter != _last && *_iter == '/' &&
+           (_iter + 1) != _last             // the slash is not the last char
+		) {
+			++_iter;
+		}
+		updateCurrent();
 		return *this;
 	}
-    iterator  operator++(int)
-	{
-		iterator __tmp = *this;
-		++*this;
-		return __tmp;
-	}
+    iterator operator++(int)					{ iterator i = *this; ++(*this); return i;}
+    iterator& operator--()						{ _iter = decrement(_iter); return *this;}
+    iterator operator--(int)					{ iterator i = *this; --(*this); return i;}
+    bool operator==(const iterator& other) const{ return _iter == other._iter;}
+    bool operator!=(const iterator& other) const{ return !(*this == other);}
+    reference operator*() const					{ return _cur;}
+    pointer operator->() const					{ return &_cur;}
 
-    iterator& operator--() {
-		--_cur;
-		return *this;
-	}
-    iterator  operator--(int)
-	{
-		iterator __tmp = *this;
-		--*this;
-		return __tmp;
-	}
+private:
 
-    friend bool operator==(const iterator& lhs, const iterator& rhs)
-    {
-		return lhs._cur == rhs._cur;
-	}
+    string_type::const_iterator increment(const string_type::const_iterator& pos) const;
+    string_type::const_iterator decrement(const string_type::const_iterator& pos) const;
+    void updateCurrent();
 
-    friend bool operator!=(const iterator& lhs, const iterator& rhs)
-    { return !(lhs == rhs); }
+    string_type::const_iterator _first;
+    string_type::const_iterator _last;
+    // string_type::const_iterator _prefix;
+    // string_type::const_iterator _root;
 
-  private:
-
-	path _bruh(path &p)
-	{
-		if (p.empty())
-			return path();
-		size_t pos = p.string().rfind('/');
-		if (pos == string_type::npos)
-			return path();
-		if (pos == 0)
-			return path("/");
-		path tmp(string_type(p.string().begin(), p.string().begin() + pos));
-		p = string_type(p.string().begin() + pos + 1, p.string().end());
-		return tmp;
-	}
-
-	std::vector<path>		_arr;
-	std::vector<path>::const_iterator _cur;
-  };
-
-  	// iterators
-	// typedef string_type::iterator iterator;
-	// typedef string_type::const_iterator const_iterator;
-	// iterator 		begin() {return _path.begin();};
-	// iterator 		end() {return _path.end();};
-	// const_iterator 	begin() const	{return _path.begin();};
-	// const_iterator 	end() const	{return _path.end();};
-	typedef iterator const const_iterator;
-	iterator 		begin()			{ return iterator(*this);}
-	iterator 		end()			{ return iterator();}
-	const_iterator 	begin() const	{ return iterator(*this);}
-	const_iterator 	end() const		{ return iterator();}
-
-
- };
-
-std::ostream&	operator<<(std::ostream&, const path&);
-
-
+    string_type::const_iterator _iter;
+    path _cur;
+};
 
 } /* namespace filesystem */
 } /* namespace ft */
