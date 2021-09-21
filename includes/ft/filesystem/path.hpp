@@ -158,8 +158,8 @@ public:
 
 	class iterator;
 	// typedef iterator const const_iterator;
-	iterator 		begin() const;//			{ return iterator(*this, _path.begin());}
-	iterator 		end() const;//		{ return iterator(*this, _path.end());}
+	iterator 		begin() const;
+	iterator 		end() const;
 
 private:
 	friend bool operator==(const path& lhs, const path& rhs) throw();
@@ -189,21 +189,21 @@ class path::iterator
     iterator(const path& p, const std::string::const_iterator& pos)
 		: _first(p._path.begin()), _last(p._path.end()), _iter(pos)
 	{
-		updateCurrent();
+		_updateCurrent();
 	}
     iterator& operator++(){
 		_iter = increment(_iter);
-		while (_iter != _last && *_iter == '/' &&
-           (_iter + 1) != _last             // the slash is not the last char
-		) {
+		while (_iter != _last && *_iter == '/' && _iter+1 != _last)
 			++_iter;
-		}
-		updateCurrent();
+		_updateCurrent();
 		return *this;
 	}
-    iterator operator++(int)					{ iterator i = *this; ++(*this); return i;}
-    iterator& operator--()						{ _iter = decrement(_iter); return *this;}
-    iterator operator--(int)					{ iterator i = *this; --(*this); return i;}
+    iterator operator++(int)					
+	{ iterator i = *this; ++(*this); return i;}
+    iterator& operator--()						
+	{ _iter = decrement(_iter); _updateCurrent(); return *this;}
+    iterator operator--(int)					
+	{ iterator i = *this; --(*this); return i;}
     bool operator==(const iterator& other) const{ return _iter == other._iter;}
     bool operator!=(const iterator& other) const{ return !(*this == other);}
     reference operator*() const					{ return _cur;}
@@ -213,13 +213,10 @@ private:
 
     string_type::const_iterator increment(const string_type::const_iterator& pos) const;
     string_type::const_iterator decrement(const string_type::const_iterator& pos) const;
-    void updateCurrent();
+    void _updateCurrent();
 
     string_type::const_iterator _first;
     string_type::const_iterator _last;
-    // string_type::const_iterator _prefix;
-    // string_type::const_iterator _root;
-
     string_type::const_iterator _iter;
     path _cur;
 };

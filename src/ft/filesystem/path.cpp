@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ft/filesystem/path.hpp"
+#include "ft/filesystem/filesystem.hpp"
 
 namespace ft{ 
 namespace filesystem{ 
@@ -59,9 +60,10 @@ path& path::operator=(const string_type& path)
 
 path& path::operator/=(const path& p)
 {
-	if (p.empty())
-		_path += '/';
-	else if (p.is_absolute())
+	// if (p.empty())
+	// 	_path += '/';
+	// else 
+	if (p.is_absolute())
 		_path = p._path;
 	else if ( p.is_relative())
 	{
@@ -70,6 +72,7 @@ path& path::operator/=(const path& p)
 	}
 	else
 		_path += p._path;
+	_formatPathInPlace();
 	return *this;
 }
 
@@ -172,11 +175,6 @@ void path::_formatPathInPlace()
 	std::vector<string_type>::const_iterator end = pathEntries.end();
 	string_type result;
 
-	if (pathEntries.size() > 2 && pathEntries[0].empty() && pathEntries[1].empty() && !pathEntries[2].empty())
-	{
-		result += "//";
-		it += 2;
-	}
 	while (it != end)
 	{
 		if (it->empty() && it != pathEntries.begin())
@@ -234,66 +232,38 @@ path path::lexically_normal() const
   - If the last filename is dot-dot, remove any trailing directory-separator.
   - If the path is empty, add a dot.
   */
- 	std::vector<path> p;
- 	if (_path.empty())
-		return path();
-	path::iterator it = begin();
-	path::iterator end = this->end();
+ 	path result;
+	// path::iterator it = begin();
 
-	while (it != end)
-	{
-		std::cout << *it << "|" ;
-		if (it->string() == "..")
-		{
-			if (p.empty() || p.size() < 1)
-				p.push_back(*it);
-			else
-			{
-				if (p.size() == 1)
-				{
-				 	if (p[0].is_absolute())
-					{
-						p.pop_back();
-						p.push_back("/");
-					}
-					else
-					{
-						p.pop_back();
-						p.push_back(".");
-					}
-				}
-				else
-					p.pop_back();
-			
-			}
-		}
-		else if (it->string() != ".")
-			p.push_back(*it);
-		else
-			p.push_back("");
-		++it;
-	}
-	{
-		std::vector<path>::const_iterator it = p.begin();
-		std::vector<path>::const_iterator end = p.end();
-
-		path result;
-		while (it != end)
-		{
-			result += it->string(); 
-			result += "/";
-			++it;
-		}
-		return result;
-	}
+	// bool lastDotDot = false;
+	// for (;it != this->end(); it++)
+	// {
+	// 	if (*it == ".")
+	// 		result /= "";
+	// 	else if (*it == ".." && !result.empty())
+	// 	{
+	// 		if (result == root_directory())
+	// 			continue;
+	// 		if (*(--result.end()) != "..")
+	// 		{
+	// 			if (result._path.back() == '/')
+	// 				 result._path.pop_back();
+	// 			result.remove_filename();
+	// 			continue;
+	// 		}
+	// 	}
+	// 	if (!(it->empty() && lastDotDot)) 
+	// 		result /= *it;
+	// 	lastDotDot = *it == "..";
+	// }
+	// if (result.empty())
+	// 	return path(".");
+	return result;
 }
 
 path path::lexically_relative(const path& base) const
 {
-	path::iterator it = base.begin();
-	path::iterator end = base.end();
-	std::cout << *it << "|";
-	
+	(void)base;
 	return path();
 }
 path path::lexically_proximate(const path& base) const
@@ -310,70 +280,40 @@ std::ostream&	operator<<(std::ostream& os, const path& path)
 
 
 path::iterator::string_type::const_iterator
-path::iterator::increment(const string_type::const_iterator& pos) const
+	path::iterator::increment(const string_type::const_iterator& pos) const
 {
 	path::string_type::const_iterator i = pos;
-	if (i != _last)
-	{
-		if (*i++ == '/')
-		{
-			if (i != _last && *i == '/') {
-				if (!(i + 1 != _last && *(i + 1) == '/'))
-				{
-					// leadind double slashes detected, treat this and the
-					// following until a slash as one unit
-					i = std::find(++i, _last, '/');
-				}
-				else {
-					// skip redundant slashes
-					while (i != _last && *i == '/') {
-						++i;
-					}
-				}
-			}
-		}
-		else {
-			i = std::find(i, _last, '/');
-		}
-	}
+	if (i == _last)
+		return i;
+	if (*i++ == '/')
+		while (i != _last && *i == '/')
+			++i;
+	else
+		i = std::find(i, _last, '/');
 	return i;
 }
 
 path::iterator::string_type::const_iterator
-path::iterator::decrement(const string_type::const_iterator& pos) const
+	path::iterator::decrement(const string_type::const_iterator& pos) const
 {
 	path::string_type::const_iterator i = pos;
-	if (i != _first)
-	{
-		--i;
-		// if this is now the root slash or the trailing slash, we are done,
-		// else check for network name
-		if (pos != _last || *i != '/') {
-			i = std::find(std::reverse_iterator<path::string_type::const_iterator>(i),
-							std::reverse_iterator<path::string_type::const_iterator>(_first), '/').base();
-			// Now we have to check if this is a network name
-			// if (i - _first == 2 && *_first == '/' && *(_first + 1) == '/') {
-			//     i -= 2;
-			// }
-		}
-	}
+	if (i == _first)
+		return i;
+	--i;
+	if (pos != _last || *i != '/')
+		i = std::find(std::reverse_iterator<path::string_type::const_iterator>(i),
+			std::reverse_iterator<path::string_type::const_iterator>(_first), '/').base();
 	return i;
 }
 
-void path::iterator::updateCurrent()
+void path::iterator::_updateCurrent()
 {
 	if (_iter == _last)
-	{
-		_cur.clear();
-		return;
-	}
+		return _cur.clear();
 	if (_iter != _first && _iter != _last && *_iter == '/' && _iter + 1 == _last)
-		_cur.clear();
-	else
-		// _cur.assign(_iter, increment(_iter));
-		_cur = path(string_type(_iter, increment(_iter)));
+		return _cur.clear();
+	_cur = string_type(_iter, increment(_iter));
 }
-
 
 path::iterator 	path::begin() const	{ return iterator(*this, _path.begin());}
 path::iterator 	path::end()	const	{ return iterator(*this, _path.end());}

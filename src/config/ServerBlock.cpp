@@ -1,5 +1,6 @@
 #include "ServerBlock.hpp"
 #include "filesystem.h"
+#include "utility.hpp"
 #include <cstdlib>
 
 void 	ServerBlock::setAutoindex(bool autoindex) {
@@ -33,34 +34,51 @@ Location*	ServerBlock::_getLocationIfMatchExtention(const Uri& uri)
 
 Location&	ServerBlock::findLocation(const Uri& uri)
 {
-	std::vector<Location>::iterator it = _locations.begin();
-	std::vector<Location>::iterator end = _locations.end();
-
 	{
 		Location* bestMatch = _getLocationIfMatchExtention(uri);
 		if (bestMatch != NULL)
 			return *bestMatch;
 	}
 	{
-		Location&	bestMatch = _locations[0];
-		int			bestMatchLen = 0;
+		std::vector<Location>::iterator it = _locations.begin();
+		std::vector<Location>::iterator end = _locations.end();
+		Location*	bestMatch = findExactLocation("/");
+		size_t		bestMatchLen = bestMatch != NULL ? 1 : 0;
 
-		ft::filesystem::path p =  uri.getPath();
 		while (it != end)
 		{
 			Location& loc = *it;
 			if (loc.isMatchExtentionFile() == false)
 			{
-				int i = ::abs(loc.getUri().compare(p.string()));
-				std::cout << loc.getUri() << " vs " << p.string() << std::endl;
-				if (i > bestMatchLen)
+				size_t len;
+				if (ft::pathsComponentsAreEqual(loc.getUri(),  uri.getPath(), len))
+					return loc;
+				else if (len > bestMatchLen)
 				{
-					bestMatch = loc;
-					bestMatchLen = i;
+					bestMatch = &loc;
+					bestMatchLen = len;
 				}
 			}
 			it++;
 		}
-		return bestMatch;
+		if (bestMatch == NULL)
+			throw std::runtime_error("Was not expecting that, need to refaction this shitty function.");
+		return *bestMatch;
 	}
+}
+
+Location*	ServerBlock::findExactLocation(const Uri& uri)
+{
+	std::vector<Location>::iterator it = _locations.begin();
+	std::vector<Location>::iterator end = _locations.end();
+
+	ft::filesystem::path p =  uri.getPath();
+	while (it != end)
+	{
+		Location& loc = *it;
+		if (!p.compare(loc.getUri()))
+			return &loc;
+		++it;
+	}
+	return NULL;
 }

@@ -48,6 +48,7 @@ public:
 	void 	setServerName(std::string serverName)				{ _serverName = serverName;}
 
 	Location&	findLocation(const Uri& uri);
+	Location*	findExactLocation(const Uri& uri);
 
 private:
 	Location*	_getLocationIfMatchExtention(const Uri& uri);

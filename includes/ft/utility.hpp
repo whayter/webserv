@@ -17,6 +17,7 @@
 #include <sstream>
 #include <ctime>
 #include <vector>
+#include "filesystem.h"
 
 namespace ft {
 
@@ -27,6 +28,9 @@ std::vector<unsigned char>	vectorizeString(std::string s);
 void						lowerStringInPlace(std::string& s);
 bool						isInteger(std::string& s);
 std::string					getDate();
+
+/// return the number of consecutives same elements in two paths.
+bool	pathsComponentsAreEqual(const filesystem::path& one, const filesystem::path& two, size_t& nSameComp);
 
 } /* namespace ft */
 
