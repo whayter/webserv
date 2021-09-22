@@ -286,7 +286,7 @@ TEST_CASE( "ServerConfig4 - ./config_files/testParser_directive_limit_except.con
 	CHECK( config.getServer(0).getLocations()[3].getLimitExceptMethods().size() == 0);
 }
 
-TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][ServerConfig][findLocation][.]" )
+TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][ServerConfig][findLocation]" )
 {
 	ServerConfig::__delete_singleton_instance();
 	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindLocation.conf");
@@ -296,6 +296,9 @@ TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][Serv
 	(void)srv;
 
 	REQUIRE( srv.getLocations()[1].getReturnDirective().getUri() == "/");
+	CHECK( srv.findLocation("/youtube/test/").getReturnDirective().getUri()		== srv.getLocations()[4].getReturnDirective().getUri() );
+	CHECK( srv.findLocation("/youtube/test/nothing").getReturnDirective().getUri()== srv.getLocations()[4].getReturnDirective().getUri() );
+	
 
 	CHECK( srv.findLocation("/youtube/random").getReturnDirective().getUri() 	== srv.getLocations()[3].getReturnDirective().getUri() );
 	CHECK( srv.findLocation("/noMatch").getReturnDirective().getUri() == srv.getLocations()[1].getReturnDirective().getUri() );
@@ -306,5 +309,27 @@ TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][Serv
 	CHECK( srv.findLocation("/youtube/test.php").getReturnDirective().getUri() 	== srv.getLocations()[6].getReturnDirective().getUri() );
 	CHECK( srv.findLocation("/youtube/test.rb").getReturnDirective().getUri() 	== srv.getLocations()[7].getReturnDirective().getUri() );
 
+
+}
+
+TEST_CASE( "ServerConfig4 - ./config_files/testFindLocation.conf", "[class][ServerConfig][getPathFromUri]" )
+{
+	ServerConfig::__delete_singleton_instance();
+	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindLocation.conf");
+	(void)config;
+
+	ServerBlock srv = config.getServer(0);
+
+	REQUIRE( srv.getLocations()[1].getReturnDirective().getUri() == "/");
+
+
+	CHECK( srv.getPathFromUri("/")	== "/var/www/app/index.html");
+	CHECK( srv.getPathFromUri("/youtube")	== "/you/youtube/youtube.html");
+	CHECK( srv.getPathFromUri("/youtube/")	== "/var/www/app/youtube/youtube2.html");
+	CHECK( srv.getPathFromUri("/youtube/demo.php")	== "/var/www/app/youtube/demo.php");
+	CHECK( srv.getPathFromUri("/youtube/nothing")	== "/var/www/app/youtube/nothing");
+
+	CHECK( srv.getPathFromUri("/youtube/test")	== "/var/html/app/youtube/test/youtubeTest.html");
+	CHECK( srv.getPathFromUri("/youtube/test/")	== "/var/html/app/youtube/test/youtubeTest.html");
 
 }

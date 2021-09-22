@@ -2,6 +2,7 @@
 #include "filesystem.h"
 #include "utility.hpp"
 #include <cstdlib>
+#include <string>
 
 void 	ServerBlock::setAutoindex(bool autoindex) {
 	_autoindex = autoindex;
@@ -58,11 +59,19 @@ Location&	ServerBlock::findLocation(const Uri& uri)
 					bestMatch = &loc;
 					bestMatchLen = len;
 				}
+				else if (len > 1 && len == bestMatchLen)
+				{
+					if (loc.getUri().size() > bestMatch->getUri().size())
+					{
+						bestMatch = &loc;
+						bestMatchLen = len;
+					}
+				} 
 			}
 			it++;
 		}
 		if (bestMatch == NULL)
-			throw std::runtime_error("Was not expecting that, need to refaction this shitty function.");
+			throw std::runtime_error("Was not expecting that, need to refacto this shitty function.");
 		return *bestMatch;
 	}
 }
@@ -81,4 +90,20 @@ Location*	ServerBlock::findExactLocation(const Uri& uri)
 		++it;
 	}
 	return NULL;
+}
+
+/// if path is empty,
+ft::filesystem::path	ServerBlock::getPathFromUri(const Uri& uri)
+{
+	Location&				loc = findLocation(uri);
+	ft::filesystem::path	root = !loc.getRoot().empty() ? loc.getRoot() : getRoot();
+	ft::filesystem::path	index = !loc.getIndex().empty() ? loc.getIndex(): getIndex();
+	
+	ft::filesystem::path result;
+	result = root / uri.getPath().relative_path();
+
+	if ((ft::filesystem::path(loc.getUri()) / "") == uri.getPath() / ""/"" )
+	// if (loc.getUri() == uri.getPath() )
+		result /= index;
+	return result;
 }
