@@ -114,12 +114,32 @@ void	directory_iterator::impl::increment(error_code& ec)
 			_dirEntry._path.clear();
 			return;
 		}
-		// _dirEntry._path = _basePath / _dirent->d_name;
-		_dirEntry._path = _basePath;
-		_dirEntry._path /= _dirent->d_name;
-		// _dirEntry._fileSize = _dirent.
+		_copyEntryFromDirent();
 	} while (!strcmp(_dirent->d_name, "..") || !strcmp(_dirent->d_name, "."));
 			
+}
+void	directory_iterator::impl::_copyEntryFromDirent()
+{
+	//clear _dirEntry
+	_dirEntry._path.clear();
+	_dirEntry._status = file_status();
+	_dirEntry._hardLinkCount = static_cast<uintmax_t>(-1); 
+	_dirEntry._fileSize = static_cast<uintmax_t>(-1);
+	// then polulate _dirEntry from known data,
+	// we avoid call to lstat/stat, it can be retrieve later by the user.
+	_dirEntry._path = _basePath / _dirent->d_name;
+	switch (_dirent->d_type)
+	{
+		case DT_BLK: _dirEntry._status.type(file_type::block); break;
+		case DT_CHR: _dirEntry._status.type(file_type::character); break;
+		case DT_DIR: _dirEntry._status.type(file_type::directory); break;
+		case DT_FIFO: _dirEntry._status.type(file_type::fifo); break;
+		case DT_LNK: _dirEntry._status.type(file_type::symlink); break;
+		case DT_REG: _dirEntry._status.type(file_type::regular); break;
+		case DT_SOCK: _dirEntry._status.type(file_type::socket); break;
+		case DT_UNKNOWN: _dirEntry._status.type(file_type::none); break;
+		default: _dirEntry._status.type(file_type::unknown); break; break;
+	}
 }
 
 }; /* namespace filesystem */

@@ -66,6 +66,7 @@ public:
 	error_code			_ec;
 private:
 	impl(const impl& other);
+	void _copyEntryFromDirent();
 }; /* class directory_iterator::impl */
 
 }; /* namespace filesystem */
