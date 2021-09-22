@@ -7,8 +7,8 @@ template<class T>
 class shared_ptr
 {
 public:
-	shared_ptr(): _ptr(NULL), _refCount(0)				{	_refCount = new size_t(0);}
-	shared_ptr(T* pointer): _ptr(pointer), _refCount(0)	{	_refCount = new size_t(1);}
+	shared_ptr(): _ptr(NULL), _refCount(0)				{ _refCount = new size_t(0);}
+	shared_ptr(T* pointer): _ptr(pointer), _refCount(0)	{ _refCount = new size_t(1);}
 	shared_ptr(const shared_ptr & other)
 	{
 		_ptr = other._ptr;
@@ -25,6 +25,7 @@ public:
 		_refCount = other._refCount;
 		if (_ptr != NULL)
 			++(*_refCount);
+		return *this;
 	}
 	T* operator->() const				{ return _ptr;}
 	T& operator*() const				{ return *_ptr;}
@@ -37,8 +38,7 @@ private:
 		--(*_refCount);
 		if (*_refCount == 0)
 		{
-			if (_ptr != NULL)
-				delete _ptr;
+			delete _ptr;
 			delete _refCount;
 		}
 	}
