@@ -148,42 +148,58 @@ bool exists(const path& p, error_code& ec) throw(){
 }
 
 
-bool is_block_file(file_status s) throw() { return s.type() == file_type::block; }
-// bool is_block_file(const path& p);
-// bool is_block_file(const path& p, error_code& ec) throw() ;
+bool is_block_file(file_status s) throw()					{ return s.type() == file_type::block; }
+bool is_block_file(const path& p)							{ return is_block_file(status(p)); }
+bool is_block_file(const path& p, error_code& ec) throw()	{ return is_block_file(status(p, ec)); }
 
-bool is_character_file(file_status s) throw() { return s.type() == file_type::character; }
-// bool is_character_file(const path& p);
-// bool is_character_file(const path& p, error_code& ec) throw() ;
+bool is_character_file(file_status s) throw() 					{ return s.type() == file_type::character; }
+bool is_character_file(const path& p)							{ return is_character_file(status(p)); }	
+bool is_character_file(const path& p, error_code& ec) throw()	{ return is_character_file(status(p, ec)); }
 
-bool is_directory(file_status s) throw() { return s.type() == file_type::directory; }
-// bool is_directory(const path& p);
-// bool is_directory(const path& p, error_code& ec) throw() ;
+bool is_directory(file_status s) throw()				{ return s.type() == file_type::directory; }
+bool is_directory(const path& p) 						{ return is_directory(status(p)); }
+bool is_directory(const path& p, error_code& ec) throw(){ return is_directory(status(p, ec)); }
 
-// bool is_empty(const path& p);
-// bool is_empty(const path& p, error_code& ec) throw() ;
+bool is_empty(const path& p){
+	if (is_directory(p))
+		throw std::runtime_error("is_empty not implemented for directory");
+	return file_size(p) == 0;
+}
 
-bool is_fifo(file_status s) throw() { return s.type() == file_type::fifo; }
-// bool is_fifo(const path& p);
-// bool is_fifo(const path& p, error_code& ec) throw() ;
+bool is_empty(const path& p, error_code& ec) throw()
+{
+	if (is_directory(p, ec))
+		ec = make_error_code(errc::owner_dead); // is_empty not implemented for directories
+	else if (!ec)
+	{
+		bool result = file_size(p, ec) == 0;
+		if (!ec)
+			return result;
+	}
+	return false;
+}
+
+bool is_fifo(file_status s) throw()					{ return s.type() == file_type::fifo; }
+bool is_fifo(const path& p)							{ return is_fifo(status(p)); }
+bool is_fifo(const path& p, error_code& ec) throw()	{ return is_fifo(status(p, ec)); }
 
 bool is_other(file_status s) throw() {
 	return exists(s) && !is_regular_file(s) && !is_directory(s) && !is_symlink(s);
 }
-// bool is_other(const path& p);
-// bool is_other(const path& p, error_code& ec) throw() ;
+bool is_other(const path& p)						{ return is_other(status(p)); }
+bool is_other(const path& p, error_code& ec) throw(){ return is_other(status(p, ec)); }
 
-bool is_regular_file(file_status s) throw() { return s.type() == file_type::regular; } 
-// bool is_regular_file(const path& p);
-// bool is_regular_file(const path& p, error_code& ec) throw() ;
+bool is_regular_file(file_status s) throw()					{ return s.type() == file_type::regular; } 
+bool is_regular_file(const path& p)							{ return is_regular_file(status(p)); }
+bool is_regular_file(const path& p, error_code& ec) throw()	{ return is_regular_file(status(p, ec)); }
 
-bool is_socket(file_status s) throw() { return s.type() == file_type::socket; }
-// bool is_socket(const path& p);
-// bool is_socket(const path& p, error_code& ec) throw() ;
+bool is_socket(file_status s) throw()					{ return s.type() == file_type::socket; }
+bool is_socket(const path& p)							{ return is_socket(status(p)); }
+bool is_socket(const path& p, error_code& ec) throw()	{ return is_socket(status(p, ec)); }
 
 bool is_symlink(file_status s) throw() { return s.type() == file_type::symlink; }
-// bool is_symlink(const path& p);
-// bool is_symlink(const path& p, error_code& ec) throw() ;
+bool is_symlink(const path& p)							{ return is_symlink(status(p)); }
+bool is_symlink(const path& p, error_code& ec) throw()	{ return is_symlink(status(p, ec)); }
 
 
 uintmax_t file_size(const path& p)

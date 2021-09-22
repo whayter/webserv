@@ -285,6 +285,29 @@ TEST_CASE("fs::directory_entry - class directory_entry", "[namespace][ft][filesy
     CHECK(!(d1 == d2));
 }
 
+TEST_CASE("fs::is_empty", "[namespace][ft][filesystem][is_empty]")
+{
+    TemporaryDirectory t(TempOpt::change_path);
+    ft::error_code ec;
+    // not implemented for directories...
+    // CHECK(fs::is_empty(fs::path(t.path().c_str())));
+    // CHECK(fs::is_empty(fs::path(t.path().c_str()), ec));
+    // CHECK(!ec);
+    generateFile("foo", 0);
+    generateFile("bar", 1234);
+    CHECK(fs::is_empty("foo"));
+    CHECK(fs::is_empty("foo", ec));
+    CHECK(!ec);
+    CHECK(!fs::is_empty("bar"));
+    CHECK(!fs::is_empty("bar", ec));
+    CHECK(!ec);
+    CHECK_THROWS_AS(fs::is_empty("foobar"), fs::filesystem_error);
+    bool result = false;
+    CHECK_NOTHROW(result = fs::is_empty("foobar", ec));
+    CHECK(!result);
+    CHECK(ec);
+}
+
 TEST_CASE("fs::directory_iterator - class directory_iterator", "[namespace][ft][filesystem][directory_iterator][.]")
 {
     {
