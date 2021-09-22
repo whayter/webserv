@@ -170,7 +170,8 @@
 #### structure file interface, header...
 - https://softwareengineering.stackexchange.com/questions/323738/how-can-i-effectively-use-one-file-per-class-in-c
 - https://stackoverflow.com/questions/27102956/structuring-c-application-directory-and-folders
-
+- https://www.fluentcpp.com/2017/09/22/make-pimpl-using-unique_ptr/
+- 
 #### Google c++ style guide
 - https://google.github.io/styleguide/cppguide.html
 
@@ -198,3 +199,6 @@
 - https://stackoverflow.com/questions/40899267/how-similar-are-boost-filesystem-and-the-c-standard-filesystem-library
 - http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1030r1.pdf
 - http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0218r0.html
+
+#### pimpl
+- https://www.fluentcpp.com/2017/09/22/make-pimpl-using-unique_ptr/
