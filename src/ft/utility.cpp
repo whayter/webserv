@@ -71,4 +71,27 @@ std::string getDate()
 	return date;
 }
 
+// Return true if both paths are equal, else false and tell how many comp are the same by variable nSameComp
+bool	pathsComponentsAreEqual(const filesystem::path& one, const filesystem::path& two, size_t& nSameComp)
+{
+	filesystem::path::iterator itOne = one.begin();
+	filesystem::path::iterator itTwo = two.begin();
+
+	nSameComp = 0;
+	for (; itOne != one.end() && itTwo != two.end(); itOne++, itTwo++)
+	{
+		if (*itOne != *itTwo)
+		{
+			if ((itOne->empty() && ++itOne == one.end())
+			||	(itTwo->empty() && ++itTwo == two.end()))
+				nSameComp += 1;
+			return false;
+		}
+		nSameComp += 1;
+	}
+	if (itOne != one.end() || itTwo != two.end())
+		return false;
+	return true;
+}
+
 } /* namespace ft */

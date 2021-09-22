@@ -72,14 +72,16 @@ SRC+= TestsScannerConfig.cpp
 SRC+= TestsServerConfig.cpp
 SRC+= TestsSystemError.cpp 		system_error.cpp error_code.cpp
 SRC+= TestsParserMessage.cpp	parserMessage.cpp
+SRC+= TestsUtility.cpp			utility.cpp
 
 SRC+= TestsScannerMessage.cpp
+SRC+= TestsSharedPtr.cpp
+SRC+= TestsHtmlBuilder.cpp
 
 SRC+= AMessage.cpp Request.cpp Response.cpp Status.cpp MessageBuilder.cpp
 SRC+= ScannerStream.cpp ScannerBuffer.cpp ScannerMessage.cpp
 SRC+= Socket.cpp Device.cpp Server.cpp
 
-SRC+= utility.cpp
 
 SRC+= ScannerConfig.cpp ServerConfig.cpp ServerBlock.cpp Host.cpp
 SRC+= ReturnDirective.cpp Location.cpp

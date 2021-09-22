@@ -138,39 +138,39 @@ namespace filesystem {
   uintmax_t hard_link_count(const path& p, error_code& ec) throw() ;
 
   bool is_block_file(file_status s) throw() ;
-  // bool is_block_file(const path& p);
-  // bool is_block_file(const path& p, error_code& ec) throw() ;
+  bool is_block_file(const path& p);
+  bool is_block_file(const path& p, error_code& ec) throw() ;
 
   bool is_character_file(file_status s) throw() ;
-  // bool is_character_file(const path& p);
-  // bool is_character_file(const path& p, error_code& ec) throw() ;
+  bool is_character_file(const path& p);
+  bool is_character_file(const path& p, error_code& ec) throw() ;
 
   bool is_directory(file_status s) throw() ;
-  // bool is_directory(const path& p);
-  // bool is_directory(const path& p, error_code& ec) throw() ;
+  bool is_directory(const path& p);
+  bool is_directory(const path& p, error_code& ec) throw() ;
 
-  // bool is_empty(const path& p);
-  // bool is_empty(const path& p, error_code& ec) throw() ;
+  bool is_empty(const path& p);
+  bool is_empty(const path& p, error_code& ec) throw() ;
 
   bool is_fifo(file_status s) throw() ;
-  // bool is_fifo(const path& p);
-  // bool is_fifo(const path& p, error_code& ec) throw() ;
+  bool is_fifo(const path& p);
+  bool is_fifo(const path& p, error_code& ec) throw() ;
 
   bool is_other(file_status s) throw() ;
-  // bool is_other(const path& p);
-  // bool is_other(const path& p, error_code& ec) throw() ;
+  bool is_other(const path& p);
+  bool is_other(const path& p, error_code& ec) throw() ;
 
   bool is_regular_file(file_status s) throw() ; 
-  // bool is_regular_file(const path& p);
-  // bool is_regular_file(const path& p, error_code& ec) throw() ;
+  bool is_regular_file(const path& p);
+  bool is_regular_file(const path& p, error_code& ec) throw() ;
 
   bool is_socket(file_status s) throw() ;
-  // bool is_socket(const path& p);
-  // bool is_socket(const path& p, error_code& ec) throw() ;
+  bool is_socket(const path& p);
+  bool is_socket(const path& p, error_code& ec) throw() ;
 
   bool is_symlink(file_status s) throw() ;
-  // bool is_symlink(const path& p);
-  // bool is_symlink(const path& p, error_code& ec) throw() ;
+  bool is_symlink(const path& p);
+  bool is_symlink(const path& p, error_code& ec) throw() ;
 
   // file_time_type  last_write_time(const path& p);
   // file_time_type  last_write_time(const path& p, error_code& ec) throw() ;

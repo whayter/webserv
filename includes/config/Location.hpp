@@ -8,6 +8,28 @@
 
 #define DEFAULT_CLIENT_MAX_BODY_SIZE 1000 * 1000 // = 1m
 
+
+struct action{
+    enum actionEnum {
+      none = 0,
+	  returnDirective,
+	  cgi
+    };
+
+    action(actionEnum e): _e(e) {}
+    // operator file_typeEnum() const throw(){
+    //   return _e;
+    // }
+    friend bool operator==(const action& lhs, const action& rhs){
+      return lhs._e == rhs._e;
+    }
+    friend bool operator!=(const action& lhs, const action& rhs){
+      return lhs._e != rhs._e;
+    }
+private:
+  actionEnum _e;
+};
+
 class Location
 {
 public:
@@ -18,6 +40,7 @@ public:
 	inline bool						isMatchExtentionFile() const;
 
 	inline bool						getAutoindex() const;
+	inline action					getAction() const;
 
 	inline std::string				getCgiExec() const;
 	inline size_t					getClientMaxBodySize() const;
@@ -52,6 +75,11 @@ public:
 	bool	hasLimitExceptMethods(const std::string& method);
 
 private:
+	void _setAction(action);
+
+
+	action _action;
+	
 	std::string							_uri;
 	std::string							_extentionFile;
 	
@@ -78,6 +106,7 @@ inline std::string				Location::getExtentionFile() const	{ return _extentionFile
 inline bool						Location::isMatchExtentionFile() const{ return _uri.empty(); }
 
 inline bool						Location::getAutoindex() const		{ return _autoindex; }
+inline action					Location::getAction() const 		{ return _action;}
 
 inline std::string				Location::getCgiExec() const		{ return _cgiExec; }
 inline size_t					Location::getClientMaxBodySize() const{ return _clientMaxBodySize; }

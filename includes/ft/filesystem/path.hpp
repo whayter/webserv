@@ -17,6 +17,8 @@
 #include <vector>
 #include <iostream>
 #include <exception>
+#include <cstring>
+#include <algorithm>
 
 namespace ft{ 
 namespace filesystem{ 
@@ -98,28 +100,39 @@ public:
 	operator string_type() const {return _path;}
 
 	std::string    string() const{
-		std::string result;
-		const_iterator it = begin();
-		const_iterator end = this->end();
+		// std::string result;
+		// const_iterator it = begin();
+		// const_iterator end = this->end();
 
-		while(it != end)
-			result += *it++;
-		return result;
+		// while(it != end)
+		// 	result += *it++;
+		// return result;
+		return _path;
 	}
 
     // compare
-    // inline int  compare(const path& p) const throw()
-	// {
-	// 	return strcmp(_path.c_str(), p._path.c_str());
-	// }	
-    // inline int  compare(const string_type& s) const
-	// {
-	// 	return compare(path(s));
-	// }
-    // inline int  compare(const char* s) const
-	// {
-	// 	return compare(path(s));
-	// }
+    int  compare(const path& p) const throw()
+	{
+		if (!this->has_root_directory() && p.has_root_directory())
+			return -1;
+		if (this->has_root_directory() && !p.has_root_directory())
+			return +1;
+		return strcmp(_path.c_str(), p._path.c_str());
+	}	
+    inline int  compare(const string_type& s) const
+	{
+		return compare(path(s));
+	}
+    inline int  compare(const char* s) const
+	{
+		return compare(path(s));
+	}
+
+    // generation
+    path lexically_normal() const;
+    path lexically_relative(const path& base) const;
+    path lexically_proximate(const path& base) const;
+
 
 	// decomposition
 	path root_directory()	const;
@@ -142,13 +155,11 @@ public:
 	inline bool is_absolute() const 		{ return !_path.empty() && _path[0] == '/';};
 	inline bool is_relative() const 		{ return !is_absolute();};
 
-	// iterators
-	typedef string_type::iterator iterator;
-	typedef string_type::const_iterator const_iterator;
-	iterator 		begin() {return _path.begin();};
-	iterator 		end() {return _path.end();};
-	const_iterator 	begin() const	{return _path.begin();};
-	const_iterator 	end() const	{return _path.end();};
+
+	class iterator;
+	// typedef iterator const const_iterator;
+	iterator 		begin() const;
+	iterator 		end() const;
 
 private:
 	friend bool operator==(const path& lhs, const path& rhs) throw();
@@ -158,6 +169,56 @@ private:
 	void _formatPathInPlace();
 
 	string_type _path;
+
+};
+
+std::ostream&	operator<<(std::ostream&, const path&);
+
+class path::iterator
+{
+    friend class path;
+  public:
+ 	typedef std::ptrdiff_t					difference_type;
+    typedef path							value_type;
+    typedef const path&						reference;
+    typedef const path*					 	pointer;
+    typedef std::bidirectional_iterator_tag	iterator_category;
+    typedef value_type::string_type			string_type;
+
+    iterator();
+    iterator(const path& p, const std::string::const_iterator& pos)
+		: _first(p._path.begin()), _last(p._path.end()), _iter(pos)
+	{
+		_updateCurrent();
+	}
+    iterator& operator++(){
+		_iter = increment(_iter);
+		while (_iter != _last && *_iter == '/' && _iter+1 != _last)
+			++_iter;
+		_updateCurrent();
+		return *this;
+	}
+    iterator operator++(int)					
+	{ iterator i = *this; ++(*this); return i;}
+    iterator& operator--()						
+	{ _iter = decrement(_iter); _updateCurrent(); return *this;}
+    iterator operator--(int)					
+	{ iterator i = *this; --(*this); return i;}
+    bool operator==(const iterator& other) const{ return _iter == other._iter;}
+    bool operator!=(const iterator& other) const{ return !(*this == other);}
+    reference operator*() const					{ return _cur;}
+    pointer operator->() const					{ return &_cur;}
+
+private:
+
+    string_type::const_iterator increment(const string_type::const_iterator& pos) const;
+    string_type::const_iterator decrement(const string_type::const_iterator& pos) const;
+    void _updateCurrent();
+
+    string_type::const_iterator _first;
+    string_type::const_iterator _last;
+    string_type::const_iterator _iter;
+    path _cur;
 };
 
 } /* namespace filesystem */

@@ -117,25 +117,6 @@ TEST_CASE( "fs::path - Modifiers", "[class][path][filesystem][modifier]" ) {
     CHECK(p2 == "foo");
 }
 
-// TEST_CASE( "fs::path - Compare", "[class][path][filesystem][compare]" ) {
-
-//     CHECK(fs::path("/foo/b").compare("/foo/a") > 0);
-//     CHECK(fs::path("/foo/b").compare("/foo/b") == 0);
-//     CHECK(fs::path("/foo/b").compare("/foo/c") < 0);
-
-//     CHECK(fs::path("/foo/b").compare(std::string("/foo/a")) > 0);
-//     CHECK(fs::path("/foo/b").compare(std::string("/foo/b")) == 0);
-//     CHECK(fs::path("/foo/b").compare(std::string("/foo/c")) < 0);
-
-//     CHECK(fs::path("/foo/b").compare(fs::path("/foo/a")) > 0);
-//     CHECK(fs::path("/foo/b").compare(fs::path("/foo/b")) == 0);
-//     CHECK(fs::path("/foo/b").compare(fs::path("/foo/c")) < 0);
-
-
-//     CHECK(fs::path("/a/b/").compare("/a/b/c") < 0);
-//     CHECK(fs::path("/a/b/").compare("a/c") > 0);
-// }
-
 TEST_CASE( "fs::path - Decompose", "[class][path][filesystem][decompose]" ) {
     CHECK(fs::path("").root_directory() == "");
     CHECK(fs::path(".").root_directory() == "");
@@ -269,34 +250,6 @@ TEST_CASE( "fs::path - Query", "[class][path][filesystem][query]" ) {
 
 }
 
-// TEST_CASE( "fs::path - Generation", "[class][path][filesystem][generation]" ) {
-
-//     // lexically_normal()
-//     CHECK(fs::path("foo/./bar/..").lexically_normal() == "foo/");
-//     CHECK(fs::path("foo/.///bar/../").lexically_normal() == "foo/");
-//     CHECK(fs::path("/foo/../..").lexically_normal() == "/");
-//     CHECK(fs::path("foo/..").lexically_normal() == ".");
-//     CHECK(fs::path("ab/cd/ef/../../qw").lexically_normal() == "ab/qw");
-//     CHECK(fs::path("a/b/../../../c").lexically_normal() == "../c");
-//     CHECK(fs::path("../").lexically_normal() == "..");
-
-// 	// lexically_relative()
-//     CHECK(fs::path("/a/d").lexically_relative("/a/b/c") == "../../d");
-//     CHECK(fs::path("/a/b/c").lexically_relative("/a/d") == "../b/c");
-//     CHECK(fs::path("a/b/c").lexically_relative("a") == "b/c");
-//     CHECK(fs::path("a/b/c").lexically_relative("a/b/c/x/y") == "../..");
-//     CHECK(fs::path("a/b/c").lexically_relative("a/b/c") == ".");
-//     CHECK(fs::path("a/b").lexically_relative("c/d") == "../../a/b");
-//     CHECK(fs::path("a/b").lexically_relative("a/") == "b");
-
-//  // lexically_proximate()
-//     CHECK(fs::path("/a/d").lexically_proximate("/a/b/c") == "../../d");
-//     CHECK(fs::path("a/d").lexically_proximate("/a/b/c") == "a/d");
-
-//     CHECK(fs::path("/foo").lexically_proximate("bar") == "/foo");
-//     CHECK(fs::path("foo").lexically_proximate("/bar") == "foo");
-// }
-
 TEST_CASE( "fs::path - Non member functions", "[class][path][filesystem][non-member-function]" )
 {
     fs::path p1("foo/bar");
@@ -316,4 +269,131 @@ TEST_CASE( "fs::path - Non member functions", "[class][path][filesystem][non-mem
     CHECK(!(p2 >= p1));
     CHECK(p1 != p2);
     CHECK((p1 / p2).string() == "some/other/foo/bar");
+}
+
+TEST_CASE( "fs::path - path compare", "[class][path][filesystem][compare]" )
+{
+    CHECK(fs::path("/foo/b").compare("/foo/a") > 0);
+    CHECK(fs::path("/foo/b").compare("/foo/b") == 0);
+    CHECK(fs::path("/foo/b").compare("/foo/c") < 0);
+
+    CHECK(fs::path("/foo/b").compare(std::string("/foo/a")) > 0);
+    CHECK(fs::path("/foo/b").compare(std::string("/foo/b")) == 0);
+    CHECK(fs::path("/foo/b").compare(std::string("/foo/c")) < 0);
+
+    CHECK(fs::path("/foo/b").compare(fs::path("/foo/a")) > 0);
+    CHECK(fs::path("/foo/b").compare(fs::path("/foo/b")) == 0);
+    CHECK(fs::path("/foo/b").compare(fs::path("/foo/c")) < 0);
+
+    CHECK(fs::path("/a/b/").compare("/a/b/") == 0);
+    CHECK(fs::path("/a/b/").compare("/a/b/c") < 0);
+    CHECK(fs::path("/a/b/../b").compare("/a/b") > 0);
+    CHECK(fs::path("/a/b").compare("/a/b/.") < 0);
+    CHECK(fs::path("/a/b/").compare("a/c") > 0);
+
+}
+
+TEST_CASE( "fs::path - Generation", "[class][path][filesystem][generation][.]" ) {
+
+    // lexically_normal()
+    CHECK(fs::path("foo/./bar/..").lexically_normal() == "foo/");
+    CHECK(fs::path("foo/.///bar/../").lexically_normal() == "foo/");
+    CHECK(fs::path("/foo/../..").lexically_normal() == "/");
+    CHECK(fs::path("foo/..").lexically_normal() == ".");
+    CHECK(fs::path("ab/cd/ef/../../qw").lexically_normal() == "ab/qw");
+    CHECK(fs::path("a/b/../../../c").lexically_normal() == "../c");
+    CHECK(fs::path("../").lexically_normal() == "..");
+
+	// lexically_relative()
+//     CHECK(fs::path("/a/d").lexically_relative("/a/b/c") == "../../d");
+//     CHECK(fs::path("/a/b/c").lexically_relative("/a/d") == "../b/c");
+//     CHECK(fs::path("a/b/c").lexically_relative("a") == "b/c");
+//     CHECK(fs::path("a/b/c").lexically_relative("a/b/c/x/y") == "../..");
+//     CHECK(fs::path("a/b/c").lexically_relative("a/b/c") == ".");
+//     CHECK(fs::path("a/b").lexically_relative("c/d") == "../../a/b");
+//     CHECK(fs::path("a/b").lexically_relative("a/") == "b");
+
+//  // lexically_proximate()
+//     CHECK(fs::path("/a/d").lexically_proximate("/a/b/c") == "../../d");
+//     CHECK(fs::path("a/d").lexically_proximate("/a/b/c") == "a/d");
+
+//     CHECK(fs::path("/foo").lexically_proximate("bar") == "/foo");
+//     CHECK(fs::path("foo").lexically_proximate("/bar") == "foo");
+}
+
+static std::string iterateResult(const fs::path& path)
+{
+    std::ostringstream result;
+    for (fs::path::iterator i = path.begin(); i != path.end(); ++i) {
+        if (i != path.begin()) {
+            result << ",";
+        }
+        result << i->string();
+    }
+    return result.str();
+}
+
+std::string reverseIterateResult(const fs::path& path)
+{
+    std::ostringstream result;
+    fs::path::iterator iter = path.end();
+    bool first = true;
+    if (iter != path.begin()) {
+        do {
+            --iter;
+            if (!first) {
+                result << ",";
+            }
+            first = false;
+            result << iter->string();
+        } while (iter != path.begin());
+    }
+    return result.str();
+}
+
+TEST_CASE("fs.path.itr - path iterators", "[filesystem][class][path][iterator]")
+{
+    CHECK(iterateResult(fs::path()).empty());
+    CHECK("." == iterateResult(fs::path(".")));
+    CHECK(".." == iterateResult(fs::path("..")));
+    CHECK("foo" == iterateResult(fs::path("foo")));
+    CHECK("/" == iterateResult(fs::path("/")));
+    CHECK("/,foo" == iterateResult(fs::path("/foo")));
+    CHECK("foo," == iterateResult(fs::path("foo/")));
+    CHECK("/,foo," == iterateResult(fs::path("/foo/")));
+    CHECK("foo,bar" == iterateResult(fs::path("foo/bar")));
+    CHECK("/,foo,bar" == iterateResult(fs::path("/foo/bar")));
+    CHECK("/,foo,bar" == iterateResult(fs::path("///foo/bar")));
+
+    CHECK(reverseIterateResult(fs::path()).empty());
+    CHECK("." == reverseIterateResult(fs::path(".")));
+    CHECK(".." == reverseIterateResult(fs::path("..")));
+    CHECK("foo" == reverseIterateResult(fs::path("foo")));
+    CHECK("/" == reverseIterateResult(fs::path("/")));
+    CHECK("foo,/" == reverseIterateResult(fs::path("/foo")));
+    CHECK(",foo" == reverseIterateResult(fs::path("foo/")));
+    CHECK(",foo,/" == reverseIterateResult(fs::path("/foo/")));
+    CHECK("bar,foo" == reverseIterateResult(fs::path("foo/bar")));
+    CHECK("bar,foo,/" == reverseIterateResult(fs::path("/foo/bar")));
+
+    // Redundant slashes reduced to one
+    CHECK("bar,foo,/" == reverseIterateResult(fs::path("///foo/bar")));
+
+    CHECK(",bar,foo,/" == reverseIterateResult(fs::path("/foo/bar///")));
+    CHECK(",..,bar,.,foo" == reverseIterateResult(fs::path("foo/.///bar/../")));
+
+
+    {
+        fs::path p1 = "/foo/bar/test.txt";
+        fs::path p2 = "///";
+        for (auto pe : p1) {
+            p2 /= pe;
+        }
+        CHECK(p1 == p2);
+        CHECK("bar" == *(--fs::path("/foo/bar").end()));
+        auto p = fs::path("/foo/bar");
+        auto pi = p.end();
+        pi--;
+        CHECK("bar" == *pi);
+    }
 }
