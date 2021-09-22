@@ -33,7 +33,7 @@ TEST_CASE("html::Builder2", "[namespace][html][builder][element]")
 	html::Builder pre = html::Builder("pre");
 	pre.addChild( html::Builder("a", "../").addAttribute("href", "../"));
 	{
-		ft::filesystem::directory_iterator it("./html");
+		ft::filesystem::directory_iterator it("./one_file");
 		while (it != ft::filesystem::directory_iterator())
 		{
 			pre.addChild(
@@ -58,5 +58,5 @@ TEST_CASE("html::make_autoindex", "[namespace][html][builder][element][make_auto
 	std::string expected((std::istreambuf_iterator<char>(file)),
                  std::istreambuf_iterator<char>());
 	
-	CHECK (html::make_autoindex("./html") == expected);
+	CHECK (html::make_autoindex("./one_file") == expected);
 }
