@@ -109,6 +109,11 @@ Location& ServerConfig::findLocation(const Uri& uri)
 	return findServer(uri).findLocation(uri);
 }
 
+ft::filesystem::path	ServerConfig::getPathFromUri(const Uri& uri)
+{
+	return findServer(uri).getPathFromUri(uri);
+}
+
 std::vector<uint32_t> ServerConfig::getPorts()
 {
 	std::vector<uint32_t> ports;

@@ -51,6 +51,8 @@ public:
 	ServerBlock&					findServer(const Uri& uri);
 	Location&						findLocation(const Uri& uri);
 
+	ft::filesystem::path			getPathFromUri(const Uri& uri);
+
 	/// return all ports defined in listen directives.
 	std::vector<uint32_t>			getPorts();
 

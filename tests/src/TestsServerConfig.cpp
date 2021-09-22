@@ -322,7 +322,6 @@ TEST_CASE( "ServerConfig4 - ./config_files/testFindLocation.conf", "[class][Serv
 
 	REQUIRE( srv.getLocations()[1].getReturnDirective().getUri() == "/");
 
-
 	CHECK( srv.getPathFromUri("/")	== "/var/www/app/index.html");
 	CHECK( srv.getPathFromUri("/youtube")	== "/you/youtube/youtube.html");
 	CHECK( srv.getPathFromUri("/youtube/")	== "/var/www/app/youtube/youtube2.html");
@@ -331,5 +330,16 @@ TEST_CASE( "ServerConfig4 - ./config_files/testFindLocation.conf", "[class][Serv
 
 	CHECK( srv.getPathFromUri("/youtube/test")	== "/var/html/app/youtube/test/youtubeTest.html");
 	CHECK( srv.getPathFromUri("/youtube/test/")	== "/var/html/app/youtube/test/youtubeTest.html");
+
+
+	// same as previous, but from config
+	CHECK( config.getPathFromUri("/")	== "/var/www/app/index.html");
+	CHECK( config.getPathFromUri("/youtube")	== "/you/youtube/youtube.html");
+	CHECK( config.getPathFromUri("/youtube/")	== "/var/www/app/youtube/youtube2.html");
+	CHECK( config.getPathFromUri("/youtube/demo.php")	== "/var/www/app/youtube/demo.php");
+	CHECK( config.getPathFromUri("/youtube/nothing")	== "/var/www/app/youtube/nothing");
+
+	CHECK( config.getPathFromUri("/youtube/test")	== "/var/html/app/youtube/test/youtubeTest.html");
+	CHECK( config.getPathFromUri("/youtube/test/")	== "/var/html/app/youtube/test/youtubeTest.html");
 
 }
