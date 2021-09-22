@@ -76,5 +76,51 @@ bool directory_iterator::operator!=(const directory_iterator& other) const
 	return !this->operator==(other);
 }
 
+directory_iterator::impl::impl(const path& p, directory_options options)
+	: _basePath(p), _options(options), _dirp(NULL), _dirent(NULL) 
+{
+	if (_basePath.empty())
+		return ;
+	_dirp = ::opendir(_basePath.c_str());
+	if (_dirp == NULL)
+	{
+		_basePath = path();
+		_ec = make_error_code();
+		return ;
+	}
+	increment(_ec);	
+}
+
+directory_iterator::impl::~impl()
+{
+	if (_dirp != NULL)
+		::closedir(_dirp);
+}
+
+void	directory_iterator::impl::increment(error_code& ec)
+{
+	if (_dirp == NULL)
+		return;
+	errno = 0;
+	ec.clear();
+	do {
+		_dirent = ::readdir(_dirp);
+		if (_dirent == NULL)
+		{
+			::closedir(_dirp);
+			if (errno)
+				_ec = make_error_code();
+			_dirp = NULL;
+			_dirEntry._path.clear();
+			return;
+		}
+		// _dirEntry._path = _basePath / _dirent->d_name;
+		_dirEntry._path = _basePath;
+		_dirEntry._path /= _dirent->d_name;
+		// _dirEntry._fileSize = _dirent.
+	} while (!strcmp(_dirent->d_name, "..") || !strcmp(_dirent->d_name, "."));
+			
+}
+
 }; /* namespace filesystem */
 }; /* namespace ft */

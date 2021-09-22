@@ -15,13 +15,7 @@
 
 namespace ft {
 
-// class error_code;
-
 namespace filesystem {
-
-// class path;
-// class directory_entry;
-// struct directory_options; // enum class
 
 class directory_iterator {
 
@@ -40,31 +34,18 @@ public:
 	directory_iterator(const path& p, error_code& ec) throw();
 	directory_iterator(const path& p, directory_options options, error_code& ec) throw();
 	directory_iterator(const directory_iterator& other);
-	// directory_iterator(directory_iterator&& rhs) throw();
 	~directory_iterator();
 
-	directory_iterator& operator=(const directory_iterator& other);
-	// directory_iterator& operator=(directory_iterator&& other) throw();
-	
-	const directory_entry& operator*() const;
-	const directory_entry* operator->() const;
-	// directory_iterator&    increment(error_code& ec) throw();
-	directory_iterator&    operator++();
+	directory_iterator&		operator=(const directory_iterator& other);	
+	const directory_entry&	operator*() const;
+	const directory_entry*	operator->() const;
+	directory_iterator&		operator++();
 
 	// other members as required by input iterators
-
 	bool operator==(const directory_iterator& other) const;
 	bool operator!=(const directory_iterator& other) const;
 
 private:
-
-	// path				_basePath;
-	// DIR*				_dirp;
-	// directory_entry		_dirEntry;
-	// directory_options	_options;
-	// struct dirent*		_dirent;
-	// error_code			_ec;
-
 	class impl;
 	shared_ptr<impl> _impl;
 }; /* class directory_iterator */
@@ -72,51 +53,10 @@ private:
 class directory_iterator::impl
 {
 public:
-	impl(const path& p, directory_options options)
-		: _basePath(p), _options(options), _dirp(NULL), _dirent(NULL) 
-	{
-		if (_basePath.empty())
-			return ;
-		_dirp = ::opendir(_basePath.c_str());
-		if (_dirp == NULL)
-		{
-			_basePath = path();
-			_ec = make_error_code();
-			return ;
-		}
-		increment(_ec);	
-	}
-	~impl()
-	{
-		if (_dirp != NULL)
-			::closedir(_dirp);
-	}
-    void increment(error_code& ec)
-	{
-		if (_dirp == NULL)
-			return;
-		errno = 0;
-		ec.clear();
-		do {
-			_dirent = ::readdir(_dirp);
-			if (_dirent == NULL)
-			{
-				::closedir(_dirp);
-				if (errno)
-					_ec = make_error_code();
-				_dirp = NULL;
-				_dirEntry._path.clear();
-				return;
-			}
-			// _dirEntry._path = _basePath / _dirent->d_name;
-			_dirEntry._path = _basePath;
-			_dirEntry._path /= _dirent->d_name;
-			// _dirEntry._fileSize = _dirent.
-		} while (!strcmp(_dirent->d_name, "..") || !strcmp(_dirent->d_name, "."));
-				
-	}
+	impl(const path& p, directory_options options);
+	~impl();
 
-
+	void increment(error_code& ec);
 
 	path				_basePath;
 	directory_options	_options;
