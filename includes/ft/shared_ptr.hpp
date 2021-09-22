@@ -35,7 +35,8 @@ public:
 private:
 	void _clear()
 	{
-		--(*_refCount);
+		if (*_refCount)
+			--(*_refCount);
 		if (*_refCount == 0)
 		{
 			delete _ptr;
