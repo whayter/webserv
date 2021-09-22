@@ -43,8 +43,8 @@ private:
 		}
 	}
 
-	T*	 	_ptr = NULL;
-	size_t* _refCount = NULL;
+	T*	 	_ptr;
+	size_t* _refCount;
 }; /* class shared_ptr */
 
 } /* namespace ft */
