@@ -1,6 +1,7 @@
 #include "catch_amalgamated.hpp"
 
 #include "HtmlBuilder.hpp"
+#include "filesystem.h"
 
 #include <fstream>
 #include <string>
@@ -17,4 +18,45 @@ TEST_CASE("html::Builder", "[namespace][html][builder][element]")
 	builder.addChild("head", "content")->addChild("body", "test");
 	CHECK (builder.str() == expected);
 
+}
+
+TEST_CASE("html::Builder2", "[namespace][html][builder][element]")
+{
+	std::ifstream file;
+	file.open("./html/htmlBuilder2.html", std::ifstream::in);
+	std::string expected((std::istreambuf_iterator<char>(file)),
+                 std::istreambuf_iterator<char>());
+
+	html::Builder html = html::Builder("html");
+	html::Builder head = html::Builder("head");
+	html::Builder body = html::Builder("body");
+	html::Builder pre = html::Builder("pre");
+	pre.addChild( html::Builder("a", "../").addAttribute("href", "../"));
+	{
+		ft::filesystem::directory_iterator it("./html");
+		while (it != ft::filesystem::directory_iterator())
+		{
+			pre.addChild(
+				html::Builder("a", it->path().filename()).addAttribute("href", it->path().filename())
+			);
+			++it;
+		}
+	}
+	head.addChild("title", "Index of /webserv");
+	body.addChild("h1", "Index of /webserv");
+	body.addChild("hr","");
+	body.addChild(pre);
+	body.addChild("hr","");
+	html.addChild(head)->addChild(body);	
+	CHECK (html.str() == expected);
+}
+
+TEST_CASE("html::make_autoindex", "[namespace][html][builder][element][make_autoindex]")
+{
+	std::ifstream file;
+	file.open("./html/htmlBuilder2.html", std::ifstream::in);
+	std::string expected((std::istreambuf_iterator<char>(file)),
+                 std::istreambuf_iterator<char>());
+	
+	CHECK (html::make_autoindex("./html") == expected);
 }
