@@ -57,20 +57,17 @@
 	- [x] define a directory or a file from where the file should be search (for example if url /kapouet is rooted to /tmp/www, url /kapouet/pouic/toto/pouet is /tmp/www/pouic/toto/pouet)
 	- [x] turn on or off directory listing
 	- [x] default file to answer if the request is a directory
-	- [ ] execute CGI based on certain file extension (for example .php)
-		- [ ] You wonder what a CGI is ?
+	- [x] execute CGI based on certain file extension (for example .php)
+		- [x] You wonder what a CGI is ?
 		- [ ] Because you won’t call the CGI directly use the full path as PATH_INFO
 		- [ ] Just remembers that for chunked request, your server needs to unchunked it and the CGI will expect EOF as end of the body.
 		- [ ] Same things for the output of the CGI. if no content_length is returned from the CGI, EOF will mean the end of the returned data.
 		- [ ] Your program should call the cgi with the file requested as first argument
 		- [ ] The cgi should be run in the correct directory for relativ path file access
-		- [ ] Your server should work with one CGI (php-cgi, python...)
+		- [x] Your server should work with one CGI (php-cgi, python...)
 	- [ ] make the route able to accept uploaded files and configure where it should be saved
-- [ ] You must provide some configuration files and default basic files to test/demonstrate every feature is working during eval
+- [x] You must provide some configuration files and default basic files to test/demonstrate every feature is working during eval
 
-
-## Our todo list :
-- [ ] ?
 
 ## generated uml diagram webserv :
 ![image2](https://raw.githubusercontent.com/Working-From-Home/webserv/uml/docs/diagrams/out/webserv.svg)
