@@ -62,6 +62,7 @@ directory_iterator::~directory_iterator()
 		return;
 	::closedir(_dirp);
 	_dirp = NULL;
+	_dirEntry = directory_entry();
 }
 
 directory_iterator& directory_iterator::operator=(const directory_iterator &other)
@@ -99,6 +100,8 @@ directory_iterator& directory_iterator::increment(error_code &ec) throw()
 	ec.clear();
 	_dirEntry._path = _basePath / _dirent->d_name;
 	// _dirEntry._fileSize = _dirent.
+	if (!strcmp(_dirent->d_name, "..") || !strcmp(_dirent->d_name, "."))
+		*this = increment(ec);
 	return *this;
 }
 

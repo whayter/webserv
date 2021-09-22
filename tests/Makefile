@@ -75,6 +75,7 @@ SRC+= TestsParserMessage.cpp	parserMessage.cpp
 SRC+= TestsUtility.cpp			utility.cpp
 
 SRC+= TestsScannerMessage.cpp
+SRC+= TestsSharedPtr.cpp
 
 SRC+= AMessage.cpp Request.cpp Response.cpp Status.cpp MessageBuilder.cpp
 SRC+= ScannerStream.cpp ScannerBuffer.cpp ScannerMessage.cpp
