@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 23:42:16 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/18 12:06:14 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/24 18:07:59 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include "Response.hpp"
 #include "utility.hpp"
 #include "Status.hpp"
+
+#include "Location.hpp"
 
 #include "cgi.hpp"
 
@@ -35,20 +37,30 @@ MessageBuilder::~MessageBuilder() {}
 
 http::Response MessageBuilder::buildResponse(Request& request)
 {
-	ServerConfig& config = ServerConfig::getInstance();
 	Response response;
+	ServerConfig& config = ServerConfig::getInstance();
+	Location& location = config.findLocation(request.getUri());
 
-	// findLocation here
-	// if location.getCgiExec() call cgi
-	// else do something
+	action a = location.getAction();
+
+	if (a == action::cgi)
+	{
+		std::cout << "calling cgi !" << std::endl;
+		setCgiContent(request, response, config);
+	}
+	else if (a == action::none)
+	{
+		std::cout << "static !" << std::endl;
+		setLocalContent(config, request, response);
+	}
+
 	
 	/* tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp */
-	std::string path = request.getUri().getPath();
-	size_t pos = path.find_last_of('.') + 1;
-	if (path.substr(pos) == "php")
-		setCgiContent(request, response, config);
-	else
-		setLocalContent(config, request, response);
+	// size_t pos = p.string().find_last_of('.') + 1;
+	// if (p.string().substr(pos) == "php")
+	// 	setCgiContent(request, response, config);
+	// else
+	// 	setLocalContent(config, request, response);
 	/* tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp */
 
 	
