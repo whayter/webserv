@@ -80,7 +80,7 @@ Token ScannerMessage::_makeToken(TokenKind kind, std::string value)
 
 std::ostream & operator <<(std::ostream& os, const Token &t)
 {
-	os << "<" << TokenKindToCstring(t.kind);
+	os << "<" << tokenKindToCstring(t.kind);
 	switch (t.kind.getValue())
 	{
 		case (TokenKind::kString)		:	os << "=\"" << t.value << "\"> ";	break;
@@ -90,7 +90,7 @@ std::ostream & operator <<(std::ostream& os, const Token &t)
 	return os;
 }
 
-const char* TokenKindToCstring(TokenKind type)
+const char* tokenKindToCstring(TokenKind type)
 {
 	static const char* str[] = {
 		"kEnfOfInput", "kError",
@@ -99,6 +99,24 @@ const char* TokenKindToCstring(TokenKind type)
 		"kComma", "kColon", "kLWS"
 	};
 	return str[type.getValue()];
+}
+
+std::string tokenToString(Token token)
+{
+	std::string result("<");
+	
+	result += tokenKindToCstring(token.kind);
+	switch (token.kind.getValue())
+	{
+		case (TokenKind::kString)		:
+		case (TokenKind::kError)		:
+			result += "=\"" + token.value + "\"> ";
+			break;
+		default							:
+			result += ">";
+			break;
+	}
+	return result;
 }
 
 } /* namespace http */

@@ -14,12 +14,12 @@
 #define REQUEST_HPP
 
 #include "http.hpp"
-#include "AMessage.hpp"
+#include "Message.hpp"
 #include "Uri.hpp"
 
 namespace http {
 
-class Request: public AMessage {
+class Request: public Message {
 
 public:
 

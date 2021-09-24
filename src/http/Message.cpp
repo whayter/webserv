@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   AMessage.cpp                                       :+:      :+:    :+:   */
+/*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,20 +10,20 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "AMessage.hpp"
+#include "Message.hpp"
 #include "utility.hpp"
 #include <cstdlib>
 
 namespace http {
 
-AMessage::AMessage() {}
+Message::Message() {}
 
-std::string	AMessage::getHeader(std::string name)
+std::string	Message::getHeader(std::string name)
 {
 	return _headers[name];
 }
 
-size_t AMessage::getContentLength()
+size_t Message::getContentLength()
 {
 	const char*			key = "Content-Length";
 	http::headers_type	headers = getHeaders();
@@ -33,20 +33,33 @@ size_t AMessage::getContentLength()
 	return 0;
 }
 
-void AMessage::setHeader(std::string key, std::string val)
+void Message::setHeader(std::string key, std::string val)
 {
 	_headers[key] = val;
 }
 
-void AMessage::setContent(const content_type &content)
+void Message::setContent(const content_type &content)
 {
 	_content = content;
 	this->setHeader("Content-Length", ft::intToString(content.size()));
 }
 
-void AMessage::setVersion(const std::string &version)
+void Message::setVersion(const std::string &version)
 {
 	_version = version;
 }
+
+bool	Message::empty() const
+{
+	if (_headers.empty() && _content.empty() && _version.empty())
+		return true;
+	return false;	
+}
+void	Message::clear()
+{
+	_headers.clear();
+	_content.clear();
+	_version.clear();
+};
 
 } /* namespace http */

@@ -90,7 +90,8 @@ private:
 	ft::scanner::ScannerBuffer _scan;
 }; /* class ScannerMessage */
 
-const char* TokenKindToCstring(TokenKind type);
+const char* tokenKindToCstring(TokenKind type);
+std::string tokenToString(Token token);
 std::ostream & operator<<(std::ostream& os, const Token &t);
 
 } /* namespace http */

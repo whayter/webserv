@@ -50,6 +50,11 @@ void setEnvironment(ServerBlock& sblock, http::Request& request)
 	setenv("REQUEST_URI", request.getUri().getPath().c_str(), 0);
 	setenv("QUERY_STRING", request.getUri().getQuery().c_str(), 0);
 	setenv("DOCUMENT_ROOT", sblock.getRoot().c_str(), 0);
+	// j'ai rajoute ca juste pour desactiver l'erreur cgi sous linux:
+	setenv("REDIRECT_STATUS", "", 1);
+	// <p>This PHP CGI binary was compiled with force-cgi-redirect enabled.  This
+	// means that a page will only be served up if the REDIRECT_STATUS CGI variable is
+	// set, e.g. via an Apache Action directive.</p>
 
 	fs::path p = sblock.getRoot().relative_path() / request.getUri().getPath().relative_path();	// tmp
 
@@ -92,7 +97,7 @@ static void replacePipeEnd(int oldFd, int newFd)
 
 void callCgi(std::vector<unsigned char>* cgiHeaders, std::vector<unsigned char>* cgiContent)
 {	
-	char buffer[2];
+	// char buffer[2];
 	int childToParent[2];
 	int parentToChild[2];
 
@@ -108,7 +113,11 @@ void callCgi(std::vector<unsigned char>* cgiHeaders, std::vector<unsigned char>*
 
 		// read data from parent here (if method=POST)
 
+#ifdef LINUX
+		char filename[] = "/usr/bin/php-cgi";		// tmp
+#else
 		char filename[] = "/usr/local/bin/php-cgi";		// tmp
+#endif
 		char* arg = 0;
 		execve(filename, &arg, environ);				// exec cgi binary
 	}
@@ -125,23 +134,26 @@ void callCgi(std::vector<unsigned char>* cgiHeaders, std::vector<unsigned char>*
 
 
 		// std::vector<unsigned char> buf;
-		// char buffer[4096];							// tmp buf size
+		char buffer[4096];							// tmp buf size
 
-		// size_t nbytes;
-		// while ((nbytes = read(STDIN_FILENO, buffer, 4096)) > 0)
-		// 	for (size_t i = 0; i < nbytes; i++)
-		// 		buf.push_back(buffer[i]);
+		size_t nbytes;
+		while ((nbytes = read(STDIN_FILENO, buffer, 4096)) > 0)
+			for (size_t i = 0; i < nbytes; i++)
+				// buf.push_back(buffer[i]);
+				cgiHeaders->push_back(buffer[i]);
+		(void)cgiContent;
+		// deso winston j tout commente ici pour le quick fix linux
 
-		char lastBitRead = 0;
-		while (read(STDIN_FILENO, buffer, 1) > 0)
-		{
-			cgiHeaders->push_back(buffer[0]);
-			if (buffer[0] == '\n' && lastBitRead == '\n')
-				break;
-			lastBitRead = buffer[0];
-		}
-		while (read(STDIN_FILENO, buffer, 1) > 0)
-			cgiContent->push_back(buffer[0]);
+		// char lastBitRead = 0;
+		// while (read(STDIN_FILENO, buffer, 1) > 0)
+		// {
+		// 	cgiHeaders->push_back(buffer[0]);
+		// 	if (buffer[0] == '\n' && lastBitRead == '\n')
+		// 		break;
+		// 	lastBitRead = buffer[0];
+		// }
+		// while (read(STDIN_FILENO, buffer, 1) > 0)
+		// 	cgiContent->push_back(buffer[0]);
 	}
 }
 

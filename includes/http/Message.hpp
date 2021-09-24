@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   AMessage.hpp                                       :+:      :+:    :+:   */
+/*   Message.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -17,12 +17,12 @@
 
 namespace http {
 
-class AMessage {
+class Message {
 	
 public:
 
-	AMessage();
-	virtual ~AMessage() {}
+	Message();
+	virtual ~Message() {}
 
 	inline headers_type&	getHeaders() { return _headers; }
 	inline content_type&	getContent() { return _content; }
@@ -35,8 +35,8 @@ public:
 	void					setContent(const content_type &content);
 	void					setVersion(const std::string &version);
 
-	virtual bool			empty() const = 0;
-	virtual void			clear() = 0;
+	virtual bool			empty() const;
+	virtual void			clear();
 
 protected:
 

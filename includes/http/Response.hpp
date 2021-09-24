@@ -14,12 +14,12 @@
 #define RESPONSE_HPP
 
 #include "http.hpp"
-#include "AMessage.hpp"
+#include "Message.hpp"
 #include "Status.hpp"
 
 namespace http {
 
-class Response: public AMessage {
+class Response: public Message {
 
 public:
 

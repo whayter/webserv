@@ -54,7 +54,7 @@ namespace http
 			setError(error, http::Status::BadRequest); // throw std::invalid_argument("Method line not separated by new line");
 	}
 
-	void parseHeaders(ph::ScannerMessage &scan, http::Request &req, http::Status &error)
+	void parseHeaders(ph::ScannerMessage &scan, http::Message &req, http::Status &error)
 	{
 		ph::Token t;
 
@@ -72,11 +72,11 @@ namespace http
 				{
 					t = scan.getToken();
 					if (t.kind != ph::TokenKind::kNewLine)
-						throw std::invalid_argument("new line !>" + t.value + "|" + ph::TokenKindToCstring(t.kind));
+						throw std::invalid_argument("new line !>" + t.value + "|" + ph::tokenKindToCstring(t.kind));
 
-					if (!name.empty())
+					if (!name.empty() && isValueField)
 						req.setHeader(name, value);
-					else
+					else if (name.empty())
 						areHeadersParsed = true;
 					name.clear();
 					value.clear();
@@ -104,7 +104,7 @@ namespace http
 					break;
 				
 				default:
-					throw "Ho shit";
+					throw std::runtime_error("Oups: unexpected token " + ph::tokenToString(t));
 					break;
 			}
 		}
@@ -113,8 +113,6 @@ namespace http
 	// return true if a request has been parsed, else, false.
 	bool parseRequest(http::Request &req, http::Status &error, std::vector<unsigned char> &buffer)
 	{
-		ph::Token t;
-
 		req.clear();
 		error = http::Status::None;
 		if (!hasTwoConsecutiveCRNL(buffer))
@@ -133,6 +131,21 @@ namespace http
 		}
 		scan.eraseBeforeCurrentIndex();
 		return true;
+	}
+
+	http::Message parseCgiResponse(std::vector<unsigned char> &buffer)
+	{
+		ph::ScannerMessage scan(buffer);
+		http::Message resp;
+
+		http::Status error; // useless
+		parseHeaders(scan, resp, error);
+		{
+			char c;
+			while ((c = scan.getChar()))
+				resp.getContent().push_back(c);
+		}
+		return resp;
 	}
 
 } /*namespace http */
