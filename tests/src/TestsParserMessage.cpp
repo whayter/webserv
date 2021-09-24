@@ -4,6 +4,8 @@
 #include "ScannerBuffer.hpp"
 #include "http/Request.hpp"
 #include "http/Status.hpp"
+#include "ScannerMessage.hpp"
+
 
 #include <iostream>
 #include <fstream>
@@ -324,3 +326,38 @@ TEST_CASE( "http::parseRequest - simple get cut in half loop", "[namespace][http
 
 }
 
+// test for cgi response
+TEST_CASE( "http::parseHeaders cgi", "[namespace][http][parseHeaders][cgi]" )
+{
+	std::ifstream file;
+	file.open("./http_requests/cgi_response", std::ifstream::in);
+	std::vector<unsigned char> buffer((std::istreambuf_iterator<char>(file)),
+                 std::istreambuf_iterator<char>());
+
+	parser::http::ScannerMessage scan(buffer);
+	http::Message responseCgi;
+	http::Status error; // useless
+	http::parseHeaders(scan, responseCgi, error);
+
+	CHECK(responseCgi.getHeaders().size() == 2);
+	CHECK(responseCgi.getHeader("Status") == "503 Database Unavailable");
+	CHECK(responseCgi.getHeader("Content-type") == "text/html");
+	CHECK(responseCgi.getContent().size() == 0);
+}
+
+TEST_CASE( "http::parseCgiResponse", "[namespace][http][parseCgiResponse]" )
+{
+	std::ifstream file;
+	file.open("./http_requests/cgi_response", std::ifstream::in);
+	std::vector<unsigned char> buffer((std::istreambuf_iterator<char>(file)),
+                 std::istreambuf_iterator<char>());
+
+	std::vector<unsigned char> content(buffer.begin() + 120, buffer.end());
+
+	http::Message responseCgi = http::parseCgiResponse(buffer);
+	CHECK(responseCgi.getHeaders().size() == 2);
+	CHECK(responseCgi.getHeader("Status") == "503 Database Unavailable");
+	CHECK(responseCgi.getHeader("Content-type") == "text/html");
+	CHECK(responseCgi.getContent().size() == 96);
+	CHECK(responseCgi.getContent() == content);
+}

@@ -50,7 +50,7 @@ UNAME := $(shell uname)
 NAME = webserv
 
 SRC_DIR = ./src
-INC_DIR = $(shell find . -type d -name "includes")
+INC_DIR = $(shell find ./includes -type d -name "includes")
 OBJ_DIR = obj
 
 SRCS_DIR = $(shell find $(SRC_DIR) -type d)
@@ -64,7 +64,7 @@ SRC+= utility.cpp
 SRC+= ScannerMessage.cpp
 SRC+= ScannerStream.cpp ScannerBuffer.cpp
 SRC+= Uri.cpp
-SRC+= AMessage.cpp Request.cpp Response.cpp Status.cpp MessageBuilder.cpp
+SRC+= Message.cpp Request.cpp Response.cpp Status.cpp MessageBuilder.cpp
 SRC+= Device.cpp Socket.cpp Server.cpp
 SRC+= parserMessage.cpp
 

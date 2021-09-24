@@ -1,0 +1,11 @@
+Status: 503 Database Unavailable
+Content-type: text/html
+random not header line like "warning php deprecated shit"
+
+<html>
+<head>
+</head>
+<body>
+	<h1>My super content returned by cgi</h1> 
+</body>
+</html>

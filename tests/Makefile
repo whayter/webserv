@@ -78,7 +78,7 @@ SRC+= TestsScannerMessage.cpp
 SRC+= TestsSharedPtr.cpp
 SRC+= TestsHtmlBuilder.cpp
 
-SRC+= AMessage.cpp Request.cpp Response.cpp Status.cpp MessageBuilder.cpp
+SRC+= Message.cpp Request.cpp Response.cpp Status.cpp MessageBuilder.cpp
 SRC+= ScannerStream.cpp ScannerBuffer.cpp ScannerMessage.cpp
 SRC+= Socket.cpp Device.cpp Server.cpp
 

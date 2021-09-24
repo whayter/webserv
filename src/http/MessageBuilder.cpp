@@ -22,6 +22,7 @@
 #include "cgi.hpp"
 
 #include "filesystem.hpp"
+#include "parserMessage.hpp"
 
 #include <stdio.h>
 #include <fstream>
@@ -128,8 +129,11 @@ void MessageBuilder::setCgiContent(http::Request& request, http::Response& respo
 	setEnvironment(config.findServer(request.getUri()), request);
 	callCgi(&cgiHeaders, &cgiContent);
 	unsetEnvironment();
-	parseCgiHeaders(cgiHeaders, response);
-	response.setContent(cgiContent);
+	// parseCgiHeaders(cgiHeaders, response);
+	// response.setContent(cgiContent);
+// deso ugly fix
+	http::Message responseCgi = http::parseCgiResponse(cgiHeaders);
+	response.setContent(responseCgi.getContent());
 }
 
 void MessageBuilder::parseCgiHeaders(std::vector<unsigned char>& cgiHeaders, http::Response& response)
