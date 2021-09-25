@@ -75,9 +75,10 @@ http::Response MessageBuilder::buildResponse(Request& request)
 			throw std::logic_error("Not implemented:" + ec.message());
 		if (stat.type() == ft::filesystem::file_type::regular)
 			return make_static_content(path);
-		else if (stat.type() == ft::filesystem::file_type::directory)
+		else if (stat.type() == ft::filesystem::file_type::directory) // && autoindex on
 			response.setContent(ft::vectorizeString(html::make_autoindex(path))); // changer de namespace la fonction make autoindex ? et la faire retourner un vector ou une response aussi lool XD
 	}
+	return make_error(request.getUri(), Status::NotFound );
 
 	
 	/* tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp */
