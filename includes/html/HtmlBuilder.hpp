@@ -133,33 +133,6 @@ private:
 	Element _root;
 }; /* class Builder */
 
-
-/// pas le meilleur endroit. On la bouge ?
-std::string make_autoindex(const ft::filesystem::path& path)
-{
-	html::Builder head = html::Builder("head");
-	head.addChild("title", "Index of /webserv"); // a changer car en dur
-
-	html::Builder body = html::Builder("body");
-	html::Builder pre = html::Builder("pre");
-	pre.addChild( html::Builder("a", "../").addAttribute("href", "../"));
-	{
-		ft::filesystem::directory_iterator it(path);
-		while (it != ft::filesystem::directory_iterator())
-		{
-			pre.addChild(
-				html::Builder("a", it->path().filename()).addAttribute("href", it->path().filename())
-			);
-			++it;
-		}
-	}
-	body.addChild("h1", "Index of /webserv <- a changer car en dur..."); 
-	body.addChild("hr","");
-	body.addChild(pre);
-	body.addChild("hr","");
-	return html::Builder("html").addChild(head)->addChild(body)->str();	
-}
-
 } /* namespace html */
 
 #endif /* HTML_BUILDER */

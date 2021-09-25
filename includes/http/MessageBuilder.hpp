@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 23:38:35 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/18 12:06:22 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/25 12:23:43 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ public:
 std::vector<unsigned char> 	get_file_content(const ft::filesystem::path& path);
 Response				 	make_static_content(const ft::filesystem::path& path);
 Response					make_error(const Uri& uri, Status error);
+std::string					make_autoindex(const ft::filesystem::path& path);
 
 }; /* namespace http */
 

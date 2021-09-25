@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 23:42:16 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/24 18:07:59 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/25 12:22:18 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ http::Response MessageBuilder::buildResponse(Request& request)
 		if (stat.type() == ft::filesystem::file_type::regular)
 			return make_static_content(path);
 		else if (stat.type() == ft::filesystem::file_type::directory) // && autoindex on
-			response.setContent(ft::vectorizeString(html::make_autoindex(path))); // changer de namespace la fonction make autoindex ? et la faire retourner un vector ou une response aussi lool XD
+			response.setContent(ft::vectorizeString(make_autoindex(path))); // changer de namespace la fonction make autoindex ? et la faire retourner un vector ou une response aussi lool XD
 	}
 	return make_error(request.getUri(), Status::NotFound );
 
@@ -152,6 +152,31 @@ std::vector<unsigned char> 	get_file_content(const ft::filesystem::path& path)
 	std::vector<unsigned char> buffer((std::istreambuf_iterator<char>(file)),
                  std::istreambuf_iterator<char>());
 	return buffer;
+}
+
+std::string make_autoindex(const ft::filesystem::path& path)
+{
+	html::Builder head = html::Builder("head");
+	head.addChild("title", "Index of /webserv"); // a changer car en dur
+
+	html::Builder body = html::Builder("body");
+	html::Builder pre = html::Builder("pre");
+	pre.addChild( html::Builder("a", "../").addAttribute("href", "../"));
+	{
+		ft::filesystem::directory_iterator it(path);
+		while (it != ft::filesystem::directory_iterator())
+		{
+			pre.addChild(
+				html::Builder("a", it->path().filename()).addAttribute("href", it->path().filename())
+			);
+			++it;
+		}
+	}
+	body.addChild("h1", "Index of /webserv <- a changer car en dur..."); 
+	body.addChild("hr","");
+	body.addChild(pre);
+	body.addChild("hr","");
+	return html::Builder("html").addChild(head)->addChild(body)->str();	
 }
 
 
