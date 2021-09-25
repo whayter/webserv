@@ -26,22 +26,22 @@ jobs:
         sleep 3
         ps -p $!
 
-  integration-tests:
-    needs: build
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    steps:
-    - uses: actions/checkout@v2
+  # integration-tests:
+  #   needs: build
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       os: [ubuntu-latest, macos-latest]
+  #   steps:
+  #   - uses: actions/checkout@v2
 
-    - name: make
-    - run: make
-    - name: run integration test
-    - run: |
-        sudo ./webserv &
-        jest
+  #   - name: make
+  #   - run: make
+  #   - name: run integration test
+  #   - run: |
+  #       sudo ./webserv &
+  #       jest
 
 
   unit-tests:
