@@ -55,7 +55,11 @@ public:
 	}
 
 }; /* class MessageBuilder */
-	
+
+std::vector<unsigned char> 	get_file_content(const ft::filesystem::path& path);
+Response				 	make_static_content(const ft::filesystem::path& path);
+Response					make_error(const Uri& uri, Status error);
+
 }; /* namespace http */
 
 #endif /* SUPERVISOR_HPP */
