@@ -60,7 +60,7 @@ private:
 	Element(const std::string& name, const Element& child)
 		: _name(name)
 	{
-		_childs.emplace_back(child);
+		_childs.push_back(child);
 	}
 
 	std::string _attributesToString(){
@@ -99,30 +99,30 @@ public:
 	}
 	
 	Builder *addChild(const std::string& name, const std::string& content) {
-		_root._childs.emplace_back(Element(name, content));
+		_root._childs.push_back(Element(name, content));
 		return this;
 	}
 	Builder *addChild(const Element& elem) {
-		_root._childs.emplace_back(elem);
+		_root._childs.push_back(elem);
 		return this;
 	}
 	Builder *addChild(const Builder* b) {
-		_root._childs.emplace_back(b->_root);
+		_root._childs.push_back(b->_root);
 		return this;
 	}
 	Builder *addChild(std::string name, Element child) {
 		Element e(name, "");
 		e._childs.push_back(child);
-		_root._childs.emplace_back(e);
+		_root._childs.push_back(e);
 		return this;
 	}
 
 	Builder *addAttribute(const std::string& name, const std::string& value) {
-		_root._attributes.emplace_back(Attribute(name, value));
+		_root._attributes.push_back(Attribute(name, value));
 		return this;
 	}
 	Builder *addAttribute(const Attribute& attribute) {
-		_root._attributes.emplace_back(attribute);
+		_root._attributes.push_back(attribute);
 		return this;
 	}
 	std::string str(){ return _root.str();}
@@ -134,10 +134,11 @@ private:
 }; /* class Builder */
 
 
+/// pas le meilleur endroit. On la bouge ?
 std::string make_autoindex(const ft::filesystem::path& path)
 {
 	html::Builder head = html::Builder("head");
-	head.addChild("title", "Index of /webserv");
+	head.addChild("title", "Index of /webserv"); // a changer car en dur
 
 	html::Builder body = html::Builder("body");
 	html::Builder pre = html::Builder("pre");
@@ -152,7 +153,7 @@ std::string make_autoindex(const ft::filesystem::path& path)
 			++it;
 		}
 	}
-	body.addChild("h1", "Index of /webserv");
+	body.addChild("h1", "Index of /webserv <- a changer car en dur..."); 
 	body.addChild("hr","");
 	body.addChild(pre);
 	body.addChild("hr","");

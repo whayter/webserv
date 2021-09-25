@@ -19,6 +19,8 @@
 
 #include "Location.hpp"
 
+#include "HtmlBuilder.hpp"
+
 #include "cgi.hpp"
 
 #include "filesystem.hpp"
@@ -40,20 +42,43 @@ http::Response MessageBuilder::buildResponse(Request& request)
 {
 	Response response;
 	ServerConfig& config = ServerConfig::getInstance();
-	Location& location = config.findLocation(request.getUri());
+	ft::filesystem::path path = config.findServer(request.getUri()).getPathFromUri(request.getUri());
+	Location& location = config.findLocation(path.c_str()); // bhrr, chelou mais sinon c'est pas la bonne location lol
+	// par exemple, GET localhost:80 sera rendu en statique au lieu de cgi. 
 
+	// le path final. Avec le bon root, et index concatene automatiquement si necessaire.
+	// Et peu importe si cgi ou statique. Peut etre fichier ou dossier. 
+	// bon par contre effectivement, le nom de la fonction
+	// est nul a chier lol "getPathFromUri". J'ai pas trouve mieux lol
+	// mais ca bug je crois. par exemple, localhost retourne un 404 au lieu de retourner index.php... XD
 	action a = location.getAction();
-
 	if (a == action::cgi)
 	{
 		std::cout << "calling cgi !" << std::endl;
 		setCgiContent(request, response, config);
 	}
+	else if (a == action::returnDirective)
+	{
+		// return make_redirect();
+	}
 	else if (a == action::none)
 	{
 		std::cout << "static !" << std::endl;
-		setLocalContent(config, request, response);
+		// setLocalContent(config, request, response);
+	
+		ft::error_code ec;
+		ft::filesystem::file_status stat = ft::filesystem::status(path, ec);
+
+		if (ec.value() == ft::errc::no_such_file_or_directory)
+			return make_error(request.getUri(), Status::NotFound);
+		if (ec)
+			throw std::logic_error("Not implemented:" + ec.message());
+		if (stat.type() == ft::filesystem::file_type::regular)
+			return make_static_content(path);
+		else if (stat.type() == ft::filesystem::file_type::directory) // && autoindex on
+			response.setContent(ft::vectorizeString(html::make_autoindex(path))); // changer de namespace la fonction make autoindex ? et la faire retourner un vector ou une response aussi lool XD
 	}
+	return make_error(request.getUri(), Status::NotFound );
 
 	
 	/* tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp */
@@ -65,13 +90,13 @@ http::Response MessageBuilder::buildResponse(Request& request)
 	/* tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp */
 
 	
-	response.setHeader("Content-Length", ft::intToString(response.getContent().size()));
+	// response.setHeader("Content-Length", ft::intToString(response.getContent().size()));
 	
-	response.setHeader("Content-Type", "text/html"); // tmp
+	// response.setHeader("Content-Type", "text/html"); // tmp
 	
-	response.setVersion("HTTP/1.1");
-	response.setHeader("Server", "Webserv");
-	response.setHeader("Date", ft::getDate());
+	// response.setVersion("HTTP/1.1");
+	// response.setHeader("Server", "Webserv");
+	// response.setHeader("Date", ft::getDate());
 
 
 	// if (request.getMethod() == "DELETE")
@@ -95,6 +120,38 @@ http::Response MessageBuilder::buildResponse(Request& request)
 	// response.setVersion("HTTP/1.1");
 	// response.setHeader("Date", ft::getDate());	
 	return response;
+}
+
+Response make_static_content(const ft::filesystem::path& path)
+{
+	Response result;
+
+	result.setStatus(Status::OK);
+	result.setContent(get_file_content(path));
+	return result;
+}
+
+Response make_error(const Uri& uri, Status error)
+{
+	ServerBlock& server = ServerConfig::getInstance().findServer(uri);
+	Response result;
+
+	result.setStatus(error);
+	ft::filesystem::path path = server.getErrors()[error.getValue()];
+	if (!path.empty() && ft::filesystem::is_regular_file(path))
+		result.setContent(get_file_content(path));
+	else
+		result.setContent(ft::vectorizeString("error " + ft::intToString(error.getValue()) + " " + error.getDefinition()));
+	return result;
+}
+
+std::vector<unsigned char> 	get_file_content(const ft::filesystem::path& path)
+{
+	std::ifstream file;
+	file.open(path.c_str(), std::ifstream::in);
+	std::vector<unsigned char> buffer((std::istreambuf_iterator<char>(file)),
+                 std::istreambuf_iterator<char>());
+	return buffer;
 }
 
 

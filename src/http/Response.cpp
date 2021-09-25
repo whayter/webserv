@@ -11,10 +11,16 @@
 /* ************************************************************************** */
 
 #include "Response.hpp"
+#include "utility.hpp"
 
 namespace http {
 
-Response::Response() : _status(Status::None) {}
+Response::Response() : _status(Status::None) {
+	setHeader("Content-Type", "text/html"); // tmp
+	setVersion("HTTP/1.1");
+	setHeader("Server", "Webserv");
+	setHeader("Date", ft::getDate());
+}
 
 Response::~Response()
 {
