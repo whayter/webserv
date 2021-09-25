@@ -43,8 +43,7 @@ jobs:
       run: make
     - name: Install dependencies
       run: |
-        npm install --save-dev frisby
-        npm install --save-dev jest
+        npm install
     - name: run integration test
       run: |
         sudo ./webserv &
