@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 23:42:16 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/25 12:22:18 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/25 17:05:34 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@
 #include <stdio.h>
 #include <fstream>
 
+namespace fs = ft::filesystem;
+
 namespace http {
 
 MessageBuilder::MessageBuilder() {}
@@ -38,32 +40,23 @@ MessageBuilder::~MessageBuilder() {}
 
 /* -------------------------------------- RESPONSE EN CHANTIER ------------------------------------ */
 
+
 http::Response MessageBuilder::buildResponse(Request& request)
 {
 	Response response;
 	ServerConfig& config = ServerConfig::getInstance();
-	ft::filesystem::path path = config.findServer(request.getUri()).getPathFromUri(request.getUri());
-	Location& location = config.findLocation(path.c_str()); // bhrr, chelou mais sinon c'est pas la bonne location lol
-	// par exemple, GET localhost:80 sera rendu en statique au lieu de cgi. 
+	ServerBlock& sblock = config.findServer(request.getUri());
+	fs::path path = sblock.getPathFromUri(request.getUri());
+	Location& location = config.findLocation(path.c_str());
+	action a = location.getAction();							// nom de merde lol
 
-	// le path final. Avec le bon root, et index concatene automatiquement si necessaire.
-	// Et peu importe si cgi ou statique. Peut etre fichier ou dossier. 
-	// bon par contre effectivement, le nom de la fonction
-	// est nul a chier lol "getPathFromUri". J'ai pas trouve mieux lol
-	// mais ca bug je crois. par exemple, localhost retourne un 404 au lieu de retourner index.php... XD
-	action a = location.getAction();
 	if (a == action::cgi)
-	{
-		std::cout << "calling cgi !" << std::endl;
-		setCgiContent(request, response, config);
-	}
+		setDynamicContent(request, response, sblock, path);
 	else if (a == action::returnDirective)
-	{
 		// return make_redirect();
-	}
+		std::cout << "return directive" << std::endl;
 	else if (a == action::none)
 	{
-		std::cout << "static !" << std::endl;
 		// setLocalContent(config, request, response);
 	
 		ft::error_code ec;
@@ -78,25 +71,7 @@ http::Response MessageBuilder::buildResponse(Request& request)
 		else if (stat.type() == ft::filesystem::file_type::directory) // && autoindex on
 			response.setContent(ft::vectorizeString(make_autoindex(path))); // changer de namespace la fonction make autoindex ? et la faire retourner un vector ou une response aussi lool XD
 	}
-	return make_error(request.getUri(), Status::NotFound );
-
-	
-	/* tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp */
-	// size_t pos = p.string().find_last_of('.') + 1;
-	// if (p.string().substr(pos) == "php")
-	// 	setCgiContent(request, response, config);
-	// else
-	// 	setLocalContent(config, request, response);
-	/* tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp tmp */
-
-	
-	// response.setHeader("Content-Length", ft::intToString(response.getContent().size()));
-	
-	// response.setHeader("Content-Type", "text/html"); // tmp
-	
-	// response.setVersion("HTTP/1.1");
-	// response.setHeader("Server", "Webserv");
-	// response.setHeader("Date", ft::getDate());
+	//return make_error(request.getUri(), Status::NotFound );
 
 
 	// if (request.getMethod() == "DELETE")
@@ -181,19 +156,15 @@ std::string make_autoindex(const ft::filesystem::path& path)
 
 
 
-void MessageBuilder::setLocalContent(ServerConfig& config, http::Request& request, http::Response &response)
-{
+void MessageBuilder::setStaticContent(ServerConfig& config, http::Request& request, http::Response &response)
+{	
 	std::ifstream ifs;
 	std::string root = config.findServer(request.getUri()).getRoot();
 	std::string path = request.getUri().getPath();
 	std::string file = "." + root + path;					// root will always start with '/' ?
 	ifs.open(file.c_str());
 	if (!ifs)
-	{
-		response.setStatus(http::Status::NotFound);
-		setErrorContent(response);
-		return ;
-	}
+		return setErrorContent(response, Status::NotFound);
 	response.setStatus(http::Status::OK);		// set ici ?
 	ifs.seekg(0, ifs.end);
 	int len = ifs.tellg();
@@ -204,41 +175,30 @@ void MessageBuilder::setLocalContent(ServerConfig& config, http::Request& reques
 	response.setContent(http::content_type(c.begin(), c.end()));
 }
 
-void MessageBuilder::setCgiContent(http::Request& request, http::Response& response, ServerConfig& config)
+
+
+void setDynamicContent(http::Request& request, http::Response& response, ServerBlock& sblock, fs::path& path)
 {
-	std::vector<unsigned char> cgiHeaders;
-	std::vector<unsigned char> cgiContent;
-	setEnvironment(config.findServer(request.getUri()), request);
-	callCgi(&cgiHeaders, &cgiContent);
+	//setEnvironment(config.findServer(request.getUri()), request);
+
+	setEnvironment(request, sblock, path);
+
+#ifdef LINUX
+		char cgiExecPath[] = "/usr/bin/php-cgi";			// tmp
+#else
+		char cgiExecPath[] = "/usr/local/bin/php-cgi";		// tmp
+#endif
+
+	std::vector<unsigned char> buffer = getCgiResponse(cgiExecPath);
 	unsetEnvironment();
-	// parseCgiHeaders(cgiHeaders, response);
-	// response.setContent(cgiContent);
-// deso ugly fix
-	http::Message responseCgi = http::parseCgiResponse(cgiHeaders);
+
+	http::Message responseCgi = http::parseCgiResponse(buffer);
 	response.setContent(responseCgi.getContent());
 }
 
-void MessageBuilder::parseCgiHeaders(std::vector<unsigned char>& cgiHeaders, http::Response& response)
+void MessageBuilder::setErrorContent(http::Response& response, Status error)
 {
-	std::stringstream ss(std::string(cgiHeaders.begin(), cgiHeaders.end()));
-	size_t n = std::count(cgiHeaders.begin(), cgiHeaders.end(), '\r');
-	for (size_t i = 0; i < n - 1; i++)
-	{
-		std::string line;
-		getline(ss, line);
-		int firstPos = line.find(':');
-		std::string name = line.substr(0, firstPos);
-		int secondPos = line.find('\r');
-		std::string value = line.substr(firstPos + 2, secondPos);
-		if (name == "Status")
-			response.setStatus(ft::stringifyInteger(value.substr(0, value.find_first_of(' '))));
-		else if (name == "Content-type")
-			response.setHeader(name, value);
-	}
-}
-
-void MessageBuilder::setErrorContent(http::Response& response)			// not complete yet
-{
+	response.setStatus(error);
 	std::string content = "<!DOCTYPE html>";
 	content += "<html lang=\"en\"><head><meta charset=\"utf-8\">";
 	content += "<title>" + ft::intToString(response.getStatus().getValue());
@@ -247,13 +207,7 @@ void MessageBuilder::setErrorContent(http::Response& response)			// not complete
 	content += "<body><h1>" + ft::intToString(response.getStatus().getValue());
 	content += + " " + response.getStatus().getDefinition() + "</h1>";
 	content += "<hr size=\"3\">";
-	if (http::isRedirection(response.getStatus()))
-	{
-		content += "<p>The document has moved ";
-		content += "<a href=\"\">here</a></p>";				// add new uri in href to create a link
-	}
-	else
-		content += "<p>Webserv</p></body></html>";
+	content += "<p>Webserv</p></body></html>";
 	response.setContent(http::content_type(content.begin(), content.end()));
 }
 
