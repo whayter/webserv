@@ -44,6 +44,7 @@ jobs:
     - name: Install dependencies
       run: |
         npm install
+        jest
     - name: run integration test
       run: |
         sudo ./webserv &
