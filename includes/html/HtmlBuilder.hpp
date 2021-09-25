@@ -134,10 +134,11 @@ private:
 }; /* class Builder */
 
 
+/// pas le meilleur endroit. On la bouge ?
 std::string make_autoindex(const ft::filesystem::path& path)
 {
 	html::Builder head = html::Builder("head");
-	head.addChild("title", "Index of /webserv");
+	head.addChild("title", "Index of /webserv"); // a changer car en dur
 
 	html::Builder body = html::Builder("body");
 	html::Builder pre = html::Builder("pre");
@@ -152,7 +153,7 @@ std::string make_autoindex(const ft::filesystem::path& path)
 			++it;
 		}
 	}
-	body.addChild("h1", "Index of /webserv");
+	body.addChild("h1", "Index of /webserv <- a changer car en dur..."); 
 	body.addChild("hr","");
 	body.addChild(pre);
 	body.addChild("hr","");

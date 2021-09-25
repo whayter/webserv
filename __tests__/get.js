@@ -21,25 +21,33 @@ it ('GET should return a status of 200', function () {
   return frisby
   .get(baseUri + 'index.php')
   .expect('status', 200)
-  .expect('header', 'content-length', '582')
   .expect('header', 'date')
-  .expect('bodyContains', 'Webserv - home')
+  .expect('bodyContains', 'Webserv')
+  // .inspectBody()
+});
+
+it ('GET folder should show autoindex', function () {
+  return frisby
+  .get(baseUri + 'autoindex')
+  .expect('status', 200)
+  .expect('header', 'date')
+  .expect('bodyContains', 'file_a')
   // .inspectBody()
 });
 
 // 262144 max char macos (getconf ARG_MAX) 
 var max_len_uri = 8000; // choose our random max len uri 7980
-it ('GET with max uri len should return 404 not found', function () {
-  return frisby
-  .get(baseUri + "x".repeat(max_len_uri- baseUri.length + 3))
-  .expect('status', 404)
-});
+// it ('GET with max uri len should return 404 not found', function () {
+//   return frisby
+//   .get(baseUri + "x".repeat(max_len_uri- baseUri.length + 3))
+//   .expect('status', 404)
+// });
 
-it ('GET with max uri len + 1 should return 414 URI Too Long', function () {
-  return frisby
-  .get(baseUri + "x".repeat(max_len_uri - baseUri.length + 4))
-  .expect('status', 414)
-});
+// it ('GET with max uri len + 1 should return 414 URI Too Long', function () {
+//   return frisby
+//   .get(baseUri + "x".repeat(max_len_uri - baseUri.length + 4))
+//   .expect('status', 414)
+// });
 
 // test on folders, (autoindex or not, index or not (so 403 or 404 ?))
 // test bad http protocol version
