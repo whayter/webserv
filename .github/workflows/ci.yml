@@ -39,6 +39,9 @@ jobs:
     - name: make
       run: make
     - name: Install dependencies
+      uses: actions/setup-node@v1
+      with:
+          node-version: '16'
       run: |
         npm install --save-dev frisby
         npm install --save-dev jest
