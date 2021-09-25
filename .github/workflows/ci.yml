@@ -35,8 +35,11 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     steps:
     - uses: actions/checkout@v2
-    - name: |
-        make
+
+    - name: make
+    - run: make
+    - name: run integration test
+    - run: |
         sudo ./webserv &
         jest
 
