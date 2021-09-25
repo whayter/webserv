@@ -36,12 +36,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
+      with:
+          node-version: '16'
 
     - name: make
       run: make
     - name: Install dependencies
-      with:
-          node-version: '16'
       run: |
         npm install --save-dev frisby
         npm install --save-dev jest
