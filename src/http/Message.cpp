@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 18:55:56 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/16 15:40:59 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/25 15:46:49 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,14 @@ void Message::setVersion(const std::string &version)
 	_version = version;
 }
 
-bool	Message::empty() const
+bool Message::empty() const
 {
 	if (_headers.empty() && _content.empty() && _version.empty())
 		return true;
 	return false;	
 }
-void	Message::clear()
+
+void Message::clear()
 {
 	_headers.clear();
 	_content.clear();

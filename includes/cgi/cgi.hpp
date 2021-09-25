@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   cgi.hpp                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/06 09:34:36 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/18 13:34:17 by hwinston         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef CGI_HPP
 #define CGI_HPP
 
@@ -32,7 +20,7 @@ namespace fs = ft::filesystem;
 
 extern char** environ;
 
-void setEnvironment(ServerBlock& sblock, http::Request& request)
+void setEnvironment(http::Request& request, ServerBlock& sblock, fs::path path)
 {
 	setenv("GATEWAY_INTERFACE", "CGI/1.1", 0);
 	setenv("SERVER_NAME", sblock.getServerName().c_str(), 0);
@@ -56,9 +44,8 @@ void setEnvironment(ServerBlock& sblock, http::Request& request)
 	// means that a page will only be served up if the REDIRECT_STATUS CGI variable is
 	// set, e.g. via an Apache Action directive.</p>
 
-	fs::path p = sblock.getRoot().relative_path() / request.getUri().getPath().relative_path();	// tmp
+	setenv("SCRIPT_FILENAME", path.c_str(), 0);
 
-	setenv("SCRIPT_FILENAME", fs::absolute(p).c_str(), 0);	// tmp
 	setenv("CONTENT_TYPE", request.getHeader("Content-type").c_str(), 0);
 	setenv("CONTENT_LENGTH", request.getHeader("Content-Length").c_str(), 0);
 }
@@ -95,12 +82,11 @@ static void replacePipeEnd(int oldFd, int newFd)
 	}
 }
 
-void callCgi(std::vector<unsigned char>* cgiHeaders, std::vector<unsigned char>* cgiContent)
+std::vector<unsigned char> getCgiResponse(std::string cgiExecPath)
 {	
-	// char buffer[2];
+	std::vector<unsigned char> r;
 	int childToParent[2];
 	int parentToChild[2];
-
 	pipe(childToParent);
 	pipe(parentToChild);	
 	pid_t pid = fork();
@@ -113,13 +99,8 @@ void callCgi(std::vector<unsigned char>* cgiHeaders, std::vector<unsigned char>*
 
 		// read data from parent here (if method=POST)
 
-#ifdef LINUX
-		char filename[] = "/usr/bin/php-cgi";		// tmp
-#else
-		char filename[] = "/usr/local/bin/php-cgi";		// tmp
-#endif
 		char* arg = 0;
-		execve(filename, &arg, environ);				// exec cgi binary
+		execve(cgiExecPath.c_str(), &arg, environ);				// exec cgi binary
 	}
 	else if (pid > 0)									// main process
 	{
@@ -132,29 +113,14 @@ void callCgi(std::vector<unsigned char>* cgiHeaders, std::vector<unsigned char>*
 		waitpid(pid, NULL, 0);							// wait for child process to end.
 		replacePipeEnd(childToParent[0], 0);			// replace stdin with incoming pipe
 
-
-		// std::vector<unsigned char> buf;
 		char buffer[4096];							// tmp buf size
 
 		size_t nbytes;
 		while ((nbytes = read(STDIN_FILENO, buffer, 4096)) > 0)
 			for (size_t i = 0; i < nbytes; i++)
-				// buf.push_back(buffer[i]);
-				cgiHeaders->push_back(buffer[i]);
-		(void)cgiContent;
-		// deso winston j tout commente ici pour le quick fix linux
-
-		// char lastBitRead = 0;
-		// while (read(STDIN_FILENO, buffer, 1) > 0)
-		// {
-		// 	cgiHeaders->push_back(buffer[0]);
-		// 	if (buffer[0] == '\n' && lastBitRead == '\n')
-		// 		break;
-		// 	lastBitRead = buffer[0];
-		// }
-		// while (read(STDIN_FILENO, buffer, 1) > 0)
-		// 	cgiContent->push_back(buffer[0]);
+				r.push_back(buffer[i]);
 	}
+	return r;
 }
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 23:38:35 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/25 12:23:43 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/25 16:24:54 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ public:
 
 
 	http::Response			buildResponse(Request& request);
-	void					setLocalContent(ServerConfig& config, http::Request& request, http::Response &response);
-	void					setCgiContent(http::Request& request, http::Response& response, ServerConfig& config);
-	void					parseCgiHeaders(std::vector<unsigned char>& cgiHeaders, http::Response& response);
-	void					setErrorContent(http::Response& response);
+
+	
+	void					setStaticContent(ServerConfig& config, http::Request& request, http::Response &response);
+	void					setErrorContent(http::Response& response, Status error);
 
 	void parseStatusLine();
 	void parseHeaders();
@@ -55,6 +55,9 @@ public:
 	}
 
 }; /* class MessageBuilder */
+
+void						setDynamicContent(http::Request& request, http::Response& response, ServerBlock& sblock, ft::filesystem::path& path);
+
 
 std::vector<unsigned char> 	get_file_content(const ft::filesystem::path& path);
 Response				 	make_static_content(const ft::filesystem::path& path);
