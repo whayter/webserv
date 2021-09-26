@@ -22,8 +22,6 @@ static bool run = true;
 
 void parseArgs(int ac, char **av)
 {
-	ft::shared_ptr<std::string> str;
-
 	std::string path = "config/webserv.conf";
 
 	if (ac == 2)
