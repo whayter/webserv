@@ -49,7 +49,7 @@ public:
 	//ServerBlock&					findServer(uint32_t port);
 
 	ServerBlock&					findServer(const Uri& uri);
-	Location&						findLocation(const Uri& uri);
+	const Location&					findLocation(const Uri& uri);
 
 	ft::filesystem::path			getPathFromUri(const Uri& uri);
 

@@ -7,28 +7,9 @@ on:
     branches: [ master ]
 
 jobs:
-
-
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: make
-      run: make
-    - name: test run
-      run: |
-        sudo ./webserv &
-        sleep 3
-        ps -p $!
-
   integration-tests:
-    needs: build
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 3
     strategy:
       fail-fast: false
       matrix:
@@ -37,22 +18,39 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
       with:
-          node-version: '16'
-
-    - name: make
-      run: make
+        node-version: '16'
     - name: Install dependencies
       run: |
-        npm install
-        jest
-    - name: run integration test
+        set -x
+        if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt-get install valgrind
+        elif [ "$RUNNER_OS" == "macOS" ]; then
+            :
+        fi
+    - run: make
+    - run: npm install
+    - name: npm test
       run: |
-        sudo ./webserv &
-        jest
-
+        # set -x
+        if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo valgrind --log-file=valgrind_output --leak-check=full --show-leak-kinds=definite,indirect,possible --errors-for-leak-kinds=definite,indirect,possible --error-exitcode=42 ./webserv &
+            PID_SUDO=$!
+            npm test
+            sudo kill $(sudo ps --ppid $PID_SUDO -o pid=)
+            wait $PID_SUDO && true
+            RET=$?
+            cat valgrind_output
+            exit $RET
+        elif [ "$RUNNER_OS" == "macOS" ]; then
+            MallocStackLoggingNoCompact=1
+            ./webserv &
+            PID=$!
+            npm test
+            leaks webserv
+            kill $PID
+        fi
 
   unit-tests:
-    needs: build
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -61,12 +59,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: make -C tests
-      run: make -C tests
+    - run: make -C tests
     - name: make check
       run: make check -C tests
-
-
 
   unit-tests-leaks:
     needs: unit-tests
@@ -77,7 +72,6 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     steps:
     - uses: actions/checkout@v2
-
     - name: Install dependencies
       run: |
         set -x
@@ -85,9 +79,6 @@ jobs:
             sudo apt-get install valgrind
         elif [ "$RUNNER_OS" == "macOS" ]; then
             :
-        else
-            echo "$RUNNER_OS not supported"
-            exit 1
         fi
     - name: make -C tests
       run: make -C tests

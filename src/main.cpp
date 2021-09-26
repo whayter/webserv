@@ -18,10 +18,12 @@
 #include <vector>
 #include <csignal>
 
-bool run;
+static bool run = true;
 
 void parseArgs(int ac, char **av)
 {
+	ft::shared_ptr<std::string> str;
+
 	std::string path = "config/webserv.conf";
 
 	if (ac == 2)
@@ -80,8 +82,12 @@ void prompt()
 }
 
 void signalCallback(int signum) {
-	(void)signum;
-	std::cout << std::endl;
+	std::cout <<  std::endl;
+	if (signum == SIGTERM)
+		std::cout << "TERM signal received."<< std::endl;
+	else if (signum == SIGINT)
+		std::cout << "SIGINT signal received."<< std::endl;
+	std::cout << "Trying shutting down..."<< std::endl;
 	run = false;
 }
 
@@ -90,8 +96,8 @@ int main(int ac, char** av)
 	parseArgs(ac, av);
 	web::Server sh;
 	signal(SIGINT, signalCallback);
+	signal(SIGTERM, signalCallback);
 	sh.setup();
-	run = true;
 	prompt();
 	while (run)
 		sh.routine();

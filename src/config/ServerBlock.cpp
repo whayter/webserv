@@ -17,14 +17,14 @@ void 	ServerBlock::setReturnDirective(const ReturnDirective& returnDirective)	{
 	_hasReturnDirective = true;
 }
 
-Location*	ServerBlock::_getLocationIfMatchExtention(const Uri& uri)
+const Location*	ServerBlock::_getLocationIfMatchExtention(const Uri& uri) const
 {
-	std::vector<Location>::iterator it = _locations.begin();
-	std::vector<Location>::iterator end = _locations.end();
+	std::vector<Location>::const_iterator it = _locations.begin();
+	std::vector<Location>::const_iterator end = _locations.end();
 
 	while (it != end)
 	{
-		Location& loc = *it;
+		const Location& loc = *it;
 		if (loc.isMatchExtentionFile()
 		&& loc.getExtentionFile() ==  uri.getPath().extension())
 			return &loc;
@@ -33,22 +33,22 @@ Location*	ServerBlock::_getLocationIfMatchExtention(const Uri& uri)
 	return NULL;
 }
 
-Location&	ServerBlock::findLocation(const Uri& uri)
+const Location&	ServerBlock::findLocation(const Uri& uri) const
 {
 	{
-		Location* bestMatch = _getLocationIfMatchExtention(uri);
+		const Location* bestMatch = _getLocationIfMatchExtention(uri);
 		if (bestMatch != NULL)
 			return *bestMatch;
 	}
 	{
-		std::vector<Location>::iterator it = _locations.begin();
-		std::vector<Location>::iterator end = _locations.end();
-		Location*	bestMatch = findExactLocation("/");
+		std::vector<Location>::const_iterator it = _locations.begin();
+		std::vector<Location>::const_iterator end = _locations.end();
+		const Location*	bestMatch = findExactLocation("/");
 		size_t		bestMatchLen = bestMatch != NULL ? 1 : 0;
 
 		while (it != end)
 		{
-			Location& loc = *it;
+			const Location& loc = *it;
 			if (loc.isMatchExtentionFile() == false)
 			{
 				size_t len;
@@ -76,15 +76,15 @@ Location&	ServerBlock::findLocation(const Uri& uri)
 	}
 }
 
-Location*	ServerBlock::findExactLocation(const Uri& uri)
+const Location*	ServerBlock::findExactLocation(const Uri& uri) const
 {
-	std::vector<Location>::iterator it = _locations.begin();
-	std::vector<Location>::iterator end = _locations.end();
+	std::vector<Location>::const_iterator it = _locations.begin();
+	std::vector<Location>::const_iterator end = _locations.end();
 
 	ft::filesystem::path p =  uri.getPath();
 	while (it != end)
 	{
-		Location& loc = *it;
+		const Location& loc = *it;
 		if (!p.compare(loc.getUri()))
 			return &loc;
 		++it;
@@ -93,9 +93,9 @@ Location*	ServerBlock::findExactLocation(const Uri& uri)
 }
 
 /// if path is empty,
-ft::filesystem::path	ServerBlock::getPathFromUri(const Uri& uri)
+ft::filesystem::path	ServerBlock::getPathFromUri(const Uri& uri) const
 {
-	Location&				loc = findLocation(uri);
+	const Location&			loc = findLocation(uri);
 	ft::filesystem::path	root = !loc.getRoot().empty() ? loc.getRoot() : getRoot();
 	ft::filesystem::path	index = !loc.getIndex().empty() ? loc.getIndex(): getIndex();
 	

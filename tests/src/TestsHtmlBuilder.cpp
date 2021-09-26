@@ -51,6 +51,9 @@ TEST_CASE("html::Builder2", "[namespace][html][builder][element]")
 	CHECK (html.str() == expected);
 }
 
+/////////////////////////////////////////////
+// creer un nouveau fichier TestsMessageBuilder.cpp pour cette fonction
+#include "MessageBuilder.hpp"
 TEST_CASE("html::make_autoindex", "[namespace][html][builder][element][make_autoindex]")
 {
 	std::ifstream file;
@@ -58,5 +61,5 @@ TEST_CASE("html::make_autoindex", "[namespace][html][builder][element][make_auto
 	std::string expected((std::istreambuf_iterator<char>(file)),
                  std::istreambuf_iterator<char>());
 	
-	// CHECK (html::make_autoindex("./one_file") == expected);
+	CHECK (http::make_autoindex("./one_file") == expected);
 }

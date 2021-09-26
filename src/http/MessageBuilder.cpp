@@ -47,15 +47,16 @@ http::Response MessageBuilder::buildResponse(Request& request)
 	ServerConfig& config = ServerConfig::getInstance();
 	ServerBlock& sblock = config.findServer(request.getUri());
 	fs::path path = sblock.getPathFromUri(request.getUri());
-	Location& location = config.findLocation(path.c_str());
-	action a = location.getAction();							// nom de merde lol
+	// const Location& location = config.findLocation(sblock, path.c_str());
+	const Location& location = sblock.findLocation(path.c_str());
+	action aAAhhction = location.getAction();							// nom de merde lol
 
-	if (a == action::cgi)
+	if (aAAhhction == action::cgi)
 		setDynamicContent(request, response, sblock, path);
-	else if (a == action::returnDirective)
+	else if (aAAhhction == action::returnDirective)
 		// return make_redirect();
 		std::cout << "return directive" << std::endl;
-	else if (a == action::none)
+	else if (aAAhhction == action::none)
 	{
 		// setLocalContent(config, request, response);
 	
@@ -126,6 +127,8 @@ std::vector<unsigned char> 	get_file_content(const ft::filesystem::path& path)
 	file.open(path.c_str(), std::ifstream::in);
 	std::vector<unsigned char> buffer((std::istreambuf_iterator<char>(file)),
                  std::istreambuf_iterator<char>());
+
+	file.close();
 	return buffer;
 }
 
@@ -147,7 +150,7 @@ std::string make_autoindex(const ft::filesystem::path& path)
 			++it;
 		}
 	}
-	body.addChild("h1", "Index of /webserv <- a changer car en dur..."); 
+	body.addChild("h1", "Index of /webserv"); //  <- a changer car en dur... 
 	body.addChild("hr","");
 	body.addChild(pre);
 	body.addChild("hr","");

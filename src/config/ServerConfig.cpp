@@ -104,7 +104,7 @@ ServerBlock& ServerConfig::findServer(const Uri& uri)
 	return bestMatch;
 }
 
-Location& ServerConfig::findLocation(const Uri& uri)
+const Location& ServerConfig::findLocation(const Uri& uri)
 {
 	return findServer(uri).findLocation(uri);
 }

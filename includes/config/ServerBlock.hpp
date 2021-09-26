@@ -47,12 +47,12 @@ public:
 	void 	setRoot(ft::filesystem::path root)					{ _root = root;}
 	void 	setServerName(std::string serverName)				{ _serverName = serverName;}
 
-	Location&				findLocation(const Uri& uri);
-	Location*				findExactLocation(const Uri& uri);
-	ft::filesystem::path	getPathFromUri(const Uri& uri);
+	const Location&				findLocation(const Uri& uri) const;
+	const Location*				findExactLocation(const Uri& uri) const;
+	ft::filesystem::path	getPathFromUri(const Uri& uri) const;
 
 private:
-	Location*	_getLocationIfMatchExtention(const Uri& uri);
+	const Location*	_getLocationIfMatchExtention(const Uri& uri) const;
 
 	std::vector<Host>					_listens;
 	std::vector<Location>				_locations;
