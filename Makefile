@@ -145,6 +145,11 @@ show:
 check:
 	@$(MAKE) check -C tests ARGS="$(ARGS)"
 
+jest: $(NAME)
+	@./webserv > /dev/null 2>&1 &
+	@-npm test && true
+	@pkill webserv
+
 clean:
 	@rm -rf $(OBJ_DIR) output_valgrind
 	@printf "$(_RED)Removed :$(_MAGENTA) $(OBJ_DIR)/ $(_MAGENTA)\n"
@@ -158,7 +163,7 @@ re: fclean all
 
 -include $(DEP)
 
-.PHONY: all run debug valgrind norminette bonus show check clean fclean re
+.PHONY: all run debug valgrind norminette bonus show check jest clean fclean re
 
 
 #******************************************************************************#
