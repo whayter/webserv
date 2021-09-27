@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 
 
 TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConfig]" )
@@ -347,7 +348,9 @@ TEST_CASE( "ServerConfig4 - ./config_files/testFindLocation.conf", "[class][Serv
 TEST_CASE( "ServerConfig::getMime", "[class][ServerConfig][getMime]" )
 {
 	ServerConfig::__delete_singleton_instance();
-	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindLocation.conf");
+	if (std::filesystem:: )
+		;
+	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindLocation.conf", "./../mime.types");
 	(void)config;
 
 	CHECK( config.getMime("png") == "image/png");
