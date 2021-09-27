@@ -118,10 +118,11 @@ Response make_error(const Uri& uri, Status error)
 
 	result.setStatus(error);
 	ft::filesystem::path path = server.getErrors()[error.getValue()];
-	if (!path.empty() && ft::filesystem::is_regular_file(path))
+	ft::filesystem::path completePath = ServerConfig::getInstance().getPathFromUri(path.c_str());
+	if (!path.empty() && ft::filesystem::is_regular_file(completePath))
 	{
 		result.setHeader("Content-Type", ServerConfig::getInstance().getMime(path.extension()));
-		result.setContent(get_file_content(path));
+		result.setContent(get_file_content(completePath));
 	}
 	else
 	{

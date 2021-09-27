@@ -17,6 +17,7 @@ it ('GET /index.php should return a status of 200', function () {
   .expect('header', 'date')
   .expect('bodyContains', 'Webserv')
   .expect('bodyContains', 'CGI params')
+  .expect('header', 'content-type', "text/html")
   // .inspectBody()
 });
 
@@ -27,23 +28,29 @@ it ('GET / should return index.php and 200', function () {
   .expect('header', 'date')
   .expect('bodyContains', 'Webserv')
   .expect('bodyContains', 'CGI params')
-  // .inspectBody()
+  .expect('header', 'content-type', "text/html")
 });
 
-it ('GET /autoindex should show index and contain "file_a"', function () {
+it ('GET /autoindex should show index and contain "teletubbies"', function () {
   return frisby
   .get(baseUri + 'autoindex')
   .expect('status', 200)
   .expect('header', 'date')
-  .expect('bodyContains', 'file_a')
-  // .inspectBody()
+  .expect('header', 'content-type', "text/html")
+  .expect('bodyContains', 'teletubbies')
 });
 
 it ('GET /favicon.ico', function () {
   return frisby
   .get(baseUri + 'favicon.ico')
   .expect('status', 200)
-  // .inspectBody()
+});
+
+it ('GET /NotExist should return 404.html', function () {
+  return frisby
+  .get(baseUri + '/NotExist')
+  .expect('status', 404)
+  .expect('bodyContains', 'Seems like your page doesn\'t exist anymore')
 });
 
 // 262144 max char macos (getconf ARG_MAX) 
