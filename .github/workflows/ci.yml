@@ -80,30 +80,33 @@ jobs:
         fi
 
 
-  siege:
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 3
-    strategy:
-      fail-fast: false
-      matrix:
-        # os: [ubuntu-latest, macos-latest]
-        os: [ubuntu-latest]
-    steps:
-    - uses: actions/checkout@v2
-    - name: Install dependencies
-      run: |
-        set -x
-        if [ "$RUNNER_OS" == "Linux" ]; then
-            sudo apt-get install siege
-        elif [ "$RUNNER_OS" == "macOS" ]; then
-            :
-        fi
-    - run: make
-    - name: siege
-      continue-on-error: true
-      run: |
-        sudo ./webserv
-        siege https://localhost:80/autoindex
+  # siege:
+  #   runs-on: ${{ matrix.os }}
+  #   timeout-minutes: 3
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       # os: [ubuntu-latest, macos-latest]
+  #       os: [ubuntu-latest]
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: Install dependencies
+  #     run: |
+  #       set -x
+  #       if [ "$RUNNER_OS" == "Linux" ]; then
+  #           sudo apt-get install siege
+  #       elif [ "$RUNNER_OS" == "macOS" ]; then
+  #           :
+  #       fi
+  #   - run: make
+  #   - name: siege
+  #     continue-on-error: true
+  #     run: |
+  #       sudo ./webserv
+  #       siege https://localhost:80/autoindex
+
+
+  
   # unit-tests-leaks:
   #   needs: unit-tests
   #   runs-on: ${{ matrix.os }}
