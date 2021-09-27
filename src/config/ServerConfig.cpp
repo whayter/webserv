@@ -38,14 +38,18 @@ ServerConfig::ServerConfig(const ft::filesystem::path& filepath, const ft::files
 
 	file.open(filepath.c_str(), std::ifstream::in);
 	if (!file.is_open())
-		throw std::invalid_argument("Can't open file");
+		throw std::invalid_argument("Can't open file \"" + filepath.string() + "\"");
 	_parse(file);
 	_postParser();
 	file.close();
+	if (mimePath.empty())
+		throw std::invalid_argument("Mime Type paath is empty);
+
 	// if (mimePath.empty())
 	// 	_mime = _parseMimeFile(MIME_FILE);
 	// else
-		_mime = _parseMimeFile(mimePath);
+		throw std::invalid_argument("Can't open file");
+	_mime = _parseMimeFile(mimePath);
 }
 
 std::map<std::string, std::string>	ServerConfig::_parseMimeFile(const ft::filesystem::path & path){
