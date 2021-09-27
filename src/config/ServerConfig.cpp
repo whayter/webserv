@@ -58,7 +58,6 @@ std::map<std::string, std::string>	ServerConfig::_parseMimeFile(const ft::filesy
 			switch (t.kind.getValue())
 			{
 				case pr::TokenKind::kComment:
-					continue;
 				case pr::TokenKind::kNewLine:
 					mime.clear();
 					break;
