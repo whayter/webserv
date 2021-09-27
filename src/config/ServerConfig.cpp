@@ -43,12 +43,11 @@ ServerConfig::ServerConfig(const ft::filesystem::path& filepath, const ft::files
 	_postParser();
 	file.close();
 	if (mimePath.empty())
-		throw std::invalid_argument("Mime Type paath is empty);
+		throw std::invalid_argument("Mime Type path is empty");
 
 	// if (mimePath.empty())
 	// 	_mime = _parseMimeFile(MIME_FILE);
 	// else
-		throw std::invalid_argument("Can't open file");
 	_mime = _parseMimeFile(mimePath);
 }
 
