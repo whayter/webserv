@@ -25,22 +25,76 @@ ServerConfig* ServerConfig::_singleton = NULL;
 
 namespace pr = config;
 
-ServerConfig::ServerConfig(const ft::filesystem::path& filepath)
+// #ifdef LINUX
+// #define MIME_FILE "/etc/mime.types"
+// #else
+// #define MIME_FILE "???"
+// #endif
+
+ServerConfig::ServerConfig(const ft::filesystem::path& filepath, const ft::filesystem::path& mimePath)
 	: _configFilePath(filepath)
 {
 	std::ifstream file;
 
 	file.open(filepath.c_str(), std::ifstream::in);
 	if (!file.is_open())
-		throw std::invalid_argument("Can't open file");
+		throw std::invalid_argument("Can't open file \"" + filepath.string() + "\"");
 	_parse(file);
 	_postParser();
 	file.close();
+
+	// if (mimePath.empty())
+	// 	_mime = _parseMimeFile(MIME_FILE);
+	// else
+	if (!mimePath.empty())
+		_mime = _parseMimeFile(mimePath);
 }
 
-ServerConfig& ServerConfig::getInstance(ft::filesystem::path filepath){
+std::map<std::string, std::string>	ServerConfig::_parseMimeFile(const ft::filesystem::path & path){
+	std::ifstream file;
+	std::map<std::string, std::string> result;
+
+	file.open(path.c_str(), std::ifstream::in);
+	if (!file.is_open())
+		throw std::invalid_argument("Can't open file \"" + path.string() + "\"");
+	{
+		pr::ScannerConfig scanner(file);
+		pr::Token t;
+
+		std::string mime;
+		while ((t = scanner.getToken()).kind != pr::TokenKind::kEndOfInput)
+		{
+			switch (t.kind.getValue())
+			{
+				case pr::TokenKind::kComment:
+				case pr::TokenKind::kNewLine:
+					mime.clear();
+					break;
+				case pr::TokenKind::kInteger:
+				case pr::TokenKind::kString:
+					if (mime.empty())
+						mime = t.value;
+					else
+						result[t.value] = mime;
+					break;
+				default:
+					_throw_SyntaxError(t, "Unexpected token: " + pr::tokenToString(t), path);
+			}
+		}		
+	}
+	file.close();
+	return result;
+}
+
+std::string		ServerConfig::getMime(const std::string& extension)
+{
+	return _mime[extension];
+}
+
+
+ServerConfig& ServerConfig::getInstance(const ft::filesystem::path& filepath, const ft::filesystem::path& mimepath){
 	if (_singleton == NULL)
-		_singleton = new ServerConfig(filepath);
+		_singleton = new ServerConfig(filepath, mimepath);
 	return *_singleton;
 }
 
@@ -129,12 +183,14 @@ std::vector<uint32_t> ServerConfig::getPorts()
 }
 
 
-
-void ServerConfig::_throw_SyntaxError(config::Token t, const std::string &error_str)
+void ServerConfig::_throw_SyntaxError(config::Token t, const std::string &error_str, const ft::filesystem::path& file)
 {
 	std::string error;
 
-	error += _configFilePath.string() + ':';
+	if (file.empty())
+		error += _configFilePath.string() + ':';
+	else
+		error += file.string() + ':';
 	error += ft::intToString(t.line);
 	error += ':';
 	error += ft::intToString(t.column);

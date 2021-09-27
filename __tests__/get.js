@@ -1,38 +1,52 @@
 const frisby = require('frisby');
 
-// install node.js
-// npm install --save-dev frisby
-// npm install --save-dev jest
-// run tests:
-//    jest
-// Or use Jest Orta extention from vscode (orta.vscode-jest)
+describe('webserv', function() {
 
-describe('Role api test suite', function() {
-
-  var baseUri = 'http://localhost:80/';
-
-/////////////////////////////////////////////////////////////////////  
-/////////////////////////////////////////////////////////////////////  
-// GET
+var baseUri = 'http://localhost:80/';
 
 // FileReader(""); read index.php and compare content to see if it match response body 
 
-it ('GET should return a status of 200', function () {
+it ('GET /index.php should return a status of 200', function () {
   return frisby
   .get(baseUri + 'index.php')
   .expect('status', 200)
   .expect('header', 'date')
   .expect('bodyContains', 'Webserv')
+  .expect('bodyContains', 'CGI params')
+  .expect('header', 'content-type', "text/html")
   // .inspectBody()
 });
 
-it ('GET folder should show autoindex', function () {
+it ('GET / should return index.php and 200', function () {
+  return frisby
+  .get(baseUri + 'index.php')
+  .expect('status', 200)
+  .expect('header', 'date')
+  .expect('bodyContains', 'Webserv')
+  .expect('bodyContains', 'CGI params')
+  .expect('header', 'content-type', "text/html")
+});
+
+it ('GET /autoindex should show index and contain "teletubbies"', function () {
   return frisby
   .get(baseUri + 'autoindex')
   .expect('status', 200)
   .expect('header', 'date')
-  .expect('bodyContains', 'file_a')
-  // .inspectBody()
+  .expect('header', 'content-type', "text/html")
+  .expect('bodyContains', 'teletubbies')
+});
+
+it ('GET /favicon.ico', function () {
+  return frisby
+  .get(baseUri + 'favicon.ico')
+  .expect('status', 200)
+});
+
+it ('GET /NotExist should return 404.html', function () {
+  return frisby
+  .get(baseUri + '/NotExist')
+  .expect('status', 404)
+  .expect('bodyContains', 'Seems like your page doesn\'t exist anymore')
 });
 
 // 262144 max char macos (getconf ARG_MAX) 

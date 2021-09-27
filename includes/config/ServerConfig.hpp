@@ -33,7 +33,7 @@ class ServerConfig
 public:
 
 	/// Instanciate the singleton instance at first call with given file
-	static ServerConfig&	getInstance(ft::filesystem::path filepath);
+	static ServerConfig&	getInstance(const ft::filesystem::path& filepath, const ft::filesystem::path& mimePath = ft::filesystem::path());
 	/// Must instanciate the class before using this function.
 	static ServerConfig&	getInstance();
 	/// ONLY FOR TESTING PURPOSE
@@ -53,11 +53,13 @@ public:
 
 	ft::filesystem::path			getPathFromUri(const Uri& uri);
 
+	std::string			getMime(const std::string& extension);
+
 	/// return all ports defined in listen directives.
 	std::vector<uint32_t>			getPorts();
 
 private:
-	ServerConfig(const ft::filesystem::path & filepath);
+	ServerConfig(const ft::filesystem::path & filepath, const ft::filesystem::path& mimePath = ft::filesystem::path());
 	ServerConfig(ServerConfig&);
 	ServerConfig& operator=(const ServerConfig&);
 	
@@ -78,6 +80,8 @@ private:
 	ReturnDirective						_parseReturn(config::ScannerConfig & scanner);
 	std::set<std::string>				_parseLimitExceptMethods(config::ScannerConfig & scanner);
 	
+	std::map<std::string, std::string>	_parseMimeFile(const ft::filesystem::path & path);
+	
 	Host _parseListenValue(const config::Token& host);
 
 	void _postParser();
@@ -86,11 +90,12 @@ private:
 	void _postParserSet();
 
 	void _skipSemiColonNewLine(config::ScannerConfig & scanner);
-	void _throw_SyntaxError(config::Token t, const std::string &error_str);
+	void _throw_SyntaxError(config::Token t, const std::string &error_str, const ft::filesystem::path& file = ft::filesystem::path());
 
-	static ServerConfig*		_singleton;
-	std::vector<ServerBlock>	_servers;
-	ft::filesystem::path		_configFilePath;
+	static ServerConfig*				_singleton;
+	std::vector<ServerBlock>			_servers;
+	ft::filesystem::path				_configFilePath;
+	std::map<std::string, std::string> 	_mime;
 
 }; /* class ServerConfig */
 
