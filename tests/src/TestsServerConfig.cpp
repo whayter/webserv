@@ -343,3 +343,30 @@ TEST_CASE( "ServerConfig4 - ./config_files/testFindLocation.conf", "[class][Serv
 	CHECK( config.getPathFromUri("/youtube/test/")	== "/var/html/app/youtube/test/youtubeTest.html");
 
 }
+
+TEST_CASE( "ServerConfig::getMime", "[class][ServerConfig][getMime]" )
+{
+	ServerConfig::__delete_singleton_instance();
+	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindLocation.conf");
+	(void)config;
+
+	CHECK( config.getMime("png") == "image/png");
+	CHECK( config.getMime("gif") == "image/gif");
+	CHECK( config.getMime("ico") == "image/vnd.microsoft.icon");
+
+	CHECK( config.getMime("jpeg") == "image/jpeg");
+	CHECK( config.getMime("jpg") == "image/jpeg");
+	CHECK( config.getMime("jpe") == "image/jpeg");
+	CHECK( config.getMime("jfif") == "image/jpeg");
+
+	CHECK( config.getMime("json") == "application/json");
+
+	CHECK( config.getMime("html") == "text/html");
+	CHECK( config.getMime("htm") == "text/html");
+	CHECK( config.getMime("shtml") == "text/html");
+
+	CHECK( config.getMime("css") == "text/css");
+	
+
+
+}

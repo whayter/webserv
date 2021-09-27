@@ -1,13 +1,6 @@
 const frisby = require('frisby');
 
-// install node.js
-// npm install --save-dev frisby
-// npm install --save-dev jest
-// run tests:
-//    jest
-// Or use Jest Orta extention from vscode (orta.vscode-jest)
-
-describe('Role api test suite', function() {
+describe('webserv', function() {
 
   var baseUri = 'http://localhost:80/';
 
@@ -17,21 +10,39 @@ describe('Role api test suite', function() {
 
 // FileReader(""); read index.php and compare content to see if it match response body 
 
-it ('GET should return a status of 200', function () {
+it ('GET /index.php should return a status of 200', function () {
   return frisby
   .get(baseUri + 'index.php')
   .expect('status', 200)
   .expect('header', 'date')
   .expect('bodyContains', 'Webserv')
+  .expect('bodyContains', 'CGI params')
   // .inspectBody()
 });
 
-it ('GET folder should show autoindex', function () {
+it ('GET / should return index.php and 200', function () {
+  return frisby
+  .get(baseUri + 'index.php')
+  .expect('status', 200)
+  .expect('header', 'date')
+  .expect('bodyContains', 'Webserv')
+  .expect('bodyContains', 'CGI params')
+  // .inspectBody()
+});
+
+it ('GET /autoindex should show index and contain "file_a"', function () {
   return frisby
   .get(baseUri + 'autoindex')
   .expect('status', 200)
   .expect('header', 'date')
   .expect('bodyContains', 'file_a')
+  // .inspectBody()
+});
+
+it ('GET /favicon.ico', function () {
+  return frisby
+  .get(baseUri + 'favicon.ico')
+  .expect('status', 200)
   // .inspectBody()
 });
 

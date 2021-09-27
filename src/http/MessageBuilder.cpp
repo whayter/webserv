@@ -70,7 +70,10 @@ http::Response MessageBuilder::buildResponse(Request& request)
 		if (stat.type() == ft::filesystem::file_type::regular)
 			return make_static_content(path);
 		else if (stat.type() == ft::filesystem::file_type::directory) // && autoindex on
+		{
+			response.setHeader("Content-Type", "text/html");
 			response.setContent(ft::vectorizeString(make_autoindex(path))); // changer de namespace la fonction make autoindex ? et la faire retourner un vector ou une response aussi lool XD
+		}
 	}
 	//return make_error(request.getUri(), Status::NotFound );
 
@@ -104,6 +107,7 @@ Response make_static_content(const ft::filesystem::path& path)
 
 	result.setStatus(Status::OK);
 	result.setContent(get_file_content(path));
+	result.setHeader("Content-Type", ServerConfig::getInstance().getMime(path.extension()));
 	return result;
 }
 
@@ -115,9 +119,15 @@ Response make_error(const Uri& uri, Status error)
 	result.setStatus(error);
 	ft::filesystem::path path = server.getErrors()[error.getValue()];
 	if (!path.empty() && ft::filesystem::is_regular_file(path))
+	{
+		result.setHeader("Content-Type", ServerConfig::getInstance().getMime(path.extension()));
 		result.setContent(get_file_content(path));
+	}
 	else
+	{
+		result.setHeader("Content-Type", "text/html");
 		result.setContent(ft::vectorizeString("error " + ft::intToString(error.getValue()) + " " + error.getDefinition()));
+	}
 	return result;
 }
 
@@ -127,7 +137,6 @@ std::vector<unsigned char> 	get_file_content(const ft::filesystem::path& path)
 	file.open(path.c_str(), std::ifstream::in);
 	std::vector<unsigned char> buffer((std::istreambuf_iterator<char>(file)),
                  std::istreambuf_iterator<char>());
-
 	file.close();
 	return buffer;
 }

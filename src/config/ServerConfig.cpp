@@ -25,6 +25,8 @@ ServerConfig* ServerConfig::_singleton = NULL;
 
 namespace pr = config;
 
+
+
 ServerConfig::ServerConfig(const ft::filesystem::path& filepath)
 	: _configFilePath(filepath)
 {
@@ -36,7 +38,51 @@ ServerConfig::ServerConfig(const ft::filesystem::path& filepath)
 	_parse(file);
 	_postParser();
 	file.close();
+	_mime = _parseMimeFile("/etc/mime.types");
 }
+
+std::map<std::string, std::string>	ServerConfig::_parseMimeFile(const ft::filesystem::path & path){
+	std::ifstream file;
+	std::map<std::string, std::string> result;
+
+	file.open(path.c_str(), std::ifstream::in);
+	if (!file.is_open())
+		throw std::invalid_argument("Can't open file " + path.string());
+	{
+		pr::ScannerConfig scanner(file);
+		pr::Token t;
+
+		std::string mime;
+		while ((t = scanner.getToken()).kind != pr::TokenKind::kEndOfInput)
+		{
+			switch (t.kind.getValue())
+			{
+				case pr::TokenKind::kComment:
+					continue;
+				case pr::TokenKind::kNewLine:
+					mime.clear();
+					break;
+				case pr::TokenKind::kInteger:
+				case pr::TokenKind::kString:
+					if (mime.empty())
+						mime = t.value;
+					else
+						result[t.value] = mime;
+					break;
+				default:
+					_throw_SyntaxError(t, "Unexpected token: " + pr::tokenToString(t), path);
+			}
+		}		
+	}
+	file.close();
+	return result;
+}
+
+std::string		ServerConfig::getMime(const std::string& extension)
+{
+	return _mime[extension];
+}
+
 
 ServerConfig& ServerConfig::getInstance(ft::filesystem::path filepath){
 	if (_singleton == NULL)
@@ -129,12 +175,14 @@ std::vector<uint32_t> ServerConfig::getPorts()
 }
 
 
-
-void ServerConfig::_throw_SyntaxError(config::Token t, const std::string &error_str)
+void ServerConfig::_throw_SyntaxError(config::Token t, const std::string &error_str, const ft::filesystem::path& file)
 {
 	std::string error;
 
-	error += _configFilePath.string() + ':';
+	if (file.empty())
+		error += _configFilePath.string() + ':';
+	else
+		error += file.string() + ':';
 	error += ft::intToString(t.line);
 	error += ':';
 	error += ft::intToString(t.column);
