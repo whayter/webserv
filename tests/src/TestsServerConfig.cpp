@@ -348,8 +348,6 @@ TEST_CASE( "ServerConfig4 - ./config_files/testFindLocation.conf", "[class][Serv
 TEST_CASE( "ServerConfig::getMime", "[class][ServerConfig][getMime]" )
 {
 	ServerConfig::__delete_singleton_instance();
-	if (std::filesystem:: )
-		;
 	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindLocation.conf", "./../mime.types");
 	(void)config;
 
