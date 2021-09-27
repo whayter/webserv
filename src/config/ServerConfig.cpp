@@ -28,10 +28,10 @@ namespace pr = config;
 #ifdef LINUX
 #define MIME_FILE "/etc/mime.types"
 #else
-#define MIME_FILE "./mime.types"
+#define MIME_FILE "???"
 #endif
 
-ServerConfig::ServerConfig(const ft::filesystem::path& filepath)
+ServerConfig::ServerConfig(const ft::filesystem::path& filepath, const ft::filesystem::path& mimePath)
 	: _configFilePath(filepath)
 {
 	std::ifstream file;
@@ -42,7 +42,10 @@ ServerConfig::ServerConfig(const ft::filesystem::path& filepath)
 	_parse(file);
 	_postParser();
 	file.close();
-	_mime = _parseMimeFile(MIME_FILE);
+	if (mimePath.empty())
+		_mime = _parseMimeFile(MIME_FILE);
+	else
+		_mime = _parseMimeFile(mimePath);
 }
 
 std::map<std::string, std::string>	ServerConfig::_parseMimeFile(const ft::filesystem::path & path){
@@ -87,9 +90,9 @@ std::string		ServerConfig::getMime(const std::string& extension)
 }
 
 
-ServerConfig& ServerConfig::getInstance(ft::filesystem::path filepath){
+ServerConfig& ServerConfig::getInstance(const ft::filesystem::path& filepath, const ft::filesystem::path& mimepath){
 	if (_singleton == NULL)
-		_singleton = new ServerConfig(filepath);
+		_singleton = new ServerConfig(filepath, mimepath);
 	return *_singleton;
 }
 

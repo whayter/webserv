@@ -33,7 +33,7 @@ class ServerConfig
 public:
 
 	/// Instanciate the singleton instance at first call with given file
-	static ServerConfig&	getInstance(ft::filesystem::path filepath);
+	static ServerConfig&	getInstance(const ft::filesystem::path& filepath, const ft::filesystem::path& mimePath = ft::filesystem::path());
 	/// Must instanciate the class before using this function.
 	static ServerConfig&	getInstance();
 	/// ONLY FOR TESTING PURPOSE
@@ -59,7 +59,7 @@ public:
 	std::vector<uint32_t>			getPorts();
 
 private:
-	ServerConfig(const ft::filesystem::path & filepath);
+	ServerConfig(const ft::filesystem::path & filepath, const ft::filesystem::path& mimePath = ft::filesystem::path());
 	ServerConfig(ServerConfig&);
 	ServerConfig& operator=(const ServerConfig&);
 	

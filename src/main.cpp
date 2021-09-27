@@ -28,7 +28,7 @@ void parseArgs(int ac, char **av)
 		path = av[1];
 	try
 	{
-		ServerConfig::getInstance(path);
+		ServerConfig::getInstance(path, "./mime.types");
 	}
 	catch(const std::exception& e)
 	{
