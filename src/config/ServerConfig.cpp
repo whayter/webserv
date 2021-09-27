@@ -25,7 +25,11 @@ ServerConfig* ServerConfig::_singleton = NULL;
 
 namespace pr = config;
 
-
+#ifdef LINUX
+#define MIME_FILE "/etc/mime.types"
+#else
+#define MIME_FILE "./mime.types"
+#endif
 
 ServerConfig::ServerConfig(const ft::filesystem::path& filepath)
 	: _configFilePath(filepath)
@@ -38,7 +42,7 @@ ServerConfig::ServerConfig(const ft::filesystem::path& filepath)
 	_parse(file);
 	_postParser();
 	file.close();
-	_mime = _parseMimeFile("/etc/mime.types");
+	_mime = _parseMimeFile(MIME_FILE);
 }
 
 std::map<std::string, std::string>	ServerConfig::_parseMimeFile(const ft::filesystem::path & path){
