@@ -98,10 +98,7 @@ ft::filesystem::path	ServerBlock::getPathFromUri(const Uri& uri) const
 	const Location&			loc = findLocation(uri);
 	ft::filesystem::path	root = !loc.getRoot().empty() ? loc.getRoot() : getRoot();
 	ft::filesystem::path	index = !loc.getIndex().empty() ? loc.getIndex(): getIndex();
-	
-	ft::filesystem::path result;
-	result = root / uri.getPath().relative_path();
-
+	ft::filesystem::path	result = root.empty() ? "." / uri.getPath().relative_path() : root / uri.getPath().relative_path();
 	if ((ft::filesystem::path(loc.getUri()) / "") == uri.getPath() / ""/"" )
 	// if (loc.getUri() == uri.getPath() )
 		result /= index;

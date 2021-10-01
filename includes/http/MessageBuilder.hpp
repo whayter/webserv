@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/12 23:38:35 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/25 16:24:54 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/09/30 19:13:52 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "http.hpp"
 #include "utility.hpp"
 #include "ServerConfig.hpp"
+#include "pageBuilding.hpp"
 
 namespace http {
 
@@ -30,6 +31,7 @@ public:
 
 
 	http::Response			buildResponse(Request& request);
+
 
 	
 	void					setStaticContent(ServerConfig& config, http::Request& request, http::Response &response);
@@ -56,13 +58,12 @@ public:
 
 }; /* class MessageBuilder */
 
-void						setDynamicContent(http::Request& request, http::Response& response, ServerBlock& sblock, ft::filesystem::path& path);
-
-
-std::vector<unsigned char> 	get_file_content(const ft::filesystem::path& path);
-Response				 	make_static_content(const ft::filesystem::path& path);
-Response					make_error(const Uri& uri, Status error);
-std::string					make_autoindex(const ft::filesystem::path& path);
+Response					errorResponse(const Uri& uri, Status error);
+Response					redirectResponse(const ReturnDirective &rdir);
+Response					staticResponse(const ft::filesystem::path& path);
+Response					dynamicResponse(http::Request& request, ServerBlock& sblock, ft::filesystem::path& path);
+Response					autoIndexResponse(const ft::filesystem::path& path);
+std::vector<unsigned char> 	getFileContent(const ft::filesystem::path& path);
 
 }; /* namespace http */
 

@@ -67,6 +67,7 @@ SRC+= Uri.cpp
 SRC+= Message.cpp Request.cpp Response.cpp Status.cpp MessageBuilder.cpp
 SRC+= Device.cpp Socket.cpp Server.cpp
 SRC+= parserMessage.cpp
+SRC+= pageBuilding.cpp
 
 SRC+= ScannerConfig.cpp ServerConfig.cpp ServerBlock.cpp Host.cpp
 SRC+= ReturnDirective.cpp Location.cpp

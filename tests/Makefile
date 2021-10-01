@@ -81,7 +81,7 @@ SRC+= TestsHtmlBuilder.cpp
 SRC+= Message.cpp Request.cpp Response.cpp Status.cpp MessageBuilder.cpp
 SRC+= ScannerStream.cpp ScannerBuffer.cpp ScannerMessage.cpp
 SRC+= Socket.cpp Device.cpp Server.cpp
-
+SRC+= pageBuilding.cpp
 
 SRC+= ScannerConfig.cpp ServerConfig.cpp ServerBlock.cpp Host.cpp
 SRC+= ReturnDirective.cpp Location.cpp

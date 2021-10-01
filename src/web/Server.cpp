@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/08 23:26:05 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/18 13:27:23 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/10/01 15:11:52 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,6 @@ void Server::_buildRequests(int deviceIndex)
 {
 	http::Request request;
 	http::Status errorCode;
-
 	while (http::parseRequest(request, errorCode, _devices[deviceIndex].getInputBuffer()))
 	{
 		_devices[deviceIndex].getRequestsQueue().push(request);

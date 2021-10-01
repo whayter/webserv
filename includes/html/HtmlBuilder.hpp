@@ -138,6 +138,6 @@ private:
 
 }; /* class Builder */
 
-} /* namespace html */
+}; /* namespace html */
 
 #endif /* HTML_BUILDER */
