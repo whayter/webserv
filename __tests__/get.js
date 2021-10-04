@@ -50,6 +50,7 @@ it ('GET /NotExist should return 404.html', function () {
 });
 
 let timeout = 15000;
+jest.setTimeout(timeout);
 it ('GET teletubbies SHOULD WORK !! :-D ', function () {
   return frisby.timeout(timeout)
   .get(baseUri + 'autoindex/a-la-queue-leu-leu-teletubbies.mp4')
