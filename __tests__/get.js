@@ -3,7 +3,6 @@ const frisby = require('frisby');
 describe('webserv', function() {
 
 var baseUri = 'http://localhost:80/';
-jest.setTimeout(1000);
 
 // FileReader(""); read index.php and compare content to see if it match response body 
 
@@ -50,7 +49,8 @@ it ('GET /NotExist should return 404.html', function () {
   .expect('bodyContains', 'Seems like your page doesn\'t exist anymore')
 });
 
-it ('GET teletubbies SHOULD WORK !! :-@ ', function () {
+it ('GET teletubbies SHOULD WORK !! :-D ', function () {
+  jest.setTimeout(5000);
   return frisby
   .get(baseUri + 'autoindex/a-la-queue-leu-leu-teletubbies.mp4')
   .expect('status', 200)
