@@ -92,6 +92,8 @@ std::vector<unsigned char> buildAutoindexPage(const ft::filesystem::path& path)
 
 std::vector<unsigned char> buildSimplePage(std::string content)
 {
+
+	std::cout << "ok" << std::endl;
 	Builder html("html");
 	Builder head("head");
 	head.addChild("title", content);
