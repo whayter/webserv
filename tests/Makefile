@@ -71,14 +71,14 @@ SRC+= TestsFilesystem.cpp 		filesystem.cpp filesystem_error.cpp file_status.cpp 
 SRC+= TestsScannerConfig.cpp
 SRC+= TestsServerConfig.cpp
 SRC+= TestsSystemError.cpp 		system_error.cpp error_code.cpp
-SRC+= TestsParserMessage.cpp	parserMessage.cpp
+SRC+= TestsMessageParser.cpp	messageParser.cpp
 SRC+= TestsUtility.cpp			utility.cpp
 
 SRC+= TestsScannerMessage.cpp
 SRC+= TestsSharedPtr.cpp
 SRC+= TestsHtmlBuilder.cpp
 
-SRC+= Message.cpp Request.cpp Response.cpp Status.cpp MessageBuilder.cpp
+SRC+= Message.cpp Request.cpp Response.cpp Status.cpp messageBuilder.cpp
 SRC+= ScannerStream.cpp ScannerBuffer.cpp ScannerMessage.cpp
 SRC+= Socket.cpp Device.cpp Server.cpp
 SRC+= pageBuilding.cpp
