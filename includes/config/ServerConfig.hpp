@@ -6,26 +6,25 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/09/12 16:22:56 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/10/04 11:55:46 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_CONFIG_HPP
 #define SERVER_CONFIG_HPP
 
+#include "Uri.hpp"
+#include "ScannerConfig.hpp"
+#include "filesystem.h"
+#include "Host.hpp"
+#include "Location.hpp"
+#include "ServerBlock.hpp"
+
 #include <vector>
 #include <map>
 #include <set>
 #include <string>
 #include <stdint.h>
-
-#include "Uri.hpp"
-#include "config/ScannerConfig.hpp"
-#include "filesystem.h"
-
-#include "Host.hpp"
-#include "Location.hpp"
-#include "ServerBlock.hpp"
 
 /// @brief Singleton Class
 class ServerConfig

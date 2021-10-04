@@ -3,6 +3,7 @@
 
 #include "http.hpp"
 #include "ScannerMessage.hpp"
+
 #include <vector>
 
 namespace http {

@@ -1,8 +1,9 @@
 #ifndef  RETURN_DIRECTIVE_HPP
 #define RETURN_DIRECTIVE_HPP
 
-#include <string>
 #include "Uri.hpp"
+
+#include <string>
 #include <stdint.h>
 
 class ReturnDirective

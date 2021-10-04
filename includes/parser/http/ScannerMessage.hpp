@@ -1,8 +1,9 @@
 #ifndef SCANNER_MESSAGE_HPP
 #define SCANNER_MESSAGE_HPP
 
+#include "ScannerBuffer.hpp"
+
 #include <istream>
-#include <ScannerBuffer.hpp>
 
 namespace parser {
 

@@ -2,6 +2,7 @@
 #define STATUS_HPP
 
 #include "http.hpp"
+
 #include <string>
 
 namespace http {
