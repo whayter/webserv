@@ -11,8 +11,9 @@ namespace html {
 Builder link(std::string rel, std::string type, std::string href);
 Builder a(std::string content, std::string href);
 std::vector<unsigned char> buildRedirectionPage(const ReturnDirective &rdir);
-std::string buildErrorPage(http::Status error);
-std::string buildAutoindexPage(const ft::filesystem::path& path);
+std::vector<unsigned char> buildErrorPage(http::Status error);
+std::vector<unsigned char> buildAutoindexPage(const ft::filesystem::path& path);
+std::vector<unsigned char> buildSimplePage(std::string content);
 
 }; /* namespace html */
 

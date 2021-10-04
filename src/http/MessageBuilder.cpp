@@ -82,7 +82,10 @@ Response redirectResponse(const ReturnDirective &rdir)
 {
 	Response result;
 	result.setHeader("Content-Type", "text/html");
-	result.setContent(html::buildRedirectionPage(rdir));
+	if (rdir.hasUri())
+		result.setContent(html::buildRedirectionPage(rdir));
+	else
+		result.setContent(html::buildSimplePage(rdir.getText()));
 	return result;
 }
 
@@ -90,7 +93,7 @@ Response autoIndexResponse(const ft::filesystem::path& path)
 {
 	Response result;
 	result.setHeader("Content-Type", "text/html");
-	result.setContent(ft::vectorizeString(html::buildAutoindexPage(path)));
+	result.setContent(html::buildAutoindexPage(path));
 	return result;
 }
 
@@ -109,7 +112,7 @@ Response errorResponse(const Uri& uri, Status error)
 	else
 	{
 		result.setHeader("Content-Type", "text/html");
-		result.setContent(ft::vectorizeString(html::buildErrorPage(error)));
+		result.setContent(html::buildErrorPage(error));
 	}
 	return result;
 }

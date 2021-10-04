@@ -44,8 +44,9 @@ std::vector<unsigned char> buildRedirectionPage(const ReturnDirective &rdir)
 	return ft::vectorizeString(html.str());
 }
 
-std::string buildErrorPage(http::Status error)
+std::vector<unsigned char> buildErrorPage(http::Status error)
 {
+	Builder html("html");
 	std::string title = ft::intToString(error.getValue());
 	title += " - " + error.getDefinition();
 	Builder head("head");
@@ -55,11 +56,14 @@ std::string buildErrorPage(http::Status error)
 	body.addChild("h1", title);
 	body.addChild("hr", "");
 	body.addChild("p", "Webserv");
-	return Builder("html").addChild(head)->addChild(body)->str();	
+	html.addChild(head);
+	html.addChild(body);
+	return ft::vectorizeString(html.str());
 }
 
-std::string buildAutoindexPage(const ft::filesystem::path& path)
+std::vector<unsigned char> buildAutoindexPage(const ft::filesystem::path& path)
 {
+	Builder html("html");
 	Builder head("head");
 	std::string title = "index of ";
 	title += &(path.c_str()[1]);
@@ -81,7 +85,21 @@ std::string buildAutoindexPage(const ft::filesystem::path& path)
 	body.addChild("hr","");
 	body.addChild(pre);
 	body.addChild("hr","");
-	return Builder("html").addChild(head)->addChild(body)->str();	
+	html.addChild(head);
+	html.addChild(body);
+	return ft::vectorizeString(html.str());
+}
+
+std::vector<unsigned char> buildSimplePage(std::string content)
+{
+	Builder html("html");
+	Builder head("head");
+	head.addChild("title", content);
+	Builder body("body");
+	body.addChild("p", content);
+	html.addChild(head);
+	html.addChild(body);
+	return ft::vectorizeString(html.str());
 }
 
 }; /* namespace html */
