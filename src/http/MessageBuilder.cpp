@@ -1,18 +1,16 @@
 #include "ServerConfig.hpp"
-#include "messageBuilder.hpp"
-#include "Request.hpp"
-#include "Response.hpp"
-#include "utility.hpp"
-#include "Status.hpp"
-
 #include "Location.hpp"
 
-#include "HtmlBuilder.hpp"
-
+#include "Status.hpp"
+#include "Request.hpp"
+#include "Response.hpp"
+#include "messageParser.hpp"
+#include "messageBuilder.hpp"
 #include "cgi.hpp"
 
+#include "utility.hpp"
+#include "HtmlBuilder.hpp"
 #include "filesystem.hpp"
-#include "messageParser.hpp"
 
 #include <stdio.h>
 #include <fstream>
@@ -28,13 +26,13 @@ Response buildResponse(Request& request)
 	ServerBlock&	server = config.findServer(request.getUri());
 	fs::path		path = server.getPathFromUri(request.getUri());
 	const Location&	location = server.findLocation(path.c_str());
-	action			aAAhhction = location.getAction();							// nom de merde lol
+	action			action = location.getAction();
 
-	if (aAAhhction == action::cgi)
+	if (action == action::cgi)
 		return dynamicResponse(request, server, path);
-	else if (aAAhhction == action::returnDirective)
+	else if (action == action::returnDirective)
 		return redirectResponse(location.getReturnDirective());
-	else if (aAAhhction == action::none)
+	else if (action == action::none)
 	{
 		ft::error_code ec;
 		ft::filesystem::file_status stat = ft::filesystem::status(path, ec);
