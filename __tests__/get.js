@@ -3,6 +3,7 @@ const frisby = require('frisby');
 describe('webserv', function() {
 
 var baseUri = 'http://localhost:80/';
+jest.setTimeout(7000);
 
 // FileReader(""); read index.php and compare content to see if it match response body 
 
