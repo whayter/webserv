@@ -49,13 +49,13 @@ it ('GET /NotExist should return 404.html', function () {
   .expect('bodyContains', 'Seems like your page doesn\'t exist anymore')
 });
 
+let timeout = 7000;
 it ('GET teletubbies SHOULD WORK !! :-D ', function () {
-  jest.setTimeout(5000);
-  return frisby
+  return frisby.timeout(timeout)
   .get(baseUri + 'autoindex/a-la-queue-leu-leu-teletubbies.mp4')
   .expect('status', 200)
   .expect('header', 'date')
-});
+}, timeout);
 
 it ('GET port 83, shout return index of /', function () {
   return frisby
