@@ -49,7 +49,7 @@ it ('GET /NotExist should return 404.html', function () {
   .expect('bodyContains', 'Seems like your page doesn\'t exist anymore')
 });
 
-let timeout = 200000;
+let timeout = 500000;
 jest.setTimeout(timeout);
 it ('GET teletubbies SHOULD WORK !! :-D ', function () {
   return frisby.timeout(timeout)
