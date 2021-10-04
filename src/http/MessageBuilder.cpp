@@ -1,17 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   MessageBuilder.cpp                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/12 23:42:16 by hwinston          #+#    #+#             */
-/*   Updated: 2021/10/01 15:25:38 by hwinston         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "ServerConfig.hpp"
-#include "MessageBuilder.hpp"
+#include "messageBuilder.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
 #include "utility.hpp"
@@ -24,7 +12,7 @@
 #include "cgi.hpp"
 
 #include "filesystem.hpp"
-#include "parserMessage.hpp"
+#include "messageParser.hpp"
 
 #include <stdio.h>
 #include <fstream>
@@ -34,12 +22,7 @@ namespace fs = ft::filesystem;
 
 namespace http {
 
-MessageBuilder::MessageBuilder() {}
-
-MessageBuilder::~MessageBuilder() {}
-
-
-http::Response MessageBuilder::buildResponse(Request& request)
+Response buildResponse(Request& request)
 {	
 	ServerConfig&	config = ServerConfig::getInstance();
 	ServerBlock&	server = config.findServer(request.getUri());

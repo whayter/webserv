@@ -11,8 +11,6 @@
 
 namespace html {
 
-class Builder;
-
 struct Attribute {
 
 	std::string name;

@@ -1,17 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Message.hpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/12 18:53:31 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/16 15:40:07 by hwinston         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#ifndef AMESSAGE_HPP
-#define AMESSAGE_HPP
+#ifndef MESSAGE_HPP
+#define MESSAGE_HPP
 
 #include "http.hpp"
 

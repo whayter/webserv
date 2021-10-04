@@ -2,7 +2,6 @@
 <?php
 
 echo '<html lang="en"><head><meta charset="utf-8"><title>Webserv</title>' ;
-echo '<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">' ;
 echo '<style>body{margin: 4vh 8vw;}section{margin: 10vh 4vw;}' ;
 echo '.text-center{text-align: center;}.text-justify{text-align: justify;}' ;
 echo '.text-emphase{font-style: oblique;}.hr-invisible{visibility: hidden; height: 20px;}' ;

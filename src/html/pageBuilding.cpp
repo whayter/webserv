@@ -32,7 +32,6 @@ std::vector<unsigned char> buildRedirectionPage(const ReturnDirective &rdir)
 	title += " " + status.getDefinition();
 	Builder head("head");
 	head.addChild("title", title);
-	head.addChild(link("shortcut icon", "image/x-con", "/www/favicon.ico"));        // href en dur
 	Builder body("body");
 	body.addAttribute("style", "text-align:center;");
 	body.addChild("h1", title);
@@ -51,7 +50,6 @@ std::string buildErrorPage(http::Status error)
 	title += " - " + error.getDefinition();
 	Builder head("head");
 	head.addChild("title", title);
-	head.addChild(link("shortcut icon", "image/x-con", "/www/favicon.ico"));    // href en dur
 	Builder body("body");
 	body.addAttribute("style", "text-align:center;");
 	body.addChild("h1", title);
@@ -63,13 +61,14 @@ std::string buildErrorPage(http::Status error)
 std::string buildAutoindexPage(const ft::filesystem::path& path)
 {
 	Builder head("head");
-	std::string title = "index of /";
-	title += path.filename();
+	std::string title = "index of ";
+	title += &(path.c_str()[1]);
 	head.addChild("title", title);
-	head.addChild(link("shortcut icon", "image/x-con", "/www/favicon.ico"));    // href en dur
 	Builder body("body");
 	Builder pre("pre");
-	pre.addChild(a("../", "../"));
+	std::string backHref = "/";
+	backHref += path.parent_path().string();
+	pre.addChild(a("../", backHref));
 	ft::filesystem::directory_iterator it(path);
 	for (; it != ft::filesystem::directory_iterator(); ++it)
 	{
