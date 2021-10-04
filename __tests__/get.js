@@ -56,12 +56,11 @@ it ('GET teletubbies SHOULD WORK !! :-@ ', function () {
   .expect('header', 'date')
 });
 
-it ('GET port 83, shout return autoindex of /', function () {
+it ('GET port 83, shout return index of /', function () {
   return frisby
   .get('http://localhost:83/')
   .expect('status', 200)
   .expect('bodyContains', 'index of /')
-  .expect('header', 'server', 'srv_four')
 });
 
 // 262144 max char macos (getconf ARG_MAX) 
