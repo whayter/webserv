@@ -45,7 +45,7 @@ jobs:
             MallocStackLoggingNoCompact=1
             ./webserv &
             PID=$!
-            npm test
+            npm test --detectOpenHandles
             leaks webserv
             kill $PID
         fi
