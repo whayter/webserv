@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/07/30 14:07:41 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/13 09:59:11 by hwinston         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "ServerConfig.hpp"
 #include "Server.hpp"
 
@@ -80,12 +68,13 @@ void prompt()
 }
 
 void signalCallback(int signum) {
-	std::cout <<  std::endl;
+	std::cout << std::endl;
 	if (signum == SIGTERM)
-		std::cout << "TERM signal received."<< std::endl;
+		std::cout << "SIGTERM signal received. ";
 	else if (signum == SIGINT)
-		std::cout << "SIGINT signal received."<< std::endl;
-	std::cout << "Trying shutting down..."<< std::endl;
+		std::cout << "SIGINT signal received. ";
+	std::cout << "Shutting down..." << std::endl;
+	std::cout << std::endl;
 	run = false;
 }
 

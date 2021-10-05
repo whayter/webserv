@@ -1,10 +1,10 @@
 #ifndef SERVER_BLOCK_HPP
 #define SERVER_BLOCK_HPP
 
-#include "filesystem.h"
 #include "Location.hpp"
-
 #include "Host.hpp"
+#include "filesystem.h"
+
 
 class ServerBlock
 {

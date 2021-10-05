@@ -13,7 +13,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+#        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
+
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
@@ -45,7 +47,7 @@ jobs:
             MallocStackLoggingNoCompact=1
             ./webserv &
             PID=$!
-            npm test
+            npm test -- --detectOpenHandles
             leaks webserv
             kill $PID
         fi

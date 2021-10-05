@@ -13,7 +13,7 @@ it ('GET /index.php should return a status of 200', function () {
   .expect('header', 'date')
   .expect('bodyContains', 'Webserv')
   .expect('bodyContains', 'CGI params')
-  .expect('header', 'content-type', "text/html")
+  .expect('header', 'content-type', "text/html; charset=UTF-8")
   // .inspectBody()
 });
 
@@ -24,7 +24,7 @@ it ('GET / should return index.php and 200', function () {
   .expect('header', 'date')
   .expect('bodyContains', 'Webserv')
   .expect('bodyContains', 'CGI params')
-  .expect('header', 'content-type', "text/html")
+  .expect('header', 'content-type', "text/html; charset=UTF-8")
 });
 
 it ('GET /autoindex should show index and contain "teletubbies"', function () {
@@ -47,6 +47,22 @@ it ('GET /NotExist should return 404.html', function () {
   .get(baseUri + '/NotExist')
   .expect('status', 404)
   .expect('bodyContains', 'Seems like your page doesn\'t exist anymore')
+});
+
+let timeout = 500000;
+jest.setTimeout(timeout);
+it ('GET teletubbies SHOULD WORK !! :-D ', function () {
+  return frisby.timeout(timeout)
+  .get(baseUri + 'autoindex/a-la-queue-leu-leu-teletubbies.mp4')
+  .expect('status', 200)
+  .expect('header', 'date')
+}, timeout);
+
+it ('GET port 83, shout return index of /', function () {
+  return frisby
+  .get('http://localhost:83/')
+  .expect('status', 200)
+  .expect('bodyContains', 'index of /')
 });
 
 // 262144 max char macos (getconf ARG_MAX) 

@@ -64,15 +64,23 @@ SRC+= utility.cpp
 SRC+= ScannerMessage.cpp
 SRC+= ScannerStream.cpp ScannerBuffer.cpp
 SRC+= Uri.cpp
-SRC+= Message.cpp Request.cpp Response.cpp Status.cpp MessageBuilder.cpp
+
+# http
+SRC+= Message.cpp Request.cpp Response.cpp Status.cpp
+SRC+= messageBuilder.cpp messageParser.cpp
+
+# web
 SRC+= Device.cpp Socket.cpp Server.cpp
-SRC+= parserMessage.cpp
+
+# html
+SRC+= pageBuilding.cpp
 
 SRC+= ScannerConfig.cpp ServerConfig.cpp ServerBlock.cpp Host.cpp
 SRC+= ReturnDirective.cpp Location.cpp
 
 # ft
 SRC+= system_error.cpp error_code.cpp
+
 # ft::filesystem
 SRC+= filesystem.cpp path.cpp filesystem_error.cpp file_status.cpp
 SRC+= directory_entry.cpp directory_iterator.cpp

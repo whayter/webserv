@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Response.hpp                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/15 14:45:08 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/25 15:55:30 by hwinston         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef RESPONSE_HPP
 #define RESPONSE_HPP
 
@@ -26,16 +14,15 @@ public:
 	Response();
 	~Response();
 
-	inline Status&			getStatus() { return _status; }
-	
-	void					setStatus(Status e);
+	inline Status&	getStatus() { return _status; }
 
-	bool					empty() const;
-	void					clear();
+	void			setStatus(Status e);
+	bool			empty() const;
+	void			clear();
 
 private:
 
-	Status					_status;
+	Status			_status;
 
 }; /* class Response */
 

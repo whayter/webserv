@@ -1,23 +1,10 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Server.cpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/08 23:26:05 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/18 13:27:23 by hwinston         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "Server.hpp"
 #include "ServerConfig.hpp"
 #include "utility.hpp"
 
-#include "MessageBuilder.hpp"
 #include "Response.hpp"
-
-#include "parserMessage.hpp"
+#include "messageBuilder.hpp"
+#include "messageParser.hpp"
 
 #include <cerrno>
 #include <ctime>
@@ -165,7 +152,6 @@ void Server::_buildRequests(int deviceIndex)
 {
 	http::Request request;
 	http::Status errorCode;
-
 	while (http::parseRequest(request, errorCode, _devices[deviceIndex].getInputBuffer()))
 	{
 		_devices[deviceIndex].getRequestsQueue().push(request);
@@ -175,11 +161,10 @@ void Server::_buildRequests(int deviceIndex)
 
 void Server::_buildResponses(int deviceIndex)
 {
-	http::MessageBuilder builder;
 	std::queue<http::Request>& requests = _devices[deviceIndex].getRequestsQueue();
 	while (!requests.empty())
 	{
-		http::Response response = builder.buildResponse(requests.front());
+		http::Response response = http::buildResponse(requests.front());
 		requests.pop();
 		_devices[deviceIndex].getResponsesQueue().push(response);
 	}
@@ -187,14 +172,13 @@ void Server::_buildResponses(int deviceIndex)
 
 void Server::_sendResponses(int deviceIndex)
 {
-	http::MessageBuilder builder;
 	std::queue<http::Response>& responses = _devices[deviceIndex].getResponsesQueue();
 	std::vector<unsigned char> outputBuffer = _devices[deviceIndex].getOutputBuffer();
 
 	while (!responses.empty())
 	{
 		http::Response response = responses.front();
-		std::string stringResponse = builder.stringifyMessage(response);
+		std::string stringResponse = http::stringifyMessage(response);
 		outputBuffer.insert(outputBuffer.end(), stringResponse.begin(), stringResponse.end());
 		responses.pop();
 	}

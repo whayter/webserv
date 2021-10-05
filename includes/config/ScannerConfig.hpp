@@ -3,18 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   ScannerConfig.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juligonz <juligonz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/06 13:36:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/08/21 19:06:58 by juligonz         ###   ########.fr       */
+/*   Updated: 2021/10/04 11:53:16 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SCANNER_CONFIG_HPP
 #define SCANNER_CONFIG_HPP
 
+#include "ScannerStream.hpp"
+
 #include <istream>
-#include "ft/scanner/ScannerStream.hpp"
 
 namespace config{
 

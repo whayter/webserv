@@ -1,17 +1,8 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Uri.hpp                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/08/03 13:01:23 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/12 17:53:19 by hwinston         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef URI_HPP
 #define URI_HPP
+
+#include "SyntaxError.hpp"
+#include "path.hpp"
 
 #include <string>
 #include <sstream>
@@ -19,9 +10,6 @@
 #include <algorithm>
 #include <map>
 #include <iostream>
-
-#include "SyntaxError.hpp"
-#include "path.hpp"
 
 /**
  *    The following are two example URIs and their component parts:
@@ -39,8 +27,8 @@
  * 
  */
 
-class Uri
-{
+class Uri {
+
 public:
 
 	/// @brief Create empty uri
@@ -67,44 +55,42 @@ public:
 
 	~Uri();
 
-	inline std::string		getScheme()			{ return _scheme;	}
-	inline std::string		getUserInfo()		{ return _userInfo; }
-	inline std::string		getHost() const		{ return _host; 	}
-	//inline std::string		getPath()			{ return _path;		}
-	inline ft::filesystem::path	getPath() const	{ return ft::filesystem::path(_path);		}
-	inline u_short			getSpecifiedPort()	{ return _port;		}
-	inline std::string		getRawQuery()		{ return _query;	}
+	inline std::string			getScheme()			{ return _scheme;	}
+	inline std::string			getUserInfo()		{ return _userInfo; }
+	inline std::string			getHost() const		{ return _host; 	}
+	inline ft::filesystem::path	getPath() const	{ return ft::filesystem::path(_path); }
+	inline u_short				getSpecifiedPort()	{ return _port;		}
+	inline std::string			getRawQuery()		{ return _query;	}
 	
-	u_short					getPort() const;
-	std::string				getQuery() const;
-	std::string				getPathEtc() const;
-	std::string				getPathAndQuery() const;
-	std::string				getAuthority() const;
-	std::string				getFragment();
+	u_short						getPort() const;
+	std::string					getQuery() const;
+	std::string					getPathEtc() const;
+	std::string					getPathAndQuery() const;
+	std::string					getAuthority() const;
+	std::string					getFragment();
 
-	void					setScheme(const std::string&);
-	void					setUserInfo(const std::string&);
-	void					setHost(const std::string&);
-	void					setPath(const std::string&);
-	void					setPathEtc(const std::string&);
-	void					setSpecifiedPort(u_short);
-	void					setRawQuery(const std::string&);
-	void					setFragment(const std::string&);
+	void						setScheme(const std::string&);
+	void						setUserInfo(const std::string&);
+	void						setHost(const std::string&);
+	void						setPath(const std::string&);
+	void						setPathEtc(const std::string&);
+	void						setSpecifiedPort(u_short);
+	void						setRawQuery(const std::string&);
+	void						setFragment(const std::string&);
 	
-	void					setPort(u_short);
-	void					setQuery(const std::string&);
+	void						setPort(u_short);
+	void						setQuery(const std::string&);
 	/// Parses the given authority part and sets the user-info, host, port components accordingly
-	void					setAuthority(const std::string&);
+	void						setAuthority(const std::string&);
 
-	std::string			decode(std::string s) const;
-	std::string			toString() const;
+	std::string					decode(std::string s) const;
+	std::string					toString() const;
 
-	u_short		getWellKnownPort() const ;
-	bool		isWellKnownPort() const ;
-	bool		isRelative() const ;
-	bool		empty() const ;
-
-	void 	clear();
+	u_short						getWellKnownPort() const ;
+	bool						isWellKnownPort() const ;
+	bool						isRelative() const ;
+	bool						empty() const ;
+	void 						clear();
 
 private:
 
@@ -122,11 +108,11 @@ private:
 	std::string _path;
 	std::string _query;
 	std::string _fragment;
-};
+
+}; /* class Uri */
 
 bool 			operator==(const Uri& lhs, const Uri& rhs) throw();
 bool 			operator!=(const Uri& lhs, const Uri& rhs) throw();
 std::ostream&	operator<<(std::ostream& os, const Uri& uri);
-
 
 #endif /* URI_HPP */

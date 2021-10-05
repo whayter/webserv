@@ -1,17 +1,15 @@
 #ifndef HTML_BUILDER
 #define HTML_BUILDER
 
+#include "filesystem.h"
+
 #include <string>
 #include <sstream>
 #include <vector>
 
-#include "filesystem.h"
-
 #define INDENT_SIZE 2 
 
 namespace html {
-
-class Builder;
 
 struct Attribute {
 
@@ -138,6 +136,6 @@ private:
 
 }; /* class Builder */
 
-} /* namespace html */
+}; /* namespace html */
 
 #endif /* HTML_BUILDER */

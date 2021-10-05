@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Request.hpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/15 14:43:29 by hwinston          #+#    #+#             */
-/*   Updated: 2021/09/15 14:53:55 by hwinston         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef REQUEST_HPP
 #define REQUEST_HPP
 
@@ -31,7 +19,6 @@ public:
 
 	void					setMethod(std::string method);
 	void					setUri(const Uri& uri);
-
 	bool					empty() const;
 	void					clear();
 

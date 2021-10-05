@@ -8,13 +8,12 @@
 
 #include <unistd.h>
 #include <sys/wait.h>
-
 #include <iostream>
 #include <string>
-
 #include <cstdlib>
-
 #include <istream>
+
+#define BUF_SIZE 4096
 
 namespace fs = ft::filesystem;
 
@@ -38,14 +37,8 @@ void setEnvironment(http::Request& request, ServerBlock& sblock, fs::path path)
 	setenv("REQUEST_URI", request.getUri().getPath().c_str(), 0);
 	setenv("QUERY_STRING", request.getUri().getQuery().c_str(), 0);
 	setenv("DOCUMENT_ROOT", sblock.getRoot().c_str(), 0);
-	// j'ai rajoute ca juste pour desactiver l'erreur cgi sous linux:
-	setenv("REDIRECT_STATUS", "", 1);
-	// <p>This PHP CGI binary was compiled with force-cgi-redirect enabled.  This
-	// means that a page will only be served up if the REDIRECT_STATUS CGI variable is
-	// set, e.g. via an Apache Action directive.</p>
-
+	setenv("REDIRECT_STATUS", "", 0);
 	setenv("SCRIPT_FILENAME", path.c_str(), 0);
-
 	setenv("CONTENT_TYPE", request.getHeader("Content-type").c_str(), 0);
 	setenv("CONTENT_LENGTH", request.getHeader("Content-Length").c_str(), 0);
 }
@@ -68,6 +61,7 @@ void unsetEnvironment()
 	unsetenv("REQUEST_URI");
 	unsetenv("QUERY_STRING");
 	unsetenv("DOCUMENT_ROOT");
+	unsetenv("REDIRECT_STATUS");
 	unsetenv("SCRIPT_FILENAME");
 	unsetenv("CONTENT_TYPE");
 	unsetenv("CONTENT_LENGTH");
@@ -84,7 +78,7 @@ static void replacePipeEnd(int oldFd, int newFd)
 
 std::vector<unsigned char> getCgiResponse(std::string cgiExecPath)
 {	
-	std::vector<unsigned char> r;
+	std::vector<unsigned char> cgiResponse;
 	int childToParent[2];
 	int parentToChild[2];
 	pipe(childToParent);
@@ -100,7 +94,7 @@ std::vector<unsigned char> getCgiResponse(std::string cgiExecPath)
 		// read data from parent here (if method=POST)
 
 		char* arg = 0;
-		execve(cgiExecPath.c_str(), &arg, environ);				// exec cgi binary
+		execve(cgiExecPath.c_str(), &arg, environ);		// exec cgi binary
 	}
 	else if (pid > 0)									// main process
 	{
@@ -113,14 +107,13 @@ std::vector<unsigned char> getCgiResponse(std::string cgiExecPath)
 		waitpid(pid, NULL, 0);							// wait for child process to end.
 		replacePipeEnd(childToParent[0], 0);			// replace stdin with incoming pipe
 
-		char buffer[4096];							// tmp buf size
-
 		size_t nbytes;
-		while ((nbytes = read(STDIN_FILENO, buffer, 4096)) > 0)
+		char buffer[BUF_SIZE];
+		while ((nbytes = read(STDIN_FILENO, buffer, BUF_SIZE)) > 0)
 			for (size_t i = 0; i < nbytes; i++)
-				r.push_back(buffer[i]);
+				cgiResponse.push_back(buffer[i]);
 	}
-	return r;
+	return cgiResponse;
 }
 
 #endif

@@ -1,14 +1,15 @@
 #ifndef SCANNER_MESSAGE_HPP
 #define SCANNER_MESSAGE_HPP
 
-#include <istream>
-#include <ft/scanner/ScannerBuffer.hpp>
+#include "ScannerBuffer.hpp"
 
-namespace parser{
-namespace http{
+#include <istream>
+
+namespace parser {
+
+namespace http {
 
 // LWS = " " | "\t"
-
 
 struct TokenKind {
 
@@ -38,22 +39,10 @@ struct TokenKind {
     }
 
 private:
+
 	TokenKindEnum _e;
-};
 
-
-
-// struct ScopedEnum
-// {
-// 	enum TokenKind
-// 	{
-// 		kEndOfInput = 0, kError,
-// 		kString, kNewLine, kCarriage,
-// 		kLeftBrace, kRightBrace,
-// 		kComma, kColon, kLWS
-// 	};
-// };
-// typedef ScopedEnum::TokenKind TokenKind;
+}; /* struct TokenKind */
 
 struct Token
 {
@@ -61,12 +50,12 @@ struct Token
 
 	TokenKind	kind;
 	std::string	value;
-};
+}; /* struct Token */
 
+class ScannerMessage {
 
-class ScannerMessage
-{
 public:
+
 	ScannerMessage(std::vector<unsigned char> &buffer);
 	~ScannerMessage();
 
@@ -82,12 +71,13 @@ public:
 	// void putback(std::string str);
 
 private:
+
 	ScannerMessage();
 
 	bool _charIsString(char c);
 	Token _makeToken(TokenKind kind, std::string value);
-
 	ft::scanner::ScannerBuffer _scan;
+
 }; /* class ScannerMessage */
 
 const char* tokenKindToCstring(TokenKind type);
@@ -95,6 +85,7 @@ std::string tokenToString(Token token);
 std::ostream & operator<<(std::ostream& os, const Token &t);
 
 } /* namespace http */
+
 } /* namespace parser */
 
 #endif /* SCANNER_MESSAGE_HPP */
