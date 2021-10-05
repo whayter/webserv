@@ -81,11 +81,16 @@ Response dynamicResponse(http::Request& request, ServerBlock& sblock, fs::path& 
 Response redirectResponse(const ReturnDirective &rdir)
 {
 	Response result;
-	result.setHeader("Content-Type", "text/html");
 	if (rdir.hasUri())
+	{
 		result.setContent(html::buildRedirectionPage(rdir));
+		result.setHeader("Content-Type", "text/html");
+	}
 	else
-		result.setContent(html::buildSimplePage(rdir.getText()));
+	{
+		result.setContent(ft::vectorizeString(rdir.getText()));
+		result.setHeader("Content-Type", "text/plain");
+	}
 	return result;
 }
 
