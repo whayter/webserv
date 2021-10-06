@@ -28,6 +28,8 @@ Response buildResponse(Request& request)
 	const Location&	location = server.findLocation(path.c_str());
 	action			action = location.getAction();
 
+	if (request.getMethod() == "DELETE")
+		return deleteResponse(request, path);
 	if (request.getMethod() == "POST")
 		postContent(path, request.getContent());
 	if (action == action::cgi)
@@ -60,6 +62,17 @@ void postContent(std::string path, content_type content)
 	close(fd);
 }
 
+Response deleteResponse(Request& request, std::string path)
+{
+	Response result;
+	int status = remove(path.c_str());
+	if (status != 0)
+		return errorResponse(request.getUri(), Status::NotFound);
+	result.setStatus(Status::OK);
+	result.setContent(html::buildSimplePage("File deleted"));
+	return result;
+}
+
 Response staticResponse(const ft::filesystem::path& path)
 {
 	Response result;
@@ -80,20 +93,21 @@ Response dynamicResponse(http::Request& request, ServerBlock& sblock, fs::path& 
 	std::vector<unsigned char> buffer = getCgiResponse(cgiExecPath);
 	unsetEnvironment();
 	Message cgiResponse = parseCgiResponse(buffer);
-
-	// check cgiResponse Status here
 	std::string cgiStatus = cgiResponse.getHeader("Status");
-	int stat = atoi(cgiStatus.substr(0, 3).c_str());
-	if (isError(Status(stat)))
-		return (errorResponse(request.getUri(), Status(stat)));
-	result.setStatus(Status(stat));
-
+	int status = strtol(cgiStatus.c_str(),  NULL, 10);
+	if (isError(Status(status)))
+		return (errorResponse(request.getUri(), Status(status)));
+	result.setStatus(Status(status));
 	result.setContent(cgiResponse.getContent());
-	result.setHeader("Content-Type", cgiResponse.getHeader("Content-type"));
-	// if cgiResponse status is error: call errorResponse here ?
-
+	result.setHeader("Content-Type", cgiResponse.getHeader("Content-type"));	
+	if (request.getMethod() == "POST")
+	{
+		result.setHeader("Content-Length", "0");
+		result.setContent(content_type());
+	}
+	else
+		result.setContent(cgiResponse.getContent());
 	postContent(path, cgiResponse.getContent());
-
 	return result;
 }
 
