@@ -28,6 +28,16 @@ Response buildResponse(Request& request)
 	const Location&	location = server.findLocation(path.c_str());
 	action			action = location.getAction();
 
+	if (request.getMethod() == "POST")
+	{
+		int fd = open(path.c_str(), O_CREAT | O_RDWR, 0666);
+		std::string content = ft::stringifyVector(request.getContent());
+		int r = write(fd, content.c_str(), content.size());
+		if (r == -1)
+			std::cout << "error: " << strerror(errno) << std::endl;
+		close(fd);
+	}
+
 	if (action == action::cgi)
 		return dynamicResponse(request, server, path);
 	else if (action == action::returnDirective)
@@ -48,6 +58,16 @@ Response buildResponse(Request& request)
 	return errorResponse(request.getUri(), Status::NotFound);
 }
 
+void postContent(std::string path, http::Request& request)
+{
+	int fd = open(path.c_str(), O_CREAT | O_RDWR, 0666);
+	std::string content = ft::stringifyVector(request.getContent());
+	int r = write(fd, content.c_str(), content.size());
+	if (r == -1)
+		std::cout << "error write(): " << strerror(errno) << std::endl;
+	close(fd);
+}
+
 Response staticResponse(const ft::filesystem::path& path)
 {
 	Response result;
@@ -55,6 +75,8 @@ Response staticResponse(const ft::filesystem::path& path)
 	result.setContent(getFileContent(path));
 	std::string extension = ServerConfig::getInstance().getMime(path.extension());
 	result.setHeader("Content-Type", extension);
+
+	std::cout << "result status = " << result.getHeader("Status") << std::endl;
 	return result;
 }
 
@@ -62,19 +84,19 @@ Response dynamicResponse(http::Request& request, ServerBlock& sblock, fs::path& 
 {
 	Response result;
 	setEnvironment(request, sblock, path);
-
-#ifdef LINUX
-	char cgiExecPath[] = "/usr/bin/php-cgi";			// tmp
-#else
-	char cgiExecPath[] = "/usr/local/bin/php-cgi";		// tmp
-#endif
-
+	std::string cgiExecPath = sblock.findLocation(path.c_str()).getCgiExec();
 	std::vector<unsigned char> buffer = getCgiResponse(cgiExecPath);
 	unsetEnvironment();
-	http::Message cgiResponse = http::parseCgiResponse(buffer);
+	Message cgiResponse = parseCgiResponse(buffer);
+
 	result.setContent(cgiResponse.getContent());
 	result.setHeader("Content-Type", cgiResponse.getHeader("Content-type"));
-	result.setStatus(Status::OK);
+	// if cgiResponse status is error: call errorResponse here ?
+
+	std::string cgiStatus = cgiResponse.getHeader("Status");
+	int stat = atoi(cgiStatus.substr(0, 3).c_str()); 
+	result.setStatus(Status(stat));
+
 	return result;
 }
 

@@ -13,6 +13,10 @@
 #include <cstdlib>
 #include <istream>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 #define BUF_SIZE 4096
 
 namespace fs = ft::filesystem;
@@ -76,9 +80,20 @@ static void replacePipeEnd(int oldFd, int newFd)
 	}
 }
 
+std::vector<unsigned char> readFromPipe(int fd)
+{
+	std::vector<unsigned char> content;
+	size_t nbytes;
+	char buffer[BUF_SIZE];
+	while ((nbytes = read(fd, buffer, BUF_SIZE)) > 0)
+		for (size_t i = 0; i < nbytes; i++)
+			content.push_back(buffer[i]);
+	return content;
+}
+
 std::vector<unsigned char> getCgiResponse(std::string cgiExecPath)
-{	
-	std::vector<unsigned char> cgiResponse;
+{
+	http::content_type cgiResponse;
 	int childToParent[2];
 	int parentToChild[2];
 	pipe(childToParent);
@@ -90,28 +105,16 @@ std::vector<unsigned char> getCgiResponse(std::string cgiExecPath)
 		close(parentToChild[1]);						// close writing end of parentToChild	
 		replacePipeEnd(parentToChild[0], 0);			// replace stdin with incoming pipe
 		replacePipeEnd(childToParent[1], 1);			// replace stdout with outgoing pipe
-
-		// read data from parent here (if method=POST)
-
-		char* arg = 0;
-		execve(cgiExecPath.c_str(), &arg, environ);		// exec cgi binary
+		execve(cgiExecPath.c_str(), 0, environ);		// exec cgi binary
 	}
 	else if (pid > 0)									// main process
 	{
 		close(parentToChild[0]);						// close reading end of parentToChild
-		close(childToParent[1]);						// close writing end of childToParent
-
-		// send data to child here (if method=POST)
-		
 		close(parentToChild[1]);						// close writing end of parentToChild
+		close(childToParent[1]);						// close writing end of childToParent
 		waitpid(pid, NULL, 0);							// wait for child process to end.
 		replacePipeEnd(childToParent[0], 0);			// replace stdin with incoming pipe
-
-		size_t nbytes;
-		char buffer[BUF_SIZE];
-		while ((nbytes = read(STDIN_FILENO, buffer, BUF_SIZE)) > 0)
-			for (size_t i = 0; i < nbytes; i++)
-				cgiResponse.push_back(buffer[i]);
+		cgiResponse = readFromPipe(STDIN_FILENO);		// read cgi response
 	}
 	return cgiResponse;
 }
