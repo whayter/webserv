@@ -10,7 +10,12 @@ static bool run = true;
 
 void parseArgs(int ac, char **av)
 {
-	std::string path = "config/webserv.conf";
+
+#ifdef LINUX
+	std::string path = "config/ubuntu_webserv.conf";
+#else
+	std::string path = "config/macos_webserv.conf";
+#endif
 
 	if (ac == 2)
 		path = av[1];
