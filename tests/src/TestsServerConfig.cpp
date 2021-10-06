@@ -267,7 +267,8 @@ TEST_CASE( "ServerConfig4 - ./config_files/testParser_directive_limit_except.con
 	ServerConfig& config = ServerConfig::getInstance("./config_files/testParser_directive_limit_except.conf");
 
 	// Location /
-	CHECK( config.getServer(0).getLocations()[0].getLimitExceptMethods().size() == 0);
+	CHECK( config.getServer(0).getLocations()[0].getLimitExceptMethods().size() == 1);
+	CHECK( config.getServer(0).getLocations()[0].hasLimitExceptMethods("GET") == true);
 
 	// Location /youtube
 	CHECK( config.getServer(0).getLocations()[1].getLimitExceptMethods().size() == 2);
@@ -284,7 +285,8 @@ TEST_CASE( "ServerConfig4 - ./config_files/testParser_directive_limit_except.con
 	CHECK( config.getServer(0).getLocations()[2].hasLimitExceptMethods("Nop") == false);
 
 	// Location /nginx
-	CHECK( config.getServer(0).getLocations()[3].getLimitExceptMethods().size() == 0);
+	CHECK( config.getServer(0).getLocations()[3].getLimitExceptMethods().size() == 1);
+	CHECK( config.getServer(0).getLocations()[3].hasLimitExceptMethods("GET") == true);
 }
 
 TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][ServerConfig][findLocation]" )

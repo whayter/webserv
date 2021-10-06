@@ -101,7 +101,7 @@ void Server::stop(int status)
 		exit(EXIT_FAILURE);
 	}
 	else
-		_log(-1, "Shutting down...");
+		_log(-1, "Bye bye!");
 }
 
 /* --- Private functions ---------------------------------------------------- */

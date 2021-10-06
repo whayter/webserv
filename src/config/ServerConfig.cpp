@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/09/12 16:25:06 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/10/06 16:24:20 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,6 +212,7 @@ void ServerConfig::_skipSemiColonNewLine(config::ScannerConfig & scanner)
 }
 
 void ServerConfig::_postParser(){
+	_postParserSetLimitExcept();
 	_postParserSetAutoindexInChilds();
 	_postParserSetClientMaxBodySizeInChilds();
 }
@@ -230,7 +231,8 @@ void ServerConfig::_postParserSetAutoindexInChilds(){
 	}
 }
 
-void ServerConfig::_postParserSetClientMaxBodySizeInChilds(){
+void ServerConfig::_postParserSetClientMaxBodySizeInChilds()
+{
 	std::vector<ServerBlock>::iterator itServer;
 
 	for (itServer = _servers.begin(); itServer != _servers.end(); itServer++)
@@ -243,6 +245,20 @@ void ServerConfig::_postParserSetClientMaxBodySizeInChilds(){
 				itLocation->setClientMaxBodySize(itServer->getClientMaxBodySize());
 	}
 }
+
+void ServerConfig::_postParserSetLimitExcept()
+{
+	std::vector<ServerBlock>::iterator itServer;
+
+	for (itServer = _servers.begin(); itServer != _servers.end(); itServer++)
+	{
+		std::vector<Location>::iterator itLocation;
+		for (itLocation = itServer->getLocations().begin(); itLocation != itServer->getLocations().end(); itLocation++)
+			if (itLocation->getLimitExceptMethods().empty())
+				itLocation->addLimitExceptMethod("GET");
+	}
+}
+
 void ServerConfig::_parse(std::istream & in)
 {
 	pr::ScannerConfig scanner(in);

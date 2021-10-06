@@ -69,7 +69,7 @@ void	Location::addLimitExceptMethods(const std::set<std::string>& l)
 	_limitExceptMethods.insert(l.begin(), l.end());
 }
 
-bool	Location::hasLimitExceptMethods(const std::string& method)
+bool	Location::hasLimitExceptMethods(const std::string& method) const
 {
 	return _limitExceptMethods.count(method);
 }

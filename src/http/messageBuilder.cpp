@@ -28,6 +28,12 @@ Response buildResponse(Request& request)
 	const Location&	location = server.findLocation(path.c_str());
 	action			action = location.getAction();
 
+	if (!location.hasLimitExceptMethods(request.getMethod()))
+		return errorResponse(request.getUri(), Status::MethodNotAllowed);
+	if (request.getMethod() == "DELETE")
+		return deleteResponse(request, path);
+	if (request.getMethod() == "POST")
+		postContent(path, request.getContent());
 	if (action == action::cgi)
 		return dynamicResponse(request, server, path);
 	else if (action == action::returnDirective)
@@ -48,6 +54,27 @@ Response buildResponse(Request& request)
 	return errorResponse(request.getUri(), Status::NotFound);
 }
 
+void postContent(std::string path, content_type content)
+{
+	int fd = open(path.c_str(), O_CREAT | O_TRUNC | O_RDWR, 0666);
+	std::string scontent = ft::stringifyVector(content);
+	int r = write(fd, scontent.c_str(), content.size());
+	if (r == -1)
+		std::cout << "error write(): " << strerror(errno) << std::endl;
+	close(fd);
+}
+
+Response deleteResponse(Request& request, std::string path)
+{
+	Response result;
+	int status = remove(path.c_str());
+	if (status != 0)
+		return errorResponse(request.getUri(), Status::NotFound);
+	result.setStatus(Status::OK);
+	result.setContent(html::buildSimplePage("File deleted"));
+	return result;
+}
+
 Response staticResponse(const ft::filesystem::path& path)
 {
 	Response result;
@@ -62,19 +89,25 @@ Response dynamicResponse(http::Request& request, ServerBlock& sblock, fs::path& 
 {
 	Response result;
 	setEnvironment(request, sblock, path);
-
-#ifdef LINUX
-	char cgiExecPath[] = "/usr/bin/php-cgi";			// tmp
-#else
-	char cgiExecPath[] = "/usr/local/bin/php-cgi";		// tmp
-#endif
-
+	std::string cgiExecPath = sblock.findLocation(path.c_str()).getCgiExec();
 	std::vector<unsigned char> buffer = getCgiResponse(cgiExecPath);
 	unsetEnvironment();
-	http::Message cgiResponse = http::parseCgiResponse(buffer);
+	Message cgiResponse = parseCgiResponse(buffer);
+	std::string cgiStatus = cgiResponse.getHeader("Status");
+	int status = strtol(cgiStatus.c_str(),  NULL, 10);
+	if (isError(Status(status)))
+		return (errorResponse(request.getUri(), Status(status)));
+	result.setStatus(Status(status));
 	result.setContent(cgiResponse.getContent());
-	result.setHeader("Content-Type", cgiResponse.getHeader("Content-type"));
-	result.setStatus(Status::OK);
+	result.setHeader("Content-Type", cgiResponse.getHeader("Content-type"));	
+	if (request.getMethod() == "POST")
+	{
+		result.setHeader("Content-Length", "0");
+		result.setContent(content_type());
+		postContent(path, cgiResponse.getContent());
+	}
+	else
+		result.setContent(cgiResponse.getContent());
 	return result;
 }
 

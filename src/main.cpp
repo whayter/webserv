@@ -6,12 +6,17 @@
 #include <vector>
 #include <csignal>
 
+#ifdef __linux__
+	#define DEFAULT_PATH "config/ubuntu_webserv.conf";
+#else
+	#define DEFAULT_PATH "config/macos_webserv.conf";
+#endif
+
 static bool run = true;
 
 void parseArgs(int ac, char **av)
 {
-	std::string path = "config/webserv.conf";
-
+	std::string path = DEFAULT_PATH;
 	if (ac == 2)
 		path = av[1];
 	try

@@ -30,7 +30,7 @@ void Message::setHeader(std::string key, std::string val)
 void Message::setContent(const content_type &content)
 {
 	_content = content;
-	this->setHeader("Content-Length", ft::intToString(content.size()));
+	setHeader("Content-Length", ft::intToString(content.size()));
 }
 
 void Message::setVersion(const std::string &version)

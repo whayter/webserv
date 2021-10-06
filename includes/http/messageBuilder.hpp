@@ -9,6 +9,8 @@
 namespace http {
 
 Response					buildResponse(Request& request);
+void						postContent(std::string path, content_type content);
+Response					deleteResponse(Request& request, std::string path);
 Response					errorResponse(const Uri& uri, Status error);
 Response					redirectResponse(const ReturnDirective &rdir);
 Response					staticResponse(const ft::filesystem::path& path);
