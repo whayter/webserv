@@ -29,15 +29,7 @@ Response buildResponse(Request& request)
 	action			action = location.getAction();
 
 	if (request.getMethod() == "POST")
-	{
-		int fd = open(path.c_str(), O_CREAT | O_RDWR, 0666);
-		std::string content = ft::stringifyVector(request.getContent());
-		int r = write(fd, content.c_str(), content.size());
-		if (r == -1)
-			std::cout << "error: " << strerror(errno) << std::endl;
-		close(fd);
-	}
-
+		postContent(path, request.getContent());
 	if (action == action::cgi)
 		return dynamicResponse(request, server, path);
 	else if (action == action::returnDirective)
@@ -58,11 +50,11 @@ Response buildResponse(Request& request)
 	return errorResponse(request.getUri(), Status::NotFound);
 }
 
-void postContent(std::string path, http::Request& request)
+void postContent(std::string path, content_type content)
 {
-	int fd = open(path.c_str(), O_CREAT | O_RDWR, 0666);
-	std::string content = ft::stringifyVector(request.getContent());
-	int r = write(fd, content.c_str(), content.size());
+	int fd = open(path.c_str(), O_CREAT | O_TRUNC | O_RDWR, 0666);
+	std::string scontent = ft::stringifyVector(content);
+	int r = write(fd, scontent.c_str(), content.size());
 	if (r == -1)
 		std::cout << "error write(): " << strerror(errno) << std::endl;
 	close(fd);
@@ -89,13 +81,18 @@ Response dynamicResponse(http::Request& request, ServerBlock& sblock, fs::path& 
 	unsetEnvironment();
 	Message cgiResponse = parseCgiResponse(buffer);
 
+	// check cgiResponse Status here
+	std::string cgiStatus = cgiResponse.getHeader("Status");
+	int stat = atoi(cgiStatus.substr(0, 3).c_str());
+	if (isError(Status(stat)))
+		return (errorResponse(request.getUri(), Status(stat)));
+	result.setStatus(Status(stat));
+
 	result.setContent(cgiResponse.getContent());
 	result.setHeader("Content-Type", cgiResponse.getHeader("Content-type"));
 	// if cgiResponse status is error: call errorResponse here ?
 
-	std::string cgiStatus = cgiResponse.getHeader("Status");
-	int stat = atoi(cgiStatus.substr(0, 3).c_str()); 
-	result.setStatus(Status(stat));
+	postContent(path, cgiResponse.getContent());
 
 	return result;
 }
