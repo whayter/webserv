@@ -58,12 +58,12 @@ it ('GET teletubbies SHOULD WORK !! :-D ', function () {
   .expect('header', 'date')
 }, timeout);
 
-it ('GET port 83, shout return index of /', function () {
-  return frisby
-  .get('http://localhost:83/')
-  .expect('status', 200)
-  .expect('bodyContains', 'index of /')
-});
+// it ('GET port 83, shout return index of /', function () {
+//   return frisby
+//   .get('http://localhost:83/')
+//   .expect('status', 200)
+//   .expect('bodyContains', 'index of /')
+// });
 
 // 262144 max char macos (getconf ARG_MAX) 
 var max_len_uri = 8000; // choose our random max len uri 7980
