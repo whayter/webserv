@@ -105,7 +105,8 @@ std::vector<unsigned char> getCgiResponse(std::string cgiExecPath)
 		close(parentToChild[1]);						// close writing end of parentToChild	
 		replacePipeEnd(parentToChild[0], 0);			// replace stdin with incoming pipe
 		replacePipeEnd(childToParent[1], 1);			// replace stdout with outgoing pipe
-		execve(cgiExecPath.c_str(), 0, environ);		// exec cgi binary
+		char* arg = 0;
+		execve(cgiExecPath.c_str(), arg, environ);		// exec cgi binary
 	}
 	else if (pid > 0)									// main process
 	{
