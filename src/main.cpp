@@ -6,7 +6,7 @@
 #include <vector>
 #include <csignal>
 
-#ifdef LINUX
+#ifdef __linux__
 	#define DEFAULT_PATH "config/ubuntu_webserv.conf";
 #else
 	#define DEFAULT_PATH "config/macos_webserv.conf";
