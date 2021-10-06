@@ -106,7 +106,7 @@ std::vector<unsigned char> getCgiResponse(std::string cgiExecPath)
 		replacePipeEnd(parentToChild[0], 0);			// replace stdin with incoming pipe
 		replacePipeEnd(childToParent[1], 1);			// replace stdout with outgoing pipe
 		char* arg = 0;
-		execve(cgiExecPath.c_str(), arg, environ);		// exec cgi binary
+		execve(cgiExecPath.c_str(), &arg, environ);		// exec cgi binary
 	}
 	else if (pid > 0)									// main process
 	{
