@@ -104,10 +104,10 @@ Response dynamicResponse(http::Request& request, ServerBlock& sblock, fs::path& 
 	{
 		result.setHeader("Content-Length", "0");
 		result.setContent(content_type());
+		postContent(path, cgiResponse.getContent());
 	}
 	else
 		result.setContent(cgiResponse.getContent());
-	postContent(path, cgiResponse.getContent());
 	return result;
 }
 
