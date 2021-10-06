@@ -28,6 +28,8 @@ Response buildResponse(Request& request)
 	const Location&	location = server.findLocation(path.c_str());
 	action			action = location.getAction();
 
+	if (!location.hasLimitExceptMethods(request.getMethod()))
+		return errorResponse(request.getUri(), Status::MethodNotAllowed);
 	if (request.getMethod() == "DELETE")
 		return deleteResponse(request, path);
 	if (request.getMethod() == "POST")
@@ -80,8 +82,6 @@ Response staticResponse(const ft::filesystem::path& path)
 	result.setContent(getFileContent(path));
 	std::string extension = ServerConfig::getInstance().getMime(path.extension());
 	result.setHeader("Content-Type", extension);
-
-	std::cout << "result status = " << result.getHeader("Status") << std::endl;
 	return result;
 }
 

@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/10/04 11:55:46 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/10/06 16:20:01 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ private:
 	void _postParser();
 	void _postParserSetAutoindexInChilds();
 	void _postParserSetClientMaxBodySizeInChilds();
+	void _postParserSetLimitExcept();
 	void _postParserSet();
 
 	void _skipSemiColonNewLine(config::ScannerConfig & scanner);
