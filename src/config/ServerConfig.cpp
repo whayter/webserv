@@ -137,10 +137,10 @@ void	ServerConfig::__delete_singleton_instance()
 // 	return _servers[0];
 // }
 
-const ServerBlock& ServerConfig::findServer(const Uri& uri) const
+ServerBlock& ServerConfig::findServer(const Uri& uri)
 {
 	std::vector<ServerBlock>::reverse_iterator itServer;
-	const ServerBlock* bestMatch = &_servers[0];
+	ServerBlock* bestMatch = &_servers[0];
 
 	for (itServer = _servers.rbegin(); itServer != _servers.rend(); itServer++)
 	{
@@ -158,7 +158,7 @@ const ServerBlock& ServerConfig::findServer(const Uri& uri) const
 	return *bestMatch;
 }
 
-const Location& ServerConfig::findLocation(const Uri& uri) const
+const Location& ServerConfig::findLocation(const Uri& uri)
 {
 	return findServer(uri).findLocation(uri);
 }
