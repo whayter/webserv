@@ -47,8 +47,8 @@ public:
 	/// return the server who own the given port
 	//ServerBlock&					findServer(uint32_t port);
 
-	ServerBlock&					findServer(const Uri& uri);
-	const Location&					findLocation(const Uri& uri);
+	const ServerBlock&					findServer(const Uri& uri) const;
+	const Location&					findLocation(const Uri& uri) const;
 
 	ft::filesystem::path			getPathFromUri(const Uri& uri);
 
