@@ -234,11 +234,22 @@ TEST_CASE( "ServerConfig3 - ./config_files/testFindServer.conf", "[class][Server
 	ServerConfig::__delete_singleton_instance();
 	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindServer.conf");
 
-	CHECK( config.findServer(Uri("http://srv_one:80")).getServerName() == config.getServer(0).getServerName() );
-	CHECK( config.findServer(Uri("http://srv_two:80")).getServerName() == config.getServer(1).getServerName() );
-	CHECK( config.findServer(Uri("http://srv_three:81")).getServerName() == config.getServer(2).getServerName() );
-	CHECK( config.findServer(Uri("http://localhost:81")).getServerName() == config.getServer(2).getServerName() );
-	CHECK( config.findServer(Uri("http://srv_four:81")).getServerName() == config.getServer(4).getServerName() );
+
+	CHECK(config.getServer(0).getServerName() == "srv_one");
+	CHECK(config.getServer(1).getServerName() == "srv_two");
+	CHECK(config.getServer(2).getServerName() == "srv_three");
+	CHECK(config.getServer(3).getServerName() == "");
+	CHECK(config.getServer(4).getServerName() == "srv_four");
+	REQUIRE(config.getServer(5).getServerName() == "srv_five");
+
+	REQUIRE(config.getServers().size() == 6);
+
+	CHECK( config.findServer(Uri("http://localhost")).getServerName() == "srv_one");
+	CHECK( config.findServer(Uri("http://srv_one:80")).getServerName() ==   "srv_one" );
+	CHECK( config.findServer(Uri("http://srv_two:80")).getServerName() ==   "srv_two" );
+	CHECK( config.findServer(Uri("http://srv_three:81")).getServerName() == "srv_three" );
+	CHECK( config.findServer(Uri("http://localhost:81")).getServerName() == "srv_three" );
+	CHECK( config.findServer(Uri("http://srv_four:81")).getServerName() ==  "srv_four" );
 
 	Uri uri;
 	uri.setPort(80);
@@ -246,11 +257,11 @@ TEST_CASE( "ServerConfig3 - ./config_files/testFindServer.conf", "[class][Server
 
 	Uri uriEmptyHost;
 	uriEmptyHost.setPort(80);
-	CHECK_NOFAIL( &config.findServer(uriEmptyHost) == &config.getServer(3) );
+	CHECK( &config.findServer(uriEmptyHost) == &config.getServer(3) );
 	uriEmptyHost.setPort(81);
-	CHECK_NOFAIL( &config.findServer(uriEmptyHost) == &config.getServer(2) );
+	CHECK( &config.findServer(uriEmptyHost) == &config.getServer(2) );
 	uriEmptyHost.setPort(82);
-	CHECK_NOFAIL( &config.findServer(uriEmptyHost) == &config.getServer(5) );
+	CHECK( &config.findServer(uriEmptyHost) == &config.getServer(5) );
 
 	uriEmptyHost.setPort(80);
 	CHECK( config.findServer(uriEmptyHost).getIndex() == config.getServer(3).getIndex() );

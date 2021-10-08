@@ -140,7 +140,7 @@ void	ServerConfig::__delete_singleton_instance()
 ServerBlock& ServerConfig::findServer(const Uri& uri)
 {
 	std::vector<ServerBlock>::reverse_iterator itServer;
-	ServerBlock& bestMatch = _servers[0];
+	ServerBlock* bestMatch = &_servers[0];
 
 	for (itServer = _servers.rbegin(); itServer != _servers.rend(); itServer++)
 	{
@@ -149,13 +149,13 @@ ServerBlock& ServerConfig::findServer(const Uri& uri)
 		{
 			if (itListen->getPort() == uri.getPort())
 			{
-				bestMatch = *itServer;
+				bestMatch = &*itServer;
 				if (itServer->getServerName() == uri.getHost())
-					return bestMatch;
+					return *bestMatch;
 			}
 		}
 	}
-	return bestMatch;
+	return *bestMatch;
 }
 
 const Location& ServerConfig::findLocation(const Uri& uri)
@@ -170,16 +170,16 @@ ft::filesystem::path	ServerConfig::getPathFromUri(const Uri& uri)
 
 std::vector<uint32_t> ServerConfig::getPorts()
 {
-	std::vector<uint32_t> ports;
+	std::set<uint32_t> ports;
 	std::vector<ServerBlock>::iterator itServer;
 
 	for (itServer = _servers.begin(); itServer != _servers.end(); itServer++)
 	{
 		std::vector<Host>::iterator itListen;
 		for (itListen = itServer->getListens().begin(); itListen != itServer->getListens().end(); itListen++)
-			ports.push_back(itListen->getPort());
+			ports.insert(itListen->getPort());
 	}
-	return ports;
+	return std::vector<uint32_t>(ports.begin(), ports.end());;
 }
 
 
