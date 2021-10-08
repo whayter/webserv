@@ -28,7 +28,7 @@ Response buildResponse(Request& request)
 	const Location&	location = server.findLocation(path.c_str());
 	action			action = location.getAction();
 
-	if (!location.hasLimitExceptMethods(request.getMethod()))
+	if (!location.hasLimitExceptMethod(request.getMethod()))
 		return errorResponse(request.getUri(), Status::MethodNotAllowed);
 	if (request.getMethod() == "DELETE")
 		return deleteResponse(request, path);

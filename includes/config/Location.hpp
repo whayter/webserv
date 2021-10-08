@@ -72,7 +72,7 @@ public:
 	void	addLimitExceptMethod(const std::string& method);
 	void	addLimitExceptMethods(const std::set<std::string>& l);
 	inline	std::set<std::string>&	getLimitExceptMethods();
-	bool	hasLimitExceptMethods(const std::string& method) const;
+	bool	hasLimitExceptMethod(const std::string& method) const;
 
 private:
 	void _setAction(action);
