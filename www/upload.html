@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>Webserv - upload</title>
+        <style>
+            body{margin: 4 8vw;}
+            section{margin: 10vh 4vw;}
+            .text-center{text-align: center;}
+            .text-justify{text-align: justify;}
+            .text-emphase{font-style: oblique;}
+            .hr-invisible{visibility: hidden; height: 20px;}
+
+        </style>
+    </head>
+
+    <body>
+        <h1 class="text-center">Upload something yo</h1>
+        <hr class="hr-invisible"><hr class="hr-invisible">
+
+        <form class="text-center" method="post" enctype="multipart/form-data">
+            <input type="file" id="file" name="file" multiple>
+            <hr class="hr-invisible">
+            <button>Upload</button>
+        </form>
+
+    </body>
+
+</html>

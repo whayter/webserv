@@ -161,7 +161,7 @@ void Server::_buildRequests(int deviceIndex)
 
 void Server::_buildResponses(int deviceIndex)
 {
-	std::queue<http::Request>& requests = _devices[deviceIndex].getRequestsQueue();
+	requests_queue_type& requests = _devices[deviceIndex].getRequestsQueue();
 	while (!requests.empty())
 	{
 		http::Response response = http::buildResponse(requests.front());
@@ -172,8 +172,8 @@ void Server::_buildResponses(int deviceIndex)
 
 void Server::_sendResponses(int deviceIndex)
 {
-	std::queue<http::Response>& responses = _devices[deviceIndex].getResponsesQueue();
-	std::vector<unsigned char> outputBuffer = _devices[deviceIndex].getOutputBuffer();
+	responses_queue_type& responses = _devices[deviceIndex].getResponsesQueue();
+	buffer_type outputBuffer = _devices[deviceIndex].getOutputBuffer();
 
 	while (!responses.empty())
 	{
