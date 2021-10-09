@@ -279,25 +279,25 @@ TEST_CASE( "ServerConfig4 - ./config_files/testParser_directive_limit_except.con
 
 	// Location /
 	CHECK( config.getServer(0).getLocations()[0].getLimitExceptMethods().size() == 1);
-	CHECK( config.getServer(0).getLocations()[0].hasLimitExceptMethods("GET") == true);
+	CHECK( config.getServer(0).getLocations()[0].hasLimitExceptMethod("GET") == true);
 
 	// Location /youtube
 	CHECK( config.getServer(0).getLocations()[1].getLimitExceptMethods().size() == 2);
-	CHECK( config.getServer(0).getLocations()[1].hasLimitExceptMethods("GET") == true);
-	CHECK( config.getServer(0).getLocations()[1].hasLimitExceptMethods("POST") == true);
-	CHECK( config.getServer(0).getLocations()[1].hasLimitExceptMethods("DELETE") == false);
-	CHECK( config.getServer(0).getLocations()[1].hasLimitExceptMethods("RANDOM") == false);
+	CHECK( config.getServer(0).getLocations()[1].hasLimitExceptMethod("GET") == true);
+	CHECK( config.getServer(0).getLocations()[1].hasLimitExceptMethod("POST") == true);
+	CHECK( config.getServer(0).getLocations()[1].hasLimitExceptMethod("DELETE") == false);
+	CHECK( config.getServer(0).getLocations()[1].hasLimitExceptMethod("RANDOM") == false);
 	
 	// Location /intra
 	CHECK( config.getServer(0).getLocations()[2].getLimitExceptMethods().size() == 2);
-	CHECK( config.getServer(0).getLocations()[2].hasLimitExceptMethods("GET") == false);
-	CHECK( config.getServer(0).getLocations()[2].hasLimitExceptMethods("POST") == true);
-	CHECK( config.getServer(0).getLocations()[2].hasLimitExceptMethods("DELETE") == true);
-	CHECK( config.getServer(0).getLocations()[2].hasLimitExceptMethods("Nop") == false);
+	CHECK( config.getServer(0).getLocations()[2].hasLimitExceptMethod("GET") == false);
+	CHECK( config.getServer(0).getLocations()[2].hasLimitExceptMethod("POST") == true);
+	CHECK( config.getServer(0).getLocations()[2].hasLimitExceptMethod("DELETE") == true);
+	CHECK( config.getServer(0).getLocations()[2].hasLimitExceptMethod("Nop") == false);
 
 	// Location /nginx
 	CHECK( config.getServer(0).getLocations()[3].getLimitExceptMethods().size() == 1);
-	CHECK( config.getServer(0).getLocations()[3].hasLimitExceptMethods("GET") == true);
+	CHECK( config.getServer(0).getLocations()[3].hasLimitExceptMethod("GET") == true);
 }
 
 TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][ServerConfig][findLocation]" )
