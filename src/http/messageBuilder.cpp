@@ -1,55 +1,44 @@
 #include "ServerConfig.hpp"
-#include "Location.hpp"
-
-#include "Status.hpp"
-#include "Request.hpp"
+#include "Context.hpp"
 #include "Response.hpp"
+#include "Status.hpp"
 #include "messageParser.hpp"
 #include "messageBuilder.hpp"
 #include "cgi.hpp"
-
-#include "utility.hpp"
 #include "HtmlBuilder.hpp"
-#include "filesystem.hpp"
 
-#include <stdio.h>
 #include <fstream>
-#include <vector>
 
 namespace fs = ft::filesystem;
 
 namespace http {
 
 Response buildResponse(Request& request)
-{	
-	ServerConfig&	config = ServerConfig::getInstance();
-	ServerBlock&	server = config.findServer(request.getUri());
-	fs::path		path = server.getPathFromUri(request.getUri());
-	const Location&	location = server.findLocation(path.c_str());
-	action			action = location.getAction();
+{
+	Context ctxt = getContext(request.getUri());
 
-	if (!location.hasLimitExceptMethod(request.getMethod()))
+	if (!ctxt.location.hasLimitExceptMethod(request.getMethod()))
 		return errorResponse(request.getUri(), Status::MethodNotAllowed);
 	if (request.getMethod() == "DELETE")
-		return deleteResponse(request, path);
+		return deleteResponse(request, ctxt.path);
 	if (request.getMethod() == "POST")
-		postContent(path, request.getContent());
-	if (action == action::cgi)
-		return dynamicResponse(request, server, path);
-	else if (action == action::returnDirective)
-		return redirectResponse(location.getReturnDirective());
-	else if (action == action::none)
+		postContent(ctxt.path, request.getContent());
+	if (ctxt.location.getAction() == action::cgi)
+		return dynamicResponse(request, ctxt.server, ctxt.path);
+	else if (ctxt.location.getAction() == action::returnDirective)
+		return redirectResponse(ctxt.location.getReturnDirective());
+	else if (ctxt.location.getAction() == action::none)
 	{
 		ft::error_code ec;
-		ft::filesystem::file_status stat = ft::filesystem::status(path, ec);
+		ft::filesystem::file_status stat = ft::filesystem::status(ctxt.path, ec);
 		if (ec.value() == ft::errc::no_such_file_or_directory)
 			return errorResponse(request.getUri(), Status::NotFound);
 		else if (ec)
 			throw std::logic_error("Houston, we have a problem (" + ec.message() + ')');			
 		else if (stat.type() == ft::filesystem::file_type::regular)
-			return staticResponse(path);
-		else if (stat.type() == ft::filesystem::file_type::directory && location.hasAutoindex())
-			return autoIndexResponse(path);
+			return staticResponse(ctxt.path);
+		else if (stat.type() == ft::filesystem::file_type::directory && ctxt.location.hasAutoindex())
+			return autoIndexResponse(ctxt.path);
 	}
 	return errorResponse(request.getUri(), Status::NotFound);
 }

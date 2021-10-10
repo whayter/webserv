@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/10/09 18:44:37 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/10/09 18:45:59 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,5 @@ private:
 	std::map<std::string, std::string> 	_mime;
 
 }; /* class ServerConfig */
-
 
 #endif /* SERVER_CONFIG_HPP */
