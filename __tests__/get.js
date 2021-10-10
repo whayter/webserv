@@ -49,6 +49,20 @@ it ('GET /NotExist should return 404.html', function () {
   .expect('bodyContains', 'Seems like your page doesn\'t exist anymore')
 });
 
+it ('GET return directive with text', function () {
+  return frisby
+  .get('http://localhost:82/text')
+  .expect('status', 204)
+  .expect('bodyContains', 'this is a return directive with text')
+});
+
+it ('GET return directive with uri', function () {
+  return frisby
+  .get('http://localhost:82/uri')
+  .expect('status', 301)
+  .expect('bodyContains', 'moved')
+});
+
 // let timeout = 500000;
 // jest.setTimeout(timeout);
 // it ('GET teletubbies SHOULD WORK !! :-D ', function () {

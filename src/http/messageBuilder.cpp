@@ -16,7 +16,6 @@ namespace http {
 Response buildResponse(Request& request)
 {
 	Context ctxt = getContext(request.getUri());
-
 	if (!ctxt.location.hasLimitExceptMethod(request.getMethod()))
 		return errorResponse(request.getUri(), Status::MethodNotAllowed);
 	if (request.getMethod() == "DELETE")
@@ -103,6 +102,7 @@ Response dynamicResponse(http::Request& request, ServerBlock& sblock, fs::path& 
 Response redirectResponse(const ReturnDirective &rdir)
 {
 	Response result;
+	result.setStatus(rdir.getCode());
 	if (rdir.hasUri())
 	{
 		result.setContent(html::buildRedirectionPage(rdir));

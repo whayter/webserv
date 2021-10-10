@@ -17,7 +17,6 @@ void Location::_setAction(action a)
 		_action = a;
 }
 
-
 void 	Location::setAutoindex(bool autoindex) {
 	_autoindex = autoindex;
 	_hasAutoindex = true;

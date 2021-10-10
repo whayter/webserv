@@ -3,10 +3,15 @@
 
 #include "ServerConfig.hpp"
 
+namespace fs = ft::filesystem;
+
 struct Context {
 
-	ServerBlock				server;
-	Location				location;
+	Context(ServerBlock& server, const Location& location, const fs::path path, const Uri& uri)
+	: server(server), location(location), uri(uri), path(path) {}
+
+	ServerBlock&			server;
+	const Location&			location;
 	Uri						uri;
 	ft::filesystem::path	path;
 
@@ -14,13 +19,12 @@ struct Context {
 
 Context getContext(const Uri& uri)
 {
-	Context ctxt;
 	ServerConfig& config = ServerConfig::getInstance();
-	ctxt.uri = uri;
-	ctxt.server = config.findServer(ctxt.uri);
-	ctxt.path = ctxt.server.getPathFromUri(ctxt.uri);
-	ctxt.location = ctxt.server.findLocation(ctxt.path.c_str());
-	return ctxt;
+	ServerBlock& server = config.findServer(uri);
+	fs::path path = server.getPathFromUri(uri);
+	// const Location& location = server.findLocation(path.c_str());		// working not working
+	const Location& location = server.findLocation(uri);					// working not working
+	return Context(server, location, path, uri);
 }
 
 #endif /* CONTEXT_HPP */
