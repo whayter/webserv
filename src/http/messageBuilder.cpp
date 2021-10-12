@@ -55,8 +55,7 @@ void postContent(std::string path, content_type content)
 Response deleteResponse(Request& request, std::string path)
 {
 	Response result;
-	int status = remove(path.c_str());
-	if (status != 0)
+	if (remove(path.c_str()) != 0)
 		return errorResponse(request.getUri(), Status::NotFound);
 	result.setStatus(Status::OK);
 	result.setContent(html::buildSimplePage("File deleted"));
@@ -85,9 +84,10 @@ Response dynamicResponse(http::Request& request, ServerBlock& sblock, fs::path& 
 	int status = strtol(cgiStatus.c_str(),  NULL, 10);
 	if (isError(Status(status)))
 		return (errorResponse(request.getUri(), Status(status)));
-	result.setStatus(Status(status));
-	result.setContent(cgiResponse.getContent());
-	result.setHeader("Content-Type", cgiResponse.getHeader("Content-type"));	
+	if (status == 0)
+		result.setStatus(Status::OK);
+	else
+		result.setStatus(Status(status));
 	if (request.getMethod() == "POST")
 	{
 		result.setHeader("Content-Length", "0");
@@ -95,7 +95,10 @@ Response dynamicResponse(http::Request& request, ServerBlock& sblock, fs::path& 
 		postContent(path, cgiResponse.getContent());
 	}
 	else
+	{
 		result.setContent(cgiResponse.getContent());
+		result.setHeader("Content-Type", cgiResponse.getHeader("Content-type"));	
+	}
 	return result;
 }
 
@@ -119,6 +122,7 @@ Response redirectResponse(const ReturnDirective &rdir)
 Response autoIndexResponse(const ft::filesystem::path& path)
 {
 	Response result;
+	result.setStatus(Status::OK);
 	result.setHeader("Content-Type", "text/html");
 	result.setContent(html::buildAutoindexPage(path));
 	return result;

@@ -17,14 +17,6 @@ struct Context {
 
 }; /* struct Context */
 
-Context getContext(const Uri& uri)
-{
-	ServerConfig& config = ServerConfig::getInstance();
-	ServerBlock& server = config.findServer(uri);
-	fs::path path = server.getPathFromUri(uri);
-	// const Location& location = server.findLocation(path.c_str());		// working not working
-	const Location& location = server.findLocation(uri);					// working not working
-	return Context(server, location, path, uri);
-}
+Context getContext(const Uri& uri);
 
 #endif /* CONTEXT_HPP */

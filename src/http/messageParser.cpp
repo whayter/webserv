@@ -3,12 +3,13 @@
 #include "Status.hpp"
 #include "Uri.hpp"
 #include "Request.hpp"
+#include "Context.hpp"
 
 namespace ph = parser::http;
 
 namespace http
 {
-	bool    hasTwoConsecutiveCRNL(const std::vector<unsigned char> &buffer)
+	bool hasTwoConsecutiveCRNL(const std::vector<unsigned char> &buffer)
 	{
 		std::vector<unsigned char>::const_iterator it = buffer.begin();
 		std::vector<unsigned char>::const_iterator end = buffer.end();
@@ -121,12 +122,23 @@ namespace http
 		parseRequestLine(scan, req, error);
 		parseHeaders(scan, req, error);
 		req.getUri().setAuthority(req.getHeader("Host"));
-		{
+		{			
 			char c;
+			bool recordContent = true;
+			size_t count = 0;
 			size_t contentLength = req.getContentLength();
+			if (contentLength > getContext(req.getUri()).location.getClientMaxBodySize())
+			{
+				setError(error, 413);
+				recordContent = false;
+			}
 			while (contentLength-- && (c = scan.getChar()))
-				req.getContent().push_back(c);
-			if (req.getContent().size() != req.getContentLength())
+			{
+				if (recordContent)
+					req.getContent().push_back(c);
+				count++;
+			}
+			if (count != req.getContentLength())
 				return false;
 		}
 		scan.eraseBeforeCurrentIndex();
