@@ -88,7 +88,7 @@ it ('GET localhost:83', function () {
 ////////////////////////////////////////////////////////////////////////////
 /// POST //////////////////////////////////////////////////////////////////  
 
-it ('POST localhost:80/', function () {
+it ('POST localhost:80/ with body size > max_body_size', function () {
   return frisby
   .setup({
     request: {
@@ -99,7 +99,18 @@ it ('POST localhost:80/', function () {
   .expect('status', 413)
 });
 
-it ('POST localhost:80/', function () {
+it ('POST localhost:80/ with body size >> max_body_size', function () {
+  return frisby
+  .setup({
+    request: {
+      body: "x".repeat(10250)
+    }
+  })
+  .post(baseUri + 'test.html')
+  .expect('status', 413)
+});
+
+it ('POST localhost:80/ with body size = max_body_size', function () {
   return frisby
   .setup({
     request: {
