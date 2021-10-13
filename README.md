@@ -199,3 +199,6 @@
 
 #### pimpl
 - https://www.fluentcpp.com/2017/09/22/make-pimpl-using-unique_ptr/
+
+
+- https://blog.spacepatroldelta.com/a?ID=01500-34f01d9e-2d48-4ea4-a26d-0a3deabfdb4b
