@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
     <head>
         <meta charset="utf-8">
         <title>Webserv - upload</title>
@@ -12,20 +10,15 @@
             .text-justify{text-align: justify;}
             .text-emphase{font-style: oblique;}
             .hr-invisible{visibility: hidden; height: 20px;}
-
         </style>
     </head>
-
     <body>
         <h1 class="text-center">Upload something yo</h1>
         <hr class="hr-invisible"><hr class="hr-invisible">
-
-        <form class="text-center" method="post" enctype="multipart/form-data">
-            <input type="file" id="file" name="file" multiple>
+        <form class="text-center" action="upload.php" method="post" enctype="multipart/form-data">
+            <input type="file" name="userfile" id="userfile">
             <hr class="hr-invisible">
-            <button>Upload</button>
+            <input type="submit" value="Upload" name="submit">
         </form>
-
     </body>
-
 </html>
