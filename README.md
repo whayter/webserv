@@ -202,3 +202,6 @@
 
 
 - https://blog.spacepatroldelta.com/a?ID=01500-34f01d9e-2d48-4ea4-a26d-0a3deabfdb4b
+
+####  Http connections
+https://www.w3.org/Protocols/rfc2616/rfc2616-sec8.html
