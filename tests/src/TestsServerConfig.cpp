@@ -93,9 +93,9 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 	// CHECK( config.getServer(1).getLocations()[1].getFastCgiParam("SERVER_NAME") == "$server_name");
 
 	// cgi_exec directive
-	CHECK( config.getServer(0).getLocations()[2].getCgiExec() == "./cgi-bin/php");
+	CHECK( config.getServer(0).getLocations()[2].getReturnDirective().getUri() == "php-cgi");
 
-	CHECK( config.getServer(1).getLocations()[1].getCgiExec() == "./cgi-bin/ruby");
+	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().getUri() == "ruby-cgi");
 
 	// cgi_param directive
 	CHECK( config.getServer(0).getLocations()[0].getCgiParams().size() == 0);
