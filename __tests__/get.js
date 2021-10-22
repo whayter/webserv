@@ -49,6 +49,12 @@ it ('GET localhost:80/autoindex', function () {
   .expect('bodyContains', 'teletubbies')
 });
 
+it ('GET localhost:80/bad_cgi', function () {
+  return frisby
+  .get(baseUri + 'bad_cgi')
+  .expect('status', 500)
+});
+
 it ('GET localhost:81', function () {
   return frisby
   .get('http://localhost:81')
@@ -82,7 +88,7 @@ it ('GET localhost:83', function () {
   .get('http://localhost:83')
   .expect('status', 200)
   .expect('bodyContains', 'index of /')
-  .expect('bodyContains', '.vscode')
+  .expect('bodyContains', 'Makefile')
 });
 
 ////////////////////////////////////////////////////////////////////////////
