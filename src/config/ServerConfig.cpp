@@ -14,6 +14,7 @@
 
 #include "config/ScannerConfig.hpp"
 #include "utility.hpp"
+#include "filesystem.h"
 #include "SyntaxError.hpp"
 
 
@@ -566,6 +567,8 @@ std::string ServerConfig::_parseCgiExec(config::ScannerConfig & scanner)
 	if ((t = scanner.getToken()).kind != pr::TokenKind::kString)
 		_throw_SyntaxError(t, "Invalid value exec.");
 	exec = t.value;
+	if (!ft::filesystem::exists(exec))
+		_throw_SyntaxError(t, "Cgi binary does not exists.");
 	_skipSemiColonNewLine(scanner);
 	return exec;
 }

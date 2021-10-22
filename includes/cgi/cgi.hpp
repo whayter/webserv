@@ -91,9 +91,10 @@ std::vector<unsigned char> readFromPipe(int fd)
 	return content;
 }
 
-std::vector<unsigned char> getCgiResponse(std::string cgiExecPath)
+std::pair<std::vector<unsigned char>, ft::error_code> getCgiResponse(std::string cgiExecPath)
 {
 	http::content_type cgiResponse;
+	int status = 0;
 	int childToParent[2];
 	int parentToChild[2];
 	pipe(childToParent);
@@ -106,18 +107,19 @@ std::vector<unsigned char> getCgiResponse(std::string cgiExecPath)
 		replacePipeEnd(parentToChild[0], 0);			// replace stdin with incoming pipe
 		replacePipeEnd(childToParent[1], 1);			// replace stdout with outgoing pipe
 		char* arg = 0;
-		execve(cgiExecPath.c_str(), &arg, environ);		// exec cgi binary
+		if (execve(cgiExecPath.c_str(), &arg, environ) == -1)		// exec cgi binary
+			exit(errno);
 	}
 	else if (pid > 0)									// main process
 	{
 		close(parentToChild[0]);						// close reading end of parentToChild
 		close(parentToChild[1]);						// close writing end of parentToChild
 		close(childToParent[1]);						// close writing end of childToParent
-		waitpid(pid, NULL, 0);							// wait for child process to end.
+		waitpid(pid, &status, 0);						// wait for child process to end.
 		replacePipeEnd(childToParent[0], 0);			// replace stdin with incoming pipe
 		cgiResponse = readFromPipe(STDIN_FILENO);		// read cgi response
 	}
-	return cgiResponse;
+	return std::make_pair(cgiResponse, ft::error_code(status));
 }
 
 #endif

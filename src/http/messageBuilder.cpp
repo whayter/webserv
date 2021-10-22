@@ -77,9 +77,14 @@ Response dynamicResponse(http::Request& request, ServerBlock& sblock, fs::path& 
 	Response result;
 	setEnvironment(request, sblock, path);
 	std::string cgiExecPath = sblock.findLocation(path.c_str()).getCgiExec();
-	std::vector<unsigned char> buffer = getCgiResponse(cgiExecPath);
+	std::pair<content_type, ft::error_code> cgiPair = getCgiResponse(cgiExecPath);
 	unsetEnvironment();
-	Message cgiResponse = parseCgiResponse(buffer);
+	if (cgiPair.second.value() != 0)
+	{
+		std::cout << "Error cgi: " << cgiPair.second.value() << " " << cgiPair.second.message() << std::endl;
+		return errorResponse(request.getUri(), 500);
+	}
+	Message cgiResponse = parseCgiResponse(cgiPair.first);
 	std::string cgiStatus = cgiResponse.getHeader("Status");
 	int status = strtol(cgiStatus.c_str(),  NULL, 10);
 	if (isError(Status(status)))
