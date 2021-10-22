@@ -115,6 +115,7 @@ Response redirectResponse(const ReturnDirective &rdir)
 	{
 		result.setContent(html::buildRedirectionPage(rdir));
 		result.setHeader("Content-Type", "text/html");
+		result.setHeader("Location", rdir.getUri().toString());
 	}
 	else
 	{
