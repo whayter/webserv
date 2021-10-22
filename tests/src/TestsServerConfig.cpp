@@ -1,16 +1,14 @@
 #include "catch_amalgamated.hpp"
 
-#include "ServerConfig.hpp"
+#include "SingletonFixture.hpp"
 
 #include <iostream>
 #include <fstream>
 #include <filesystem>
 
-
-TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConfig]" )
+TEST_CASE_METHOD(SingletonFixture, "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConfig]" )
 {
-	ServerConfig::__delete_singleton_instance();
-	ServerConfig& config = ServerConfig::getInstance("./config_files/testParser.conf");
+	ServerConfig& config = SingletonFixture::SetUpFile("./config_files/testParser.conf");
 
 
 	// listen directive
@@ -93,9 +91,9 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 	// CHECK( config.getServer(1).getLocations()[1].getFastCgiParam("SERVER_NAME") == "$server_name");
 
 	// cgi_exec directive
-	CHECK( config.getServer(0).getLocations()[2].getCgiExec() == "./cgi-bin/php");
+	CHECK( config.getServer(0).getLocations()[2].getReturnDirective().getUri() == "php-cgi");
 
-	CHECK( config.getServer(1).getLocations()[1].getCgiExec() == "./cgi-bin/ruby");
+	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().getUri() == "ruby-cgi");
 
 	// cgi_param directive
 	CHECK( config.getServer(0).getLocations()[0].getCgiParams().size() == 0);
@@ -122,10 +120,10 @@ TEST_CASE( "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConf
 
 }
 
-TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[class][ServerConfig][directive][return]" )
+TEST_CASE_METHOD(SingletonFixture, "ServerConfig2 - ./config_files/testParser_directive_return.conf",
+	"[class][ServerConfig][directive][return]" )
 {
-	ServerConfig::__delete_singleton_instance();
-	ServerConfig& config = ServerConfig::getInstance("./config_files/testParser_directive_return.conf");
+	ServerConfig& config = SingletonFixture::SetUpFile("./config_files/testParser_directive_return.conf");
 
 	CHECK( config.getServers().size() == 2);
 
@@ -229,11 +227,10 @@ TEST_CASE( "ServerConfig2 - ./config_files/testParser_directive_return.conf", "[
 
 }
 
-TEST_CASE( "ServerConfig3 - ./config_files/testFindServer.conf", "[class][ServerConfig][findServer]" )
+TEST_CASE_METHOD(SingletonFixture, "ServerConfig3 - ./config_files/testFindServer.conf",
+	"[class][ServerConfig][findServer]" )
 {
-	ServerConfig::__delete_singleton_instance();
-	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindServer.conf");
-
+	ServerConfig& config = SingletonFixture::SetUpFile("./config_files/testFindServer.conf");
 
 	CHECK(config.getServer(0).getServerName() == "srv_one");
 	CHECK(config.getServer(1).getServerName() == "srv_two");
@@ -272,10 +269,10 @@ TEST_CASE( "ServerConfig3 - ./config_files/testFindServer.conf", "[class][Server
 
 }
 
-TEST_CASE( "ServerConfig4 - ./config_files/testParser_directive_limit_except.conf", "[class][ServerConfig][limit_except]" )
+TEST_CASE_METHOD(SingletonFixture, "ServerConfig4 - ./config_files/testParser_directive_limit_except.conf",
+	"[class][ServerConfig][limit_except]" )
 {
-	ServerConfig::__delete_singleton_instance();
-	ServerConfig& config = ServerConfig::getInstance("./config_files/testParser_directive_limit_except.conf");
+	ServerConfig& config = SingletonFixture::SetUpFile("./config_files/testParser_directive_limit_except.conf");
 
 	// Location /
 	CHECK( config.getServer(0).getLocations()[0].getLimitExceptMethods().size() == 1);
@@ -300,10 +297,10 @@ TEST_CASE( "ServerConfig4 - ./config_files/testParser_directive_limit_except.con
 	CHECK( config.getServer(0).getLocations()[3].hasLimitExceptMethod("GET") == true);
 }
 
-TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][ServerConfig][findLocation]" )
+TEST_CASE_METHOD(SingletonFixture, "ServerConfig3 - ./config_files/testFindLocation.conf",
+	"[class][ServerConfig][findLocation]" )
 {
-	ServerConfig::__delete_singleton_instance();
-	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindLocation.conf");
+	ServerConfig& config = SingletonFixture::SetUpFile("./config_files/testFindLocation.conf");
 	(void)config;
 
 	ServerBlock srv = config.getServer(0);
@@ -326,10 +323,10 @@ TEST_CASE( "ServerConfig3 - ./config_files/testFindLocation.conf", "[class][Serv
 
 }
 
-TEST_CASE( "ServerConfig4 - ./config_files/testFindLocation.conf", "[class][ServerConfig][getPathFromUri]" )
+TEST_CASE_METHOD(SingletonFixture, "ServerConfig4 - ./config_files/testFindLocation.conf",
+	"[class][ServerConfig][getPathFromUri]" )
 {
-	ServerConfig::__delete_singleton_instance();
-	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindLocation.conf");
+	ServerConfig& config = SingletonFixture::SetUpFile("./config_files/testFindLocation.conf");
 	(void)config;
 
 	ServerBlock srv = config.getServer(0);
@@ -358,10 +355,9 @@ TEST_CASE( "ServerConfig4 - ./config_files/testFindLocation.conf", "[class][Serv
 
 }
 
-TEST_CASE( "ServerConfig::getMime", "[class][ServerConfig][getMime]" )
+TEST_CASE_METHOD(SingletonFixture, "ServerConfig::getMime", "[class][ServerConfig][getMime]" )
 {
-	ServerConfig::__delete_singleton_instance();
-	ServerConfig& config = ServerConfig::getInstance("./config_files/testFindLocation.conf", "./../mime.types");
+	ServerConfig& config = SingletonFixture::SetUpFile("./config_files/testFindLocation.conf", "./../mime.types");
 	(void)config;
 
 	CHECK( config.getMime("png") == "image/png");
