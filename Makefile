@@ -76,7 +76,7 @@ SRC+= Device.cpp Socket.cpp Server.cpp
 SRC+= pageBuilding.cpp
 
 SRC+= ScannerConfig.cpp ServerConfig.cpp ServerBlock.cpp Host.cpp
-SRC+= ReturnDirective.cpp Location.cpp
+SRC+= ReturnDirective.cpp Location.cpp Context.cpp
 
 # ft
 SRC+= system_error.cpp error_code.cpp

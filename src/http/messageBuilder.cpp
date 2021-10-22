@@ -1,55 +1,43 @@
 #include "ServerConfig.hpp"
-#include "Location.hpp"
-
-#include "Status.hpp"
-#include "Request.hpp"
+#include "Context.hpp"
 #include "Response.hpp"
+#include "Status.hpp"
 #include "messageParser.hpp"
 #include "messageBuilder.hpp"
 #include "cgi.hpp"
-
-#include "utility.hpp"
 #include "HtmlBuilder.hpp"
-#include "filesystem.hpp"
 
-#include <stdio.h>
 #include <fstream>
-#include <vector>
 
 namespace fs = ft::filesystem;
 
 namespace http {
 
 Response buildResponse(Request& request)
-{	
-	ServerConfig&	config = ServerConfig::getInstance();
-	ServerBlock&	server = config.findServer(request.getUri());
-	fs::path		path = server.getPathFromUri(request.getUri());
-	const Location&	location = server.findLocation(path.c_str());
-	action			action = location.getAction();
-
-	if (!location.hasLimitExceptMethods(request.getMethod()))
+{
+	Context ctxt = getContext(request.getUri());
+	if (!ctxt.location.hasLimitExceptMethod(request.getMethod()))
 		return errorResponse(request.getUri(), Status::MethodNotAllowed);
 	if (request.getMethod() == "DELETE")
-		return deleteResponse(request, path);
+		return deleteResponse(request, ctxt.path);
 	if (request.getMethod() == "POST")
-		postContent(path, request.getContent());
-	if (action == action::cgi)
-		return dynamicResponse(request, server, path);
-	else if (action == action::returnDirective)
-		return redirectResponse(location.getReturnDirective());
-	else if (action == action::none)
+		postContent(ctxt.path, request.getContent());
+	if (ctxt.location.getAction() == action::cgi)
+		return dynamicResponse(request, ctxt.server, ctxt.path);
+	else if (ctxt.location.getAction() == action::returnDirective)
+		return redirectResponse(ctxt.location.getReturnDirective());
+	else if (ctxt.location.getAction() == action::none)
 	{
 		ft::error_code ec;
-		ft::filesystem::file_status stat = ft::filesystem::status(path, ec);
+		ft::filesystem::file_status stat = ft::filesystem::status(ctxt.path, ec);
 		if (ec.value() == ft::errc::no_such_file_or_directory)
 			return errorResponse(request.getUri(), Status::NotFound);
 		else if (ec)
 			throw std::logic_error("Houston, we have a problem (" + ec.message() + ')');			
 		else if (stat.type() == ft::filesystem::file_type::regular)
-			return staticResponse(path);
-		else if (stat.type() == ft::filesystem::file_type::directory && location.hasAutoindex())
-			return autoIndexResponse(path);
+			return staticResponse(ctxt.path);
+		else if (stat.type() == ft::filesystem::file_type::directory && ctxt.location.hasAutoindex())
+			return autoIndexResponse(ctxt.path);
 	}
 	return errorResponse(request.getUri(), Status::NotFound);
 }
@@ -67,8 +55,7 @@ void postContent(std::string path, content_type content)
 Response deleteResponse(Request& request, std::string path)
 {
 	Response result;
-	int status = remove(path.c_str());
-	if (status != 0)
+	if (remove(path.c_str()) != 0)
 		return errorResponse(request.getUri(), Status::NotFound);
 	result.setStatus(Status::OK);
 	result.setContent(html::buildSimplePage("File deleted"));
@@ -90,16 +77,22 @@ Response dynamicResponse(http::Request& request, ServerBlock& sblock, fs::path& 
 	Response result;
 	setEnvironment(request, sblock, path);
 	std::string cgiExecPath = sblock.findLocation(path.c_str()).getCgiExec();
-	std::vector<unsigned char> buffer = getCgiResponse(cgiExecPath);
+	std::pair<content_type, ft::error_code> cgiPair = getCgiResponse(cgiExecPath);
 	unsetEnvironment();
-	Message cgiResponse = parseCgiResponse(buffer);
+	if (cgiPair.second.value() != 0)
+	{
+		std::cout << "Error cgi: " << cgiPair.second.value() << " " << cgiPair.second.message() << std::endl;
+		return errorResponse(request.getUri(), 500);
+	}
+	Message cgiResponse = parseCgiResponse(cgiPair.first);
 	std::string cgiStatus = cgiResponse.getHeader("Status");
 	int status = strtol(cgiStatus.c_str(),  NULL, 10);
 	if (isError(Status(status)))
 		return (errorResponse(request.getUri(), Status(status)));
-	result.setStatus(Status(status));
-	result.setContent(cgiResponse.getContent());
-	result.setHeader("Content-Type", cgiResponse.getHeader("Content-type"));	
+	if (status == 0)
+		result.setStatus(Status::OK);
+	else
+		result.setStatus(Status(status));
 	if (request.getMethod() == "POST")
 	{
 		result.setHeader("Content-Length", "0");
@@ -107,13 +100,17 @@ Response dynamicResponse(http::Request& request, ServerBlock& sblock, fs::path& 
 		postContent(path, cgiResponse.getContent());
 	}
 	else
+	{
 		result.setContent(cgiResponse.getContent());
+		result.setHeader("Content-Type", cgiResponse.getHeader("Content-type"));	
+	}
 	return result;
 }
 
 Response redirectResponse(const ReturnDirective &rdir)
 {
 	Response result;
+	result.setStatus(rdir.getCode());
 	if (rdir.hasUri())
 	{
 		result.setContent(html::buildRedirectionPage(rdir));
@@ -130,6 +127,7 @@ Response redirectResponse(const ReturnDirective &rdir)
 Response autoIndexResponse(const ft::filesystem::path& path)
 {
 	Response result;
+	result.setStatus(Status::OK);
 	result.setHeader("Content-Type", "text/html");
 	result.setContent(html::buildAutoindexPage(path));
 	return result;

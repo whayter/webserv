@@ -17,22 +17,24 @@ void Location::_setAction(action a)
 		_action = a;
 }
 
-
-void 	Location::setAutoindex(bool autoindex) {
+void 	Location::setAutoindex(bool autoindex)
+{
 	_autoindex = autoindex;
 	_hasAutoindex = true;
 }
-void 	Location::setClientMaxBodySize(size_t size)	{
+void 	Location::setClientMaxBodySize(size_t size)
+{
 	_clientMaxBodySize = size;
 	_hasClientMaxBodySize = true;
 }
-void 	Location::setReturnDirective(const ReturnDirective& returnDirective)	{
+void 	Location::setReturnDirective(const ReturnDirective& returnDirective)
+{
 	_returnDirective = returnDirective;
 	_hasReturnDirective = true;
 	_setAction(action::returnDirective);
 }
 
-void 	Location::setUri(std::string uri)				{ _uri = uri; }
+void 	Location::setUri(std::string uri) { _uri = uri; }
 void 	Location::setExtentionFile(std::string ext)
 {
 	if (ext[0] != '.')
@@ -69,7 +71,7 @@ void	Location::addLimitExceptMethods(const std::set<std::string>& l)
 	_limitExceptMethods.insert(l.begin(), l.end());
 }
 
-bool	Location::hasLimitExceptMethods(const std::string& method) const
+bool	Location::hasLimitExceptMethod(const std::string& method) const
 {
 	return _limitExceptMethods.count(method);
 }

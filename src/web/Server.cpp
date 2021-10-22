@@ -154,17 +154,22 @@ void Server::_buildRequests(int deviceIndex)
 	http::Status errorCode;
 	while (http::parseRequest(request, errorCode, _devices[deviceIndex].getInputBuffer()))
 	{
-		_devices[deviceIndex].getRequestsQueue().push(request);
+		_devices[deviceIndex].getRequestsQueue().push(std::make_pair(request, errorCode));
 		_log(deviceIndex, "Request received.");
 	}
 }
 
 void Server::_buildResponses(int deviceIndex)
 {
-	std::queue<http::Request>& requests = _devices[deviceIndex].getRequestsQueue();
+	requests_queue_type& requests = _devices[deviceIndex].getRequestsQueue();
 	while (!requests.empty())
 	{
-		http::Response response = http::buildResponse(requests.front());
+		http::Response response;
+		std::pair<http::Request, http::Status> pair = requests.front();
+		if (http::isError(requests.front().second))
+			response = http::errorResponse(pair.first.getUri(), pair.second);
+		else
+			response = http::buildResponse(pair.first);
 		requests.pop();
 		_devices[deviceIndex].getResponsesQueue().push(response);
 	}
@@ -172,8 +177,8 @@ void Server::_buildResponses(int deviceIndex)
 
 void Server::_sendResponses(int deviceIndex)
 {
-	std::queue<http::Response>& responses = _devices[deviceIndex].getResponsesQueue();
-	std::vector<unsigned char> outputBuffer = _devices[deviceIndex].getOutputBuffer();
+	responses_queue_type& responses = _devices[deviceIndex].getResponsesQueue();
+	buffer_type outputBuffer = _devices[deviceIndex].getOutputBuffer();
 
 	while (!responses.empty())
 	{

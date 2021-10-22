@@ -93,7 +93,7 @@ std::ostream & operator <<(std::ostream& os, const Token &t)
 const char* tokenKindToCstring(TokenKind type)
 {
 	static const char* str[] = {
-		"kEnfOfInput", "kError",
+		"kEndOfInput", "kError",
 		"kString", "kNewLine", "kCarriage",
 		"kLeftBrace", "kRightBrace",
 		"kComma", "kColon", "kLWS"

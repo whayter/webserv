@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/10/06 16:20:01 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/10/09 18:45:59 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@
 #include <stdint.h>
 
 /// @brief Singleton Class
-class ServerConfig
-{
+class ServerConfig {
+
 public:
 
 	/// Instanciate the singleton instance at first call with given file
@@ -58,6 +58,7 @@ public:
 	std::vector<uint32_t>			getPorts();
 
 private:
+
 	ServerConfig(const ft::filesystem::path & filepath, const ft::filesystem::path& mimePath = ft::filesystem::path());
 	ServerConfig(ServerConfig&);
 	ServerConfig& operator=(const ServerConfig&);
@@ -98,6 +99,5 @@ private:
 	std::map<std::string, std::string> 	_mime;
 
 }; /* class ServerConfig */
-
 
 #endif /* SERVER_CONFIG_HPP */

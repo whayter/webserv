@@ -18,30 +18,30 @@ public:
 	Device() {}
 	~Device() {}
 
-	void								setPort(uint32_t port);
+	void					setPort(port_type port);
 
-	inline uint32_t						getPort() { return _port; }
-	inline Socket&						getSocket() { return _socket; }
-	inline std::vector<unsigned char>&	getInputBuffer() { return _inputBuffer; }
-	inline std::vector<unsigned char>&	getOutputBuffer() { return _outputBuffer; }
+	inline port_type		getPort() { return _port; }
+	inline Socket&			getSocket() { return _socket; }
+	buffer_type&			getInputBuffer() { return _inputBuffer; }
+	buffer_type&			getOutputBuffer() { return _outputBuffer; }
 
-	inline std::queue<http::Request>&	getRequestsQueue() { return _requests; }
-	inline std::queue<http::Response>&	getResponsesQueue() { return _responses; }
+	requests_queue_type&	getRequestsQueue() { return _requests; }
+	responses_queue_type&	getResponsesQueue() { return _responses; }
 
-	void								closeSocket();
-	bool								setNonBlocking();
-	bool								setReusableAddr();
-	bool								bindSocket();
-	bool								listenSocket();
+	void					closeSocket();
+	bool					setNonBlocking();
+	bool					setReusableAddr();
+	bool					bindSocket();
+	bool					listenSocket();
 
 private:
 
-	uint32_t							_port;
-	Socket								_socket;
-	std::vector<unsigned char>			_inputBuffer;
-	std::vector<unsigned char>			_outputBuffer;
-	std::queue<http::Request>			_requests;
-	std::queue<http::Response>			_responses;
+	port_type				_port;
+	Socket					_socket;
+	buffer_type				_inputBuffer;
+	buffer_type				_outputBuffer;
+	requests_queue_type		_requests;
+	responses_queue_type	_responses;
 };
 
 } /* namespace web */

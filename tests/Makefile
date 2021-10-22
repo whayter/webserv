@@ -83,7 +83,7 @@ SRC+= ScannerStream.cpp ScannerBuffer.cpp ScannerMessage.cpp
 SRC+= Socket.cpp Device.cpp Server.cpp
 SRC+= pageBuilding.cpp
 
-SRC+= ScannerConfig.cpp ServerConfig.cpp ServerBlock.cpp Host.cpp
+SRC+= ScannerConfig.cpp ServerConfig.cpp ServerBlock.cpp Host.cpp Context.cpp
 SRC+= ReturnDirective.cpp Location.cpp
 
 OBJ = $(addprefix  $(OBJ_DIR)/,$(SRC:%.cpp=%.o))
