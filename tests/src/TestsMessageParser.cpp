@@ -5,6 +5,7 @@
 #include "http/Request.hpp"
 #include "http/Status.hpp"
 #include "ScannerMessage.hpp"
+#include "SingletonFixture.hpp"
 
 
 #include <iostream>
@@ -62,8 +63,12 @@ TEST_CASE( "ScannerBuffer2 - test vite fait", "[ScannerBuffer2]" )
 
 
 /// simple get
-TEST_CASE( "http::parseRequest - simple get", "[namespace][http][parseRequest][get][simple]" )
+TEST_CASE_METHOD(SingletonFixture, "http::parseRequest - simple get",
+	"[namespace][http][parseRequest][get][simple]" )
 {
+	ServerConfig& config = SingletonFixture::SetUpFile("./config_files/testMessageParser.conf");
+	(void)config;
+
 	std::ifstream file;
 	file.open("./http_requests/simple_get", std::ifstream::in);
 	std::vector<unsigned char> buffer((std::istreambuf_iterator<char>(file)),
@@ -93,8 +98,12 @@ TEST_CASE( "http::parseRequest - simple get", "[namespace][http][parseRequest][g
 }
 
 // simple post
-TEST_CASE( "http::parseRequest - simple post", "[namespace][http][parseRequest][post]" )
+TEST_CASE_METHOD(SingletonFixture, "http::parseRequest - simple post",
+	"[namespace][http][parseRequest][post]" )
 {
+	ServerConfig& config = SingletonFixture::SetUpFile("./config_files/testMessageParser.conf");
+	(void)config;
+
 	std::ifstream file;
 	file.open("./http_requests/simple_post", std::ifstream::in);
 	std::vector<unsigned char> buffer((std::istreambuf_iterator<char>(file)),
@@ -127,8 +136,12 @@ TEST_CASE( "http::parseRequest - simple post", "[namespace][http][parseRequest][
 
 
 // two get in a row with payload
-TEST_CASE( "http::parseRequest - two get in a row", "[namespace][http][parseRequest][two][get][payload]" )
+TEST_CASE_METHOD(SingletonFixture, "http::parseRequest - two get in a row",
+	"[namespace][http][parseRequest][two][get][payload]" )
 {
+	ServerConfig& config = SingletonFixture::SetUpFile("./config_files/testMessageParser.conf");
+	(void)config;
+
 	std::ifstream file;
 	file.open("./http_requests/two_requests", std::ifstream::in);
 	std::vector<unsigned char> buffer((std::istreambuf_iterator<char>(file)),
@@ -182,8 +195,12 @@ TEST_CASE( "http::parseRequest - two get in a row", "[namespace][http][parseRequ
 }
 
 /// two get in a row without payload
-TEST_CASE( "http::parseRequest - two get in a row no payload", "[namespace][http][parseRequest][two][get][no_payload]" )
+TEST_CASE_METHOD(SingletonFixture, "http::parseRequest - two get in a row no payload",
+	"[namespace][http][parseRequest][two][get][no_payload]" )
 {
+	ServerConfig& config = SingletonFixture::SetUpFile("./config_files/testMessageParser.conf");
+	(void)config;
+
 	std::ifstream file;
 	file.open("./http_requests/two_requests_no_payload", std::ifstream::in);
 	std::vector<unsigned char> buffer((std::istreambuf_iterator<char>(file)),
@@ -227,8 +244,12 @@ TEST_CASE( "http::parseRequest - two get in a row no payload", "[namespace][http
 }
 
 // simple get cut in half
-TEST_CASE( "http::parseRequest - simple get cut in half", "[namespace][http][parseRequest][simple][get][cut_half]" )
+TEST_CASE_METHOD(SingletonFixture, "http::parseRequest - simple get cut in half",
+	"[namespace][http][parseRequest][simple][get][cut_half]" )
 {
+	ServerConfig& config = SingletonFixture::SetUpFile("./config_files/testMessageParser.conf");
+	(void)config;
+
 	std::ifstream file;
 	file.open("./http_requests/simple_get", std::ifstream::in);
 	std::string data((std::istreambuf_iterator<char>(file)),
@@ -280,8 +301,12 @@ TEST_CASE( "http::parseRequest - simple get cut in half", "[namespace][http][par
 }
 
 // simple get cut in half loop
-TEST_CASE( "http::parseRequest - simple get cut in half loop", "[namespace][http][parseRequest][simple][get][cut_half][loop]" )
+TEST_CASE_METHOD(SingletonFixture, "http::parseRequest - simple get cut in half loop",
+	"[namespace][http][parseRequest][simple][get][cut_half][loop]" )
 {
+	ServerConfig& config = SingletonFixture::SetUpFile("./config_files/testMessageParser.conf");
+	(void)config;
+
 	std::ifstream file;
 	file.open("./http_requests/simple_get", std::ifstream::in);
 	std::string data((std::istreambuf_iterator<char>(file)),
