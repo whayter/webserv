@@ -21,6 +21,7 @@
 #include <fstream>
 #include <exception>
 #include <cstdlib>
+#include <climits>
 
 ServerConfig* ServerConfig::_singleton = NULL;
 
@@ -597,27 +598,27 @@ std::pair<std::string, std::string>	ServerConfig::_parseCgiParam(config::Scanner
 size_t	ServerConfig::_parseClientMaxBodySize(config::ScannerConfig & scanner)
 {
 	size_t bytes = 0;
-	char unit = 0;
+	char *unit;
 	pr::Token t;
 
 	if ((t = scanner.getToken()).kind != pr::TokenKind::kString && t.kind != pr::TokenKind::kInteger)
+	{
+		if (t.kind == pr::TokenKind::kSemiColon)
+			_throw_SyntaxError(t, "Please provide a value to \"client_max_body_size\".");
 		_throw_SyntaxError(t, "Unexpected token: " + pr::tokenToString(t) + " in context \"client_max_body_size\".");
+	}
 	_skipSemiColonNewLine(scanner);
 	
-	if (t.kind == pr::TokenKind::kInteger)
-		return strtoul(t.value.c_str(), 0, 10);
-	
-    std::string::const_iterator it = t.value.begin();
-    std::string::const_iterator end = t.value.end();
+	if (!::isdigit(t.value[0]))
+		_throw_SyntaxError(t, std::string("please provide a valid number"));
+	errno = 0;
+	bytes = strtoul(t.value.c_str(), &unit, 10);
+	if (bytes == ULONG_MAX && ft::make_error_code().value() == ft::errc::result_out_of_range)
+		_throw_SyntaxError(t, std::string("Overflow in context \"client_max_body_size\"... thx bro --'"));
+	if (unit[1])
+		_throw_SyntaxError(t, std::string("Unknown unit \"") + unit + std::string("\" in context \"client_max_body_size\". RTFM !"));
 
-	while (it != end && isdigit(*it))
-	{
-		bytes = bytes * 10 + *it - '0';
-		it++;
-	}
-	unit = *it;
-
-	switch (unit)
+	switch (*unit)
 	{
 		case 'k':
 			bytes *= 1000;
@@ -634,10 +635,9 @@ size_t	ServerConfig::_parseClientMaxBodySize(config::ScannerConfig & scanner)
 			bytes *= 1024;
 			break;	
 	default:
-		_throw_SyntaxError(t, std::string("Unknown unit '") + std::string(it, end) + std::string("' in context \"client_max_body_size\". RTFM !"));
+		_throw_SyntaxError(t, std::string("Unknown unit '") + std::string(unit) + std::string("' in context \"client_max_body_size\". RTFM !"));
 		break;
 	}
-
 	return bytes;
 }
 
