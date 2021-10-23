@@ -103,6 +103,7 @@ jobs:
     - name: siege
       run: |
         sudo ./webserv > /dev/null &
+        sleep 2
         siege -t 30S http://localhost:80/autoindex
 
 
