@@ -172,7 +172,7 @@ const Location& ServerConfig::findLocation(const Uri& uri)
 
 ft::filesystem::path	ServerConfig::getPathFromUri(const Uri& uri)
 {
-	return findServer(uri).getPathFromUri(uri);
+	return findServer(uri).getPathFromUri(uri).second;
 }
 
 std::vector<uint32_t> ServerConfig::getPorts()
