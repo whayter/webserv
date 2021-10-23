@@ -110,7 +110,7 @@ all: $(NAME)
 
 $(OBJ_DIR)/%.o: %.cpp
 	@mkdir -p $(OBJ_DIR)
-	@$(CXX) $(CXXFLAGS) $(IFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(IFLAGS) -c $< -o $@
 
 $(NAME): $(OBJ)
 	@$(CXX) $(CXXFLAGS) $(IFLAGS)  -o $@ $(OBJ) $(LDFLAGS)

@@ -70,17 +70,10 @@ std::vector<unsigned char> buildAutoindexPage(const ft::filesystem::path& path)
 	head.addChild("title", title);
 	Builder body("body");
 	Builder pre("pre");
-	std::string backHref = "/";
-	backHref += path.parent_path().string();
-	pre.addChild(a("../", backHref));
+	pre.addChild(a("../", "../"));
 	ft::filesystem::directory_iterator it(path);
 	for (; it != ft::filesystem::directory_iterator(); ++it)
-	{
-		std::string href = it->path().parent_path().filename();
-		href += "/";
-		href += it->path().filename();
-		pre.addChild(a(it->path().filename(), href));
-	}
+		pre.addChild(a(it->path().filename(), it->path().filename()));
 	body.addChild("h1", title);
 	body.addChild("hr","");
 	body.addChild(pre);
