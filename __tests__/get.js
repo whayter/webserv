@@ -79,8 +79,8 @@ it ('GET localhost:82/text', function () {
 it ('GET localhost:82/uri', function () {
   return frisby
   .get('http://localhost:82/uri')
-  .expect('status', 301)
-  .expect('bodyContains', 'moved')
+  .expect('status', 200)
+  .expect('bodyContains', 'Copyright The Closure Library Authors')
 });
 
 it ('GET localhost:83', function () {

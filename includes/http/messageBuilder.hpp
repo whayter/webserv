@@ -15,7 +15,7 @@ Response					errorResponse(const Uri& uri, Status error);
 Response					redirectResponse(const ReturnDirective &rdir);
 Response					staticResponse(const ft::filesystem::path& path);
 Response					dynamicResponse(http::Request& request, ServerBlock& sblock, ft::filesystem::path& path);
-Response					autoIndexResponse(const ft::filesystem::path& path);
+Response					autoIndexResponse(http::Request& request, const ft::filesystem::path& path);
 std::vector<unsigned char> 	getFileContent(const ft::filesystem::path& path);
 
 template <class Message>

@@ -37,7 +37,7 @@ Response buildResponse(Request& request)
 		else if (stat.type() == ft::filesystem::file_type::regular)
 			return staticResponse(ctxt.path);
 		else if (stat.type() == ft::filesystem::file_type::directory && ctxt.location.hasAutoindex())
-			return autoIndexResponse(ctxt.path);
+			return autoIndexResponse(request, ctxt.path);
 	}
 	return errorResponse(request.getUri(), Status::NotFound);
 }
@@ -115,6 +115,7 @@ Response redirectResponse(const ReturnDirective &rdir)
 	{
 		result.setContent(html::buildRedirectionPage(rdir));
 		result.setHeader("Content-Type", "text/html");
+		result.setHeader("Location", rdir.getUri().toString());
 	}
 	else
 	{
@@ -124,12 +125,27 @@ Response redirectResponse(const ReturnDirective &rdir)
 	return result;
 }
 
-Response autoIndexResponse(const ft::filesystem::path& path)
+Response autoIndexResponse(http::Request& request, const ft::filesystem::path& path)
 {
 	Response result;
-	result.setStatus(Status::OK);
-	result.setHeader("Content-Type", "text/html");
-	result.setContent(html::buildAutoindexPage(path));
+
+	if ((*--path.end()).empty()) // if empty then the request uri end with /
+	{
+		result.setStatus(Status::OK);
+		result.setHeader("Content-Type", "text/html");
+		result.setContent(html::buildAutoindexPage(path));
+	}
+	else // else redirect to request uri += '/'
+	{
+		ReturnDirective rdir;
+		rdir.setUri(request.getUri().toString() + "/");
+		rdir.setCode(Status::MovedPermanently);
+		
+		result.setStatus(Status::MovedPermanently);
+		result.setHeader("Location", rdir.getUri().toString());
+		result.setHeader("Content-Type", "text/html");
+		result.setContent(html::buildRedirectionPage(rdir));
+	}
 	return result;
 }
 

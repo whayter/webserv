@@ -37,9 +37,14 @@ ServerConfig::ServerConfig(const ft::filesystem::path& filepath, const ft::files
 {
 	std::ifstream file;
 
+	if (!ft::filesystem::exists(filepath))
+		throw std::invalid_argument("webserv: \"" + filepath.string() + "\" doesn't exists.\n");
+	if (ft::filesystem::is_directory(filepath))
+		throw std::invalid_argument("webserv: really ?\n  bro, \"" + filepath.string() + "\" is a directory, dum\n");
+
 	file.open(filepath.c_str(), std::ifstream::in);
 	if (!file.is_open())
-		throw std::invalid_argument("Can't open file \"" + filepath.string() + "\"");
+		throw std::invalid_argument("webserv: Can't open file \"" + filepath.string() + "\"\n");
 	_parse(file);
 	_postParser();
 	file.close();
