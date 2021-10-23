@@ -26,6 +26,7 @@ int							stringifyInteger(std::string integer);
 std::string					stringifyVector(std::vector<unsigned char> v);
 std::vector<unsigned char>	vectorizeString(std::string s);
 void						lowerStringInPlace(std::string& s);
+void						upperStringInPlace(std::string& s);
 bool						isInteger(std::string& s);
 std::string					getDate();
 

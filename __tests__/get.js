@@ -142,7 +142,14 @@ it ('DELETE http://localhost:84/testPostMethod.html', function () {
     .expect('status', 200);
 });
 
+//////////////////////////////////////////////////////////////////////////////
+/// PUT //////////////////////////////////////////////////////////////////  
 
+it ('PUT http://localhost:80 should return Not implemented 501', function () {
+  return frisby
+  .put('http://localhost:80')
+  .expect('status', 501);
+});
 
 
 
@@ -162,7 +169,6 @@ it ('DELETE http://localhost:84/testPostMethod.html', function () {
 
 // test on folders, (autoindex or not, index or not (so 403 or 404 ?))
 // test bad http protocol version
-// test not implemented Method
 // etc...
       
 });
