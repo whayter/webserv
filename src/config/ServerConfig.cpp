@@ -425,8 +425,17 @@ std::map<u_short, std::string> ServerConfig::_parseErrorPage(config::ScannerConf
 	t = scanner.getToken();
 	if (t.kind != pr::TokenKind::kInteger)
 		_throw_SyntaxError(t, "No error code specified.");
+	errno = 0;
 	do {
-		codes.push_back(strtoul(t.value.c_str(), 0, 10));
+		char *nptr;
+		unsigned long code = strtoul(t.value.c_str(), &nptr, 10);
+		if (code == ULONG_MAX && ft::make_error_code().value() == ft::errc::result_out_of_range)
+			_throw_SyntaxError(t, std::string("Overflow in context \"error_page\"... thx bro --'"));
+		if (nptr[0])
+			_throw_SyntaxError(t, std::string("listen directive: Must be a valid number."));
+		if (code > 999)
+			_throw_SyntaxError(t, std::string("listen directive: Well as far as I know, http standard doesn't define status with more than 3 digits. Annoying bro, go ahead --' "));
+		codes.push_back(code);
 	} while ((t = scanner.getToken()).kind == pr::TokenKind::kInteger);
 	
 	if (t.kind == pr::TokenKind::kString)
