@@ -534,37 +534,23 @@ bool	ServerConfig::_parseAutoindex(config::ScannerConfig & scanner)
 }
 
 
-Host ServerConfig::_parseListenValue(const pr::Token& host)
+Host ServerConfig::_parseListenValue(const pr::Token& t)
 {
 	Host result;
-	std::string tmp;
-	u_short port = 0;
+	unsigned long port;
 
-    std::string::const_iterator it = host.value.begin();
-    std::string::const_iterator end = host.value.end();
-
-    while(it != end && *it != ':')
-		tmp += *it++;
-	
-	if (it == end)
-	{
-		it = tmp.begin();
-		end = tmp.end();
-	}
-	else
-	{
-	    ft::lowerStringInPlace(tmp);
-		result.setHostname(tmp);
-		it++;
-	}
-	while (it != end)
-	{
-		if (!isdigit(*it))
-			_throw_SyntaxError(host, "No port defined in listen directive.");
-		port = port * 10 + *it - '0';
-		it++;
-	}
-	result.setPort(port);
+	char *nptr;
+	errno = 0;
+	port = strtoul(t.value.c_str(), &nptr, 10);
+	if (port == ULONG_MAX && ft::make_error_code().value() == ft::errc::result_out_of_range)
+		_throw_SyntaxError(t, std::string("Overflow in context \"listen\"... thx bro --'"));
+	if (nptr[0])
+		_throw_SyntaxError(t, std::string("listen directive: Must be a valid number. (1 to 65535)"));
+	if (port == 0)
+		_throw_SyntaxError(t, std::string("listen directive: Port 0 is a reserved port. (1 to 65535)"));
+	if (port > USHRT_MAX)
+		_throw_SyntaxError(t, std::string("listen directive: the port is greater than the max port. (1 to 65535)"));
+	result.setPort(static_cast<uint16_t>(port));
 	return result;
 }
 
