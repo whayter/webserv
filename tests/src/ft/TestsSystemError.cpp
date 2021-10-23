@@ -1,4 +1,4 @@
-#include "catch_amalgamated.hpp"
+#include "catch.hpp"
 
 #include "system_error.hpp"
 #include "error_code.hpp"

@@ -1,4 +1,4 @@
-#include "catch_amalgamated.hpp"
+#include "catch.hpp"
 
 #include "ft/filesystem/filesystem.hpp"
 #include "ft/error_code.hpp"

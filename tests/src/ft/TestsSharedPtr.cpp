@@ -1,4 +1,4 @@
-#include "catch_amalgamated.hpp"
+#include "catch.hpp"
 #include "shared_ptr.hpp"
 #include <string>
 

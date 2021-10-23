@@ -1,4 +1,4 @@
-#include "catch_amalgamated.hpp"
+#include "catch.hpp"
 #include "utility.hpp"
 
 using namespace ft;
