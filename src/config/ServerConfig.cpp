@@ -462,6 +462,8 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner, pr::Token loc
 		}
 		else if (t2.kind == pr::TokenKind::kString)
 		{
+			if (t.value != "ext")
+				_throw_SyntaxError(t, "Location directive: unknown option \"" + t.value + "\".");
 			result.setExtentionFile(t2.value);
 			t = scanner.getToken();
 		}
