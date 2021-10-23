@@ -14,11 +14,22 @@
 
 static bool run = true;
 
+std::string getUsage()
+{
+	return "usage: \n  ./webserv\n  ./webserv file.conf\n";
+}
+
 void parseArgs(int ac, char **av)
 {
 	std::string path = DEFAULT_PATH;
 	if (ac == 2)
 		path = av[1];
+	else if (ac > 2)
+	{
+		std::cerr << "To many arguments." << std::endl;
+		std::cerr << getUsage();
+		exit(1);
+	}
 	try
 	{
 		ServerConfig::getInstance(path, "./mime.types");
