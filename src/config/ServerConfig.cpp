@@ -219,6 +219,7 @@ void ServerConfig::_skipSemiColonNewLine(config::ScannerConfig & scanner)
 }
 
 void ServerConfig::_postParser(){
+	_postParserSetDefaultServerLocation();
 	_postParserSetLimitExcept();
 	_postParserSetAutoindexInChilds();
 	_postParserSetClientMaxBodySizeInChilds();
@@ -263,6 +264,29 @@ void ServerConfig::_postParserSetLimitExcept()
 		for (itLocation = itServer->getLocations().begin(); itLocation != itServer->getLocations().end(); itLocation++)
 			if (itLocation->getLimitExceptMethods().empty())
 				itLocation->addLimitExceptMethod("GET");
+	}
+}
+
+// if no location provided, set a default one
+void ServerConfig::_postParserSetDefaultServerLocation()
+{
+	std::vector<ServerBlock>::iterator itServer;
+	Location defaultLocation;
+	defaultLocation.setUri("/");
+
+	bool hasRootLocation;
+	for (itServer = _servers.begin(); itServer != _servers.end(); itServer++)
+	{
+		std::vector<Location>::iterator itLocation;
+		hasRootLocation = false;
+		for (itLocation = itServer->getLocations().begin(); itLocation != itServer->getLocations().end(); itLocation++)
+			if (itLocation->getUri() == "/")
+			{
+				hasRootLocation = true;
+				break;
+			}
+		if (!hasRootLocation)
+			itServer->addLocation(defaultLocation);
 	}
 }
 
