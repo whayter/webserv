@@ -219,6 +219,7 @@ void ServerConfig::_skipSemiColonNewLine(config::ScannerConfig & scanner)
 }
 
 void ServerConfig::_postParser(){
+	_postCheckAtLeastOneServerIsDefined();
 	_postParserSetDefaultServerLocation();
 	_postParserSetLimitExcept();
 	_postParserSetAutoindexInChilds();
@@ -288,6 +289,11 @@ void ServerConfig::_postParserSetDefaultServerLocation()
 		if (!hasRootLocation)
 			itServer->addLocation(defaultLocation);
 	}
+}
+void ServerConfig::_postCheckAtLeastOneServerIsDefined()
+{
+	if (_servers.size() == 0)
+		std::cout << "webserv: [warning] No server defined in \"" << _configFilePath << "\"" << std::endl;
 }
 
 void ServerConfig::_parse(std::istream & in)

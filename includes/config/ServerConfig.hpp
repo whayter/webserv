@@ -84,6 +84,7 @@ private:
 	
 	Host _parseListenValue(const config::Token& host);
 
+	void _postCheckAtLeastOneServerIsDefined();
 	void _postParser();
 	void _postParserSetAutoindexInChilds();
 	void _postParserSetClientMaxBodySizeInChilds();
