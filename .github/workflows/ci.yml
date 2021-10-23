@@ -102,7 +102,7 @@ jobs:
     - run: make
     - name: siege
       run: |
-        sudo ./webserv & > /dev/null 
+        sudo ./webserv > /dev/null &
         siege -t 30S http://localhost:80/autoindex
 
 
