@@ -133,7 +133,7 @@ Response autoIndexResponse(http::Request& request, const ft::filesystem::path& p
 	{
 		result.setStatus(Status::OK);
 		result.setHeader("Content-Type", "text/html");
-		result.setContent(html::buildAutoindexPage(path));
+		result.setContent(html::buildAutoindexPage(path, request.getUri().toString()));
 	}
 	else // else redirect to request uri += '/'
 	{
