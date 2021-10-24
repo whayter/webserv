@@ -21,6 +21,7 @@
 #include <fstream>
 #include <exception>
 #include <cstdlib>
+#include <climits>
 
 ServerConfig* ServerConfig::_singleton = NULL;
 
@@ -171,7 +172,7 @@ const Location& ServerConfig::findLocation(const Uri& uri)
 
 ft::filesystem::path	ServerConfig::getPathFromUri(const Uri& uri)
 {
-	return findServer(uri).getPathFromUri(uri);
+	return findServer(uri).getPathFromUri(uri).second;
 }
 
 std::vector<uint32_t> ServerConfig::getPorts()
@@ -218,6 +219,8 @@ void ServerConfig::_skipSemiColonNewLine(config::ScannerConfig & scanner)
 }
 
 void ServerConfig::_postParser(){
+	_postCheckAtLeastOneServerIsDefined();
+	_postParserSetDefaultServerLocation();
 	_postParserSetLimitExcept();
 	_postParserSetAutoindexInChilds();
 	_postParserSetClientMaxBodySizeInChilds();
@@ -263,6 +266,34 @@ void ServerConfig::_postParserSetLimitExcept()
 			if (itLocation->getLimitExceptMethods().empty())
 				itLocation->addLimitExceptMethod("GET");
 	}
+}
+
+// if no location provided, set a default one
+void ServerConfig::_postParserSetDefaultServerLocation()
+{
+	std::vector<ServerBlock>::iterator itServer;
+	Location defaultLocation;
+	defaultLocation.setUri("/");
+
+	bool hasRootLocation;
+	for (itServer = _servers.begin(); itServer != _servers.end(); itServer++)
+	{
+		std::vector<Location>::iterator itLocation;
+		hasRootLocation = false;
+		for (itLocation = itServer->getLocations().begin(); itLocation != itServer->getLocations().end(); itLocation++)
+			if (itLocation->getUri() == "/")
+			{
+				hasRootLocation = true;
+				break;
+			}
+		if (!hasRootLocation)
+			itServer->addLocation(defaultLocation);
+	}
+}
+void ServerConfig::_postCheckAtLeastOneServerIsDefined()
+{
+	if (_servers.size() == 0)
+		std::cout << "webserv: [warning] No server defined in \"" << _configFilePath << "\"" << std::endl;
 }
 
 void ServerConfig::_parse(std::istream & in)
@@ -394,8 +425,17 @@ std::map<u_short, std::string> ServerConfig::_parseErrorPage(config::ScannerConf
 	t = scanner.getToken();
 	if (t.kind != pr::TokenKind::kInteger)
 		_throw_SyntaxError(t, "No error code specified.");
+	errno = 0;
 	do {
-		codes.push_back(strtoul(t.value.c_str(), 0, 10));
+		char *nptr;
+		unsigned long code = strtoul(t.value.c_str(), &nptr, 10);
+		if (code == ULONG_MAX && ft::make_error_code().value() == ft::errc::result_out_of_range)
+			_throw_SyntaxError(t, std::string("Overflow in context \"error_page\"... thx bro --'"));
+		if (nptr[0])
+			_throw_SyntaxError(t, std::string("listen directive: Must be a valid number."));
+		if (code > 999)
+			_throw_SyntaxError(t, std::string("listen directive: Well as far as I know, http standard doesn't define status with more than 3 digits. Annoying bro, go ahead --' "));
+		codes.push_back(code);
 	} while ((t = scanner.getToken()).kind == pr::TokenKind::kInteger);
 	
 	if (t.kind == pr::TokenKind::kString)
@@ -431,6 +471,8 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner, pr::Token loc
 		}
 		else if (t2.kind == pr::TokenKind::kString)
 		{
+			if (t.value != "ext")
+				_throw_SyntaxError(t, "Location directive: unknown option \"" + t.value + "\".");
 			result.setExtentionFile(t2.value);
 			t = scanner.getToken();
 		}
@@ -501,37 +543,23 @@ bool	ServerConfig::_parseAutoindex(config::ScannerConfig & scanner)
 }
 
 
-Host ServerConfig::_parseListenValue(const pr::Token& host)
+Host ServerConfig::_parseListenValue(const pr::Token& t)
 {
 	Host result;
-	std::string tmp;
-	u_short port = 0;
+	unsigned long port;
 
-    std::string::const_iterator it = host.value.begin();
-    std::string::const_iterator end = host.value.end();
-
-    while(it != end && *it != ':')
-		tmp += *it++;
-	
-	if (it == end)
-	{
-		it = tmp.begin();
-		end = tmp.end();
-	}
-	else
-	{
-	    ft::lowerStringInPlace(tmp);
-		result.setHostname(tmp);
-		it++;
-	}
-	while (it != end)
-	{
-		if (!isdigit(*it))
-			_throw_SyntaxError(host, "No port defined in listen directive.");
-		port = port * 10 + *it - '0';
-		it++;
-	}
-	result.setPort(port);
+	char *nptr;
+	errno = 0;
+	port = strtoul(t.value.c_str(), &nptr, 10);
+	if (port == ULONG_MAX && ft::make_error_code().value() == ft::errc::result_out_of_range)
+		_throw_SyntaxError(t, std::string("Overflow in context \"listen\"... thx bro --'"));
+	if (nptr[0])
+		_throw_SyntaxError(t, std::string("listen directive: Must be a valid number. (1 to 65535)"));
+	if (port == 0)
+		_throw_SyntaxError(t, std::string("listen directive: Port 0 is a reserved port. (1 to 65535)"));
+	if (port > USHRT_MAX)
+		_throw_SyntaxError(t, std::string("listen directive: the port is greater than the max port. (1 to 65535)"));
+	result.setPort(static_cast<uint16_t>(port));
 	return result;
 }
 
@@ -597,27 +625,27 @@ std::pair<std::string, std::string>	ServerConfig::_parseCgiParam(config::Scanner
 size_t	ServerConfig::_parseClientMaxBodySize(config::ScannerConfig & scanner)
 {
 	size_t bytes = 0;
-	char unit = 0;
+	char *unit;
 	pr::Token t;
 
 	if ((t = scanner.getToken()).kind != pr::TokenKind::kString && t.kind != pr::TokenKind::kInteger)
+	{
+		if (t.kind == pr::TokenKind::kSemiColon)
+			_throw_SyntaxError(t, "Please provide a value to \"client_max_body_size\".");
 		_throw_SyntaxError(t, "Unexpected token: " + pr::tokenToString(t) + " in context \"client_max_body_size\".");
+	}
 	_skipSemiColonNewLine(scanner);
 	
-	if (t.kind == pr::TokenKind::kInteger)
-		return strtoul(t.value.c_str(), 0, 10);
-	
-    std::string::const_iterator it = t.value.begin();
-    std::string::const_iterator end = t.value.end();
+	if (!::isdigit(t.value[0]))
+		_throw_SyntaxError(t, std::string("please provide a valid number"));
+	errno = 0;
+	bytes = strtoul(t.value.c_str(), &unit, 10);
+	if (bytes == ULONG_MAX && ft::make_error_code().value() == ft::errc::result_out_of_range)
+		_throw_SyntaxError(t, std::string("Overflow in context \"client_max_body_size\"... thx bro --'"));
+	if (unit[1])
+		_throw_SyntaxError(t, std::string("Unknown unit \"") + unit + std::string("\" in context \"client_max_body_size\". RTFM !"));
 
-	while (it != end && isdigit(*it))
-	{
-		bytes = bytes * 10 + *it - '0';
-		it++;
-	}
-	unit = *it;
-
-	switch (unit)
+	switch (*unit)
 	{
 		case 'k':
 			bytes *= 1000;
@@ -634,10 +662,9 @@ size_t	ServerConfig::_parseClientMaxBodySize(config::ScannerConfig & scanner)
 			bytes *= 1024;
 			break;	
 	default:
-		_throw_SyntaxError(t, std::string("Unknown unit '") + std::string(it, end) + std::string("' in context \"client_max_body_size\". RTFM !"));
+		_throw_SyntaxError(t, std::string("Unknown unit '") + std::string(unit) + std::string("' in context \"client_max_body_size\". RTFM !"));
 		break;
 	}
-
 	return bytes;
 }
 

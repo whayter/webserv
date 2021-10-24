@@ -92,15 +92,18 @@ const Location*	ServerBlock::findExactLocation(const Uri& uri) const
 	return NULL;
 }
 
-/// if path is empty,
-ft::filesystem::path	ServerBlock::getPathFromUri(const Uri& uri) const
+std::pair<const Location*, ft::filesystem::path>  ServerBlock::getPathFromUri(const Uri& uri) const
 {
 	const Location&			loc = findLocation(uri);
 	ft::filesystem::path	root = !loc.getRoot().empty() ? loc.getRoot() : getRoot();
 	ft::filesystem::path	index = !loc.getIndex().empty() ? loc.getIndex(): getIndex();
 	ft::filesystem::path	result = root.empty() ? "." / uri.getPath().relative_path() : root / uri.getPath().relative_path();
-	if ((ft::filesystem::path(loc.getUri()) / "") == uri.getPath() / ""/"" )
-	// if (loc.getUri() == uri.getPath() )
+	
+	if ((ft::filesystem::path(loc.getUri()) / "") == uri.getPath() / ""
+		&& ft::filesystem::exists(result / index))
+	{
 		result /= index;
-	return result;
+		return std::make_pair(&findLocation(result.c_str()), result);
+	}
+	return std::make_pair(&loc, result);
 }

@@ -1,4 +1,4 @@
-#include "catch_amalgamated.hpp"
+#include "catch.hpp"
 
 #include "SingletonFixture.hpp"
 
@@ -18,7 +18,7 @@ TEST_CASE_METHOD(SingletonFixture, "ServerConfig1 - ./config_files/testParser.co
 	CHECK( config.getServer(0).getListen(0).getHostname().empty() );
 	CHECK( config.getServer(0).getListen(0).getPort() == 80 );
 
-	CHECK( config.getServer(0).getListen(1).getHostname() == "127.0.0.1" );
+	// CHECK( config.getServer(0).getListen(1).getHostname() == "127.0.0.1" ); // not parsing address anymore
 	CHECK( config.getServer(0).getListen(1).getPort() == 81 );
 
 	CHECK( config.getServer(1).getListen(0).getHostname().empty() );
@@ -333,25 +333,25 @@ TEST_CASE_METHOD(SingletonFixture, "ServerConfig4 - ./config_files/testFindLocat
 
 	REQUIRE( srv.getLocations()[1].getReturnDirective().getUri() == "/");
 
-	CHECK( srv.getPathFromUri("/")	== "/var/www/app/index.html");
-	CHECK( srv.getPathFromUri("/youtube")	== "/you/youtube/youtube.html");
-	CHECK( srv.getPathFromUri("/youtube/")	== "/var/www/app/youtube/youtube2.html");
-	CHECK( srv.getPathFromUri("/youtube/demo.php")	== "/var/www/app/youtube/demo.php");
-	CHECK( srv.getPathFromUri("/youtube/nothing")	== "/var/www/app/youtube/nothing");
+	CHECK( srv.getPathFromUri("/").second	== "./www/index.html");
+	CHECK( srv.getPathFromUri("/youtube").second	== "../tests/www/youtube/youtube.html");
+	CHECK( srv.getPathFromUri("/youtube/").second	== "./www/youtube/youtube2.html");
+	CHECK( srv.getPathFromUri("/youtube/demo.php").second	== "./www/youtube/demo.php");
+	CHECK( srv.getPathFromUri("/youtube/nothing").second	== "./www/youtube/nothing");
 
-	CHECK( srv.getPathFromUri("/youtube/test")	== "/var/html/app/youtube/test/youtubeTest.html");
-	CHECK( srv.getPathFromUri("/youtube/test/")	== "/var/html/app/youtube/test/youtubeTest.html");
+	CHECK( srv.getPathFromUri("/youtube/test").second	== "./www/youtube/test/youtubeTest.html");
+	CHECK( srv.getPathFromUri("/youtube/test/").second	== "./www/youtube/test/youtubeTest.html");
 
 
 	// same as previous, but from config
-	CHECK( config.getPathFromUri("/")	== "/var/www/app/index.html");
-	CHECK( config.getPathFromUri("/youtube")	== "/you/youtube/youtube.html");
-	CHECK( config.getPathFromUri("/youtube/")	== "/var/www/app/youtube/youtube2.html");
-	CHECK( config.getPathFromUri("/youtube/demo.php")	== "/var/www/app/youtube/demo.php");
-	CHECK( config.getPathFromUri("/youtube/nothing")	== "/var/www/app/youtube/nothing");
+	CHECK( config.getPathFromUri("/")	== "./www/index.html");
+	CHECK( config.getPathFromUri("/youtube")	== "../tests/www/youtube/youtube.html");
+	CHECK( config.getPathFromUri("/youtube/")	== "./www/youtube/youtube2.html");
+	CHECK( config.getPathFromUri("/youtube/demo.php")	== "./www/youtube/demo.php");
+	CHECK( config.getPathFromUri("/youtube/nothing")	== "./www/youtube/nothing");
 
-	CHECK( config.getPathFromUri("/youtube/test")	== "/var/html/app/youtube/test/youtubeTest.html");
-	CHECK( config.getPathFromUri("/youtube/test/")	== "/var/html/app/youtube/test/youtubeTest.html");
+	CHECK( config.getPathFromUri("/youtube/test")	== "./www/youtube/test/youtubeTest.html");
+	CHECK( config.getPathFromUri("/youtube/test/")	== "./www/youtube/test/youtubeTest.html");
 
 }
 

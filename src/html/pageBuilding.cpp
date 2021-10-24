@@ -61,12 +61,12 @@ std::vector<unsigned char> buildErrorPage(http::Status error)
 	return ft::vectorizeString(html.str());
 }
 
-std::vector<unsigned char> buildAutoindexPage(const ft::filesystem::path& path)
+std::vector<unsigned char> buildAutoindexPage(const ft::filesystem::path& path, const Uri& uri)
 {
 	Builder html("html");
 	Builder head("head");
 	std::string title = "index of ";
-	title += &(path.c_str()[1]);
+	title += uri.getPath();
 	head.addChild("title", title);
 	Builder body("body");
 	Builder pre("pre");

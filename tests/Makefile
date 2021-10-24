@@ -61,8 +61,7 @@ SRCS_DIR+= $(shell find ../src -type d)
 
 vpath %.hpp $(INC_DIR)
 
-# Unit test framework source code
-SRC = main.cpp catch_amalgamated.cpp
+SRC = main.cpp
 
 # Our tests
 SRC+= TestsUri.cpp Uri.cpp

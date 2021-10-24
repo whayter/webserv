@@ -4,6 +4,7 @@
 #include "Uri.hpp"
 #include "Request.hpp"
 #include "Context.hpp"
+#include "utility.hpp"
 
 namespace ph = parser::http;
 
@@ -38,21 +39,30 @@ namespace http
 		ph::Token t = scan.getToken(true);
 		if (!t.value.compare("GET") || !t.value.compare("POST") || !t.value.compare("DELETE"))
 			req.setMethod(t.value);
+		else if (!t.value.compare("PUT") || !t.value.compare("PATCH") || !t.value.compare("COPY"))
+			setError(error, http::Status::NotImplemented);
 		else
-			setError(error, http::Status::BadRequest); // throw std::invalid_argument("Bad http request, No method specified");
+			setError(error, http::Status::BadRequest);
 
 		t = scan.getToken(true);
 		req.setUri(Uri("http", t.value));
 
 		t = scan.getToken(true);
+		ft::upperStringInPlace(t.value);
+		if (t.value != "HTTP/1.1")
+		{
+			if (!t.value.compare(0, 5, "HTTP/") && t.value.size() > 5)
+				setError(error, http::Status::HTTPVersionNotSupported);
+			setError(error, http::Status::BadRequest);
+		}
 		req.setVersion(t.value);
 
 		t = scan.getToken(true);
 		if (t.kind != ph::TokenKind::kCarriage)
-			setError(error, http::Status::BadRequest); // throw std::invalid_argument("Method line not separated by return carriage");
+			setError(error, http::Status::BadRequest);
 		t = scan.getToken(true);
 		if (t.kind != ph::TokenKind::kNewLine)
-			setError(error, http::Status::BadRequest); // throw std::invalid_argument("Method line not separated by new line");
+			setError(error, http::Status::BadRequest);
 	}
 
 	void parseHeaders(ph::ScannerMessage &scan, http::Message &req, http::Status &error)

@@ -84,11 +84,12 @@ private:
 	
 	Host _parseListenValue(const config::Token& host);
 
+	void _postCheckAtLeastOneServerIsDefined();
 	void _postParser();
 	void _postParserSetAutoindexInChilds();
 	void _postParserSetClientMaxBodySizeInChilds();
 	void _postParserSetLimitExcept();
-	void _postParserSet();
+	void _postParserSetDefaultServerLocation();
 
 	void _skipSemiColonNewLine(config::ScannerConfig & scanner);
 	void _throw_SyntaxError(config::Token t, const std::string &error_str, const ft::filesystem::path& file = ft::filesystem::path());

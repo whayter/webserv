@@ -46,7 +46,12 @@ std::vector<unsigned char> vectorizeString(std::string s)
 
 void lowerStringInPlace(std::string& s)
 {
-    std::transform(s.begin(), s.end(), s.begin(), tolower);
+    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+}
+
+void upperStringInPlace(std::string& s)
+{
+    std::transform(s.begin(), s.end(), s.begin(), ::toupper);
 }
 
 bool isInteger(std::string& s)

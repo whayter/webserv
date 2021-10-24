@@ -14,6 +14,7 @@ Syntax:	root path;
 Default: root html;
 Context: server, location
 http://nginx.org/en/docs/http/ngx_http_core_module.html#root
+http://nginx.org/en/docs/http/ngx_http_core_module.html#alias
 
 Syntax:	index file;
 Default:	
@@ -32,7 +33,7 @@ Default:	—
 Context: main
 https://nginx.org/en/docs/http/ngx_http_core_module.html#server
 
-Syntax: **listen** address[:port];
+Syntax:  **listen** address[:port]; (this syntax is not invalid, remove the host/address)
 **listen** port;
 Default: listen *:80;
 Context: server
@@ -72,6 +73,7 @@ Syntax:	cgi_exec binary_path;
 Default:	—
 Context:	location
 
+<!-- impl in parsing but useless -->
 Syntax:	cgi_param parameter value [if_not_empty];
 Default:	—
 Context:	location

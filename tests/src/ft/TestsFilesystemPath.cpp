@@ -1,7 +1,8 @@
-#include "catch_amalgamated.hpp"
+#include "catch.hpp"
 
 #include "filesystem.hpp"
 #include "path.hpp"
+#include <sstream>
 
 namespace fs = ft::filesystem;
 

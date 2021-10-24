@@ -47,9 +47,9 @@ public:
 	void 	setRoot(ft::filesystem::path root)					{ _root = root;}
 	void 	setServerName(std::string serverName)				{ _serverName = serverName;}
 
-	const Location&				findLocation(const Uri& uri) const;
-	const Location*				findExactLocation(const Uri& uri) const;
-	ft::filesystem::path	getPathFromUri(const Uri& uri) const;
+	const Location&										findLocation(const Uri& uri) const;
+	const Location*										findExactLocation(const Uri& uri) const;
+	std::pair<const Location*, ft::filesystem::path>  	getPathFromUri(const Uri& uri) const;
 
 private:
 	const Location*	_getLocationIfMatchExtention(const Uri& uri) const;
