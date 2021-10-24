@@ -14,6 +14,7 @@ Syntax:	root path;
 Default: root html;
 Context: server, location
 http://nginx.org/en/docs/http/ngx_http_core_module.html#root
+http://nginx.org/en/docs/http/ngx_http_core_module.html#alias
 
 Syntax:	index file;
 Default:	
