@@ -73,6 +73,13 @@ Syntax:	cgi_exec binary_path;
 Default:	—
 Context:	location
 
+
+Syntax: upload_store <location>;
+Default:	—
+Context:	server, location
+https://www.nginx.com/resources/wiki/modules/upload/
+
+
 <!-- impl in parsing but useless -->
 Syntax:	cgi_param parameter value [if_not_empty];
 Default:	—
@@ -81,7 +88,7 @@ Context:	location
 <!-- //////////////// Not impl ////////////// -->
 Syntax: upload_pass <location>;
 Default:	—
-Context:	location
+Context:	server, location
 https://www.nginx.com/resources/wiki/modules/upload/
 
 Syntax:	fastcgi_pass address;

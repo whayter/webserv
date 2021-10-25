@@ -12,9 +12,10 @@ void 	ServerBlock::setClientMaxBodySize(size_t size) {
 	_clientMaxBodySize = size;
 	_hasClientMaxBodySize = true;
 }
-void 	ServerBlock::setReturnDirective(const ReturnDirective& returnDirective)	{
-	_returnDirective = returnDirective;
-	_hasReturnDirective = true;
+
+void 	ServerBlock::setUploadStore(ft::filesystem::path path)
+{
+	_uploadStore = path;
 }
 
 const Location*	ServerBlock::_getLocationIfMatchExtention(const Uri& uri) const

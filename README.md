@@ -205,3 +205,6 @@
 
 ####  Http connections
 https://www.w3.org/Protocols/rfc2616/rfc2616-sec8.html
+
+##### other
+- https://stackoverflow.com/questions/59261547/handle-ctrlc-in-client-server-socket-in-c-programing

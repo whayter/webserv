@@ -79,6 +79,7 @@ private:
 	size_t								_parseClientMaxBodySize(config::ScannerConfig & scanner);
 	ReturnDirective						_parseReturn(config::ScannerConfig & scanner);
 	std::set<std::string>				_parseLimitExceptMethods(config::ScannerConfig & scanner);
+	ft::filesystem::path				_parseUploadStore(config::ScannerConfig & scanner);
 	
 	std::map<std::string, std::string>	_parseMimeFile(const ft::filesystem::path & path);
 	

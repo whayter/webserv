@@ -102,20 +102,20 @@ private:
 }; /* class Location */
 
 inline std::string				Location::getUri() const				{ return _uri; }
-inline std::string				Location::getExtentionFile() const	{ return _extentionFile; }
-inline bool						Location::isMatchExtentionFile() const{ return _uri.empty(); }
+inline std::string				Location::getExtentionFile() const		{ return _extentionFile; }
+inline bool						Location::isMatchExtentionFile() const	{ return _uri.empty(); }
 
 inline bool						Location::getAutoindex() const		{ return _autoindex; }
 inline action					Location::getAction() const 		{ return _action;}
 
-inline std::string				Location::getCgiExec() const		{ return _cgiExec; }
-inline size_t					Location::getClientMaxBodySize() const{ return _clientMaxBodySize; }
+inline std::string				Location::getCgiExec() const			{ return _cgiExec; }
+inline size_t					Location::getClientMaxBodySize() const	{ return _clientMaxBodySize; }
 inline const ReturnDirective&	Location::getReturnDirective() const	{ return _returnDirective; }
 inline ft::filesystem::path		Location::getRoot() const				{ return _root; }
-inline ft::filesystem::path		Location::getIndex() const			{ return _index; }
+inline ft::filesystem::path		Location::getIndex() const				{ return _index; }
 
-inline bool						Location::hasAutoindex() const		{ return _hasAutoindex; }
-inline bool						Location::hasClientMaxBodySize() const{ return _hasClientMaxBodySize; }
+inline bool						Location::hasAutoindex() const			{ return _hasAutoindex; }
+inline bool						Location::hasClientMaxBodySize() const	{ return _hasClientMaxBodySize; }
 inline bool						Location::hasReturnDirective() const	{ return _hasReturnDirective; }
 
 inline std::map<std::string, std::string>&	Location::getCgiParams()

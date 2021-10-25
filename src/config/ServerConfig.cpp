@@ -353,8 +353,8 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner, pr::Token se
 					result.setAutoindex(_parseAutoindex(scanner));
 				else if (t.value == "client_max_body_size")
 					result.setClientMaxBodySize(_parseClientMaxBodySize(scanner));
-				else if (t.value == "return")
-					result.setReturnDirective(_parseReturn(scanner));
+				else if (t.value == "upload_store")
+					result.setUploadStore(_parseUploadStore(scanner));
 				else
 					_throw_SyntaxError(t,
 						"Unknown directive \"" + t.value + "\" in context 'server'");
@@ -709,17 +709,19 @@ ReturnDirective	ServerConfig::_parseReturn(config::ScannerConfig & scanner)
 		result.setCode(code);
 	}
 	else
-	{
-		// try {
-		// 	result.setUri(argOne.value); }
-		// catch(const SyntaxError& e)	{
-		// 	_throw_SyntaxError(argOne, "Problem with uri in context \"return\".");
-		// }
-		// result.setCode(302);
 		_throw_SyntaxError(argOne, "Invalid return code \""+ argOne.value +"\" in return context. Must be an integer. Don't quote integers. thx");
-	}
 	_skipSemiColonNewLine(scanner);
 	return result;
+}
+
+ft::filesystem::path	ServerConfig::_parseUploadStore(config::ScannerConfig & scanner)
+{
+	pr::Token t;
+
+	if ((t = scanner.getToken()).kind != pr::TokenKind::kString)
+		_throw_SyntaxError(t, "Bad token " + pr::tokenToString(t) + "in context \"upload_store\".");
+	_skipSemiColonNewLine(scanner);
+	return ft::filesystem::path(t.value);
 }
 
 std::set<std::string> ServerConfig::_parseLimitExceptMethods(config::ScannerConfig & scanner)

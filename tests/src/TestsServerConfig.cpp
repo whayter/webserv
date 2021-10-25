@@ -6,7 +6,7 @@
 #include <fstream>
 #include <filesystem>
 
-TEST_CASE_METHOD(SingletonFixture, "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConfig]" )
+TEST_CASE_METHOD(SingletonFixture, "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConfig][testParser]" )
 {
 	ServerConfig& config = SingletonFixture::SetUpFile("./config_files/testParser.conf");
 
@@ -117,6 +117,9 @@ TEST_CASE_METHOD(SingletonFixture, "ServerConfig1 - ./config_files/testParser.co
 	CHECK( config.getServer(1).getLocations()[0].getClientMaxBodySize() == 2 * (1000 * 1000));
 	CHECK( config.getServer(1).getLocations()[1].getClientMaxBodySize() == 1024 * 1024);
 
+	//  upload_store directive
+	CHECK( config.getServer(0).getUploadStore() == "./www/upload");
+	CHECK( config.getServer(1).getUploadStore().empty());
 
 }
 
@@ -129,14 +132,6 @@ TEST_CASE_METHOD(SingletonFixture, "ServerConfig2 - ./config_files/testParser_di
 
 	//server 0
 	REQUIRE( config.getServer(0).getLocations().size() == 6);
-
-	CHECK( config.getServer(0).hasReturnDirective() == true);
-	CHECK( config.getServer(0).getReturnDirective().hasText() == false);
-	CHECK( config.getServer(0).getReturnDirective().hasCode() == true);
-	CHECK( config.getServer(0).getReturnDirective().hasUri() == true);
-	CHECK( config.getServer(0).getReturnDirective().getCode() == 301);
-	CHECK( config.getServer(0).getReturnDirective().getText().empty() );
-	CHECK( config.getServer(0).getReturnDirective().getUri().toString() == "stack");
 
 
 	CHECK( config.getServer(0).getLocations()[0].getUri() == "/" ) ;
@@ -197,15 +192,7 @@ TEST_CASE_METHOD(SingletonFixture, "ServerConfig2 - ./config_files/testParser_di
 	
 	// server 1
 
-	REQUIRE( config.getServer(1).getLocations().size() == 2);
-
-	CHECK( config.getServer(1).getReturnDirective().hasText() == false);
-	CHECK( config.getServer(1).hasReturnDirective() == false);
-	CHECK( config.getServer(1).getReturnDirective().hasCode() == false);
-	CHECK( config.getServer(1).getReturnDirective().hasUri() == false);
-	CHECK( config.getServer(1).getReturnDirective().getCode() == 0);
-	CHECK( config.getServer(1).getReturnDirective().getText().empty());
-	CHECK( config.getServer(1).getReturnDirective().getUri().empty());
+	REQUIRE( config.getServer(1).getLocations().size() == 3);
 
 	CHECK( config.getServer(1).getLocations()[0].getUri() == "/" ) ;
 	CHECK( config.getServer(1).getLocations()[0].hasReturnDirective() == true );
@@ -225,6 +212,13 @@ TEST_CASE_METHOD(SingletonFixture, "ServerConfig2 - ./config_files/testParser_di
 	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().getText().empty());
 	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().getUri().toString() == "https://stackoverflow.com");
 
+	CHECK( config.getServer(1).getLocations()[2].getReturnDirective().hasText() == false);
+	CHECK( config.getServer(1).getLocations()[2].hasReturnDirective() == false);
+	CHECK( config.getServer(1).getLocations()[2].getReturnDirective().hasCode() == false);
+	CHECK( config.getServer(1).getLocations()[2].getReturnDirective().hasUri() == false);
+	CHECK( config.getServer(1).getLocations()[2].getReturnDirective().getCode() == 0);
+	CHECK( config.getServer(1).getLocations()[2].getReturnDirective().getText().empty());
+	CHECK( config.getServer(1).getLocations()[2].getReturnDirective().getUri().empty());
 }
 
 TEST_CASE_METHOD(SingletonFixture, "ServerConfig3 - ./config_files/testFindServer.conf",
