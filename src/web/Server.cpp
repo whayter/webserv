@@ -156,6 +156,8 @@ void Server::_buildRequests(int deviceIndex)
 	{
 		_devices[deviceIndex].getRequestsQueue().push(std::make_pair(request, errorCode));
 		_log(deviceIndex, "Request received.");
+		if (errorCode == http::Status::BadRequest || errorCode == http::Status::EndOfInput)
+			break;
 	}
 }
 
@@ -177,12 +179,17 @@ void Server::_buildResponses(int deviceIndex)
 
 void Server::_sendResponses(int deviceIndex)
 {
+	bool badRequest = false;
 	responses_queue_type& responses = _devices[deviceIndex].getResponsesQueue();
 	buffer_type outputBuffer = _devices[deviceIndex].getOutputBuffer();
 
 	while (!responses.empty())
 	{
 		http::Response response = responses.front();
+		if (response.getStatus() == http::Status::BadRequest)
+			badRequest = true;
+		else if (response.getStatus() == http::Status::EndOfInput)
+			return _disconnectDevice(deviceIndex);
 		std::string stringResponse = http::stringifyMessage(response);
 		outputBuffer.insert(outputBuffer.end(), stringResponse.begin(), stringResponse.end());
 		responses.pop();
@@ -198,6 +205,8 @@ void Server::_sendResponses(int deviceIndex)
 		outputBuffer.erase(outputBuffer.begin(), outputBuffer.begin() + nbytes);
 		_log(deviceIndex, "Response sent.");
 	}
+	if (badRequest)
+		_disconnectDevice(deviceIndex);
 }
 
 bool Server::_isServerIndex(int deviceIndex)

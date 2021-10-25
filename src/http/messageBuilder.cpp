@@ -154,6 +154,8 @@ Response errorResponse(const Uri& uri, Status error)
 	Response result;
 	ServerBlock& server = ServerConfig::getInstance().findServer(uri);
 	result.setStatus(error);
+	if (error == Status::BadRequest)
+		result.setHeader("Connection", "close");
 	ft::filesystem::path path = server.getErrors()[error.getValue()];
 	ft::filesystem::path completePath = ServerConfig::getInstance().getPathFromUri(path.c_str());
 	if (!path.empty() && ft::filesystem::is_regular_file(completePath))
