@@ -21,22 +21,46 @@ static std::vector<unsigned char>	vectorFromStr(const std::string &s)
 	return result;
 }
 
+
+
 TEST_CASE( "http::hasTwoConsecutiveCRNL", "[namespace][http][hasTwoConsecutiveCRNL]" )
 {
-	CHECK(!http::hasTwoConsecutiveCRNL(vectorFromStr("test")));
-	CHECK(!http::hasTwoConsecutiveCRNL(vectorFromStr("test\r\n\r ")));
-	CHECK(!http::hasTwoConsecutiveCRNL(vectorFromStr("test\r\ntest\r\n")));
-	CHECK(!http::hasTwoConsecutiveCRNL(vectorFromStr("test\r\ntest\r\ntest\r\n")));
+	bool containIAC;
 
-	CHECK(http::hasTwoConsecutiveCRNL(vectorFromStr("test\r\n\r\n")));
-	CHECK(http::hasTwoConsecutiveCRNL(vectorFromStr("test\r\ntest\r\n\r\ntest\r\n")));
+	CHECK(!http::hasTwoConsecutiveCRNL(vectorFromStr("test"), containIAC));
+	REQUIRE(!containIAC);
+	CHECK(!http::hasTwoConsecutiveCRNL(vectorFromStr("test\r\n\r "), containIAC));
+	REQUIRE(!containIAC);
+	CHECK(!http::hasTwoConsecutiveCRNL(vectorFromStr("test\r\ntest\r\n"),containIAC));
+	REQUIRE(!containIAC);
+	CHECK(!http::hasTwoConsecutiveCRNL(vectorFromStr("test\r\ntest\r\ntest\r\n"),containIAC));
+	REQUIRE(!containIAC);
 
-	std::ifstream file;
-	file.open("./http_requests/simple_get", std::ifstream::in);
-	std::vector<unsigned char> vec((std::istreambuf_iterator<char>(file)),
-                 std::istreambuf_iterator<char>());
+	CHECK(http::hasTwoConsecutiveCRNL(vectorFromStr("test\r\n\r\n"),containIAC));
+	REQUIRE(!containIAC);
+	CHECK(http::hasTwoConsecutiveCRNL(vectorFromStr("test\r\ntest\r\n\r\ntest\r\n"), containIAC));
+	REQUIRE(!containIAC);
 
-	CHECK(http::hasTwoConsecutiveCRNL(vec));
+	// check for IAC
+	CHECK(!http::hasTwoConsecutiveCRNL(vectorFromStr("\xff"), containIAC));
+	REQUIRE(containIAC);
+	CHECK(!http::hasTwoConsecutiveCRNL(vectorFromStr("\r\ne\r\n\xff"), containIAC));
+	REQUIRE(containIAC);
+	CHECK(!http::hasTwoConsecutiveCRNL(vectorFromStr("test\xff\xf4 \r\ntest\r\n\r\ntest\r\n"), containIAC));
+	REQUIRE(containIAC);
+
+	CHECK(http::hasTwoConsecutiveCRNL(vectorFromStr("\r\n\r\n\xff"), containIAC));
+	REQUIRE(!containIAC);
+	CHECK(http::hasTwoConsecutiveCRNL(vectorFromStr("hi\r\n\r\nhi\xff"), containIAC));
+	REQUIRE(!containIAC);
+
+	// std::ifstream file;
+	// file.open("./http_requests/simple_get", std::ifstream::in);
+	// std::vector<unsigned char> vec((std::istreambuf_iterator<char>(file)),
+    //              std::istreambuf_iterator<char>());
+
+	// CHECK(http::hasTwoConsecutiveCRNL(vec, containEndOfInput));
+	// REQUIRE(!containEndOfInput);
 }
 
 TEST_CASE( "ScannerBuffer2 - test vite fait", "[ScannerBuffer2]" )

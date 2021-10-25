@@ -8,15 +8,32 @@
 
 namespace ph = parser::http;
 
+#define IAC 0xff
+
 namespace http
 {
-	bool hasTwoConsecutiveCRNL(const std::vector<unsigned char> &buffer)
+	static void removeTrailingCRNL(std::vector<unsigned char> &buffer)
+	{
+		size_t i = 0;
+
+		while (i + 1 < buffer.size() && buffer[i] == '\r' && buffer[i+1] == '\n')
+			i += 2;
+		buffer.erase(buffer.begin(), buffer.begin() + i);
+	}
+
+	bool hasTwoConsecutiveCRNL(const std::vector<unsigned char> &buffer, bool &endOfInput)
 	{
 		std::vector<unsigned char>::const_iterator it = buffer.begin();
 		std::vector<unsigned char>::const_iterator end = buffer.end();
 
+		endOfInput = false;
 		while (it != end)
 		{
+			if (*it == IAC)
+			{
+				endOfInput = true;
+				return false;
+			}
 			if (*it == '\r'
 			&& it + 1 != end && *(it + 1) == '\n'
 			&& it + 2 != end && *(it + 2) == '\r'
@@ -38,7 +55,6 @@ namespace http
 	static void parseRequestLine(ph::ScannerMessage &scan, http::Request &req, http::Status &error)
 	{
 		ph::Token t = scan.getToken(true);
-
 		{
 			if (t.kind == ph::TokenKind::kEndOfInput)
 			{
@@ -93,7 +109,6 @@ namespace http
 	{
 		ph::Token t;
 
-		(void)error;
 		std::string name;
 		std::string value;
 		bool isValueField = false;
@@ -107,9 +122,10 @@ namespace http
 				{
 					t = scan.getToken();
 					if (t.kind != ph::TokenKind::kNewLine)
-						setError(error,  http::Status::BadRequest);
-						// throw std::invalid_argument("new line !>" + t.value + "|" + ph::tokenKindToCstring(t.kind));
-
+					{
+						setError(error, http::Status::BadRequest);
+						return;
+					}
 					if (!name.empty() && isValueField)
 						req.setHeader(name, value);
 					else if (name.empty())
@@ -121,8 +137,7 @@ namespace http
 				}
 				case ph::TokenKind::kNewLine :
 					setError(error,  http::Status::BadRequest);
-					// throw std::invalid_argument("MISSING carriage before new line !!!");
-					break;
+					return;
 				case ph::TokenKind::kColon :
 					if (isValueField)
 						value += t.value;
@@ -155,8 +170,17 @@ namespace http
 	{
 		req.clear();
 		error = http::Status::None;
-		if (!hasTwoConsecutiveCRNL(buffer))
+		removeTrailingCRNL(buffer);
+		bool endOfInput = false;
+		if (!hasTwoConsecutiveCRNL(buffer, endOfInput))
+		{
+			if (endOfInput)
+			{
+				setError(error, http::Status::EndOfInput);
+				return true;
+			}
 			return false;
+		}
 		ph::ScannerMessage scan(buffer);
 		parseRequestLine(scan, req, error);
 		if (error == http::Status::BadRequest || error == http::Status::EndOfInput)

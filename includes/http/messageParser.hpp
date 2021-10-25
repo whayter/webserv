@@ -8,7 +8,7 @@
 
 namespace http {
 
-	bool	hasTwoConsecutiveCRNL(const content_type &buffer);
+	bool	hasTwoConsecutiveCRNL(const content_type &buffer, bool &endOfInput);
 	void	parseHeaders(parser::http::ScannerMessage &scan, Message &req, Status &error);
 	bool	parseRequest(Request &request, Status &error, content_type &buffer);
 	Message parseCgiResponse(content_type &buffer);
