@@ -131,7 +131,7 @@ TEST_CASE_METHOD(SingletonFixture, "ServerConfig2 - ./config_files/testParser_di
 	CHECK( config.getServers().size() == 2);
 
 	//server 0
-	REQUIRE( config.getServer(0).getLocations().size() == 6);
+	REQUIRE( config.getServer(0).getLocations().size() == 7);
 
 
 	CHECK( config.getServer(0).getLocations()[0].getUri() == "/" ) ;
@@ -182,12 +182,20 @@ TEST_CASE_METHOD(SingletonFixture, "ServerConfig2 - ./config_files/testParser_di
 	CHECK( config.getServer(0).getLocations()[5].getUri() == "/bird" ) ;
 	CHECK( config.getServer(0).getLocations()[5].hasReturnDirective() == true );
 	CHECK( config.getServer(0).getLocations()[5].getReturnDirective().hasCode() == true);
-	CHECK( config.getServer(0).getLocations()[5].getReturnDirective().hasText() == true);
+	CHECK( config.getServer(0).getLocations()[5].getReturnDirective().hasText() == false);
 	CHECK( config.getServer(0).getLocations()[5].getReturnDirective().hasUri() == false);
 	CHECK( config.getServer(0).getLocations()[5].getReturnDirective().getCode() == 204);
-	CHECK( config.getServer(0).getLocations()[5].getReturnDirective().getText() == "data_returned_quotes?");
+	CHECK( config.getServer(0).getLocations()[5].getReturnDirective().getText() == "");
 	CHECK( config.getServer(0).getLocations()[5].getReturnDirective().getUri().empty());
 
+	CHECK( config.getServer(0).getLocations()[6].getUri() == "/bird2" ) ;
+	CHECK( config.getServer(0).getLocations()[6].hasReturnDirective() == true );
+	CHECK( config.getServer(0).getLocations()[6].getReturnDirective().hasCode() == true);
+	CHECK( config.getServer(0).getLocations()[6].getReturnDirective().hasText() == true);
+	CHECK( config.getServer(0).getLocations()[6].getReturnDirective().hasUri() == false);
+	CHECK( config.getServer(0).getLocations()[6].getReturnDirective().getCode() == 500);
+	CHECK( config.getServer(0).getLocations()[6].getReturnDirective().getText() == "data_returned_quotes?");
+	CHECK( config.getServer(0).getLocations()[6].getReturnDirective().getUri().empty());
 	
 	
 	// server 1
