@@ -21,7 +21,7 @@ unsigned char ScannerBuffer::get()
 		_c = 0;
 	}
 	else
-		throw std::out_of_range("Cant ScannerBuffer::unget() overflow !");
+		throw std::out_of_range("Cant ScannerBuffer::get() overflow !");
 	return _c;
 }
 

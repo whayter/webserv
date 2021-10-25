@@ -34,35 +34,59 @@ namespace http
 		error = value;
 	}
 
+	// return false on error
 	static void parseRequestLine(ph::ScannerMessage &scan, http::Request &req, http::Status &error)
 	{
 		ph::Token t = scan.getToken(true);
-		if (!t.value.compare("GET") || !t.value.compare("POST") || !t.value.compare("DELETE"))
-			req.setMethod(t.value);
-		else if (!t.value.compare("PUT") || !t.value.compare("PATCH") || !t.value.compare("COPY"))
-			setError(error, http::Status::NotImplemented);
-		else
-			setError(error, http::Status::BadRequest);
 
-		t = scan.getToken(true);
-		req.setUri(Uri("http", t.value));
-
-		t = scan.getToken(true);
-		ft::upperStringInPlace(t.value);
-		if (t.value != "HTTP/1.1")
 		{
-			if (!t.value.compare(0, 5, "HTTP/") && t.value.size() > 5)
-				setError(error, http::Status::HTTPVersionNotSupported);
-			setError(error, http::Status::BadRequest);
+			if (t.kind == ph::TokenKind::kEndOfInput)
+			{
+				setError(error, http::Status::EndOfInput);
+				return;
+			}
+			else if (!t.value.compare("GET") || !t.value.compare("POST") || !t.value.compare("DELETE"))
+				req.setMethod(t.value);
+			else if (!t.value.compare("PUT") || !t.value.compare("PATCH") || !t.value.compare("COPY"))
+				setError(error, http::Status::NotImplemented);
+			else
+				setError(error, http::Status::BadRequest);
 		}
-		req.setVersion(t.value);
-
-		t = scan.getToken(true);
-		if (t.kind != ph::TokenKind::kCarriage)
-			setError(error, http::Status::BadRequest);
-		t = scan.getToken(true);
-		if (t.kind != ph::TokenKind::kNewLine)
-			setError(error, http::Status::BadRequest);
+		{
+			t = scan.getToken(true);
+			if (t.kind == ph::TokenKind::kEndOfInput)
+				setError(error, http::Status::EndOfInput);
+			else if (t.kind != ph::TokenKind::kString)
+				setError(error, http::Status::BadRequest);
+			else
+				req.setUri(Uri("http", t.value));
+		}
+		{
+			t = scan.getToken(true);
+			if (t.kind == ph::TokenKind::kEndOfInput)
+				setError(error, http::Status::EndOfInput);
+			if (t.value != "HTTP/1.1")
+			{
+				if (!t.value.compare(0, 5, "HTTP/") && t.value.size() > 5)
+					setError(error, http::Status::HTTPVersionNotSupported);
+				setError(error, http::Status::BadRequest);
+			}
+			req.setVersion(t.value);
+		}
+		{
+			t = scan.getToken(true);
+			if (t.kind == ph::TokenKind::kEndOfInput)
+				setError(error, http::Status::EndOfInput);
+			if (t.kind != ph::TokenKind::kCarriage)
+				setError(error, http::Status::BadRequest);
+		}
+		{
+			t = scan.getToken(true);
+			if (t.kind == ph::TokenKind::kEndOfInput)
+				setError(error, http::Status::EndOfInput);
+			if (t.kind != ph::TokenKind::kNewLine)
+				setError(error, http::Status::BadRequest);
+		}
 	}
 
 	void parseHeaders(ph::ScannerMessage &scan, http::Message &req, http::Status &error)
@@ -83,7 +107,8 @@ namespace http
 				{
 					t = scan.getToken();
 					if (t.kind != ph::TokenKind::kNewLine)
-						throw std::invalid_argument("new line !>" + t.value + "|" + ph::tokenKindToCstring(t.kind));
+						setError(error,  http::Status::BadRequest);
+						// throw std::invalid_argument("new line !>" + t.value + "|" + ph::tokenKindToCstring(t.kind));
 
 					if (!name.empty() && isValueField)
 						req.setHeader(name, value);
@@ -95,7 +120,8 @@ namespace http
 					break;
 				}
 				case ph::TokenKind::kNewLine :
-					throw std::invalid_argument("MISSING carriage before new line !!!");
+					setError(error,  http::Status::BadRequest);
+					// throw std::invalid_argument("MISSING carriage before new line !!!");
 					break;
 				case ph::TokenKind::kColon :
 					if (isValueField)
@@ -114,6 +140,9 @@ namespace http
 						value += t.value;
 					break;
 				
+				case ph::TokenKind::kEndOfInput :
+					setError(error,  http::Status::BadRequest);
+					return;
 				default:
 					throw std::runtime_error("Oups: unexpected token " + ph::tokenToString(t));
 					break;
@@ -130,7 +159,11 @@ namespace http
 			return false;
 		ph::ScannerMessage scan(buffer);
 		parseRequestLine(scan, req, error);
+		if (error == http::Status::BadRequest || error == http::Status::EndOfInput)
+			return true;
 		parseHeaders(scan, req, error);
+		if (error == http::Status::BadRequest || error == http::Status::EndOfInput)
+			return true;
 		req.getUri().setAuthority(req.getHeader("Host"));
 		{			
 			char c;
@@ -139,7 +172,7 @@ namespace http
 			size_t contentLength = req.getContentLength();
 			if (contentLength > getContext(req.getUri()).location.getClientMaxBodySize())
 			{
-				setError(error, 413);
+				setError(error, http::Status::PayloadTooLarge);
 				recordContent = false;
 			}
 			while (contentLength-- && (c = scan.getChar()))
