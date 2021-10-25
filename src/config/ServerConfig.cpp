@@ -700,11 +700,11 @@ ReturnDirective	ServerConfig::_parseReturn(config::ScannerConfig & scanner)
 				_throw_SyntaxError(argTwo, "Problem with uri in context \"return\".");
 			}
 		}
-		else if (code == 204 || code == 400 || code == 402
+		else if (code == 400 || code == 402
 		|| code == 406 || code == 408 || code == 410 || code == 411
 		|| code == 413 || code == 416 || code == 500 || code == 504)
 			result.setText(argTwo.value);
-		else
+		else if (code != 204)
 			_throw_SyntaxError(argOne, "Can't use code " + ft::intToString(code) + " in context \"return\". RTFM !");
 		result.setCode(code);
 	}
