@@ -6,7 +6,7 @@
 #include <fstream>
 #include <filesystem>
 
-TEST_CASE_METHOD(SingletonFixture, "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConfig]" )
+TEST_CASE_METHOD(SingletonFixture, "ServerConfig1 - ./config_files/testParser.conf", "[class][ServerConfig][testParser]" )
 {
 	ServerConfig& config = SingletonFixture::SetUpFile("./config_files/testParser.conf");
 
@@ -117,6 +117,9 @@ TEST_CASE_METHOD(SingletonFixture, "ServerConfig1 - ./config_files/testParser.co
 	CHECK( config.getServer(1).getLocations()[0].getClientMaxBodySize() == 2 * (1000 * 1000));
 	CHECK( config.getServer(1).getLocations()[1].getClientMaxBodySize() == 1024 * 1024);
 
+	//  upload_store directive
+	CHECK( config.getServer(0).getUploadStore() == "./www/upload");
+	CHECK( config.getServer(1).getUploadStore().empty());
 
 }
 

@@ -47,7 +47,6 @@ public:
 	inline const ReturnDirective&	getReturnDirective() const;
 	inline ft::filesystem::path		getRoot() const;
 	inline ft::filesystem::path		getIndex() const;
-	inline ft::filesystem::path		getUploadStore() const;
 
 	inline bool						hasAutoindex() const;
 	inline bool						hasClientMaxBodySize() const;
