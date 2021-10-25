@@ -186,6 +186,8 @@ namespace http
 		if (error == http::Status::BadRequest || error == http::Status::EndOfInput)
 			return true;
 		parseHeaders(scan, req, error);
+		if (req.getHeader("Host").empty())
+			setError(error, http::Status::BadRequest);
 		if (error == http::Status::BadRequest || error == http::Status::EndOfInput)
 			return true;
 		req.getUri().setAuthority(req.getHeader("Host"));
