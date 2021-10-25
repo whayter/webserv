@@ -73,7 +73,9 @@ public:
 		InsufficientStorage				= 507, 
 		LoopDetected					= 508, 
 		NotExtended						= 510, 
-		NetworkAuthenticationRequired	= 511
+		NetworkAuthenticationRequired	= 511,
+
+		EndOfInput	= 999 // look away from here
 	};
 
 	Status();
