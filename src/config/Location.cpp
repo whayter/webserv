@@ -48,9 +48,9 @@ void 	Location::setCgiExec(const std::string& exec)
 	_cgiExec = exec;
 	_setAction(action::cgi);
 }
-void 	Location::setRoot(ft::filesystem::path root)	{ _root = root;}
-void 	Location::setIndex(ft::filesystem::path index)	{ _index = index;}
 
+void 	Location::setRoot(ft::filesystem::path root)		{ _root = root;}
+void 	Location::setIndex(ft::filesystem::path index)		{ _index = index;}
 
 void	Location::addCgiParam(const std::string& name, const std::string& value)
 {

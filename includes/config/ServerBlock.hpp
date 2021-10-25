@@ -10,23 +10,23 @@ class ServerBlock
 {
 public:
 	ServerBlock(): _autoindex(false), _hasAutoindex(false),
-		_clientMaxBodySize(DEFAULT_CLIENT_MAX_BODY_SIZE), _hasClientMaxBodySize(false),
-		_hasReturnDirective(false) {}
+		_clientMaxBodySize(DEFAULT_CLIENT_MAX_BODY_SIZE), _hasClientMaxBodySize(false)
+	{}
 
 	inline ft::filesystem::path		getIndex() const			{ return _index; }
 	inline bool						getAutoindex() const		{ return _autoindex; }
 	inline ft::filesystem::path		getRoot() const				{ return _root; }
+	inline ft::filesystem::path		getUploadStore() const		{ return _uploadStore; }
 	inline std::string				getServerName() const		{ return _serverName; }
 	inline size_t					getClientMaxBodySize() const{ return _clientMaxBodySize; }
-	inline const ReturnDirective&	getReturnDirective() const	{ return _returnDirective; }
 
 	inline bool		hasAutoindex() const		{ return _hasAutoindex; }
 	inline bool		hasClientMaxBodySize() const{ return _hasClientMaxBodySize; }
-	inline bool		hasReturnDirective() const	{ return _hasReturnDirective; }
 
 	void	setAutoindex(bool autoindex);
 	void	setClientMaxBodySize(size_t size);
 	void	setReturnDirective(const ReturnDirective& returnDirective);
+	void 	setUploadStore(ft::filesystem::path path);
 
 	/// return listen from given index (usefull for testing purpose)
 	inline const Host&				getListen(uint32_t index) const	{ return _listens[index];}
@@ -65,11 +65,9 @@ private:
 	size_t								_clientMaxBodySize;
 	bool								_hasClientMaxBodySize;
 	
-	ReturnDirective						_returnDirective;
-	bool								_hasReturnDirective;
-
 	std::string							_serverName;
 	ft::filesystem::path				_root;
+	ft::filesystem::path				_uploadStore;
 }; /* class ServerBlock */
 
 #endif /* SERVER_BLOCK_HPP */
