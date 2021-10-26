@@ -4,18 +4,20 @@
 #include "http.hpp"
 #include "utility.hpp"
 #include "ServerConfig.hpp"
+#include "Context.hpp"
 #include "pageBuilding.hpp"
 
 namespace http {
 
 Response					buildResponse(Request& request);
-void						postContent(std::string path, content_type content);
-Response					deleteResponse(Request& request, std::string path);
-Response					errorResponse(const Uri& uri, Status error);
-Response					redirectResponse(const ReturnDirective &rdir);
-Response					staticResponse(const ft::filesystem::path& path);
-Response					dynamicResponse(http::Request& request, ServerBlock& sblock, ft::filesystem::path& path);
-Response					autoIndexResponse(http::Request& request, const ft::filesystem::path& path);
+Response					staticResponse(const Context& ctxt, Response& response);
+Response					dynamicResponse(const Context& ctxt, Request& request, Response& response);
+Response					postResponse(const Context& ctxt, Request& request, Response& response);
+Response					deleteResponse(const Context& ctxt, Response& response);
+Response					redirectResponse(const Context& ctxt, Response& response);
+Response					autoIndexResponse(const Context& ctxt, Request& request, Response& response);
+Response					errorResponse(const Context& ctxt, Response& response, Status error);
+int							postContent(std::string path, content_type content);
 std::vector<unsigned char> 	getFileContent(const ft::filesystem::path& path);
 
 template <class Message>

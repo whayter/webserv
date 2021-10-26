@@ -33,6 +33,14 @@ it ('GET localhost:80/index.php', function () {
   .expectNot('bodyContains', '<?php')
 });
 
+it ('GET localhost:80/subject.html', function () {
+  return frisby
+  .get(baseUri + '/subject.html')
+  .expect('status', 200)
+  .expect('header', 'content-type', "text/html")
+  .expect('bodyContains', 'Mandatory part')
+});
+
 it ('GET localhost:80/NotExist', function () {
   return frisby
   .get(baseUri + '/NotExist')
@@ -124,7 +132,19 @@ it ('POST localhost:80/ with body size = max_body_size', function () {
     }
   })
   .post(baseUri + 'testPostMethod.html')
-  .expect('status', 200)
+  .expect('status', 201)
+});
+
+it ('POST localhost:80/testPostMethodWithCgi.php', function () {
+  return frisby
+  .setup({
+    request: {
+      body: "<? php echo '<p>yo</p>' ?>"
+    }
+  })
+  .post(baseUri + 'testPostMethodWithCgi.php')
+  .expect('status', 201)
+  .expectNot('bodyContains', '<? php')
 });
 
 //////////////////////////////////////////////////////////////////////////////
@@ -139,6 +159,12 @@ it ('DELETE http://localhost:80/testPostMethod.html', function () {
 it ('DELETE http://localhost:84/testPostMethod.html', function () {
   return frisby
     .del('http://localhost:84/testPostMethod.html')
+    .expect('status', 200);
+});
+
+it ('DELETE http://localhost:84/testPostMethodWithCgi.php', function () {
+  return frisby
+    .del('http://localhost:84/testPostMethodWithCgi.php')
     .expect('status', 200);
 });
 
