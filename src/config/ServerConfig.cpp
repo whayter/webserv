@@ -647,6 +647,8 @@ size_t	ServerConfig::_parseClientMaxBodySize(config::ScannerConfig & scanner)
 
 	switch (*unit)
 	{
+		case 0:
+			break;
 		case 'k':
 			bytes *= 1000;
 			break;
@@ -660,7 +662,7 @@ size_t	ServerConfig::_parseClientMaxBodySize(config::ScannerConfig & scanner)
 		case 'M':
 			bytes *= 1024;
 			bytes *= 1024;
-			break;	
+			break;
 	default:
 		_throw_SyntaxError(t, std::string("Unknown unit '") + std::string(unit) + std::string("' in context \"client_max_body_size\". RTFM !"));
 		break;

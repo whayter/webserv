@@ -193,22 +193,16 @@ namespace http
 		req.getUri().setAuthority(req.getHeader("Host"));
 		{			
 			char c;
-			bool recordContent = true;
-			size_t count = 0;
 			size_t contentLength = req.getContentLength();
 			if (contentLength > getContext(req.getUri()).location.getClientMaxBodySize())
 			{
 				setError(error, http::Status::PayloadTooLarge);
-				recordContent = false;
+				return true;
 			}
-			while (contentLength-- && (c = scan.getChar()))
-			{
-				if (recordContent)
-					req.getContent().push_back(c);
-				count++;
-			}
-			if (count != req.getContentLength())
+			if (scan.remainCharCount() < contentLength)
 				return false;
+			while (contentLength-- && (c = scan.getChar()))
+				req.getContent().push_back(c);
 		}
 		scan.eraseBeforeCurrentIndex();
 		return true;

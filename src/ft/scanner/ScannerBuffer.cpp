@@ -31,6 +31,10 @@ void ScannerBuffer::unget()
 		throw std::out_of_range("Cant ScannerBuffer::unget() Underflow ! Already at index 0...");
 	--_idx;
 }
+size_t ScannerBuffer::remainCharCount()
+{
+	return _buffer.size() - _idx;
+}
 
 void ScannerBuffer::eraseBeforeCurrentIndex()
 {

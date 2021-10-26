@@ -55,6 +55,11 @@ unsigned char ScannerMessage::getChar()
 	return _scan.get();
 }
 
+size_t ScannerMessage::remainCharCount()
+{
+	return _scan.remainCharCount();
+}
+
 void ScannerMessage::eraseBeforeCurrentIndex()
 {
 	_scan.eraseBeforeCurrentIndex();

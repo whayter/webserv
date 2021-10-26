@@ -73,7 +73,7 @@ it ('GET localhost:82/text', function () {
   return frisby
   .get('http://localhost:82/text')
   .expect('status', 204)
-  .expect('bodyContains', 'this is a return directive with text')
+  .expectNot('bodyContains', 'this is a return directive with text')
 });
 
 it ('GET localhost:82/uri', function () {
