@@ -170,7 +170,8 @@ void Server::_buildResponses(int deviceIndex)
 		http::Response response;
 		std::pair<http::Request, http::Status> pair = requests.front();
 		if (http::isError(requests.front().second))
-			response = http::errorResponse(pair.first.getUri(), pair.second);
+			//response = http::errorResponse(pair.first.getUri(), pair.second);
+			response = http::errorResponse(getContext(pair.first.getUri()), response, pair.second);
 		else
 			response = http::buildResponse(pair.first);
 		requests.pop();
@@ -187,12 +188,16 @@ void Server::_sendResponses(int deviceIndex)
 	while (!responses.empty())
 	{
 		http::Response response = responses.front();
-		if (response.getStatus() == http::Status::BadRequest
-		||  response.getStatus() == http::Status::PayloadTooLarge)
-		{
-			response.setHeader("Connection", "close "); // good ??
+		if (response.getHeader("Connection") == "close")
 			endConnection = true;
-		}
+
+		// if (response.getStatus() == http::Status::BadRequest
+		// ||  response.getStatus() == http::Status::PayloadTooLarge)
+		// {
+		// 	response.setHeader("Connection", "close "); // good ??
+		// 	endConnection = true;
+		// }
+
 		else if (response.getStatus() == http::Status::EndOfInput)
 			return _disconnectDevice(deviceIndex);
 		std::string stringResponse = http::stringifyMessage(response);

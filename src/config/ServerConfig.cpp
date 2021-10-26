@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/10/06 16:24:20 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/10/26 20:15:38 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,8 @@ std::map<std::string, std::string>	ServerConfig::_parseMimeFile(const ft::filesy
 
 std::string		ServerConfig::getMime(const std::string& extension)
 {
+	if (extension.at(0) == '.')
+		return _mime[extension.c_str() + 1];
 	return _mime[extension];
 }
 

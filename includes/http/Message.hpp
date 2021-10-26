@@ -21,6 +21,7 @@ public:
 
 	void 					setHeader(std::string key, std::string val);
 	void					setContent(const content_type &content);
+	void					setContent(const content_type &content, std::string contentType);
 	void					setVersion(const std::string &version);
 
 	virtual bool			empty() const;

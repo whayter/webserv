@@ -36,7 +36,12 @@ std::vector<unsigned char> buildRedirectionPage(const ReturnDirective &rdir)
 	body.addAttribute("style", "text-align:center;");
 	body.addChild("h1", title);
 	body.addChild("hr", "");
-	Builder text("p", "The content you required has been moved ");
+	std::string txt;
+	if (status == http::Status::Created)
+		txt = "The content you posted has been created ";
+	else
+		txt = "The content you required has been moved ";
+	Builder text("p", txt);
 	text.addChild(a("here", rdir.getUri().toString()));
 	body.addChild(text);
 	html.addChild(head);

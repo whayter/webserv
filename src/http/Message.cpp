@@ -33,6 +33,13 @@ void Message::setContent(const content_type &content)
 	setHeader("Content-Length", ft::intToString(content.size()));
 }
 
+void Message::setContent(const content_type &content, std::string contentType)
+{
+	_content = content;
+	setHeader("Content-Length", ft::intToString(content.size()));
+	setHeader("Content-Type", contentType);
+}
+
 void Message::setVersion(const std::string &version)
 {
 	_version = version;
