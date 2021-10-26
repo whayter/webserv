@@ -156,7 +156,8 @@ void Server::_buildRequests(int deviceIndex)
 	{
 		_devices[deviceIndex].getRequestsQueue().push(std::make_pair(request, errorCode));
 		_log(deviceIndex, "Request received.");
-		if (errorCode == http::Status::BadRequest || errorCode == http::Status::EndOfInput)
+		if (errorCode == http::Status::BadRequest || errorCode == http::Status::EndOfInput
+		|| errorCode == http::Status::PayloadTooLarge)
 			break;
 	}
 }
@@ -179,15 +180,19 @@ void Server::_buildResponses(int deviceIndex)
 
 void Server::_sendResponses(int deviceIndex)
 {
-	bool badRequest = false;
+	bool endConnection = false;
 	responses_queue_type& responses = _devices[deviceIndex].getResponsesQueue();
 	buffer_type outputBuffer = _devices[deviceIndex].getOutputBuffer();
 
 	while (!responses.empty())
 	{
 		http::Response response = responses.front();
-		if (response.getStatus() == http::Status::BadRequest)
-			badRequest = true;
+		if (response.getStatus() == http::Status::BadRequest
+		||  response.getStatus() == http::Status::PayloadTooLarge)
+		{
+			response.setHeader("Connection", "close "); // good ??
+			endConnection = true;
+		}
 		else if (response.getStatus() == http::Status::EndOfInput)
 			return _disconnectDevice(deviceIndex);
 		std::string stringResponse = http::stringifyMessage(response);
@@ -205,7 +210,7 @@ void Server::_sendResponses(int deviceIndex)
 		outputBuffer.erase(outputBuffer.begin(), outputBuffer.begin() + nbytes);
 		_log(deviceIndex, "Response sent.");
 	}
-	if (badRequest)
+	if (endConnection)
 		_disconnectDevice(deviceIndex);
 }
 

@@ -61,6 +61,8 @@ public:
 
 	Token getToken(bool skipLWS = false);
 	unsigned char getChar();
+	size_t 		remainCharCount();
+
 	// Token peekNextToken(bool skipLWS = false);
 
 	void eraseBeforeCurrentIndex();

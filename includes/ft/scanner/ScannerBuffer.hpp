@@ -19,6 +19,7 @@ public:
 	unsigned char get();
 	/// @brief Unget the last character.
 	void unget();
+	size_t remainCharCount();
 
 	void eraseBeforeCurrentIndex();
 
