@@ -157,7 +157,8 @@ void Server::_buildRequests(int deviceIndex)
 		_devices[deviceIndex].getRequestsQueue().push(std::make_pair(request, errorCode));
 		_log(deviceIndex, "Request received.");
 		if (errorCode == http::Status::BadRequest || errorCode == http::Status::EndOfInput
-		|| errorCode == http::Status::PayloadTooLarge)
+		|| errorCode == http::Status::PayloadTooLarge || errorCode == http::Status::NotImplemented
+		|| errorCode == http::Status::RequestHeaderFieldsTooLarge)
 			break;
 	}
 }

@@ -352,6 +352,8 @@ TEST_CASE_METHOD(SingletonFixture, "http::parseRequest - simple get cut in half 
 			buffer.insert(buffer.end(), two.begin(), two.end());
 			REQUIRE( http::parseRequest(req, error, buffer) );
 			REQUIRE( error == http::Status::None);
+			REQUIRE( buffer.empty());
+
 
 			CHECK( req.getMethod() == "GET" );
 			CHECK( req.getUri().getPathEtc() == "/getip");
@@ -425,6 +427,7 @@ TEST_CASE_METHOD(SingletonFixture, "http::parseRequest - chunked ",
 	http::Status error;
 	REQUIRE( http::parseRequest(req, error, buffer) );
 	REQUIRE( error == http::Status::None);
+	REQUIRE( buffer.empty());
 
 	CHECK( req.getMethod() == "POST" );
 	CHECK( req.getUri().toString() == "http://localhost:83/test.php");
@@ -467,6 +470,7 @@ TEST_CASE_METHOD(SingletonFixture, "http::parseRequest - chunked request cut in 
 			REQUIRE( error == http::Status::None);
 			buffer.insert(buffer.end(), two.begin(), two.end());
 			REQUIRE( http::parseRequest(req, error, buffer) );
+			REQUIRE( buffer.empty());
 			REQUIRE( error == http::Status::None);
 
 			CHECK( req.getMethod() == "POST" );

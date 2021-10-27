@@ -13,6 +13,8 @@ namespace ph = parser::http;
 
 #define IAC 0xff
 
+#define MAX_HTTP_HEADER_SIZE 5000 // bytes == 5 MO/MB
+
 namespace http
 {
 	static void removeTrailingCRNL(std::vector<unsigned char> &buffer)
@@ -49,7 +51,7 @@ namespace http
 
 	static void setError(http::Status &error, http::Status value)
 	{
-		if (error != http::Status::None)
+		if (error != http::Status::None && value != http::Status::BadRequest)
 			return;
 		error = value;
 	}
@@ -75,7 +77,7 @@ namespace http
 			t = scan.getToken(true);
 			if (t.kind == ph::TokenKind::kEndOfInput)
 				setError(error, http::Status::EndOfInput);
-			else if (t.kind != ph::TokenKind::kString)
+			else if (t.kind != ph::TokenKind::kString || t.value[0] != '/')
 				setError(error, http::Status::BadRequest);
 			else
 				req.setUri(Uri("http", t.value));
@@ -249,12 +251,15 @@ namespace http
 		bool endOfInput = false;
 		if (!hasTwoConsecutiveCRNL(buffer, endOfInput))
 		{
-			if (endOfInput)
-			{
+			if (buffer.size() && !::isupper(buffer[0]))
+				setError(error, http::Status::BadRequest);
+			else if (endOfInput)
 				setError(error, http::Status::EndOfInput);
-				return true;
-			}
-			return false;
+			else if (buffer.size() > MAX_HTTP_HEADER_SIZE)
+				setError(error, http::Status::RequestHeaderFieldsTooLarge);
+			else
+				return false;
+			return true;
 		}
 		ph::ScannerMessage scan(buffer);
 		parseRequestLine(scan, req, error);
@@ -273,7 +278,6 @@ namespace http
 			return parseContent(scan, req, error);
 		// else transfer-encoding not supported
 		setError(error, http::Status::NotImplemented);
-		scan.eraseBeforeCurrentIndex();
 		return true;
 	}
 
