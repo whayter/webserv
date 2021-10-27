@@ -130,7 +130,7 @@ namespace http
 						return;
 					}
 					if (!name.empty() && isValueField)
-						req.setHeader(name, value);
+						req.setHeader(name, ft::trim(value));
 					else if (name.empty())
 						areHeadersParsed = true;
 					name.clear();

@@ -62,6 +62,20 @@ std::string getDate()
 	return date;
 }
 
+std::string trim(const std::string& str,
+                 const std::string& whitespace)
+{
+    const size_t strBegin = str.find_first_not_of(whitespace);
+    if (strBegin == std::string::npos)
+        return "";
+
+    const size_t strEnd = str.find_last_not_of(whitespace);
+    const size_t strRange = strEnd - strBegin + 1;
+
+    return str.substr(strBegin, strRange);
+}
+
+
 // Return true if both paths are equal, else false and tell how many comp are the same by variable nSameComp
 bool	pathsComponentsAreEqual(const filesystem::path& one, const filesystem::path& two, size_t& nSameComp)
 {

@@ -28,6 +28,9 @@ void						lowerStringInPlace(std::string& s);
 void						upperStringInPlace(std::string& s);
 bool						isInteger(std::string& s);
 std::string					getDate();
+std::string					trim(const std::string& str,
+								 const std::string& whitespace = " \t");
+
 
 /// return the number of consecutives same elements in two paths.
 bool	pathsComponentsAreEqual(const filesystem::path& one, const filesystem::path& two, size_t& nSameComp);

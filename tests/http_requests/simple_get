@@ -3,7 +3,7 @@ User-Agent: PostmanRuntime/7.26.10
 Accept: */*
 Postman-Token: ec250329-5eb0-4d4b-8150-39f294b6aea2
 Host: dynamicdns.park-your-domain.com:8080
-Accept-Encoding: gzip, deflate, br
+Accept-Encoding: gzip, deflate, br  
 Connection: keep-alive
 Content-Length: 4
 Cookie: ASPSESSIONIDQADTQAQR=JNJLAIGBPIMBDAJPJNIFKIEK
