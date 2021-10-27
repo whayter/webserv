@@ -191,14 +191,6 @@ void Server::_sendResponses(int deviceIndex)
 		http::Response response = responses.front();
 		if (response.getHeader("Connection") == "close")
 			endConnection = true;
-
-		// if (response.getStatus() == http::Status::BadRequest
-		// ||  response.getStatus() == http::Status::PayloadTooLarge)
-		// {
-		// 	response.setHeader("Connection", "close "); // good ??
-		// 	endConnection = true;
-		// }
-
 		else if (response.getStatus() == http::Status::EndOfInput)
 			return _disconnectDevice(deviceIndex);
 		std::string stringResponse = http::stringifyMessage(response);
