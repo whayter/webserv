@@ -19,7 +19,7 @@ std::string	Message::getHeader(std::string name)
 
 void	Message::delHeader(std::string name)
 {
-	http::headers_type::const_iterator pos = getHeaders().find(name);
+	http::headers_type::iterator pos = getHeaders().find(name);
 
 	if (pos != getHeaders().end())
 		getHeaders().erase(pos);
