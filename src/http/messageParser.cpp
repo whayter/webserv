@@ -168,6 +168,78 @@ namespace http
 		}
 	}
 
+	static bool parseChunkedContent(ph::ScannerMessage &scan, http::Request &req, http::Status &error)
+	{
+		Context context = getContext(req.getUri());
+
+		size_t totalSize = 0;
+		while (true)
+		{
+			ph::Token t = scan.getToken(false);
+			if (t.kind == ph::TokenKind::kEndOfInput)
+				return false;
+
+			char *nptr;
+			unsigned long chunkLength = strtoul(t.value.c_str(), &nptr, 16);
+			if ((chunkLength == ULONG_MAX && ft::make_error_code().value() == ft::errc::result_out_of_range)
+				|| *nptr)
+			{
+				setError(error, http::Status::BadRequest);
+				return true;
+			}
+			if ((t = scan.getToken(false)).kind != ph::TokenKind::kCarriage
+				|| (t = scan.getToken(false)).kind != ph::TokenKind::kNewLine)
+			{
+				if (t.kind == ph::TokenKind::kEndOfInput)
+					return false;
+				setError(error, http::Status::BadRequest);
+				return true;
+			}
+			if (chunkLength == 0)
+				break;
+			totalSize += chunkLength;
+			if (totalSize > context.location.getClientMaxBodySize())
+			{
+				setError(error, http::Status::PayloadTooLarge);
+				return true;
+			}
+			if (scan.remainCharCount() < chunkLength)
+				return false;
+			while (chunkLength--)
+				req.getContent().push_back(scan.getChar());
+			if ((t = scan.getToken(false)).kind != ph::TokenKind::kCarriage
+				|| (t = scan.getToken(false)).kind != ph::TokenKind::kNewLine)
+			{
+				if (t.kind == ph::TokenKind::kEndOfInput)
+					return false;
+				setError(error, http::Status::BadRequest);
+				return true;
+			}
+		}
+		req.setHeader("Content-Length", ft::intToString(totalSize));
+		req.delHeader("Transfer-Encoding");
+		scan.eraseBeforeCurrentIndex();
+		return true;
+	}
+
+	static bool parseContent(ph::ScannerMessage &scan, http::Request &req, http::Status &error)
+	{
+		Context context = getContext(req.getUri());
+		size_t contentLength = req.getContentLength();
+
+		if (contentLength > context.location.getClientMaxBodySize())
+		{
+			setError(error, http::Status::PayloadTooLarge);
+			return true;
+		}
+		if (scan.remainCharCount() < contentLength)
+			return false;
+		while (contentLength--)
+			req.getContent().push_back(scan.getChar());
+		scan.eraseBeforeCurrentIndex();
+		return true;
+	}
+
 	// return true if a request has been parsed, else, false.
 	bool parseRequest(http::Request &req, http::Status &error, std::vector<unsigned char> &buffer)
 	{
@@ -195,70 +267,12 @@ namespace http
 			return true;
 		req.getUri().setAuthority(req.getHeader("Host"));
 
-		Context context = getContext(req.getUri());
 		if (req.getHeader("Transfer-Encoding") == "chunked")
-		{
-			size_t totalSize = 0;
-			while (true)
-			{
-				ph::Token t = scan.getToken(false);
-				if (t.kind == ph::TokenKind::kEndOfInput)
-					return false;
-
-				char *nptr;
-				unsigned long chunkLength = strtoul(t.value.c_str(), &nptr, 16);
-				if ((chunkLength == ULONG_MAX && ft::make_error_code().value() == ft::errc::result_out_of_range)
-				|| *nptr)
-				{
-					setError(error, http::Status::BadRequest);
-					return true;
-				}
-				if ((t = scan.getToken(false)).kind != ph::TokenKind::kCarriage || (t = scan.getToken(false)).kind != ph::TokenKind::kNewLine)
-				{
-					if (t.kind == ph::TokenKind::kEndOfInput)
-						return false;
-					setError(error, http::Status::BadRequest);
-					return true;
-				}
-				if (chunkLength == 0)
-					break;
-				totalSize += chunkLength;
-				if (totalSize > context.location.getClientMaxBodySize())
-				{
-					setError(error, http::Status::PayloadTooLarge);
-					return true;
-				}
-				if (scan.remainCharCount() < chunkLength)
-					return false;
-				while (chunkLength--)
-					req.getContent().push_back(scan.getChar());
-				if ((t = scan.getToken(false)).kind != ph::TokenKind::kCarriage || (t = scan.getToken(false)).kind != ph::TokenKind::kNewLine)
-				{
-					if (t.kind == ph::TokenKind::kEndOfInput)
-						return false;
-					setError(error, http::Status::BadRequest);
-					return true;
-				}
-			
-			}
-			req.setHeader("Content-Length", ft::intToString(totalSize));
-			req.delHeader("Transfer-Encoding");
-		}
-		else if(req.getHeader("Transfer-Encoding").empty())
-		{
-			size_t contentLength = req.getContentLength();
-			if (contentLength > context.location.getClientMaxBodySize())
-			{
-				setError(error, http::Status::PayloadTooLarge);
-				return true;
-			}
-			if (scan.remainCharCount() < contentLength)
-				return false;
-			while (contentLength--)
-				req.getContent().push_back(scan.getChar());
-		}
-		else // transfer-encoding not supported
-			setError(error, http::Status::NotImplemented);
+			return parseChunkedContent(scan, req, error);
+		if(req.getHeader("Transfer-Encoding").empty())
+			return parseContent(scan, req, error);
+		// else transfer-encoding not supported
+		setError(error, http::Status::NotImplemented);
 		scan.eraseBeforeCurrentIndex();
 		return true;
 	}

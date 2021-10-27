@@ -149,7 +149,7 @@ Response autoIndexResponse(const Context& ctxt, Request& request, Response& resp
 Response errorResponse(const Context& ctxt, Response& response, Status error)
 {
 	response.setStatus(error);
-	if (error == Status::BadRequest || error == Status::PayloadTooLarge)
+	if (error == Status::BadRequest || error == Status::PayloadTooLarge || error == Status::NotImplemented)
 		response.setHeader("Connection", "close");
 	fs::path errorPath = ctxt.server.getErrors()[error.getValue()];
 	fs::path completePath = ServerConfig::getInstance().getPathFromUri(errorPath.c_str());
