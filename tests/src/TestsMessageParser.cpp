@@ -463,11 +463,11 @@ TEST_CASE_METHOD(SingletonFixture, "http::parseRequest - chunked request cut in 
 			std::vector<unsigned char> buffer;
 			buffer.insert(buffer.end(), one.begin(), one.end());
 
-			CHECK( !http::parseRequest(req, error, one) );
-			CHECK( error == http::Status::None);
+			REQUIRE( !http::parseRequest(req, error, one) );
+			REQUIRE( error == http::Status::None);
 			buffer.insert(buffer.end(), two.begin(), two.end());
-			CHECK( http::parseRequest(req, error, buffer) );
-			CHECK( error == http::Status::None);
+			REQUIRE( http::parseRequest(req, error, buffer) );
+			REQUIRE( error == http::Status::None);
 
 			CHECK( req.getMethod() == "POST" );
 			CHECK( req.getUri().toString() == "http://localhost:83/test.php");
