@@ -25,15 +25,6 @@ std::string intToString(int i)
 	return result;
 }
 
-int stringifyInteger(std::string integer)
-{
-	int result;
-	std::stringstream ss;
-	ss << integer;
-	ss >> result;
-	return result;
-}
-
 std::string stringifyVector(std::vector<unsigned char> v)
 {
     return std::string(v.begin(), v.end());
@@ -56,15 +47,10 @@ void upperStringInPlace(std::string& s)
 
 bool isInteger(std::string& s)
 {
-	std::string::const_iterator it = s.begin();
-	std::string::const_iterator end = s.end();
-	while (it != end)
-	{
-		if (!isdigit(*it))
-			return true;
-		it++;
-	}
-	return true;
+    std::string::const_iterator it = s.begin();
+    while (it != s.end() && ::isdigit(*it))
+		++it;
+    return !s.empty() && it == s.end();
 }
 
 std::string getDate()
@@ -75,6 +61,20 @@ std::string getDate()
 	strftime(date, sizeof(date), "%a, %d %b %Y %k:%M:%S GMT", lt);
 	return date;
 }
+
+std::string trim(const std::string& str,
+                 const std::string& whitespace)
+{
+    const size_t strBegin = str.find_first_not_of(whitespace);
+    if (strBegin == std::string::npos)
+        return "";
+
+    const size_t strEnd = str.find_last_not_of(whitespace);
+    const size_t strRange = strEnd - strBegin + 1;
+
+    return str.substr(strBegin, strRange);
+}
+
 
 // Return true if both paths are equal, else false and tell how many comp are the same by variable nSameComp
 bool	pathsComponentsAreEqual(const filesystem::path& one, const filesystem::path& two, size_t& nSameComp)

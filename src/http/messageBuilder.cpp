@@ -36,6 +36,8 @@ Response buildResponse(Request& request)
 		fs::file_status stat = fs::status(ctxt.path, ec);
 		if (ec.value() == ft::errc::no_such_file_or_directory)
 			return errorResponse(ctxt, response, Status::NotFound);
+		else if (ec.value() ==  ft::errc::filename_too_long)
+			return errorResponse(ctxt, response, Status::URITooLong);
 		else if (ec)
 			throw std::logic_error("Houston, we have a problem (" + ec.message() + ')');			
 		else if (stat.type() == fs::file_type::regular)
@@ -149,7 +151,8 @@ Response autoIndexResponse(const Context& ctxt, Request& request, Response& resp
 Response errorResponse(const Context& ctxt, Response& response, Status error)
 {
 	response.setStatus(error);
-	if (error == Status::BadRequest || error == Status::PayloadTooLarge)
+	if (error == Status::BadRequest || error == Status::PayloadTooLarge || error == Status::NotImplemented
+	|| error == Status::RequestHeaderFieldsTooLarge)
 		response.setHeader("Connection", "close");
 	fs::path errorPath = ctxt.server.getErrors()[error.getValue()];
 	fs::path completePath = ServerConfig::getInstance().getPathFromUri(errorPath.c_str());

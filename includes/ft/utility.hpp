@@ -22,13 +22,15 @@
 namespace ft {
 
 std::string					intToString(int i);
-int							stringifyInteger(std::string integer);
 std::string					stringifyVector(std::vector<unsigned char> v);
 std::vector<unsigned char>	vectorizeString(std::string s);
 void						lowerStringInPlace(std::string& s);
 void						upperStringInPlace(std::string& s);
 bool						isInteger(std::string& s);
 std::string					getDate();
+std::string					trim(const std::string& str,
+								 const std::string& whitespace = " \t");
+
 
 /// return the number of consecutives same elements in two paths.
 bool	pathsComponentsAreEqual(const filesystem::path& one, const filesystem::path& two, size_t& nSameComp);

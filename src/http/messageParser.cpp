@@ -6,9 +6,14 @@
 #include "Context.hpp"
 #include "utility.hpp"
 
+#include <climits>
+#include <cctype>
+
 namespace ph = parser::http;
 
 #define IAC 0xff
+
+#define MAX_HTTP_HEADER_SIZE 5000 // bytes == 5 MO/MB
 
 namespace http
 {
@@ -46,7 +51,7 @@ namespace http
 
 	static void setError(http::Status &error, http::Status value)
 	{
-		if (error != http::Status::None)
+		if (error != http::Status::None && value != http::Status::BadRequest)
 			return;
 		error = value;
 	}
@@ -72,7 +77,7 @@ namespace http
 			t = scan.getToken(true);
 			if (t.kind == ph::TokenKind::kEndOfInput)
 				setError(error, http::Status::EndOfInput);
-			else if (t.kind != ph::TokenKind::kString)
+			else if (t.kind != ph::TokenKind::kString || t.value[0] != '/')
 				setError(error, http::Status::BadRequest);
 			else
 				req.setUri(Uri("http", t.value));
@@ -127,7 +132,7 @@ namespace http
 						return;
 					}
 					if (!name.empty() && isValueField)
-						req.setHeader(name, value);
+						req.setHeader(name, ft::trim(value));
 					else if (name.empty())
 						areHeadersParsed = true;
 					name.clear();
@@ -165,6 +170,78 @@ namespace http
 		}
 	}
 
+	static bool parseChunkedContent(ph::ScannerMessage &scan, http::Request &req, http::Status &error)
+	{
+		Context context = getContext(req.getUri());
+
+		size_t totalSize = 0;
+		while (true)
+		{
+			ph::Token t = scan.getToken(false);
+			if (t.kind == ph::TokenKind::kEndOfInput)
+				return false;
+
+			char *nptr;
+			unsigned long chunkLength = strtoul(t.value.c_str(), &nptr, 16);
+			if ((chunkLength == ULONG_MAX && ft::make_error_code().value() == ft::errc::result_out_of_range)
+				|| *nptr)
+			{
+				setError(error, http::Status::BadRequest);
+				return true;
+			}
+			if ((t = scan.getToken(false)).kind != ph::TokenKind::kCarriage
+				|| (t = scan.getToken(false)).kind != ph::TokenKind::kNewLine)
+			{
+				if (t.kind == ph::TokenKind::kEndOfInput)
+					return false;
+				setError(error, http::Status::BadRequest);
+				return true;
+			}
+			if (chunkLength == 0)
+				break;
+			totalSize += chunkLength;
+			if (totalSize > context.location.getClientMaxBodySize())
+			{
+				setError(error, http::Status::PayloadTooLarge);
+				return true;
+			}
+			if (scan.remainCharCount() < chunkLength)
+				return false;
+			while (chunkLength--)
+				req.getContent().push_back(scan.getChar());
+			if ((t = scan.getToken(false)).kind != ph::TokenKind::kCarriage
+				|| (t = scan.getToken(false)).kind != ph::TokenKind::kNewLine)
+			{
+				if (t.kind == ph::TokenKind::kEndOfInput)
+					return false;
+				setError(error, http::Status::BadRequest);
+				return true;
+			}
+		}
+		req.setHeader("Content-Length", ft::intToString(totalSize));
+		req.delHeader("Transfer-Encoding");
+		scan.eraseBeforeCurrentIndex();
+		return true;
+	}
+
+	static bool parseContent(ph::ScannerMessage &scan, http::Request &req, http::Status &error)
+	{
+		Context context = getContext(req.getUri());
+		size_t contentLength = req.getContentLength();
+
+		if (contentLength > context.location.getClientMaxBodySize())
+		{
+			setError(error, http::Status::PayloadTooLarge);
+			return true;
+		}
+		if (scan.remainCharCount() < contentLength)
+			return false;
+		while (contentLength--)
+			req.getContent().push_back(scan.getChar());
+		scan.eraseBeforeCurrentIndex();
+		return true;
+	}
+
 	// return true if a request has been parsed, else, false.
 	bool parseRequest(http::Request &req, http::Status &error, std::vector<unsigned char> &buffer)
 	{
@@ -174,12 +251,15 @@ namespace http
 		bool endOfInput = false;
 		if (!hasTwoConsecutiveCRNL(buffer, endOfInput))
 		{
-			if (endOfInput)
-			{
+			if (buffer.size() && !::isupper(buffer[0]))
+				setError(error, http::Status::BadRequest);
+			else if (endOfInput)
 				setError(error, http::Status::EndOfInput);
-				return true;
-			}
-			return false;
+			else if (buffer.size() > MAX_HTTP_HEADER_SIZE)
+				setError(error, http::Status::RequestHeaderFieldsTooLarge);
+			else
+				return false;
+			return true;
 		}
 		ph::ScannerMessage scan(buffer);
 		parseRequestLine(scan, req, error);
@@ -191,20 +271,13 @@ namespace http
 		if (error == http::Status::BadRequest || error == http::Status::EndOfInput)
 			return true;
 		req.getUri().setAuthority(req.getHeader("Host"));
-		{			
-			char c;
-			size_t contentLength = req.getContentLength();
-			if (contentLength > getContext(req.getUri()).location.getClientMaxBodySize())
-			{
-				setError(error, http::Status::PayloadTooLarge);
-				return true;
-			}
-			if (scan.remainCharCount() < contentLength)
-				return false;
-			while (contentLength-- && (c = scan.getChar()))
-				req.getContent().push_back(c);
-		}
-		scan.eraseBeforeCurrentIndex();
+
+		if (req.getHeader("Transfer-Encoding") == "chunked")
+			return parseChunkedContent(scan, req, error);
+		if(req.getHeader("Transfer-Encoding").empty())
+			return parseContent(scan, req, error);
+		// else transfer-encoding not supported
+		setError(error, http::Status::NotImplemented);
 		return true;
 	}
 
@@ -213,7 +286,7 @@ namespace http
 		ph::ScannerMessage scan(buffer);
 		http::Message resp;
 
-		http::Status error; // useless
+		http::Status error; // useless but needed
 		parseHeaders(scan, resp, error);
 		{
 			char c;

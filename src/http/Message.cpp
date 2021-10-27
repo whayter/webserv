@@ -10,15 +10,26 @@ Message::Message() {}
 
 std::string	Message::getHeader(std::string name)
 {
-	return _headers[name];
+	http::headers_type::const_iterator pos = getHeaders().find(name);
+
+	if (pos != getHeaders().end())
+		return pos->second;
+	return std::string();
+}
+
+void	Message::delHeader(std::string name)
+{
+	http::headers_type::iterator pos = getHeaders().find(name);
+
+	if (pos != getHeaders().end())
+		getHeaders().erase(pos);
 }
 
 size_t Message::getContentLength()
 {
-	const char* key = "Content-Length";
-	http::headers_type headers = getHeaders();
-	if (headers.find(key) != headers.end())
-		return ::strtoul(headers[key].c_str(), 0, 10);	
+	http::headers_type::const_iterator pos = getHeaders().find("Content-Length");
+	if (pos != getHeaders().end())
+		return ::strtoul(pos->second.c_str(), 0, 10);	
 	return 0;
 }
 

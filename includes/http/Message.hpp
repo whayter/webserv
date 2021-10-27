@@ -24,6 +24,8 @@ public:
 	void					setContent(const content_type &content, std::string contentType);
 	void					setVersion(const std::string &version);
 
+	void					delHeader(std::string name);
+
 	virtual bool			empty() const;
 	virtual void			clear();
 

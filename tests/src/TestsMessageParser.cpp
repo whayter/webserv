@@ -352,6 +352,8 @@ TEST_CASE_METHOD(SingletonFixture, "http::parseRequest - simple get cut in half 
 			buffer.insert(buffer.end(), two.begin(), two.end());
 			REQUIRE( http::parseRequest(req, error, buffer) );
 			REQUIRE( error == http::Status::None);
+			REQUIRE( buffer.empty());
+
 
 			CHECK( req.getMethod() == "GET" );
 			CHECK( req.getUri().getPathEtc() == "/getip");
@@ -409,4 +411,83 @@ TEST_CASE( "http::parseCgiResponse", "[namespace][http][parseCgiResponse]" )
 	CHECK(responseCgi.getHeader("Content-type") == "text/html");
 	CHECK(responseCgi.getContent().size() == 96);
 	CHECK(responseCgi.getContent() == content);
+}
+TEST_CASE_METHOD(SingletonFixture, "http::parseRequest - chunked ",
+	"[namespace][http][parseRequest][chunked]" )
+{
+	ServerConfig& config = SingletonFixture::SetUpFile("./config_files/testMessageParser.conf");
+	(void)config;
+
+	std::ifstream file;
+	file.open("./http_requests/chunked_post", std::ifstream::in);
+	std::vector<unsigned char> buffer((std::istreambuf_iterator<char>(file)),
+                 std::istreambuf_iterator<char>());
+
+	http::Request req;
+	http::Status error;
+	REQUIRE( http::parseRequest(req, error, buffer) );
+	REQUIRE( error == http::Status::None);
+	REQUIRE( buffer.empty());
+
+	CHECK( req.getMethod() == "POST" );
+	CHECK( req.getUri().toString() == "http://localhost:83/test.php");
+
+	CHECK( req.getHeaders().size() == 4);
+	
+	CHECK( req.getHeader("Date")				== "Mon, 22 Mar 2004 11:15:03 GMT");
+	CHECK( req.getHeader("Content-Type")		== "text/html");
+	CHECK( req.getHeader("Content-Length")		== "129");
+	CHECK( req.getHeader("Transfer-Encoding").empty());
+
+	std::string body = "<html><body><p>The file you requested is 3,400bytes long and was last modified:  Sat, 20 Mar 2004 21:12:00 GMT.</p></body></html>";
+	CHECK( req.getContent() == std::vector<unsigned char>(body.begin(), body.end()) );
+}
+
+// chunked cut in half loop
+TEST_CASE_METHOD(SingletonFixture, "http::parseRequest - chunked request cut in half loop",
+	"[namespace][http][parseRequest][cut_half][chunked]" )
+{
+	ServerConfig& config = SingletonFixture::SetUpFile("./config_files/testMessageParser.conf");
+	(void)config;
+
+	std::ifstream file;
+	file.open("./http_requests/chunked_post", std::ifstream::in);
+	std::string data((std::istreambuf_iterator<char>(file)),
+                 std::istreambuf_iterator<char>());
+
+	http::Request req;
+	http::Status error;
+
+	for (size_t idx = 0; idx < data.size(); idx++) {
+        DYNAMIC_SECTION( "Looped section nb: " << idx)
+		{
+			std::vector<unsigned char> one = vectorFromStr(data.substr(0,idx));
+			std::vector<unsigned char> two = vectorFromStr(data.substr(idx));
+			std::vector<unsigned char> buffer;
+			buffer.insert(buffer.end(), one.begin(), one.end());
+
+			REQUIRE( !http::parseRequest(req, error, one) );
+			REQUIRE( error == http::Status::None);
+			buffer.insert(buffer.end(), two.begin(), two.end());
+			REQUIRE( http::parseRequest(req, error, buffer) );
+			REQUIRE( buffer.empty());
+			REQUIRE( error == http::Status::None);
+
+			CHECK( req.getMethod() == "POST" );
+			CHECK( req.getUri().toString() == "http://localhost:83/test.php");
+
+			CHECK( req.getHeaders().size() == 4);
+			
+			CHECK( req.getHeader("Date")				== "Mon, 22 Mar 2004 11:15:03 GMT");
+			CHECK( req.getHeader("Content-Type")		== "text/html");
+			CHECK( req.getHeader("Content-Length")		== "129");
+			CHECK( req.getHeader("Transfer-Encoding").empty());
+			
+	
+			std::string body = "<html><body><p>The file you requested is 3,400bytes long and was last modified:  Sat, 20 Mar 2004 21:12:00 GMT.</p></body></html>";
+
+			CHECK( req.getContent() == std::vector<unsigned char>(body.begin(), body.end()) );
+		}
+    }
+
 }

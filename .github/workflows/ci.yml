@@ -84,7 +84,7 @@ jobs:
 
   siege:
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 3
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
