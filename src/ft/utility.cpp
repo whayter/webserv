@@ -25,15 +25,6 @@ std::string intToString(int i)
 	return result;
 }
 
-int stringifyInteger(std::string integer)
-{
-	int result;
-	std::stringstream ss;
-	ss << integer;
-	ss >> result;
-	return result;
-}
-
 std::string stringifyVector(std::vector<unsigned char> v)
 {
     return std::string(v.begin(), v.end());
@@ -56,15 +47,10 @@ void upperStringInPlace(std::string& s)
 
 bool isInteger(std::string& s)
 {
-	std::string::const_iterator it = s.begin();
-	std::string::const_iterator end = s.end();
-	while (it != end)
-	{
-		if (!isdigit(*it))
-			return true;
-		it++;
-	}
-	return true;
+    std::string::const_iterator it = s.begin();
+    while (it != s.end() && ::isdigit(*it))
+		++it;
+    return !s.empty() && it == s.end();
 }
 
 std::string getDate()

@@ -6,6 +6,9 @@
 #include "Context.hpp"
 #include "utility.hpp"
 
+#include <climits>
+#include <cctype>
+
 namespace ph = parser::http;
 
 #define IAC 0xff
@@ -191,19 +194,71 @@ namespace http
 		if (error == http::Status::BadRequest || error == http::Status::EndOfInput)
 			return true;
 		req.getUri().setAuthority(req.getHeader("Host"));
-		{			
-			char c;
+
+		Context context = getContext(req.getUri());
+		if (req.getHeader("Transfer-Encoding") == "chunked")
+		{
+			size_t totalSize = 0;
+			while (true)
+			{
+				ph::Token t = scan.getToken(false);
+				if (t.kind == ph::TokenKind::kEndOfInput)
+					return false;
+
+				char *nptr;
+				unsigned long chunkLength = strtoul(t.value.c_str(), &nptr, 16);
+				if ((chunkLength == ULONG_MAX && ft::make_error_code().value() == ft::errc::result_out_of_range)
+				|| *nptr)
+				{
+					setError(error, http::Status::BadRequest);
+					return true;
+				}
+				if ((t = scan.getToken(false)).kind != ph::TokenKind::kCarriage || (t = scan.getToken(false)).kind != ph::TokenKind::kNewLine)
+				{
+					if (t.kind == ph::TokenKind::kEndOfInput)
+						return false;
+					setError(error, http::Status::BadRequest);
+					return true;
+				}
+				if (chunkLength == 0)
+					break;
+				totalSize += chunkLength;
+				if (totalSize > context.location.getClientMaxBodySize())
+				{
+					setError(error, http::Status::PayloadTooLarge);
+					return true;
+				}
+				if (scan.remainCharCount() < chunkLength)
+					return false;
+				while (chunkLength--)
+					req.getContent().push_back(scan.getChar());
+				if ((t = scan.getToken(false)).kind != ph::TokenKind::kCarriage || (t = scan.getToken(false)).kind != ph::TokenKind::kNewLine)
+				{
+					if (t.kind == ph::TokenKind::kEndOfInput)
+						return false;
+					setError(error, http::Status::BadRequest);
+					return true;
+				}
+			
+			}
+			req.setHeader("Content-Length", ft::intToString(totalSize));
+			req.delHeader("Transfer-Encoding");
+		}
+		else if(req.getHeader("Transfer-Encoding").empty())
+		{
 			size_t contentLength = req.getContentLength();
-			if (contentLength > getContext(req.getUri()).location.getClientMaxBodySize())
+			if (contentLength > context.location.getClientMaxBodySize())
 			{
 				setError(error, http::Status::PayloadTooLarge);
 				return true;
 			}
 			if (scan.remainCharCount() < contentLength)
 				return false;
-			while (contentLength-- && (c = scan.getChar()))
-				req.getContent().push_back(c);
+			while (contentLength--)
+				req.getContent().push_back(scan.getChar());
 		}
+		else // transfer-encoding not supported
+			setError(error, http::Status::NotImplemented);
 		scan.eraseBeforeCurrentIndex();
 		return true;
 	}
@@ -213,7 +268,7 @@ namespace http
 		ph::ScannerMessage scan(buffer);
 		http::Message resp;
 
-		http::Status error; // useless
+		http::Status error; // useless but needed
 		parseHeaders(scan, resp, error);
 		{
 			char c;

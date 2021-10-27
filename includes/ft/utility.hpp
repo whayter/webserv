@@ -22,7 +22,6 @@
 namespace ft {
 
 std::string					intToString(int i);
-int							stringifyInteger(std::string integer);
 std::string					stringifyVector(std::vector<unsigned char> v);
 std::vector<unsigned char>	vectorizeString(std::string s);
 void						lowerStringInPlace(std::string& s);

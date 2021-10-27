@@ -206,5 +206,10 @@
 ####  Http connections
 https://www.w3.org/Protocols/rfc2616/rfc2616-sec8.html
 
+#### transfer encoding
+- https://httpwg.org/specs/rfc7230.html#transfer.codings
+- https://httpwg.org/specs/rfc7230.html#chunked.encoding
+- https://httpwg.org/specs/rfc7230.html#decoding.chunked
+
 ##### other
 - https://stackoverflow.com/questions/59261547/handle-ctrlc-in-client-server-socket-in-c-programing
