@@ -36,6 +36,8 @@ Response buildResponse(Request& request)
 		fs::file_status stat = fs::status(ctxt.path, ec);
 		if (ec.value() == ft::errc::no_such_file_or_directory)
 			return errorResponse(ctxt, response, Status::NotFound);
+		else if (ec.value() ==  ft::errc::filename_too_long)
+			return errorResponse(ctxt, response, Status::URITooLong);
 		else if (ec)
 			throw std::logic_error("Houston, we have a problem (" + ec.message() + ')');			
 		else if (stat.type() == fs::file_type::regular)
