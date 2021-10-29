@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/15 14:48:22 by hwinston          #+#    #+#             */
-/*   Updated: 2021/10/26 18:37:02 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/10/27 12:55:52 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 namespace http {
 
 Response::Response() : _status(Status::None) {
-	// setHeader("Content-Type", "text/html"); // tmp
 	setVersion("HTTP/1.1");
 	setHeader("Server", "Webserv/1.0");
 	setHeader("Date", ft::getDate());

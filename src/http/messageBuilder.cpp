@@ -17,35 +17,63 @@ Response buildResponse(Request& request)
 {
 	Response response;
 	Context ctxt = getContext(request.getUri());
-
 	if (request.getHeader("Connection") == "close")
 		response.setHeader("Connection", "close");
 	if (!ctxt.location.hasLimitExceptMethod(request.getMethod()))
 		return errorResponse(ctxt, response, Status::MethodNotAllowed);
-	if (request.getMethod() == "DELETE")
-		return deleteResponse(ctxt, response);
-	if (request.getMethod() == "POST")
-		return postResponse(ctxt, request, response);
 	if (ctxt.location.getAction() == action::cgi)
 		return dynamicResponse(ctxt, request, response);
 	if (ctxt.location.getAction() == action::returnDirective)
 		return redirectResponse(ctxt, response);
 	if (ctxt.location.getAction() == action::none)
 	{
-		ft::error_code ec;
-		fs::file_status stat = fs::status(ctxt.path, ec);
-		if (ec.value() == ft::errc::no_such_file_or_directory)
-			return errorResponse(ctxt, response, Status::NotFound);
-		else if (ec.value() ==  ft::errc::filename_too_long)
-			return errorResponse(ctxt, response, Status::URITooLong);
-		else if (ec)
-			throw std::logic_error("Houston, we have a problem (" + ec.message() + ')');			
-		else if (stat.type() == fs::file_type::regular)
-			return staticResponse(ctxt, response);
-		else if (stat.type() == fs::file_type::directory && ctxt.location.hasAutoindex())
-			return autoIndexResponse(ctxt, request, response);
+		if (request.getMethod() == "GET")
+			return getMethodResponse(ctxt, request, response);
+		if (request.getMethod() == "POST")
+			return postMethodResponse(ctxt, request, response);
+		if (request.getMethod() == "DELETE")
+			return deleteMethodResponse(ctxt, response);
 	}
 	return errorResponse(ctxt, response, Status::NotFound);
+}
+
+Response getMethodResponse(const Context& ctxt, Request& request, Response& response)
+{
+	ft::error_code ec;
+	fs::file_status stat = fs::status(ctxt.path, ec);
+	if (ec.value() == ft::errc::no_such_file_or_directory)
+		return errorResponse(ctxt, response, Status::NotFound);
+	if (ec.value() ==  ft::errc::filename_too_long)
+		return errorResponse(ctxt, response, Status::URITooLong);
+	if (ec)
+		throw std::logic_error("Houston, we have a problem (" + ec.message() + ')');			
+	if (stat.type() == fs::file_type::regular)
+		return staticResponse(ctxt, response);
+	if (stat.type() == fs::file_type::directory && ctxt.location.hasAutoindex())
+		return autoIndexResponse(ctxt, request, response);
+	return errorResponse(ctxt, response, Status::NotFound);
+}
+
+Response postMethodResponse(const Context& ctxt, Request& request, Response& response)
+{
+	if (postContent(ctxt.path, request.getContent()) < 0)
+		return (errorResponse(ctxt, response, Status::InternalServerError));
+	response.setStatus(Status::Created);
+	response.setHeader("Location", request.getUri().toString());
+	ReturnDirective rdir;
+	rdir.setUri(request.getUri().toString());
+	rdir.setCode(Status::Created);
+	response.setContent(html::buildRedirectionPage(rdir), "text/html");
+	return response;
+}
+
+Response deleteMethodResponse(const Context& ctxt, Response& response)
+{
+	if (remove(ctxt.path.c_str()) != 0)
+		return errorResponse(ctxt, response, Status::NotFound);
+	response.setStatus(Status::OK);
+	response.setContent(html::buildSimplePage("File deleted"), "text/html");
+	return response;
 }
 
 Response staticResponse(const Context& ctxt, Response& response)
@@ -77,44 +105,6 @@ Response dynamicResponse(const Context& ctxt, Request& request, Response& respon
 	return response;
 }
 
-Response postResponse(const Context& ctxt, Request& request, Response& response)
-{
-	if (postContent(ctxt.path, request.getContent()) < 0)
-		return (errorResponse(ctxt, response, Status::InternalServerError));
-	response.setStatus(Status::Created);
-	response.setHeader("Location", request.getUri().toString());
-	if (ctxt.location.getAction() == action::cgi)
-	{
-		setEnvironment(request, ctxt.server, ctxt.path);
-		std::string cgiExecPath = ctxt.server.findLocation(ctxt.path.c_str()).getCgiExec();
-		std::pair<content_type, ft::error_code> cgiPair = getCgiResponse(cgiExecPath);
-		unsetEnvironment();
-		if (cgiPair.second.value() != 0)
-			return errorResponse(ctxt, response, Status::InternalServerError);
-		Message cgiResponse = parseCgiResponse(cgiPair.first);
-		std::string cgiStatus = cgiResponse.getHeader("Status");
-		int status = strtol(cgiStatus.c_str(),  NULL, 10);
-		if (isError(Status(status)))
-			return (errorResponse(ctxt, response, Status(status)));	
-		if (postContent(ctxt.path, cgiResponse.getContent()) < 0)
-			return errorResponse(ctxt, response, Status::InternalServerError);
-	}
-	ReturnDirective rdir;
-	rdir.setUri(request.getUri().toString());
-	rdir.setCode(Status::Created);
-	response.setContent(html::buildRedirectionPage(rdir), "text/html");
-	return response;
-}
-
-Response deleteResponse(const Context& ctxt, Response& response)
-{
-	if (remove(ctxt.path.c_str()) != 0)
-		return errorResponse(ctxt, response, Status::NotFound);
-	response.setStatus(Status::OK);
-	response.setContent(html::buildSimplePage("File deleted"), "text/html");
-	return response;
-}
-
 Response redirectResponse(const Context& ctxt, Response& response)
 {
 	const ReturnDirective& rdir = ctxt.location.getReturnDirective();
@@ -125,7 +115,14 @@ Response redirectResponse(const Context& ctxt, Response& response)
 		response.setHeader("Location", rdir.getUri().toString());
 	}
 	else
+	{
 		response.setContent(ft::vectorizeString(rdir.getText()), "text/plain");
+		if (response.getStatus() == Status::NoContent)
+		{
+			response.delHeader("Content-Length");
+			response.delHeader("Content-Type");
+		}
+	}
 	return response;
 }
 

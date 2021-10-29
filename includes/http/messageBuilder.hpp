@@ -10,13 +10,17 @@
 namespace http {
 
 Response					buildResponse(Request& request);
+
+Response 					getMethodResponse(const Context& ctxt, Request& request, Response& response);
+Response					postMethodResponse(const Context& ctxt, Request& request, Response& response);
+Response					deleteMethodResponse(const Context& ctxt, Response& response);
+
 Response					staticResponse(const Context& ctxt, Response& response);
 Response					dynamicResponse(const Context& ctxt, Request& request, Response& response);
-Response					postResponse(const Context& ctxt, Request& request, Response& response);
-Response					deleteResponse(const Context& ctxt, Response& response);
 Response					redirectResponse(const Context& ctxt, Response& response);
 Response					autoIndexResponse(const Context& ctxt, Request& request, Response& response);
 Response					errorResponse(const Context& ctxt, Response& response, Status error);
+
 int							postContent(std::string path, content_type content);
 std::vector<unsigned char> 	getFileContent(const ft::filesystem::path& path);
 
