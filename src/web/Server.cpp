@@ -60,7 +60,7 @@ bool Server::setup()
 void Server::routine()
 {
 	int pollStatus;
-	if ((pollStatus = poll(_fds, _nfds, 0)) == -1)
+	if ((pollStatus = poll(_fds, _nfds, -1)) == -1)
 	{
 		if (ft::make_error_code().value() == ft::errc::interrupted)
 			return;
