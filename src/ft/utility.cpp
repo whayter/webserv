@@ -13,6 +13,9 @@
 #include "ft/utility.hpp"
 #include <algorithm>
 
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 namespace ft {
 
 std::string intToString(int i)
@@ -115,6 +118,13 @@ bool	pathsComponentsAreEqual(const filesystem::path& one, const filesystem::path
 	if (itOne != one.end() || itTwo != two.end())
 		return false;
 	return true;
+}
+
+bool isValidIpAddress(char *ipAddress)
+{
+    struct sockaddr_in sa;
+    int result = ::inet_pton(AF_INET, ipAddress, &(sa.sin_addr));
+    return result > 0;
 }
 
 } /* namespace ft */

@@ -35,6 +35,8 @@ std::vector<std::string> 	split(const std::string& str, char delim);
 /// return the number of consecutives same elements in two paths.
 bool	pathsComponentsAreEqual(const filesystem::path& one, const filesystem::path& two, size_t& nSameComp);
 
+bool						isValidIpAddress(char *ipAddress);
+
 } /* namespace ft */
 
 #endif
