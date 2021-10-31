@@ -507,7 +507,7 @@ TEST_CASE_METHOD(SingletonFixture, "http::upload - multipart ",
 	http::Status error;
 	REQUIRE( http::parseRequest(req, error, buffer) );
 	REQUIRE( error == http::Status::None);
-	REQUIRE( buffer == vectorFromStr("\r\n\r\n"));
+	REQUIRE( buffer == vectorFromStr("\r\n"));
 
 	CHECK( req.getMethod() == "POST" );
 	CHECK( req.getUri().toString() == "http://localhost:3000/avatars");
@@ -515,7 +515,7 @@ TEST_CASE_METHOD(SingletonFixture, "http::upload - multipart ",
 	REQUIRE( req.getHeaders().size() == 3);
 	
 	REQUIRE( req.getHeader("Content-Type")		== "multipart/form-data; boundary=MultipartBoundry");
-	REQUIRE( req.getHeader("Content-Length")		== "405");
+	REQUIRE( req.getHeader("Content-Length")		== "407");
 
 	std::string body =
 "--MultipartBoundry\r\n"
@@ -528,7 +528,7 @@ TEST_CASE_METHOD(SingletonFixture, "http::upload - multipart ",
 "Content-Type: application/json\r\n"
 "\r\n"
 "{\"category\":123,\"location\":123,-50}\r\n"
-"--MultipartBoundry--";
+"--MultipartBoundry--\r\n";
 
 	REQUIRE( req.getContent() == std::vector<unsigned char>(body.begin(), body.end()) );
 
@@ -541,8 +541,8 @@ TEST_CASE_METHOD(SingletonFixture, "http::upload - multipart ",
 	CHECK(parts[0].content == &req.getContent()[157]);
 	CHECK(parts[1].content == &req.getContent()[348]);
 	
-	CHECK(parts[0].len == 86);
-	CHECK(parts[1].len == 37);
+	CHECK(parts[0].len == 84);
+	CHECK(parts[1].len == 35);
 	
 
 	CHECK(parts[0].headers.size() == 2);
