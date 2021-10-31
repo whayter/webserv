@@ -491,3 +491,68 @@ TEST_CASE_METHOD(SingletonFixture, "http::parseRequest - chunked request cut in 
     }
 
 }
+
+TEST_CASE_METHOD(SingletonFixture, "http::upload - multipart ",
+	"[namespace][http][multipart][upload]" )
+{
+	ServerConfig& config = SingletonFixture::SetUpFile("./config_files/testMessageParser.conf");
+	(void)config;
+
+	std::ifstream file;
+	file.open("./http_requests/multipart_request", std::ifstream::in);
+	std::vector<unsigned char> buffer((std::istreambuf_iterator<char>(file)),
+                 std::istreambuf_iterator<char>());
+
+	http::Request req;
+	http::Status error;
+	REQUIRE( http::parseRequest(req, error, buffer) );
+	REQUIRE( error == http::Status::None);
+	REQUIRE( buffer == vectorFromStr("\r\n\r\n"));
+
+	CHECK( req.getMethod() == "POST" );
+	CHECK( req.getUri().toString() == "http://localhost:3000/avatars");
+
+	REQUIRE( req.getHeaders().size() == 3);
+	
+	REQUIRE( req.getHeader("Content-Type")		== "multipart/form-data; boundary=MultipartBoundry");
+	REQUIRE( req.getHeader("Content-Length")		== "405");
+
+	std::string body =
+"--MultipartBoundry\r\n"
+"Content-Disposition: form-data; name=\"image\"; filename=\"12348024_1150631324960893_344096225642532672_n.jpg\"\r\n"
+"Content-Type: image/jpeg\r\n"
+"\r\n"
+"rawimagecontentwhichlooksfunnyandgoesonforever.d.sf.d.f.sd.fsdkfjkslhfdkshfkjsdfdkfh\r\n"
+"--MultipartBoundry\r\n"
+"Content-Disposition: form-data; name=\"myJsonData\"\r\n"
+"Content-Type: application/json\r\n"
+"\r\n"
+"{\"category\":123,\"location\":123,-50}\r\n"
+"--MultipartBoundry--";
+
+	REQUIRE( req.getContent() == std::vector<unsigned char>(body.begin(), body.end()) );
+
+	std::vector<http::multipart_part> parts;
+	error = parseContentMultipart(parts, req, "MultipartBoundry");
+	REQUIRE(error == http::Status::None);
+
+	REQUIRE(parts.size() == 2);
+
+	CHECK(parts[0].content == &req.getContent()[157]);
+	CHECK(parts[1].content == &req.getContent()[348]);
+	
+	CHECK(parts[0].len == 86);
+	CHECK(parts[1].len == 37);
+	
+
+	CHECK(parts[0].headers.size() == 2);
+	CHECK(parts[0].headers.find("Content-Disposition")->second == "form-data; name=\"image\"; filename=\"12348024_1150631324960893_344096225642532672_n.jpg\"");
+	CHECK(parts[0].headers.find("Content-Type")->second == "image/jpeg");
+
+
+	CHECK(parts[1].headers.size() == 2);
+	CHECK(parts[1].headers.find("Content-Disposition")->second == "form-data; name=\"myJsonData\"");
+	CHECK(parts[1].headers.find("Content-Type")->second == "application/json");
+	
+}
+

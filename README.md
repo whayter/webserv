@@ -213,3 +213,29 @@ https://www.w3.org/Protocols/rfc2616/rfc2616-sec8.html
 
 ##### other
 - https://stackoverflow.com/questions/59261547/handle-ctrlc-in-client-server-socket-in-c-programing
+
+
+### cgi
+- https://helpx.adobe.com/coldfusion/cfml-reference/reserved-words-and-variables/cgi-environment-cgi-scope-variables/cgi-server-variables.html
+- http://www.faqs.org/rfcs/rfc3875.html
+- https://www.php.net/manual/fr/reserved.variables.server.php
+
+#### multipart
+- https://stackoverflow.com/questions/913626/what-should-a-multipart-http-request-with-multiple-files-look-like
+- https://www.w3.org/Protocols/rfc1341/7_2_Multipart.html
+- https://developer.mozilla.org/fr/docs/Web/HTML/Element/Input/file
+- https://www.w3.org/TR/html401/interact/forms.html#h-17.13.4.2
+
+#### reactor and c10k problem
+- https://dzone.com/articles/understanding-reactor-pattern-thread-based-and-eve
+- http://www.kegel.com/c10k.html
+- https://hila.sh/2019/12/28/reactor.html
+- https://raw.githubusercontent.com/swn73/books/master/Packt.Nginx.HTTP.Server.3rd.Edition.pdf
+- https://www.adamtornhill.com/Patterns%20in%20C%205,%20REACTOR.pdf
+
+#### nginx
+- https://raw.githubusercontent.com/swn73/books/master/Packt.Nginx.HTTP.Server.3rd.Edition.pdf
+
+#### http header value  ',' (list syntax) vs ';'
+- https://stackoverflow.com/a/38406581/5374043
+- https://github.com/bnoordhuis/mozilla-central/blob/master/netwerk/protocol/http/nsHttpHeaderArray.h#L185

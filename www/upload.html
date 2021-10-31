@@ -15,10 +15,19 @@
     <body>
         <h1 class="text-center">Upload something yo</h1>
         <hr class="hr-invisible"><hr class="hr-invisible">
-        <form class="text-center" action="upload.php" method="post" enctype="multipart/form-data">
-            <input type="file" name="userfile" id="userfile">
+        <!-- <form class="text-center" method="post" enctype="multipart/form-data">
+            <input type="file" name="userfile" id="userfile" multiple>
             <hr class="hr-invisible">
             <input type="submit" value="Upload" name="submit">
-        </form>
+        </form> -->
+        <form method="post" enctype="multipart/form-data">
+            <div>
+              <label for="file">Sélectionner le fichier à envoyer</label>
+              <input type="file" id="file" name="file" multiple="multiple">
+            </div>
+            <div>
+              <button>Envoyer</button>
+            </div>
+           </form>
     </body>
 </html>

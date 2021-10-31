@@ -75,6 +75,24 @@ std::string trim(const std::string& str,
     return str.substr(strBegin, strRange);
 }
 
+std::vector<std::string> split(const std::string& str, char delim)
+{
+    std::vector<std::string>	result;
+
+	std::string tmp = "";
+	for(size_t i = 0; i< str.length(); ++i)
+	{
+		if (str[i] == delim)
+		{
+			result.push_back(tmp);
+			tmp.clear();
+		}
+		else
+			tmp.push_back(str[i]);
+	}
+	result.push_back(tmp);
+    return result;
+}
 
 // Return true if both paths are equal, else false and tell how many comp are the same by variable nSameComp
 bool	pathsComponentsAreEqual(const filesystem::path& one, const filesystem::path& two, size_t& nSameComp)
