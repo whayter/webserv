@@ -6,7 +6,6 @@
 #include "messageBuilder.hpp"
 #include "messageParser.hpp"
 
-#include <cerrno>
 #include <ctime>
 #include <cstring>
 #include <iomanip>
