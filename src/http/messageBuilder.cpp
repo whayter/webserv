@@ -50,7 +50,7 @@ Response getMethodResponse(const Context& ctxt, Request& request, Response& resp
 		throw std::logic_error("Houston, we have a problem (" + ec.message() + ')');			
 	if (stat.type() == fs::file_type::regular)
 		return staticResponse(ctxt, response);
-	if (stat.type() == fs::file_type::directory && ctxt.location.hasAutoindex())
+	if (stat.type() == fs::file_type::directory && ctxt.location.getAutoindex())
 		return autoIndexResponse(ctxt, request, response);
 	return errorResponse(ctxt, response, Status::NotFound);
 }

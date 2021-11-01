@@ -310,15 +310,18 @@ std::string multipart_part::getFilename() const
 	if (pos == std::string::npos)
 		return "";
 	pos	+= 9;
-	bool quoted = tmp.at(pos + 9) == '"' ? true : false;
-		quoted = true;
-	while (tmp[++pos])
+
+	bool quoted = tmp.at(pos) == '"' ? true : false;
+	if (quoted)
+		pos += 1;
+	while (tmp[pos])
 	{
 		if (quoted && tmp[pos] == '"')
 			break;
 		else if (tmp[pos] == ' ' || tmp[pos] == '\t')
 			break;
 		result += tmp[pos];
+		++pos;
 	}
 	return ft::filesystem::path(result).filename().string();
 }
