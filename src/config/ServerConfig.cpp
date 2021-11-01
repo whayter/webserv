@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/13 15:01:14 by juligonz          #+#    #+#             */
-/*   Updated: 2021/10/26 20:15:38 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/11/01 15:59:12 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -665,7 +665,7 @@ size_t	ServerConfig::_parseClientMaxBodySize(config::ScannerConfig & scanner)
 	bytes = strtoul(t.value.c_str(), &unit, 10);
 	if (bytes == ULONG_MAX && ft::make_error_code().value() == ft::errc::result_out_of_range)
 		_throw_SyntaxError(t, std::string("Overflow in context \"client_max_body_size\"... thx bro --'"));
-	if (unit[1])
+	if (unit[0] && unit[1])
 		_throw_SyntaxError(t, std::string("Unknown unit \"") + unit + std::string("\" in context \"client_max_body_size\". RTFM !"));
 
 	switch (*unit)

@@ -199,7 +199,7 @@ void Server::_sendResponses(int deviceIndex)
 	if (!outputBuffer.empty())
 	{
 		int nbytes = send(_fds[deviceIndex].fd, &outputBuffer[0], outputBuffer.size(), 0);
-		if (nbytes == -1)
+		if (nbytes <= 0)
 		{
 			_log(deviceIndex, "Could not send the response.");
 			stop(-1);
