@@ -81,9 +81,10 @@ void Server::routine()
 				_getRequests(i);
 				_buildRequests(i);
 				_buildResponses(i);
-				_sendResponses(i);
 			}
 		}
+		else if (_fds[i].revents & POLLOUT)
+			_sendResponses(i);
 		else
 			stop(-1);
 	}
@@ -145,6 +146,8 @@ void Server::_getRequests(int deviceIndex)
 		for (int i = 0; i < nbytes; i++)
 			_devices[deviceIndex].getInputBuffer().push_back(buffer[i]);
 	}
+	else
+		_disconnectDevice(deviceIndex);
 }
 
 void Server::_buildRequests(int deviceIndex)
@@ -170,13 +173,14 @@ void Server::_buildResponses(int deviceIndex)
 		http::Response response;
 		std::pair<http::Request, http::Status> pair = requests.front();
 		if (http::isError(requests.front().second))
-			//response = http::errorResponse(pair.first.getUri(), pair.second);
 			response = http::errorResponse(getContext(pair.first.getUri()), response, pair.second);
 		else
 			response = http::buildResponse(pair.first);
 		requests.pop();
 		_devices[deviceIndex].getResponsesQueue().push(response);
 	}
+	if (!_devices[deviceIndex].getResponsesQueue().empty())
+		_fds[deviceIndex].events = POLLIN | POLLOUT;
 }
 
 void Server::_sendResponses(int deviceIndex)
@@ -207,6 +211,8 @@ void Server::_sendResponses(int deviceIndex)
 		outputBuffer.erase(outputBuffer.begin(), outputBuffer.begin() + nbytes);
 		_log(deviceIndex, "Response sent.");
 	}
+	if (outputBuffer.empty())
+		_fds[deviceIndex].events = POLLIN;
 	if (endConnection)
 		_disconnectDevice(deviceIndex);
 }
