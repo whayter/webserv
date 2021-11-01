@@ -13,46 +13,6 @@
 namespace fs = ft::filesystem;
 
 namespace http {
-	
-static void writeContentToFile(const fs::path& path, const char *content, size_t n)
-{
-	std::ofstream file;
-	file.open(path.c_str(), std::ofstream::binary);
-	file.write(content, n);
-	file.close();
-}
-
-Response	postMultipart(const Context& ctxt, Request& request, Response& response)
-{
-	if (ctxt.server.getUploadStore().empty())
-		return errorResponse(ctxt, response, Status::Forbidden);
-	std::vector<std::string> vec = ft::split(request.getHeader("Content-Type"), ';');
-
-	std::string contentType = vec.size() > 0 ? ft::trim(vec[0]) :  "";
-	if (contentType != "multipart/form-data" || vec.size() != 2)
-		return errorResponse(ctxt, response, Status::NotImplemented);
-	std::string boundary = ft::trim(vec[1]);
-	
-	vec = ft::split(boundary, '=');
-	if (vec.size() != 2 || vec[0] != "boundary")
-		return errorResponse(ctxt, response, Status::BadRequest); // bad request ???
-	boundary = vec[1];
-	
-	std::vector<multipart_part> parts;
-	http::Status error = parseContentMultipart(parts, request, boundary);
-	if (error != Status::None)
-		return errorResponse(ctxt, response, error);
-	std::vector<multipart_part>::iterator it = parts.begin();
-	while (it != parts.end())
-	{
-		writeContentToFile(ctxt.server.getUploadStore() / it->getFilename(), reinterpret_cast<char*>(it->content), it->len);
-		++it;
-	}
-	response.setStatus(http::Status::Created);
-	
-	return response;
-}
-
 
 Response buildResponse(Request& request)
 {
@@ -97,7 +57,14 @@ Response getMethodResponse(const Context& ctxt, Request& request, Response& resp
 
 Response postMethodResponse(const Context& ctxt, Request& request, Response& response)
 {
-	return postMultipart(ctxt, request, response); // just to test 
+	if (ctxt.server.getUploadStore().empty()
+	|| !ft::filesystem::is_directory(ctxt.server.getUploadStore()))
+		return errorResponse(ctxt, response, Status::Forbidden);
+
+	std::vector<std::string> vec = ft::split(request.getHeader("Content-Type"), ';');
+	if (ft::trim(vec[0]) == "multipart/form-data")
+		return postMultipart(ctxt, request, response);
+	
 	if (postContent(ctxt.path, request.getContent()) < 0)
 		return (errorResponse(ctxt, response, Status::InternalServerError));
 	response.setStatus(Status::Created);
@@ -122,7 +89,7 @@ Response staticResponse(const Context& ctxt, Response& response)
 {
 	std::string extension = ServerConfig::getInstance().getMime(ctxt.path.extension().c_str());
 	response.setStatus(Status::OK);
-	response.setContent(getFileContent(ctxt.path), extension);
+	response.setContent(ft::getFileContent(ctxt.path), extension);
 	return response;
 }
 
@@ -198,10 +165,46 @@ Response errorResponse(const Context& ctxt, Response& response, Status error)
 	if (!errorPath.empty() && ft::filesystem::is_regular_file(completePath))
 	{
 		response.setHeader("Content-Type", ServerConfig::getInstance().getMime(errorPath.extension()));
-		response.setContent(getFileContent(completePath));
+		response.setContent(ft::getFileContent(completePath));
 	}
 	else
 		response.setContent(html::buildErrorPage(error), "text/html");
+	return response;
+}
+
+Response postMultipart(const Context& ctxt, Request& request, Response& response)
+{
+	std::vector<std::string> vec = ft::split(request.getHeader("Content-Type"), ';');
+	std::string contentType = vec.size() > 0 ? ft::trim(vec[0]) :  "";
+	if (contentType != "multipart/form-data" || vec.size() != 2)
+		return errorResponse(ctxt, response, Status::NotImplemented);
+	std::string boundary = ft::trim(vec[1]);
+	
+	vec = ft::split(boundary, '=');
+	if (vec.size() != 2 || vec[0] != "boundary")
+		return errorResponse(ctxt, response, Status::BadRequest); // bad request ???
+	boundary = vec[1];
+	
+	std::vector<multipart_part> parts;
+	http::Status error = parseContentMultipart(parts, request, boundary);
+	if (error != Status::None)
+		return errorResponse(ctxt, response, error);
+	std::vector<multipart_part>::iterator it = parts.begin();
+	while (it != parts.end())
+	{
+		std::string filename = it->getFilename();
+		if (filename.empty())
+			return errorResponse(ctxt, response, Status::ImATeapot);
+		ft::writeContentToFile(ctxt.server.getUploadStore() / filename, reinterpret_cast<char*>(it->content), it->len);
+		++it;
+	}
+	response.setStatus(http::Status::Created);
+	response.setHeader("Location", request.getUri().toString());
+	ReturnDirective rdir;
+	rdir.setUri(request.getUri().toString());
+	rdir.setCode(Status::Created);
+	response.setContent(html::buildRedirectionPage(rdir), "text/html");
+	
 	return response;
 }
 
@@ -214,15 +217,6 @@ int postContent(std::string path, content_type content)
 	int r = write(fd, scontent.c_str(), content.size());
 	close(fd);
 	return r;
-}
-
-std::vector<unsigned char> getFileContent(const fs::path& path)
-{
-	std::ifstream file;
-	file.open(path.c_str(), std::ifstream::in);
-	std::vector<unsigned char> buffer((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-	file.close();
-	return buffer;
 }
 
 }; /* namespace http */

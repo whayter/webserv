@@ -6,7 +6,7 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 16:06:58 by juligonz          #+#    #+#             */
-/*   Updated: 2021/09/18 11:59:28 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/11/01 14:46:32 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 
 namespace ft {
 
+void 						writeContentToFile(const filesystem::path& path, const char *content, size_t n);
+std::vector<unsigned char>	getFileContent(const filesystem::path& path);
 std::string					intToString(int i);
 std::string					stringifyVector(std::vector<unsigned char> v);
 std::vector<unsigned char>	vectorizeString(std::string s);
