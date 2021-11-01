@@ -154,7 +154,7 @@ it ('POST localhost:8080/ with body size bigger than max_body_size', function ()
       body: "x".repeat(oneM + 1)
     }
   })
-  .post(baseUri + 'test.html')
+  .post(baseUri + 'uploads/test.html')
   .expect('status', 413)
 });
 
@@ -165,7 +165,7 @@ it ('POST localhost:8080/ with body size way bigger than max_body_size', functio
       body: "x".repeat(oneM * 2)
     }
   })
-  .post(baseUri + 'test.html')
+  .post(baseUri + 'uploads/test.html')
   .expect('status', 413)
 });
 
@@ -176,7 +176,7 @@ it ('POST localhost:8080/ with body size = max_body_size', function () {
       body: "x".repeat(oneM)
     }
   })
-  .post(baseUri + 'testPostMethod.html')
+  .post(baseUri + 'uploads/testPostMethod.html')
   .expect('status', 201)
 });
 
@@ -184,12 +184,13 @@ it ('POST localhost:8080/cgiParams.php', function () {
   return frisby
   .setup({
     request: {
-      body: ""
+      body: "winston"
     }
   })
   .post(baseUri + 'cgiParams.php')
   .expect('status', 200)
   .expect('bodyContains', 'POST')
+  .expect('bodyContains', 'winston')
 });
 
 //////////////////////////////////////////////////////////////////////////////
@@ -201,16 +202,16 @@ it ('DELETE http://localhost:8080/testPostMethod.html', function () {
     .expect('status', 405);
 });
 
-it ('DELETE http://localhost:8084/testPostMethod.html', function () {
+it ('DELETE http://localhost:8080/uploads/testPostMethod.html', function () {
   return frisby
-    .del('http://localhost:8084/testPostMethod.html')
+    .del('http://localhost:8080/uploads/testPostMethod.html')
     .expect('status', 200)
     .expect('bodyContains', 'File deleted')
 });
 
-it ('DELETE http://localhost:8084/notExist.html', function () {
+it ('DELETE http://localhost:8080/uploads/notExist.html', function () {
   return frisby
-    .del('http://localhost:8084/notExist.html')
+    .del('http://localhost:8080/uploads/notExist.html')
     .expect('status', 404)
 });
 

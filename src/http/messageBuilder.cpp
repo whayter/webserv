@@ -65,7 +65,10 @@ Response postMethodResponse(const Context& ctxt, Request& request, Response& res
 	if (ft::trim(vec[0]) == "multipart/form-data")
 		return postMultipart(ctxt, request, response);
 	
-	if (postContent(ctxt.path, request.getContent()) < 0)
+
+	fs::path p = ctxt.server.getUploadStore() / ctxt.path.filename();
+	
+	if (postContent(p, request.getContent()) < 0)
 		return (errorResponse(ctxt, response, Status::InternalServerError));
 	response.setStatus(Status::Created);
 	response.setHeader("Location", request.getUri().toString());
@@ -199,12 +202,7 @@ Response postMultipart(const Context& ctxt, Request& request, Response& response
 		++it;
 	}
 	response.setStatus(http::Status::Created);
-	response.setHeader("Location", request.getUri().toString());
-	ReturnDirective rdir;
-	rdir.setUri(request.getUri().toString());
-	rdir.setCode(Status::Created);
-	response.setContent(html::buildRedirectionPage(rdir), "text/html");
-	
+	response.setContent(html::buildErrorPage(http::Status::Created));
 	return response;
 }
 

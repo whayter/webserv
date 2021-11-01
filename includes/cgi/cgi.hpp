@@ -104,17 +104,11 @@ std::pair<std::vector<unsigned char>, ft::error_code> getCgiResponse(std::string
 	http::content_type cgiResponse;
 	int status = 0;
 	int childToParent[2];
-	int parentToChild[2];	// useless ?
 	pipe(childToParent);
-	pipe(parentToChild);	// useless ?
 	pid_t pid = fork();
 	if (pid == 0)										// child process
 	{
 		close(childToParent[0]);						// close reading end of childToParent
-		close(parentToChild[1]);						// close writing end of parentToChild		// useless ?
-		replacePipeEnd(parentToChild[0], 0);			// replace stdin with incoming pipe			// useless ?
-
-
 		replacePipeEnd(childToParent[1], 1);			// replace stdout with outgoing pipe
 		char* arg = 0;
 		if (execve(cgiExecPath.c_str(), &arg, environ) == -1)		// exec cgi binary
@@ -122,8 +116,6 @@ std::pair<std::vector<unsigned char>, ft::error_code> getCgiResponse(std::string
 	}
 	else if (pid > 0)									// main process
 	{
-		close(parentToChild[0]);						// close reading end of parentToChild		// useless ?
-		close(parentToChild[1]);						// close writing end of parentToChild		// useless ?
 		close(childToParent[1]);						// close writing end of childToParent
 		waitpid(pid, &status, 0);						// wait for child process to end.
 		replacePipeEnd(childToParent[0], 0);			// replace stdin with incoming pipe
