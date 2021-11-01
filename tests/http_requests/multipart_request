@@ -1,0 +1,17 @@
+POST /avatars HTTP/1.1
+Host: localhost:3000
+Content-Type: multipart/form-data; boundary=MultipartBoundry
+Content-Length: 407
+
+--MultipartBoundry
+Content-Disposition: form-data; name="image"; filename="12348024_1150631324960893_344096225642532672_n.jpg"
+Content-Type: image/jpeg
+
+rawimagecontentwhichlooksfunnyandgoesonforever.d.sf.d.f.sd.fsdkfjkslhfdkshfkjsdfdkfh
+--MultipartBoundry
+Content-Disposition: form-data; name="myJsonData"
+Content-Type: application/json
+
+{"category":123,"location":123,-50}
+--MultipartBoundry--
+

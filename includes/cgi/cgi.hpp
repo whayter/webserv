@@ -28,7 +28,7 @@ void setEnvironment(http::Request& request, ServerBlock& sblock, fs::path path)
 	setenv("GATEWAY_INTERFACE", "CGI/1.1", 0);
 	setenv("SERVER_NAME", sblock.getServerName().c_str(), 0);
 	setenv("SERVER_SOFTWARE", "webserv/1.0", 0);
-	setenv("SERVER_PROTOCOL", "http/1.1", 0);
+	setenv("SERVER_PROTOCOL", "HTTP/1.1", 0);
 	setenv("HTTP_ACCEPT", request.getHeader("Accept").c_str(), 0);
 	setenv("HTTP_ACCEPT_CHARSET", request.getHeader("Accept-Charset").c_str(), 0);
 	setenv("HTTP_ACCEPT_ENCODING", request.getHeader("Accept-Encoding").c_str(), 0);
