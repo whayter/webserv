@@ -86,9 +86,9 @@ public:
 	void setValue(StatusEnum e);
 	void setValue(int e);
 
-	int	getValue();
+	int	getValue() const;
 
-	std::string getDefinition();
+	std::string getDefinition() const;
 	
 	friend bool	operator==(const Status& lhs, const Status& rhs)
 	{
@@ -127,6 +127,10 @@ bool 		isRedirection(Status statusCode);
 bool 		isClientError(Status statusCode);
 bool 		isServerError(Status statusCode);
 bool 		isError(Status statusCode);
+
+std::ostream&	operator<<(std::ostream& os, const Status& s);
+std::ostream&	operator<<(std::ostream& os, const Status::StatusEnum& s);
+
 
 } /* namespace http */
 

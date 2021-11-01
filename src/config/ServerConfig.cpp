@@ -544,15 +544,36 @@ bool	ServerConfig::_parseAutoindex(config::ScannerConfig & scanner)
 	return false;
 }
 
-
 Host ServerConfig::_parseListenValue(const pr::Token& t)
 {
 	Host result;
 	unsigned long port;
 
+	std::string	tmp;
+
+	std::string::const_iterator it = t.value.begin();
+	std::string::const_iterator end = t.value.end();
+
+	while(it != end && *it != ':')
+		tmp += *it++;
+
+	if (it == end)
+	{
+		it = tmp.begin();
+		end = tmp.end();
+	}
+	else
+	{
+		ft::lowerStringInPlace(tmp);
+		result.setHostname(tmp);
+		it++;
+		tmp.clear();
+		while (it != end)
+			tmp += *it++;
+	}
 	char *nptr;
 	errno = 0;
-	port = strtoul(t.value.c_str(), &nptr, 10);
+	port = strtoul(tmp.c_str(), &nptr, 10);
 	if (port == ULONG_MAX && ft::make_error_code().value() == ft::errc::result_out_of_range)
 		_throw_SyntaxError(t, std::string("Overflow in context \"listen\"... thx bro --'"));
 	if (nptr[0])

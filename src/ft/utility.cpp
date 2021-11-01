@@ -13,6 +13,9 @@
 #include "ft/utility.hpp"
 #include <algorithm>
 
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 namespace ft {
 
 std::string intToString(int i)
@@ -75,6 +78,24 @@ std::string trim(const std::string& str,
     return str.substr(strBegin, strRange);
 }
 
+std::vector<std::string> split(const std::string& str, char delim)
+{
+    std::vector<std::string>	result;
+
+	std::string tmp = "";
+	for(size_t i = 0; i< str.length(); ++i)
+	{
+		if (str[i] == delim)
+		{
+			result.push_back(tmp);
+			tmp.clear();
+		}
+		else
+			tmp.push_back(str[i]);
+	}
+	result.push_back(tmp);
+    return result;
+}
 
 // Return true if both paths are equal, else false and tell how many comp are the same by variable nSameComp
 bool	pathsComponentsAreEqual(const filesystem::path& one, const filesystem::path& two, size_t& nSameComp)
@@ -97,6 +118,13 @@ bool	pathsComponentsAreEqual(const filesystem::path& one, const filesystem::path
 	if (itOne != one.end() || itTwo != two.end())
 		return false;
 	return true;
+}
+
+bool isValidIpAddress(char *ipAddress)
+{
+    struct sockaddr_in sa;
+    int result = ::inet_pton(AF_INET, ipAddress, &(sa.sin_addr));
+    return result > 0;
 }
 
 } /* namespace ft */

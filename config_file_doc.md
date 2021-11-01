@@ -33,7 +33,7 @@ Default:	—
 Context: main
 https://nginx.org/en/docs/http/ngx_http_core_module.html#server
 
-Syntax:  **listen** address[:port]; (this syntax is not invalid, remove the host/address)
+Syntax:  **listen** address[:port];
 **listen** port;
 Default: listen *:80;
 Context: server

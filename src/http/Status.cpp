@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "Status.hpp"
+#include "utility.hpp"
 
 namespace http {
 
@@ -38,15 +39,16 @@ void Status::setValue(int e)
 	_e = static_cast<StatusEnum>(e);
 }
 
-int Status::getValue()
+int Status::getValue() const
 {
 	return _e;
 }
 
-std::string Status::getDefinition()
+std::string Status::getDefinition() const
 {
 	switch (getValue())
 	{
+		case 0: return "None";
 		case 100: return "Continue";
 		case 101: return "Switching Protocols";
 		case 102: return "Processing";
@@ -107,7 +109,9 @@ std::string Status::getDefinition()
 		case 508: return "Loop Detected";
 		case 510: return "Not Extended";
 		case 511: return "Network Authentication Required";
-		default: return "Unknown status code";
+
+		case 999: return "endOfInput";
+		default: return std::string("Unknown code: ") + ft::intToString(getValue());
 	}
 }
 
@@ -139,6 +143,18 @@ bool isServerError(Status statusCode)
 bool isError(Status statusCode)
 {
 	return (statusCode >= 400);
+}
+
+std::ostream&	operator<<(std::ostream& os, const Status& s)
+{
+	os << s.getDefinition();
+	return os;
+}
+
+std::ostream&	operator<<(std::ostream& os, const Status::StatusEnum& s)
+{
+	os << Status(s).getDefinition();
+	return os;
 }
 
 } /* namespace http */

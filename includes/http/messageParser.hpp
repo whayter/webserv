@@ -13,6 +13,19 @@ namespace http {
 	bool	parseRequest(Request &request, Status &error, content_type &buffer);
 	Message parseCgiResponse(content_type &buffer);
 
+	struct multipart_part
+	{
+		std::map<std::string, std::string> headers;
+		unsigned char 	*content;
+		size_t 	len;
+
+		std::string getFilename() const;
+	};
+
+	http::Status parseContentMultipart(std::vector<multipart_part>& result,
+										http::Request& request, const std::string& boundary);
+
+
 } /* namespace http */
 
 #endif /* MESSAGE_PARSER_HPP */

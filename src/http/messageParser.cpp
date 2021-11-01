@@ -286,6 +286,8 @@ namespace http
 		ph::ScannerMessage scan(buffer);
 		http::Message resp;
 
+		if (buffer.size() == 0)
+			return resp;
 		http::Status error; // useless but needed
 		parseHeaders(scan, resp, error);
 		{
@@ -295,5 +297,102 @@ namespace http
 		}
 		return resp;
 	}
+
+std::string multipart_part::getFilename() const
+{
+	std::string result,tmp;
+	http::headers_type::const_iterator h = headers.find("Content-Disposition");
+
+	if (h == headers.end())
+		return "";
+	tmp =  h->second;
+	std::size_t pos = tmp.find("filename=");
+	if (pos == std::string::npos)
+		return "";
+	pos	+= 9;
+	bool quoted = tmp.at(pos + 9) == '"' ? true : false;
+		quoted = true;
+	while (tmp[++pos])
+	{
+		if (quoted && tmp[pos] == '"')
+			break;
+		else if (tmp[pos] == ' ' || tmp[pos] == '\t')
+			break;
+		result += tmp[pos];
+	}
+	return ft::filesystem::path(result).filename().string();
+}
+
+// return Status::none if everything alright
+http::Status parseContentMultipart(std::vector<multipart_part>& result,
+									http::Request& request, const std::string& boundary)
+{
+	size_t 				contentLength = request.getContentLength();
+	http::content_type&	buffer = request.getContent();
+	size_t				i = 0;
+	while (i + boundary.size() + 6 <= contentLength)
+	{
+		if (!(buffer[i] == '-' && buffer[i + 1] == '-'
+			&& !::strncmp(boundary.c_str(), reinterpret_cast<const char*>(&buffer[2]), boundary.size())))
+			return Status::BadRequest;
+
+		i += boundary.size() + 2;
+		if (buffer[i] == '-' && buffer[i + 1] == '-')
+		{
+			if (buffer[i+2] != '\r' || buffer[i + 3] != '\n')
+				return Status::BadRequest;
+			i += 4;
+			break;
+		}
+		if (!(buffer[i] == '\r' && buffer[i + 1] == '\n'))
+			return Status::BadRequest;
+		i += 2;
+		multipart_part part;
+		std::string name, value;
+		bool isHeaderName = true;
+		while (true)
+		{
+			if (buffer[i] == '\r' && buffer[i + 1] == '\n')
+			{
+				i +=2;
+				if (name.empty() || value.empty())
+					break;
+				part.headers[ft::trim(name)] = ft::trim(value);
+				name.clear();
+				value.clear();
+				isHeaderName = true;
+				continue;
+			}
+			if (buffer[i] == ':')
+				isHeaderName = false;
+			else if (isHeaderName)
+				name += buffer[i];
+			else
+				value += buffer[i];
+			++i;
+		}
+
+		part.content = &buffer[0] + i;
+		part.len = 0;
+		while (i + boundary.size() + 4 < contentLength)
+		{
+			if (buffer[i] == '\r'  && buffer[i + 1] == '\n' 
+			&& buffer[i + 2] == '-' && buffer[i + 3] == '-'
+			&& !::strncmp(boundary.c_str(), reinterpret_cast<const char*>(&buffer[i + 4]), boundary.size()))
+			{
+				i += 2;
+				break;
+			}
+			++part.len;
+			++i;
+		}
+		result.push_back(part);
+	}
+	if (i != contentLength)
+		return Status::BadRequest;
+	return Status::None;
+}
+
+
 
 } /*namespace http */

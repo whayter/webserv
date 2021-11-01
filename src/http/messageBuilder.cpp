@@ -5,6 +5,7 @@
 #include "messageParser.hpp"
 #include "messageBuilder.hpp"
 #include "cgi.hpp"
+#include "utility.hpp"
 #include "HtmlBuilder.hpp"
 
 #include <fstream>
@@ -12,6 +13,46 @@
 namespace fs = ft::filesystem;
 
 namespace http {
+	
+static void writeContentToFile(const fs::path& path, const char *content, size_t n)
+{
+	std::ofstream file;
+	file.open(path.c_str(), std::ofstream::binary);
+	file.write(content, n);
+	file.close();
+}
+
+Response	postMultipart(const Context& ctxt, Request& request, Response& response)
+{
+	if (ctxt.server.getUploadStore().empty())
+		return errorResponse(ctxt, response, Status::Forbidden);
+	std::vector<std::string> vec = ft::split(request.getHeader("Content-Type"), ';');
+
+	std::string contentType = vec.size() > 0 ? ft::trim(vec[0]) :  "";
+	if (contentType != "multipart/form-data" || vec.size() != 2)
+		return errorResponse(ctxt, response, Status::NotImplemented);
+	std::string boundary = ft::trim(vec[1]);
+	
+	vec = ft::split(boundary, '=');
+	if (vec.size() != 2 || vec[0] != "boundary")
+		return errorResponse(ctxt, response, Status::BadRequest); // bad request ???
+	boundary = vec[1];
+	
+	std::vector<multipart_part> parts;
+	http::Status error = parseContentMultipart(parts, request, boundary);
+	if (error != Status::None)
+		return errorResponse(ctxt, response, error);
+	std::vector<multipart_part>::iterator it = parts.begin();
+	while (it != parts.end())
+	{
+		writeContentToFile(ctxt.server.getUploadStore() / it->getFilename(), reinterpret_cast<char*>(it->content), it->len);
+		++it;
+	}
+	response.setStatus(http::Status::Created);
+	
+	return response;
+}
+
 
 Response buildResponse(Request& request)
 {
@@ -56,6 +97,7 @@ Response getMethodResponse(const Context& ctxt, Request& request, Response& resp
 
 Response postMethodResponse(const Context& ctxt, Request& request, Response& response)
 {
+	return postMultipart(ctxt, request, response); // just to test 
 	if (postContent(ctxt.path, request.getContent()) < 0)
 		return (errorResponse(ctxt, response, Status::InternalServerError));
 	response.setStatus(Status::Created);
