@@ -72,8 +72,6 @@ void Server::routine()
 			continue;
 		else if (_fds[i].revents & POLLHUP)
 			_disconnectDevice(i);
-		else if (_fds[i].revents & POLLOUT)
-			_sendResponses(i);
 		else if (_fds[i].revents & POLLIN)
 		{
 			if (_isServerIndex(i))
@@ -85,6 +83,8 @@ void Server::routine()
 				_buildResponses(i);
 			}
 		}
+		else if (_fds[i].revents & POLLOUT)
+			_sendResponses(i);
 		else
 			stop(-1);
 	}
