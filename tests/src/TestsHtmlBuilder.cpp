@@ -37,7 +37,7 @@ TEST_CASE("html::Builder2", "[namespace][html][builder][element]")
 		while (it != ft::filesystem::directory_iterator())
 		{
 			pre.addChild(
-				html::Builder("a", it->path().filename()).addAttribute("href", it->path().filename())
+				html::Builder("a", it->getPath().filename()).addAttribute("href", it->getPath().filename())
 			);
 			++it;
 		}

@@ -37,7 +37,7 @@ namespace ft
 			void refresh(error_code &ec) throw();
 
 			// observers
-			const path& 	path() const throw();
+			const path& 	getPath() const throw();
 			operator const class  path&() const throw();
 			bool exists() const;
 			bool exists(error_code &ec) const throw();

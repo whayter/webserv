@@ -122,7 +122,7 @@ $(NAME): $(OBJ)
 run: $(NAME)
 	@./$(NAME)
 
-debug:	CFLAGS += -g
+debug:	CXXFLAGS += -g
 debug: $(NAME)
 	@lldb $(NAME)
 
@@ -158,6 +158,15 @@ jest: $(NAME)
 	@-npm test && true
 	@pkill webserv
 
+sanitize:	CXXFLAGS += -fsanitize=address,leak,undefined -fstack-protector 
+sanitize: $(NAME)
+
+jest-sanitize:	CXXFLAGS += -fsanitize=address,leak,undefined -fstack-protector 
+jest-sanitize: $(NAME)
+	@./webserv  &
+	@-npm test && true
+	@pkill webserv
+
 clean:
 	@rm -rf $(OBJ_DIR) output_valgrind
 	@printf "$(_RED)Removed :$(_MAGENTA) $(OBJ_DIR)/ $(_MAGENTA)\n"
@@ -171,7 +180,7 @@ re: fclean all
 
 -include $(DEP)
 
-.PHONY: all run debug valgrind norminette bonus show check jest clean fclean re
+.PHONY: all run debug valgrind norminette bonus show check jest jest-sanitize sanitize clean fclean re
 
 
 #******************************************************************************#

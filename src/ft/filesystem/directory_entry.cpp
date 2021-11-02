@@ -75,7 +75,7 @@ void directory_entry::refresh(error_code& ec) throw()
 }
 
 // observers
-const path& directory_entry::path() const throw(){
+const path& directory_entry::getPath() const throw(){
 	return _path;
 }
 directory_entry::operator const class path&() const throw()
