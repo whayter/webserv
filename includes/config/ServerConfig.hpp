@@ -95,6 +95,9 @@ private:
 	void _skipSemiColonNewLine(config::ScannerConfig & scanner);
 	void _throw_SyntaxError(config::Token t, const std::string &error_str, const ft::filesystem::path& file = ft::filesystem::path());
 
+	void _checkNoDupplicatePortListen(ServerBlock& server, config::Token tokenListen);
+
+
 	static ServerConfig*				_singleton;
 	std::vector<ServerBlock>			_servers;
 	ft::filesystem::path				_configFilePath;

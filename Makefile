@@ -180,7 +180,7 @@ re: fclean all
 
 -include $(DEP)
 
-.PHONY: all run debug valgrind norminette bonus show check jest clean fclean re
+.PHONY: all run debug valgrind norminette bonus show check jest jest-sanitize sanitize clean fclean re
 
 
 #******************************************************************************#

@@ -323,6 +323,21 @@ void ServerConfig::_parse(std::istream & in)
 	}
 }
 
+void ServerConfig::_checkNoDupplicatePortListen(ServerBlock& server, pr::Token tokenListen)
+{
+	std::vector<Host>::iterator it = server.getListens().begin();
+	std::vector<Host>::iterator end = server.getListens().end();
+	std::set<uint32_t> ports;
+
+	while (it != end)
+	{
+		if (ports.count(it->getPort()))
+			_throw_SyntaxError(tokenListen, "listening port defined several times");
+		ports.insert(it->getPort());
+		++it;
+	}
+}
+
 ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner, pr::Token serverToken)
 {
 	ServerBlock result;
@@ -340,7 +355,10 @@ ServerBlock ServerConfig::_parseServer(pr::ScannerConfig & scanner, pr::Token se
 				if (t.value == "server")
 					_throw_SyntaxError(serverToken, "Missing closing bracket at end of server directive");
 				else if (t.value == "listen")
+				{
 					result.addListen(_parseListen(scanner));
+					_checkNoDupplicatePortListen(result, t);
+				}
 				else if (t.value == "root")
 					result.setRoot(_parseRoot(scanner));
 				else if (t.value == "index")

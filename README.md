@@ -1,6 +1,12 @@
 [![C/C++ CI](https://github.com/Working-From-Home/webserv/actions/workflows/ci.yml/badge.svg)](https://github.com/Working-From-Home/webserv/actions/workflows/ci.yml)
 
-# Webserv - Written in c++98 (The subject force us to use 98)
+# Webserv
+
+#### firsts things first, must install php-cgi at least php-cgi
+###### linux
+- sudo apt install php-cgi
+###### macos
+ - idk, try with brew bro.
 
 ## Documentation
 
