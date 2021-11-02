@@ -180,7 +180,7 @@ TEST_CASE("fs::directory_entry - class directory_entry", "[namespace][ft][filesy
     TemporaryDirectory t;
     ft::error_code ec;
     fs::directory_entry de = fs::directory_entry(t.path().c_str());
-    CHECK(de.path().string() == t.path().string());
+    CHECK(de.getPath().string() == t.path().string());
     CHECK((fs::path)de == fs::path(t.path().c_str()));
     CHECK(de.exists());
     CHECK(!de.is_block_file());
@@ -212,7 +212,7 @@ TEST_CASE("fs::directory_entry - class directory_entry", "[namespace][ft][filesy
     CHECK_NOTHROW(de.assign(fs::path(t.path().c_str()) / "foo", ec));
     CHECK(!ec);
     de = fs::directory_entry(fs::path(t.path().c_str()) / "foo");
-    CHECK(de.path() == fs::path(t.path().c_str()) / "foo");
+    CHECK(de.getPath() == fs::path(t.path().c_str()) / "foo");
     CHECK(de.exists());
     CHECK(de.exists(ec));
     CHECK(!ec);
@@ -556,12 +556,12 @@ TEST_CASE("fs::directory_iterator - class directory_iterator", "[namespace][ft][
         fs::directory_iterator iter2(iter);
         fs::directory_iterator iter3, iter4;
         iter3 = iter;
-        CHECK(iter->path().filename() == "test");
-        CHECK(iter2->path().filename() == "test");
-        CHECK(iter3->path().filename() == "test");
+        CHECK(iter->getPath().filename() == "test");
+        CHECK(iter2->getPath().filename() == "test");
+        CHECK(iter3->getPath().filename() == "test");
         iter4 = std::move(iter3);
-        CHECK(iter4->path().filename() == "test");
-        CHECK(iter->path() == fs::path(t.path().c_str()) / "test");
+        CHECK(iter4->getPath().filename() == "test");
+        CHECK(iter->getPath() == fs::path(t.path().c_str()) / "test");
         CHECK(!iter->is_symlink());
         CHECK(iter->is_regular_file());
         CHECK(!iter->is_directory());

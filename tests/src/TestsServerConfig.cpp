@@ -96,15 +96,15 @@ TEST_CASE_METHOD(SingletonFixture, "ServerConfig1 - ./config_files/testParser.co
 	CHECK( config.getServer(1).getLocations()[1].getReturnDirective().getUri() == "ruby-cgi");
 
 	// cgi_param directive
-	CHECK( config.getServer(0).getLocations()[0].getCgiParams().size() == 0);
-	CHECK( config.getServer(0).getLocations()[1].getCgiParams().size() == 0);
-	CHECK( config.getServer(0).getLocations()[2].getCgiParams().size() == 1);
-	CHECK( config.getServer(0).getLocations()[2].getCgiParam("SCRIPT_FILENAME") == "$document_root$fastcgi_script_name");
+	// CHECK( config.getServer(0).getLocations()[0].getCgiParams().size() == 0);
+	// CHECK( config.getServer(0).getLocations()[1].getCgiParams().size() == 0);
+	// CHECK( config.getServer(0).getLocations()[2].getCgiParams().size() == 1);
+	// CHECK( config.getServer(0).getLocations()[2].getCgiParam("SCRIPT_FILENAME") == "$document_root$fastcgi_script_name");
 
-	CHECK( config.getServer(1).getLocations()[0].getCgiParams().size() == 0);
-	CHECK( config.getServer(1).getLocations()[1].getCgiParams().size() == 2);
-	CHECK( config.getServer(1).getLocations()[1].getCgiParam("SCRIPT_FILENAME") == "$document_root$fastcgi_script_name");
-	CHECK( config.getServer(1).getLocations()[1].getCgiParam("SERVER_NAME") == "$server_name");
+	// CHECK( config.getServer(1).getLocations()[0].getCgiParams().size() == 0);
+	// CHECK( config.getServer(1).getLocations()[1].getCgiParams().size() == 2);
+	// CHECK( config.getServer(1).getLocations()[1].getCgiParam("SCRIPT_FILENAME") == "$document_root$fastcgi_script_name");
+	// CHECK( config.getServer(1).getLocations()[1].getCgiParam("SERVER_NAME") == "$server_name");
 
 	// client_max_body_size directive
 	CHECK( config.getServer(0).getClientMaxBodySize() == (1000 * 1000) );
