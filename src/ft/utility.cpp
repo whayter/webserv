@@ -145,9 +145,4 @@ bool isValidIpAddress(const char *ipAddress)
     return result > 0;
 }
 
-// std::string getIpv4FromHost(std::string hostname)
-// {
-
-// }
-
 } /* namespace ft */
