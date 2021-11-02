@@ -45,6 +45,12 @@ void setEnvironment(http::Request& request, ServerBlock& sblock, fs::path path)
 	setenv("SCRIPT_FILENAME", path.c_str(), 0);
 	setenv("CONTENT_TYPE", request.getHeader("Content-type").c_str(), 0);
 	setenv("CONTENT_LENGTH", request.getHeader("Content-Length").c_str(), 0);
+
+	if (!request.getContent().empty())
+	{
+		std::string body = ft::stringifyVector(request.getContent());
+		setenv("HTTP_RAW_POST_DATA", body.c_str(), 0);
+	}
 }
 
 void unsetEnvironment()
@@ -69,6 +75,8 @@ void unsetEnvironment()
 	unsetenv("SCRIPT_FILENAME");
 	unsetenv("CONTENT_TYPE");
 	unsetenv("CONTENT_LENGTH");
+	
+	unsetenv("HTTP_RAW_POST_DATA");
 }
 
 static void replacePipeEnd(int oldFd, int newFd)
@@ -96,15 +104,11 @@ std::pair<std::vector<unsigned char>, ft::error_code> getCgiResponse(std::string
 	http::content_type cgiResponse;
 	int status = 0;
 	int childToParent[2];
-	int parentToChild[2];
 	pipe(childToParent);
-	pipe(parentToChild);	
 	pid_t pid = fork();
 	if (pid == 0)										// child process
 	{
 		close(childToParent[0]);						// close reading end of childToParent
-		close(parentToChild[1]);						// close writing end of parentToChild	
-		replacePipeEnd(parentToChild[0], 0);			// replace stdin with incoming pipe
 		replacePipeEnd(childToParent[1], 1);			// replace stdout with outgoing pipe
 		char* arg = 0;
 		if (execve(cgiExecPath.c_str(), &arg, environ) == -1)		// exec cgi binary
@@ -112,8 +116,6 @@ std::pair<std::vector<unsigned char>, ft::error_code> getCgiResponse(std::string
 	}
 	else if (pid > 0)									// main process
 	{
-		close(parentToChild[0]);						// close reading end of parentToChild
-		close(parentToChild[1]);						// close writing end of parentToChild
 		close(childToParent[1]);						// close writing end of childToParent
 		waitpid(pid, &status, 0);						// wait for child process to end.
 		replacePipeEnd(childToParent[0], 0);			// replace stdin with incoming pipe

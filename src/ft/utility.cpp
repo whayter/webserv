@@ -6,17 +6,35 @@
 /*   By: hwinston <hwinston@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/16 16:10:02 by juligonz          #+#    #+#             */
-/*   Updated: 2021/09/18 11:59:12 by hwinston         ###   ########.fr       */
+/*   Updated: 2021/11/01 14:46:25 by hwinston         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft/utility.hpp"
-#include <algorithm>
+#include "utility.hpp"
 
+#include <algorithm>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <fstream>
 
 namespace ft {
+
+void writeContentToFile(const filesystem::path& path, const char *content, size_t n)
+{
+	std::ofstream file;
+	file.open(path.c_str(), std::ofstream::binary);
+	file.write(content, n);
+	file.close();
+}
+
+std::vector<unsigned char> getFileContent(const filesystem::path& path)
+{
+	std::ifstream file;
+	file.open(path.c_str(), std::ifstream::in);
+	std::vector<unsigned char> buffer((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+	file.close();
+	return buffer;
+}
 
 std::string intToString(int i)
 {

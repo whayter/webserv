@@ -2,7 +2,7 @@ const frisby = require('frisby');
 
 describe('webserv', function() {
 
-var baseUri = 'http://localhost:80/';
+var baseUri = 'http://localhost:8080/';
 
 // FileReader(""); read index.php and compare content to see if it match response body
 
@@ -15,14 +15,14 @@ it ('GET /favicon.ico', function () {
   .expect('status', 200)
 });
 
-it ('GET localhost:80/', function () {
+it ('GET localhost:8080/', function () {
   return frisby
   .get(baseUri)
   .expect('status', 200)
   .expectNot('bodyContains', '<?php')
 });
 
-it ('GET localhost:80/index.php', function () {
+it ('GET localhost:8080/index.php', function () {
   return frisby
   .get(baseUri + 'index.php')
   .expect('status', 200)
@@ -33,7 +33,7 @@ it ('GET localhost:80/index.php', function () {
   .expectNot('bodyContains', '<?php')
 });
 
-it ('GET localhost:80/cgiParams.php?query=working', function () {
+it ('GET localhost:8080/cgiParams.php?query=working', function () {
   return frisby
   .get(baseUri + 'cgiParams.php?query=working')
   .expect('status', 200)
@@ -46,7 +46,7 @@ it ('GET localhost:80/cgiParams.php?query=working', function () {
   .expect('bodyContains', 'query=working')
 });
 
-it ('GET localhost:80/cgiParams.php?webserv=done', function () {
+it ('GET localhost:8080/cgiParams.php?webserv=done', function () {
   return frisby
   .get(baseUri + 'cgiParams.php?webserv=done')
   .expect('status', 200)
@@ -59,7 +59,7 @@ it ('GET localhost:80/cgiParams.php?webserv=done', function () {
   .expect('bodyContains', 'webserv=done')
 });
 
-it ('GET localhost:80/subject.html', function () {
+it ('GET localhost:8080/subject.html', function () {
   return frisby
   .get(baseUri + '/subject.html')
   .expect('status', 200)
@@ -67,14 +67,14 @@ it ('GET localhost:80/subject.html', function () {
   .expect('bodyContains', 'Mandatory part')
 });
 
-it ('GET localhost:80/NotExist', function () {
+it ('GET localhost:8080/NotExist', function () {
   return frisby
   .get(baseUri + '/NotExist')
   .expect('status', 404)
   .expect('bodyContains', 'Seems like your page doesn\'t exist anymore')
 });
 
-it ('GET localhost:80/emptyFile.html', function () {
+it ('GET localhost:8080/emptyFile.html', function () {
   return frisby
   .get(baseUri + '/emptyFile.html')
   .expect('status', 200)
@@ -82,7 +82,7 @@ it ('GET localhost:80/emptyFile.html', function () {
   .expect('header', 'content-length', "0")
 });
 
-it ('GET localhost:80/emptyFile.php', function () {
+it ('GET localhost:8080/emptyFile.php', function () {
   return frisby
   .get(baseUri + '/emptyFile.php')
   .expect('status', 200)
@@ -90,7 +90,7 @@ it ('GET localhost:80/emptyFile.php', function () {
   .expect('header', 'content-length', "0")
 });
 
-it ('GET localhost:80/autoindex', function () {
+it ('GET localhost:8080/autoindex', function () {
   return frisby
   .get(baseUri + 'autoindex')
   .expect('status', 200)
@@ -99,44 +99,44 @@ it ('GET localhost:80/autoindex', function () {
   .expect('bodyContains', 'teletubbies')
 });
 
-it ('GET localhost:80/bad_cgi', function () {
+it ('GET localhost:8080/bad_cgi', function () {
   return frisby
   .get(baseUri + 'bad_cgi')
   .expect('status', 500)
 });
 
-it ('GET localhost:81', function () {
+it ('GET localhost:8081', function () {
   return frisby
-  .get('http://localhost:81')
+  .get('http://localhost:8081')
   .expect('status', 200)
   .expect('bodyContains', '<?php')
 });
 
-it ('GET localhost:82', function () {
+it ('GET localhost:8082', function () {
   return frisby
-  .get('http://localhost:82/')
+  .get('http://localhost:8082/')
   .expect('status', 200)
   .expect('bodyContains', 'This project is here to make you write your HTTP server.')
 });
 
-it ('GET localhost:82/text', function () {
+it ('GET localhost:8082/text', function () {
   return frisby
-  .get('http://localhost:82/text')
+  .get('http://localhost:8082/text')
   .expect('status', 204)
   .expectNot('header', 'Content-Length')
   .expectNot('bodyContains', 'this is a return directive with text')
 });
 
-it ('GET localhost:82/uri', function () {
+it ('GET localhost:8082/uri', function () {
   return frisby
-  .get('http://localhost:82/uri')
+  .get('http://localhost:8082/uri')
   .expect('status', 200)
   .expect('bodyContains', 'Copyright The Closure Library Authors')
 });
 
-it ('GET localhost:83', function () {
+it ('GET localhost:8083', function () {
   return frisby
-  .get('http://localhost:83')
+  .get('http://localhost:8083')
   .expect('status', 200)
   .expect('bodyContains', 'index of /')
   .expect('bodyContains', 'Makefile')
@@ -145,79 +145,82 @@ it ('GET localhost:83', function () {
 //////////////////////////////////////////////////////////////////////////////
 /// POST ////////////////////////////////////////////////////////////////////
 
-it ('POST localhost:80/ with body size bigger than max_body_size', function () {
+let oneM = 1024 * 1024
+
+it ('POST localhost:8080/ with body size bigger than max_body_size', function () {
   return frisby
   .setup({
     request: {
-      body: "x".repeat(1025)
+      body: "x".repeat(oneM + 1)
     }
   })
-  .post(baseUri + 'test.html')
+  .post(baseUri + 'uploads/test.html')
   .expect('status', 413)
 });
 
-it ('POST localhost:80/ with body size way bigger than max_body_size', function () {
+it ('POST localhost:8080/ with body size way bigger than max_body_size', function () {
   return frisby
   .setup({
     request: {
-      body: "x".repeat(102500)
+      body: "x".repeat(oneM * 2)
     }
   })
-  .post(baseUri + 'test.html')
+  .post(baseUri + 'uploads/test.html')
   .expect('status', 413)
 });
 
-it ('POST localhost:80/ with body size = max_body_size', function () {
+it ('POST localhost:8080/ with body size = max_body_size', function () {
   return frisby
   .setup({
     request: {
-      body: "x".repeat(1024)
+      body: "x".repeat(oneM)
     }
   })
-  .post(baseUri + 'testPostMethod.html')
+  .post(baseUri + 'uploads/testPostMethod.html')
   .expect('status', 201)
 });
 
-it ('POST localhost:80/cgiParams.php', function () {
+it ('POST localhost:8080/cgiParams.php', function () {
   return frisby
   .setup({
     request: {
-      body: ""
+      body: "winston"
     }
   })
   .post(baseUri + 'cgiParams.php')
   .expect('status', 200)
   .expect('bodyContains', 'POST')
+  .expect('bodyContains', 'winston')
 });
 
 //////////////////////////////////////////////////////////////////////////////
 /// DELETE //////////////////////////////////////////////////////////////////  
 
-it ('DELETE http://localhost:80/testPostMethod.html', function () {
+it ('DELETE http://localhost:8080/testPostMethod.html', function () {
   return frisby
-    .del('http://localhost:80/testPostMethod.html')
+    .del('http://localhost:8080/testPostMethod.html')
     .expect('status', 405);
 });
 
-it ('DELETE http://localhost:84/testPostMethod.html', function () {
+it ('DELETE http://localhost:8080/uploads/testPostMethod.html', function () {
   return frisby
-    .del('http://localhost:84/testPostMethod.html')
+    .del('http://localhost:8080/uploads/testPostMethod.html')
     .expect('status', 200)
     .expect('bodyContains', 'File deleted')
 });
 
-it ('DELETE http://localhost:84/notExist.html', function () {
+it ('DELETE http://localhost:8080/uploads/notExist.html', function () {
   return frisby
-    .del('http://localhost:84/notExist.html')
+    .del('http://localhost:8080/uploads/notExist.html')
     .expect('status', 404)
 });
 
 //////////////////////////////////////////////////////////////////////////////
 /// PUT /////////////////////////////////////////////////////////////////////
 
-it ('PUT http://localhost:80 should return Not implemented 501', function () {
+it ('PUT http://localhost:8080 should return Not implemented 501', function () {
   return frisby
-  .put('http://localhost:80')
+  .put('http://localhost:8080')
   .expect('status', 501);
 });
 
