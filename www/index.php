@@ -16,7 +16,8 @@ echo '<hr class="hr-invisible">' ;
 echo '<div style="width:100%;display:inline-flex;justify-content:space-around">' ;
 echo '<a href="/subject.html">Subject</a>' ;
 echo '<a href="/cgiParams.php">CGI params</a>' ;
-echo '<a href="/upload.html">Upload file</a>' ;
+echo '<a href="/upload.html">Upload a file</a>' ;
+echo '<a href="/uploads/">Uploads dir</a>' ;
 echo '<a href="https://www.youtube.com/watch?v=yXr7JKn1omo&ab_channel=MemeTycoon">Great stuff</a>' ;
 echo '</div></body></html>' ;
 
