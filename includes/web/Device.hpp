@@ -15,7 +15,10 @@ class Device {
 
 public:
 
-	Device() {}
+	Device() {
+		_inputBuffer.reserve(800);
+		_outputBuffer.reserve(800);
+	}
 	~Device() {}
 
 	void					setPort(port_type port);

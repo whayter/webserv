@@ -104,5 +104,6 @@ int main(int ac, char** av)
 	prompt();
 	while (run)
 		sh.routine();
+	ServerConfig::__delete_singleton_instance(); // useless, but don't want to discuss about it during eval
 	return 0;
 }

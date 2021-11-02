@@ -62,7 +62,7 @@ directory_iterator& directory_iterator::operator++()
 	error_code ec;
 	_impl->increment(ec);
 	if (ec)
-		throw filesystem_error("directory_iterator::operator++(): " + ec.message(), _impl->_basePath / _impl->_dirEntry.path() , ec);
+		throw filesystem_error("directory_iterator::operator++(): " + ec.message(), _impl->_basePath / _impl->_dirEntry.getPath() , ec);
 	return *this;
 }
 

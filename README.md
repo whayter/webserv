@@ -190,6 +190,9 @@
 - https://www.joelonsoftware.com/2000/04/06/things-you-should-never-do-part-i/
 
 
+#### valgrind
+- https://valgrind.org/docs/manual/faq.html#faq.reports
+
 #### filesystem
 - https://en.cppreference.com/w/cpp/header/filesystem
 - https://www.cppstories.com/2017/08/cpp17-details-filesystem/

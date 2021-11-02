@@ -138,11 +138,16 @@ bool	pathsComponentsAreEqual(const filesystem::path& one, const filesystem::path
 	return true;
 }
 
-bool isValidIpAddress(char *ipAddress)
+bool isValidIpAddress(const char *ipAddress)
 {
     struct sockaddr_in sa;
     int result = ::inet_pton(AF_INET, ipAddress, &(sa.sin_addr));
     return result > 0;
 }
+
+// std::string getIpv4FromHost(std::string hostname)
+// {
+
+// }
 
 } /* namespace ft */

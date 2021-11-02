@@ -4,6 +4,9 @@ describe('webserv', function() {
 
 var baseUri = 'http://localhost:8080/';
 
+let timeout = 10000;
+jest.setTimeout(timeout);
+
 // FileReader(""); read index.php and compare content to see if it match response body
 
 //////////////////////////////////////////////////////////////////////////////
@@ -148,29 +151,29 @@ it ('GET localhost:8083', function () {
 let oneM = 1024 * 1024
 
 it ('POST localhost:8080/ with body size bigger than max_body_size', function () {
-  return frisby
+  return frisby.timeout(timeout)
   .setup({
     request: {
       body: "x".repeat(oneM + 1)
     }
-  })
+  }, timeout)
   .post(baseUri + 'uploads/test.html')
   .expect('status', 413)
 });
 
 it ('POST localhost:8080/ with body size way bigger than max_body_size', function () {
-  return frisby
+  return frisby.timeout(timeout)
   .setup({
     request: {
       body: "x".repeat(oneM * 2)
     }
-  })
+  }, timeout)
   .post(baseUri + 'uploads/test.html')
   .expect('status', 413)
 });
 
 it ('POST localhost:8080/ with body size = max_body_size', function () {
-  return frisby
+  return frisby.timeout(timeout)
   .setup({
     request: {
       body: "x".repeat(oneM)
@@ -181,7 +184,7 @@ it ('POST localhost:8080/ with body size = max_body_size', function () {
 });
 
 it ('POST localhost:8080/cgiParams.php', function () {
-  return frisby
+  return frisby.timeout(timeout)
   .setup({
     request: {
       body: "winston"

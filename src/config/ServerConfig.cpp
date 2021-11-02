@@ -501,8 +501,8 @@ Location ServerConfig::_parseLocation(pr::ScannerConfig & scanner, pr::Token loc
 				// 	result.setFastCgiPass(_parseHost(scanner));
 				else if (t.value == "cgi_exec")
 					result.setCgiExec(_parseCgiExec(scanner));
-				else if (t.value == "cgi_param")
-					result.addCgiParam(_parseCgiParam(scanner));
+				// else if (t.value == "cgi_param")
+				// 	result.addCgiParam(_parseCgiParam(scanner));
 				else if (t.value == "root")
 					result.setRoot(_parseRoot(scanner));
 				else if (t.value == "index")
@@ -565,7 +565,12 @@ Host ServerConfig::_parseListenValue(const pr::Token& t)
 	else
 	{
 		ft::lowerStringInPlace(tmp);
-		result.setHostname(tmp);
+		if (ft::isValidIpAddress(tmp.c_str()))
+			result.setHostname(tmp);
+		else
+		{
+			_throw_SyntaxError(t, std::string("context \"listen\" : invalid ip interface"));
+		}
 		it++;
 		tmp.clear();
 		while (it != end)

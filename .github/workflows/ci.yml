@@ -20,36 +20,37 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '16'
-    - name: Install dependencies
-      run: |
-        set -x
-        if [ "$RUNNER_OS" == "Linux" ]; then
-            sudo apt-get install valgrind
-        elif [ "$RUNNER_OS" == "macOS" ]; then
-            :
-        fi
-    - run: make
+    # - name: Install dependencies
+    #   run: |
+    #     set -x
+    #     if [ "$RUNNER_OS" == "Linux" ]; then
+    #         sudo apt-get install valgrind
+    #     elif [ "$RUNNER_OS" == "macOS" ]; then
+    #         :
+    #     fi
     - run: npm install
-    - name: npm test
-      run: |
-        # set -x
-        if [ "$RUNNER_OS" == "Linux" ]; then
-            sudo valgrind --log-file=valgrind_output --leak-check=full --show-leak-kinds=definite,indirect,possible --errors-for-leak-kinds=definite,indirect,possible --error-exitcode=42 ./webserv &
-            PID_SUDO=$!
-            npm test
-            sudo kill $(sudo ps --ppid $PID_SUDO -o pid=)
-            wait $PID_SUDO && true
-            RET=$?
-            cat valgrind_output
-            exit $RET
-        elif [ "$RUNNER_OS" == "macOS" ]; then
-            MallocStackLoggingNoCompact=1
-            ./webserv &
-            PID=$!
-            npm test -- --detectOpenHandles
-            leaks webserv
-            kill $PID
-        fi
+    - run: make jest-sanitize
+    # - run: make
+    # - name: npm test
+    #   run: |
+    #     # set -x
+    #     if [ "$RUNNER_OS" == "Linux" ]; then
+    #         sudo valgrind --log-file=valgrind_output --leak-check=full --show-leak-kinds=definite,indirect,possible --errors-for-leak-kinds=definite,indirect,possible --error-exitcode=42 ./webserv &
+    #         PID_SUDO=$!
+    #         npm test
+    #         sudo kill $(sudo ps --ppid $PID_SUDO -o pid=)
+    #         wait $PID_SUDO && true
+    #         RET=$?
+    #         cat valgrind_output
+    #         exit $RET
+    #     elif [ "$RUNNER_OS" == "macOS" ]; then
+    #         MallocStackLoggingNoCompact=1
+    #         ./webserv &
+    #         PID=$!
+    #         npm test -- --detectOpenHandles
+    #         leaks webserv
+    #         kill $PID
+    #     fi
 
   unit-tests:
     runs-on: ${{ matrix.os }}

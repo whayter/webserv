@@ -122,7 +122,7 @@ $(NAME): $(OBJ)
 run: $(NAME)
 	@./$(NAME)
 
-debug:	CFLAGS += -g
+debug:	CXXFLAGS += -g
 debug: $(NAME)
 	@lldb $(NAME)
 
@@ -155,6 +155,12 @@ check:
 
 jest: $(NAME)
 	@./webserv > /dev/null 2>&1 &
+	@-npm test && true
+	@pkill webserv
+
+jest-sanitize:	CXXFLAGS += -fsanitize=address,leak,undefined -fstack-protector 
+jest-sanitize: $(NAME)
+	@./webserv  &
 	@-npm test && true
 	@pkill webserv
 

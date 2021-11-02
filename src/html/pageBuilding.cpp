@@ -78,7 +78,7 @@ std::vector<unsigned char> buildAutoindexPage(const ft::filesystem::path& path, 
 	pre.addChild(a("../", "../"));
 	ft::filesystem::directory_iterator it(path);
 	for (; it != ft::filesystem::directory_iterator(); ++it)
-		pre.addChild(a(it->path().filename(), it->path().filename()));
+		pre.addChild(a(it->getPath().filename(), it->getPath().filename()));
 	body.addChild("h1", title);
 	body.addChild("hr","");
 	body.addChild(pre);

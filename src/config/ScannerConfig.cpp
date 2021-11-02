@@ -17,14 +17,8 @@ namespace config
 
 ScannerConfig::ScannerConfig(std::istream &inputStream)
 	: _scan(inputStream)
-{
-	// _scan = new	ScannerStream(inputStream);
-}
+{}
 
-// ScannerConfig::ScannerConfig(const char *buffer)
-// {
-// 	_scan = new ScannerBuffer(buffer);
-// }
 
 ScannerConfig::~ScannerConfig() {}
 
