@@ -158,6 +158,9 @@ jest: $(NAME)
 	@-npm test && true
 	@pkill webserv
 
+sanitize:	CXXFLAGS += -fsanitize=address,leak,undefined -fstack-protector 
+sanitize: $(NAME)
+
 jest-sanitize:	CXXFLAGS += -fsanitize=address,leak,undefined -fstack-protector 
 jest-sanitize: $(NAME)
 	@./webserv  &

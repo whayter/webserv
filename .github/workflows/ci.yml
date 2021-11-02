@@ -29,7 +29,12 @@ jobs:
     #         :
     #     fi
     - run: npm install
-    - run: make jest-sanitize
+    - run: make sanitize
+    - name: npm test
+      run: |
+        ./webserv &
+        npm test
+        pkill webserv
     # - run: make
     # - name: npm test
     #   run: |
