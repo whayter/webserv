@@ -122,14 +122,6 @@ it ('GET localhost:8082', function () {
   .expect('bodyContains', 'This project is here to make you write your HTTP server.')
 });
 
-it ('GET localhost:8082/text', function () {
-  return frisby
-  .get('http://localhost:8082/text')
-  .expect('status', 204)
-  .expectNot('header', 'Content-Length')
-  .expectNot('bodyContains', 'this is a return directive with text')
-});
-
 it ('GET localhost:8082/uri', function () {
   return frisby
   .get('http://localhost:8082/uri')

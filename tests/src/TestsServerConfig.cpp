@@ -18,7 +18,7 @@ TEST_CASE_METHOD(SingletonFixture, "ServerConfig1 - ./config_files/testParser.co
 	CHECK( config.getServer(0).getListen(0).getHostname().empty() );
 	CHECK( config.getServer(0).getListen(0).getPort() == 80 );
 
-	CHECK( config.getServer(0).getListen(1).getHostname() == "127.0.0.1" ); // not parsing address anymore
+	// CHECK( config.getServer(0).getListen(1).getHostname() == "127.0.0.1" ); // not parsing address anymore
 	CHECK( config.getServer(0).getListen(1).getPort() == 81 );
 
 	CHECK( config.getServer(1).getListen(0).getHostname().empty() );
