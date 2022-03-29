@@ -6,113 +6,180 @@
 
 /' Objects '/
 
-class AHttpMessage {
-	+AHttpMessage()
-	+~AHttpMessage()
-	#_headers : map_type
-	+getHeaders() : map_type
-	+getContentLength() : size_t
-	#_content : std::string
-	+getContent() : std::string
-	+getHeader(std::string name) : std::string
-	+addHeader(std::string name, std::string value) : void
-	+readContent(std::istream is) : void
-	+setContent(std::string content) : void
+class Host {
+	+Host()
+	+Host(std::string hostname, uint16_t port)
+	+Host(uint32_t port)
+	+Host(std::string hostname)
+	-_hostname : std::string
+	+getHostname() : std::string {query}
+	-_port : uint16_t
+	+getPort() : uint16_t {query}
+	+setHostname(std::string hostname) : void
+	+setPort(uint16_t port) : void
 }
 
 
-class HttpRequest {
-	+HttpRequest()
-	+~HttpRequest()
-	+{static} create(std::istream& inputStream) : HttpRequest
+class Location {
+	+Location()
+	-_returnDirective : ReturnDirective
+	+getReturnDirective() : ReturnDirective& {query}
+	-_action : action
+	+getAction() : action {query}
+	-_autoindex : bool
+	-_hasAutoindex : bool
+	-_hasClientMaxBodySize : bool
+	-_hasReturnDirective : bool
+	+getAutoindex() : bool {query}
+	+hasAutoindex() : bool {query}
+	+hasClientMaxBodySize() : bool {query}
+	+hasLimitExceptMethod(const std::string& method) : bool {query}
+	+hasReturnDirective() : bool {query}
+	+isMatchExtentionFile() : bool {query}
+	-_index : ft::filesystem::path
+	-_root : ft::filesystem::path
+	+getIndex() : ft::filesystem::path {query}
+	+getRoot() : ft::filesystem::path {query}
+	-_clientMaxBodySize : size_t
+	+getClientMaxBodySize() : size_t {query}
+	+getCgiParams() : std::map<std::string , std::string>&
+	-_cgiParams : std::map<std::string, std::string>
+	-_limitExceptMethods : std::set<std::string>
+	+getLimitExceptMethods() : std::set<std::string>&
+	-_cgiExec : std::string
+	-_extentionFile : std::string
+	-_uri : std::string
+	+getCgiExec() : std::string {query}
+	+getCgiParam(std::string param) : std::string
+	+getExtentionFile() : std::string {query}
+	+getUri() : std::string {query}
+	-_setAction(action) : void
+	+addCgiParam(const std::string& name, const std::string& value) : void
+	+addCgiParam(const std::pair<std::string, std::string> pair) : void
+	+addLimitExceptMethod(const std::string& method) : void
+	+addLimitExceptMethods(const std::set<std::string>& l) : void
+	+setAutoindex(bool autoindex) : void
+	+setCgiExec(const std::string& exec) : void
+	+setClientMaxBodySize(size_t size) : void
+	+setExtentionFile(std::string ext) : void
+	+setIndex(ft::filesystem::path index) : void
+	+setReturnDirective(const ReturnDirective& returnDirective) : void
+	+setRoot(ft::filesystem::path root) : void
+	+setUri(std::string uri) : void
+}
+
+
+class ReturnDirective {
+	+ReturnDirective()
 	-_uri : Uri
-	+getUri() : Uri&
-	-_method : std::string
-	-_version : std::string
-	+toString() : std::string
-	+getMethod() : std::string&
-	+setMethod(std::string method) : void
-	+setUri(const Uri& uri) : void
-	+setVersion(std::string version) : void
-	+write(std::ostream os) : void
+	+getUri() : Uri& {query}
+	+hasCode() : bool {query}
+	+hasText() : bool {query}
+	+hasUri() : bool {query}
+	-_text : std::string
+	+getText() : std::string& {query}
+	-_code : u_short
+	+getCode() : u_short {query}
+	+setCode(u_short code) : void
+	+setText(const std::string& text) : void
+	+setUri(const std::string& uri) : void
 }
 
 
-class HttpResponse {
-	+HttpResponse()
-	+~HttpResponse()
-	-_status : HttpStatus
-	+getStatus() : int
-	+getStatusMessage(int code) : std::string
-	+toString() : std::string
-	+read(std::istream is) : void
-	+sendError(int code, std::ofstream out) : void
-	+setContentLength(int contentLength) : void
-	+setStatus(int code) : void
-	+write(std::ostream os) : void
-}
-
-
-class HttpStatus {
-	+HttpStatus()
-	+~HttpStatus()
-	+isClientError(int code) : bool
-	+isError(int code) : bool
-	+isInformational(int code) : bool
-	+isRedirection(int code) : bool
-	+isServerError(int code) : bool
-	+isSuccessful(int code) : bool
-	-_value : int
-	+getValue() : int {query}
-	+getMessage(int code) : std::string {query}
-	+setValue(int code) : void
-}
-
-
-class Server {
-	+Server(int port)
-	+Server(const Server& s)
-	+~Server()
-	+operator=(const Server& s) : Server&
-	+getReq(sckt::fd_type fd) : bool
-	+getRequest(sckt::fd_type fd, std::string* request) : bool
-	+start() : bool
-	-_clients : clients_type
-	-_port : int
-	-_socket : sckt::Socket
-	-_pfd : struct pollfd
-	+connectClient() : void
-	+disconnectClient(clients_type::iterator client) : void
-	+manageClient(clients_type::iterator client) : void
-	+stop() : void
-	+update() : void
+class ServerBlock {
+	+ServerBlock()
+	+getListen(uint32_t index) : Host& {query}
+	+findLocation(const Uri& uri) : Location& {query}
+	-_getLocationIfMatchExtention(const Uri& uri) : Location* {query}
+	+findExactLocation(const Uri& uri) : Location* {query}
+	-_autoindex : bool
+	-_hasAutoindex : bool
+	-_hasClientMaxBodySize : bool
+	+getAutoindex() : bool {query}
+	+hasAutoindex() : bool {query}
+	+hasClientMaxBodySize() : bool {query}
+	-_index : ft::filesystem::path
+	-_root : ft::filesystem::path
+	-_uploadStore : ft::filesystem::path
+	+getIndex() : ft::filesystem::path {query}
+	+getRoot() : ft::filesystem::path {query}
+	+getUploadStore() : ft::filesystem::path {query}
+	-_clientMaxBodySize : size_t
+	+getClientMaxBodySize() : size_t {query}
+	+getErrors() : std::map<u_short , std::string>&
+	-_errors : std::map<u_short, std::string>
+	+getPathFromUri(const Uri& uri) : std::pair<const Location* , ft::filesystem::path> {query}
+	-_serverName : std::string
+	+getServerName() : std::string {query}
+	-_listens : std::vector<Host>
+	+getListens() : std::vector<Host>&
+	-_locations : std::vector<Location>
+	+getLocations() : std::vector<Location>&
+	+addError(u_short code, const std::string& path) : void
+	+addErrors(const std::map<u_short, std::string>& errors) : void
+	+addListen(Host listen) : void
+	+addLocation(Location location) : void
+	+setAutoindex(bool autoindex) : void
+	+setClientMaxBodySize(size_t size) : void
+	+setIndex(ft::filesystem::path index) : void
+	+setReturnDirective(const ReturnDirective& returnDirective) : void
+	+setRoot(ft::filesystem::path root) : void
+	+setServerName(std::string serverName) : void
+	+setUploadStore(ft::filesystem::path path) : void
 }
 
 
 class ServerConfig {
-	-ServerConfig(const std::string& filepath)
+	-ServerConfig(const ft::filesystem::path& filepath, const ft::filesystem::path& mimePath)
 	-ServerConfig(ServerConfig &)
-	-_parseHost(const std::string& host) : Host
-	-_parseListen(parser::config::ScannerConfig& scanner) : Host
-	-_parseServer(parser::config::ScannerConfig& scanner) : ServerBlock
+	-_parseHost(config::ScannerConfig& scanner) : Host
+	-_parseListen(config::ScannerConfig& scanner) : Host
+	-_parseListenValue(const config::Token& host) : Host
+	-_parseLocation(config::ScannerConfig& scanner, config::Token locationToken) : Location
+	+findLocation(const Uri& uri) : Location&
+	-_parseReturn(config::ScannerConfig& scanner) : ReturnDirective
+	-_parseServer(config::ScannerConfig& scanner, config::Token serverToken) : ServerBlock
+	+findServer(const Uri& uri) : ServerBlock&
+	+getServer(uint32_t index) : ServerBlock&
+	+{static} getInstance(const ft::filesystem::path& filepath, const ft::filesystem::path& mimePath) : ServerConfig&
+	+{static} getInstance() : ServerConfig&
 	-operator=(const ServerConfig &) : ServerConfig&
-	+{static} getInstance(std::string filepath) : ServerConfig*
+	-_parseAutoindex(config::ScannerConfig& scanner) : bool
+	-_configFilePath : ft::filesystem::path
+	-_parseIndex(config::ScannerConfig& scanner) : ft::filesystem::path
+	-_parseRoot(config::ScannerConfig& scanner) : ft::filesystem::path
+	-_parseUploadStore(config::ScannerConfig& scanner) : ft::filesystem::path
+	+getConfigFilePath() : ft::filesystem::path {query}
+	+getPathFromUri(const Uri& uri) : ft::filesystem::path
+	-_parseClientMaxBodySize(config::ScannerConfig& scanner) : size_t
 	-{static} _singleton : static ServerConfig*
-	-_configFilePath : std::string
-	-_parseIndex(parser::config::ScannerConfig& scanner) : std::string
-	-_parseRoot(parser::config::ScannerConfig& scanner) : std::string
-	+getConfigFilePath() : std::string {query}
+	-_parseMimeFile(const ft::filesystem::path& path) : std::map<std::string , std::string>
+	-_mime : std::map<std::string, std::string>
+	-_parseErrorPage(config::ScannerConfig& scanner) : std::map<u_short , std::string>
+	-_parseCgiParam(config::ScannerConfig& scanner) : std::pair<std::string , std::string>
+	-_parseLimitExceptMethods(config::ScannerConfig& scanner) : std::set<std::string>
+	-_parseCgiExec(config::ScannerConfig& scanner) : std::string
+	-_parseServerName(config::ScannerConfig& scanner) : std::string
+	+getMime(const std::string& extension) : std::string
 	-_servers : std::vector<ServerBlock>
+	+getServers() : std::vector<ServerBlock>& {query}
+	+getPorts() : std::vector<uint32_t>
+	+{static} __delete_singleton_instance() : void
+	-_checkNoDupplicatePortListen(ServerBlock& server, config::Token tokenListen) : void
 	-_parse(std::istream &) : void
-	-_parseErrorPage(parser::config::ScannerConfig& scanner) : void
-	-_parseLocation(parser::config::ScannerConfig& scanner) : void
-	-_parseServerName(parser::config::ScannerConfig& scanner) : void
-	-_skipSemiColonNewLine(parser::config::ScannerConfig& scanner) : void
-	-_throw_SyntaxError(parser::config::Token t, const std::string& error_str) : void
+	-_postCheckAtLeastOneServerIsDefined() : void
+	-_postParser() : void
+	-_postParserSetAutoindexInChilds() : void
+	-_postParserSetClientMaxBodySizeInChilds() : void
+	-_postParserSetDefaultServerLocation() : void
+	-_postParserSetLimitExcept() : void
+	-_skipSemiColonNewLine(config::ScannerConfig& scanner) : void
+	-_throw_SyntaxError(config::Token t, const std::string& error_str, const ft::filesystem::path& file) : void
 }
 
 
-class ServerConfig::SyntaxError {
+class SyntaxError {
+	+SyntaxError()
 	+SyntaxError(const char* message)
 	+SyntaxError(const std::string& message)
 	+~SyntaxError()
@@ -121,28 +188,22 @@ class ServerConfig::SyntaxError {
 }
 
 
-class ServerHandler {
-	+ServerHandler(std::vector<int> ports)
-	+~ServerHandler()
-	-_servers : std::vector<Server>
-	+run() : void
-}
-
-
 class Uri {
 	+Uri()
 	+Uri(const std::string& uri)
+	+Uri(const char* uri)
 	+Uri(const std::string& scheme, const std::string& pathEtc)
 	+Uri(const std::string& scheme, const std::string& authority, const std::string& pathEtc)
 	+Uri(const std::string& scheme, const std::string& authority, const std::string& path, const std::string& query)
 	+Uri(const std::string& scheme, const std::string& authority, const std::string& path, const std::string& query, const std::string& fragment)
-	+Uri(Uri &)
+	+Uri(const Uri &)
 	+~Uri()
 	+operator=(const Uri &) : Uri&
-	+operator=(const std::string& uri) : Uri&
 	+empty() : bool {query}
 	+isRelative() : bool {query}
 	+isWellKnownPort() : bool {query}
+	-operator==(const Uri& lhs, const Uri& rhs) : bool
+	+getPath() : ft::filesystem::path {query}
 	-_fragment : std::string
 	-_host : std::string
 	-_path : std::string
@@ -152,15 +213,14 @@ class Uri {
 	+decode(std::string s) : std::string {query}
 	+getAuthority() : std::string {query}
 	+getFragment() : std::string
-	+getHost() : std::string
-	+getPath() : std::string
+	+getHost() : std::string {query}
 	+getPathAndQuery() : std::string {query}
 	+getPathEtc() : std::string {query}
 	+getQuery() : std::string {query}
 	+getRawQuery() : std::string
 	+getScheme() : std::string
 	+getUserInfo() : std::string
-	+toString() : std::string
+	+toString() : std::string {query}
 	-_port : u_short
 	+getPort() : u_short {query}
 	+getSpecifiedPort() : u_short
@@ -184,217 +244,109 @@ class Uri {
 }
 
 
-class Uri::SyntaxError {
-	-what() : char*
+enum action::actionEnum {
+	cgi
+	none
+	returnDirective
 }
 
 
-enum HttpStatus::Code {
-	Accepted
-	AlreadyReported
-	BadGateway
-	BadRequest
-	Conflict
-	Continue
-	Created
-	EarlyHints
-	ExpectationFailed
-	FailedDependency
-	Forbidden
-	Found
-	GatewayTimeout
-	Gone
-	HTTPVersionNotSupported
-	IMUsed
-	ImATeapot
-	InsufficientStorage
-	InternalServerError
-	LengthRequired
-	Locked
-	LoopDetected
-	MethodNotAllowed
-	MovedPermanently
-	MultiStatus
-	MultipleChoices
-	NetworkAuthenticationRequired
-	NoContent
-	NonAuthoritativeInformation
-	NotAcceptable
-	NotExtended
-	NotFound
-	NotImplemented
-	NotModified
-	OK
-	PartialContent
-	PayloadTooLarge
-	PaymentRequired
-	PermanentRedirect
-	PreconditionFailed
-	PreconditionRequired
-	Processing
-	ProxyAuthenticationRequired
-	RangeNotSatisfiable
-	RequestHeaderFieldsTooLarge
-	RequestTimeout
-	ResetContent
-	SeeOther
-	ServiceUnavailable
-	SwitchingProtocols
-	TemporaryRedirect
-	TooManyRequests
-	URITooLong
-	Unauthorized
-	UnavailableForLegalReasons
-	UnprocessableEntity
-	UnsupportedMediaType
-	UpgradeRequired
-	UseProxy
-	VariantAlsoNegotiates
+class Context {
+	+Context(ServerBlock& server, const Location& location, const fs::path path, const Uri& uri)
+	+server : ServerBlock&
+	+uri : Uri
+	+location : const Location&
+	+path : ft::filesystem::path
 }
 
 
-class Host {
-	+port : int
-	+host : std::string
+class action {
+	+action(actionEnum e)
+	-_e : actionEnum
+	+operator!=(const action& lhs, const action& rhs) : bool
+	+operator==(const action& lhs, const action& rhs) : bool
 }
 
 
-class ServerBlock {
-	+errors : std::map<u_short, std::string>
-	+root : std::string
-	+serverName : std::string
-	+listens : std::vector<Host>
-	+indexes : std::vector<std::string>
-}
+namespace web {
+	class Device {
+		+Device()
+		+~Device()
+		-_socket : Socket
+		+getSocket() : Socket&
+		+bindSocket() : bool
+		+listenSocket() : bool
+		+setNonBlocking() : bool
+		+setReusableAddr() : bool
+		-_inputBuffer : buffer_type
+		-_outputBuffer : buffer_type
+		+getInputBuffer() : buffer_type&
+		+getOutputBuffer() : buffer_type&
+		-_port : port_type
+		+getPort() : port_type
+		-_requests : requests_queue_type
+		+getRequestsQueue() : requests_queue_type&
+		-_responses : responses_queue_type
+		+getResponsesQueue() : responses_queue_type&
+		+closeSocket() : void
+		+setPort(port_type port) : void
+	}
 
+	class Server {
+		-Server(const Server& ref)
+		+Server()
+		+~Server()
+		-_isServerIndex(int deviceIndex) : bool
+		+setup() : bool
+		-_firstClientIndex : int
+		-_nfds : int
+		-_devices : std::vector<Device>
+		-_fds : struct pollfd
+		-_buildRequests(int deviceIndex) : void
+		-_buildResponses(int deviceIndex) : void
+		-_connectClients(int servrIndex) : void
+		-_disconnectDevice(int deviceIndex) : void
+		-_getRequests(int deviceIndex) : void
+		-_log(int fd, std::string description) : void
+		-_sendResponses(int deviceIndex) : void
+		+routine() : void
+		+stop(int status) : void
+	}
 
-class ServerBlock::Location {
-	+fastCgiPass : Host
-	+path : Uri
-	+autoindex : bool
-	+client_max_body_size : size_t
-}
-
-
-namespace clnt {
-	class Client {
-		+Client()
-		+~Client()
-		-_socket : sckt::Socket
-		+getAddr() : sckt::addr_type {query}
-		+getFd() : sckt::fd_type {query}
-		-_pfd : struct pollfd
-		+getPfd() : struct pollfd {query}
-		+setAddr(sckt::addr_type addr) : void
-		+setFd(sckt::fd_type fd) : void
-		+setPfd() : void
+	class Socket {
+		+Socket()
+		+~Socket()
+		-_addrLen : addrLen_type
+		+getAddrLen() : addrLen_type {query}
+		-_addr : addr_type
+		+getAddr() : addr_type {query}
+		+setFd(int domain, int type) : bool
+		-_fd : fd_type
+		+getFd() : fd_type {query}
+		+getIp() : std::string
+		+setAddr(int domain, int interface, int port) : void
+		+setAddr(const addr_type& addr) : void
+		+setFd(fd_type fd) : void
 	}
 }
 
 
 namespace parser {
-	abstract class IScanner {
-		+~IScanner()
-		+{abstract} eof() : bool
-		+{abstract} get() : char
-		+{abstract} peek() : char
-		+{abstract} unget() : char
-		+{abstract} getColumn() : int
-		+{abstract} getLine() : int
-	}
-
-	class Scanner {
-		-Scanner()
-		+Scanner(std::istream& inputStream)
-		+~Scanner()
-		+eof() : bool
-		-_c : char
-		+get() : char
-		+peek() : char
-		+unget() : char
-		-_column : int
-		-_lastColumn : int
-		-_line : int
-		+getColumn() : int
-		+getLine() : int
-		-_inStream : std::istream&
-		-moveBackward() : void
-		-moveForward() : void
-	}
-
-	class ScannerFD {
-		-ScannerFD()
-		+ScannerFD(int fd)
-		+~ScannerFD()
-		+eof() : bool
-		-_buffer : char
-		-_c : char
-		+get() : char
-		+peek() : char
-		+unget() : char
-		-_column : int
-		-_fd : int
-		-_lastColumn : int
-		-_line : int
-		+getColumn() : int
-		+getLine() : int
-		-_idx : size_t
-		+{static} bufferSize : static const size_t
-		-moveBackward() : void
-		-moveForward() : void
-	}
-
-	namespace parser::config {
-		class ScannerConfig {
-			+ScannerConfig(std::istream& inputStream)
-			+~ScannerConfig()
-			-_scan : Scanner
-			-_actualToken : Token
-			-_makeToken(ScopedEnum ::TokenKind kind, std::string value) : Token
-			-_makeToken(ScopedEnum ::TokenKind kind, std::string value, int column, int line) : Token
-			+getToken(bool skipNL) : Token
-			+peekToken() : Token
-			-_charIsString(char c) : bool
-		}
-
-		enum ScopedEnum::TokenKind {
-			kColon
-			kComma
-			kEndOfInput
-			kError
-			kIdentifier
-			kLeftBrace
-			kNewLine
-			kRightBrace
-			kSemiColon
-			kString
-		}
-
-		class ScopedEnum {
-		}
-
-		class Token {
-			+kind : ScopedEnum ::TokenKind
-			+column : int
-			+line : int
-			+value : std::string
-		}
-	}
-
-	namespace parser::http {
-		class ScannerHttpRequest {
-			+ScannerHttpRequest(std::istream& inputStream)
-			+~ScannerHttpRequest()
-			-_scan : Scanner
-			-_actualToken : Token
-			-_makeToken(ScopedEnum ::TokenKind kind, std::string value) : Token
+	namespace http {
+		class ScannerMessage {
+			-ScannerMessage()
+			+ScannerMessage(std::vector<unsigned char>& buffer)
+			+~ScannerMessage()
+			-_makeToken(TokenKind kind, std::string value) : Token
 			+getToken(bool skipLWS) : Token
-			+peekToken() : Token
 			-_charIsString(char c) : bool
-			+getChar() : char
+			-_scan : ft::scanner::ScannerBuffer
+			+remainCharCount() : size_t
+			+getChar() : unsigned char
+			+eraseBeforeCurrentIndex() : void
 		}
 
-		enum ScopedEnum::TokenKind {
+		enum TokenKind::TokenKindEnum {
 			kCarriage
 			kColon
 			kComma
@@ -407,33 +359,640 @@ namespace parser {
 			kString
 		}
 
-		class ScopedEnum {
+		class Token {
+			+Token()
+			+kind : TokenKind
+			+value : std::string
 		}
 
-		class Token {
-			+kind : ScopedEnum ::TokenKind
-			+column : int
-			+line : int
-			+value : std::string
+		class TokenKind {
+			+TokenKind(TokenKindEnum e)
+			+TokenKind(unsigned int e)
+			-_e : TokenKindEnum
+			+operator!=(const TokenKind& lhs, const TokenKind& rhs) : bool
+			+operator==(const TokenKind& lhs, const TokenKind& rhs) : bool
+			+getValue() : int {query}
 		}
 	}
 }
 
 
-namespace sckt {
-	class Socket {
-		+Socket()
-		+~Socket()
-		+getAddrLen() : addrLen_type {query}
-		+getAddr() : addr_type {query}
-		+setFd(int domain, int type) : bool
-		+getFd() : fd_type {query}
-		-_fd : int
-		-_addrLen : sckt::socklen_t
-		-_addr : struct sockaddr_in
-		+setAddr(int domain, int interface, int port) : void
-		+setAddr(struct sockaddr_in addr) : void
-		+setFd(int fd) : void
+namespace http {
+	class Message {
+		+Message()
+		+~Message()
+		+empty() : bool {query}
+		#_content : content_type
+		+getContent() : content_type&
+		#_headers : headers_type
+		+getHeaders() : headers_type&
+		+getContentLength() : size_t
+		#_version : std::string
+		+getHeader(std::string name) : std::string
+		+getVersion() : std::string
+		+clear() : void
+		+delHeader(std::string name) : void
+		+setContent(const content_type& content) : void
+		+setContent(const content_type& content, std::string contentType) : void
+		+setHeader(std::string key, std::string val) : void
+		+setVersion(const std::string& version) : void
+	}
+
+	class Request {
+		+Request()
+		+~Request()
+		-_uri : Uri
+		+getUri() : Uri&
+		+empty() : bool {query}
+		-_method : std::string
+		+getMethod() : std::string
+		+clear() : void
+		+setMethod(std::string method) : void
+		+setUri(const Uri& uri) : void
+	}
+
+	class Response {
+		+Response()
+		+~Response()
+		-_status : Status
+		+getStatus() : Status&
+		+empty() : bool {query}
+		+clear() : void
+		+setStatus(Status e) : void
+	}
+
+	enum Status::StatusEnum {
+		Accepted
+		AlreadyReported
+		BadGateway
+		BadRequest
+		Conflict
+		Continue
+		Created
+		EarlyHints
+		EndOfInput
+		ExpectationFailed
+		FailedDependency
+		Forbidden
+		Found
+		GatewayTimeout
+		Gone
+		HTTPVersionNotSupported
+		IMUsed
+		ImATeapot
+		InsufficientStorage
+		InternalServerError
+		LengthRequired
+		Locked
+		LoopDetected
+		MethodNotAllowed
+		MovedPermanently
+		MultiStatus
+		MultipleChoices
+		NetworkAuthenticationRequired
+		NoContent
+		NonAuthoritativeInformation
+		None
+		NotAcceptable
+		NotExtended
+		NotFound
+		NotImplemented
+		NotModified
+		OK
+		PartialContent
+		PayloadTooLarge
+		PaymentRequired
+		PermanentRedirect
+		PreconditionFailed
+		PreconditionRequired
+		Processing
+		ProxyAuthenticationRequired
+		RangeNotSatisfiable
+		RequestHeaderFieldsTooLarge
+		RequestTimeout
+		ResetContent
+		SeeOther
+		ServiceUnavailable
+		SwitchingProtocols
+		TemporaryRedirect
+		TooManyRequests
+		URITooLong
+		Unauthorized
+		UnavailableForLegalReasons
+		UnprocessableEntity
+		UnsupportedMediaType
+		UpgradeRequired
+		UseProxy
+		VariantAlsoNegotiates
+	}
+
+	class Status {
+		+Status()
+		+Status(StatusEnum e)
+		+Status(unsigned int e)
+		+~Status()
+		-_e : StatusEnum
+		+operator!=(const Status& lhs, const Status& rhs) : bool
+		+operator<(const Status& lhs, const Status& rhs) : bool
+		+operator<=(const Status& lhs, const Status& rhs) : bool
+		+operator==(const Status& lhs, const Status& rhs) : bool
+		+operator>(const Status& lhs, const Status& rhs) : bool
+		+operator>=(const Status& lhs, const Status& rhs) : bool
+		+getValue() : int {query}
+		+getDefinition() : std::string {query}
+		+setValue(StatusEnum e) : void
+		+setValue(int e) : void
+	}
+
+	class multipart_part {
+		+len : size_t
+		+headers : std::map<std::string, std::string>
+		+getFilename() : std::string {query}
+		+content : unsigned char*
+	}
+}
+
+
+namespace html {
+	class Builder {
+		+Builder(const std::string& rootName)
+		+Builder(const std::string& rootName, const std::string& rootContent)
+		+operatorElement()
+		+addAttribute(const std::string& name, const std::string& value) : Builder*
+		+addAttribute(const Attribute& attribute) : Builder*
+		+addChild(const std::string& name, const std::string& content) : Builder*
+		+addChild(const Element& elem) : Builder*
+		+addChild(const Builder* b) : Builder*
+		+addChild(std::string name, Element child) : Builder*
+		-_root : Element
+		+str() : std::string
+	}
+
+	class Element {
+		-Element()
+		-Element(const std::string& name, const std::string& content)
+		-Element(const std::string& name, const Element& child)
+		-_attributesToString() : std::string
+		-_content : std::string
+		-_name : std::string
+		+str(size_t depth) : std::string
+		-_attributes : std::vector<Attribute>
+		-_children : std::vector<Element>
+	}
+
+	class Attribute {
+		+Attribute(const std::string& name, const std::string& value)
+		+name : std::string
+		+value : std::string
+	}
+}
+
+
+namespace ft {
+	class error_code {
+		+error_code()
+		+error_code(int errc)
+		+operatorbool()
+		+operator=(int e) : error_code&
+		-_val : int
+		+value() : int
+		+message() : std::string {query}
+		+assign(int val) : void
+		+clear() : void
+	}
+
+	class shared_ptr <template<class T>> {
+		+shared_ptr()
+		+shared_ptr(T* pointer)
+		+shared_ptr(const shared_ptr& other)
+		+~shared_ptr()
+		+operator*() : T& {query}
+		-_ptr : T*
+		+get() : T* {query}
+		+operator->() : T* {query}
+		+operator=(const shared_ptr& other) : shared_ptr&
+		+getReferenceCount() : size_t {query}
+		-_refCount : size_t*
+		-_clear() : void
+	}
+
+	enum errc::errcEnum {
+		address_family_not_supported
+		address_in_use
+		address_not_available
+		already_connected
+		argument_list_too_long
+		argument_out_of_domain
+		bad_address
+		bad_file_descriptor
+		bad_message
+		broken_pipe
+		connection_aborted
+		connection_already_in_progress
+		connection_refused
+		connection_reset
+		cross_device_link
+		destination_address_required
+		device_or_resource_busy
+		directory_not_empty
+		executable_format_error
+		file_exists
+		file_too_large
+		filename_too_long
+		function_not_supported
+		host_unreachable
+		identifier_removed
+		illegal_byte_sequence
+		inappropriate_io_control_operation
+		interrupted
+		invalid_argument
+		invalid_seek
+		io_error
+		is_a_directory
+		message_size
+		network_down
+		network_reset
+		network_unreachable
+		no_buffer_space
+		no_child_process
+		no_link
+		no_lock_available
+		no_message
+		no_message_available
+		no_protocol_option
+		no_space_on_device
+		no_stream_resources
+		no_such_device
+		no_such_device_or_address
+		no_such_file_or_directory
+		no_such_process
+		none
+		not_a_directory
+		not_a_socket
+		not_a_stream
+		not_connected
+		not_enough_memory
+		not_supported
+		operation_canceled
+		operation_in_progress
+		operation_not_permitted
+		operation_not_supported
+		operation_would_block
+		owner_dead
+		permission_denied
+		protocol_error
+		protocol_not_supported
+		read_only_file_system
+		resource_deadlock_would_occur
+		resource_unavailable_try_again
+		result_out_of_range
+		state_not_recoverable
+		stream_timeout
+		text_file_busy
+		timed_out
+		too_many_files_open
+		too_many_files_open_in_system
+		too_many_links
+		too_many_symbolic_link_levels
+		value_too_large
+		wrong_protocol_type
+	}
+
+	class errc {
+		+errc(errcEnum e)
+		+operatorerrcEnum()
+		+operator==(const errc& lhs, const errc& rhs) : bool
+		-_e : errcEnum
+	}
+
+	namespace scanner {
+		class ScannerBuffer {
+			-ScannerBuffer()
+			+ScannerBuffer(std::vector<unsigned char>& buffer)
+			+~ScannerBuffer()
+			-_idx : size_t
+			+remainCharCount() : size_t
+			+toString() : std::string
+			-_buffer : std::vector<unsigned char>&
+			-_c : unsigned char
+			+get() : unsigned char
+			+eraseBeforeCurrentIndex() : void
+			+unget() : void
+		}
+
+		class ScannerStream {
+			-ScannerStream()
+			+ScannerStream(std::istream& inputStream)
+			+~ScannerStream()
+			-_c : char
+			+get() : char
+			-_column : int
+			-_lastColumn : int
+			-_line : int
+			+getColumn() : int
+			+getLine() : int
+			-_inStream : std::istream&
+			-moveBackward(char charToPutBack) : void
+			-moveForward() : void
+			+putback(char c) : void
+		}
+	}
+
+	namespace filesystem {
+		class directory_entry {
+			+directory_entry()
+			+directory_entry(const directory_entry &)
+			+directory_entry(const path& p)
+			+directory_entry(const path& p, ::ft::error_code& ec)
+			+operatorconstclasspath&()
+			+~directory_entry()
+			+exists() : bool {query}
+			+exists(error_code& ec) : bool
+			+is_block_file() : bool {query}
+			+is_block_file(error_code& ec) : bool
+			+is_character_file() : bool {query}
+			+is_character_file(error_code& ec) : bool
+			+is_directory() : bool {query}
+			+is_directory(error_code& ec) : bool
+			+is_fifo() : bool {query}
+			+is_fifo(error_code& ec) : bool
+			+is_other() : bool {query}
+			+is_other(error_code& ec) : bool
+			+is_regular_file() : bool {query}
+			+is_regular_file(error_code& ec) : bool
+			+is_socket() : bool {query}
+			+is_socket(error_code& ec) : bool
+			+is_symlink() : bool {query}
+			+is_symlink(error_code& ec) : bool
+			-_path : class path
+			+operator=(const directory_entry &) : directory_entry&
+			-_status : file_status
+			+status() : file_status {query}
+			+status(error_code& ec) : file_status
+			+getPath() : path&
+			-_fileSize : uintmax_t
+			-_hardLinkCount : uintmax_t
+			+file_size() : uintmax_t {query}
+			+file_size(error_code& ec) : uintmax_t
+			+hard_link_count() : uintmax_t {query}
+			+hard_link_count(error_code& ec) : uintmax_t
+			+assign(const path& p) : void
+			+assign(const path& p, error_code& ec) : void
+			+refresh() : void
+			+refresh(error_code& ec) : void
+		}
+
+		class directory_iterator {
+			+directory_iterator()
+			+directory_iterator(const path& p)
+			+directory_iterator(const path& p, directory_options options)
+			+directory_iterator(const path& p, error_code& ec)
+			+directory_iterator(const path& p, directory_options options, error_code& ec)
+			+directory_iterator(const directory_iterator& other)
+			+~directory_iterator()
+			+operator!=(const directory_iterator& other) : bool {query}
+			+operator==(const directory_iterator& other) : bool {query}
+			+operator*() : directory_entry& {query}
+			+operator->() : directory_entry* {query}
+			+operator++() : directory_iterator&
+			+operator=(const directory_iterator& other) : directory_iterator&
+			-_impl : shared_ptr<impl>
+		}
+
+		class directory_iterator::impl {
+			-impl(const impl& other)
+			+impl(const path& p, directory_options options)
+			+~impl()
+			+_dirp : DIR*
+			+_dirEntry : directory_entry
+			+_options : directory_options
+			+_ec : error_code
+			+_basePath : path
+			+_dirent : struct dirent*
+			-_copyEntryFromDirent() : void
+			+increment(error_code& ec) : void
+		}
+
+		class file_status {
+			+file_status()
+			+file_status(const file_status &)
+			+file_status(file_type ft, perms prms)
+			+~file_status()
+			+operator==(const file_status& lhs, const file_status& rhs) : bool
+			+operator=(const file_status &) : file_status&
+			-_type : file_type
+			+type() : file_type
+			-_perms : perms
+			+permissions() : perms
+			+permissions(perms prms) : void
+			+type(file_type ft) : void
+		}
+
+		class filesystem_error {
+			+filesystem_error(const std::string& what_arg, ft::error_code ec)
+			+filesystem_error(const std::string& what_arg, const path& p1, ft::error_code ec)
+			+filesystem_error(const std::string& what_arg, const path& p1, const path& p2, ft::error_code ec)
+			+filesystem_error(const filesystem_error& other)
+			+~filesystem_error()
+			+what() : char*
+			-_code : ft::error_code
+			+code() : ft::error_code&
+			-_path1 : path
+			-_path2 : path
+			+path1() : path&
+			+path2() : path&
+		}
+
+		class path {
+			+operatorstring_type() {query}
+			+path()
+			+path(const path& other)
+			+path(const string_type& p)
+			+path(const char* p)
+			+~path()
+			+empty() : bool
+			+has_extension() : bool {query}
+			+has_filename() : bool {query}
+			+has_parent_path() : bool {query}
+			+has_relative_path() : bool {query}
+			+has_root_directory() : bool {query}
+			+has_root_path() : bool {query}
+			+has_stem() : bool {query}
+			+is_absolute() : bool {query}
+			+is_relative() : bool {query}
+			-operator<(const path& lhs, const path& rhs) : bool
+			-operator==(const path& lhs, const path& rhs) : bool
+			+c_str() : char*
+			+compare(const path& p) : int
+			+compare(const string_type& s) : int {query}
+			+compare(const char* s) : int {query}
+			+begin() : iterator {query}
+			+end() : iterator {query}
+			+extension() : path {query}
+			+filename() : path {query}
+			+lexically_normal() : path {query}
+			+lexically_proximate(const path& base) : path {query}
+			+lexically_relative(const path& base) : path {query}
+			+parent_path() : path {query}
+			+relative_path() : path {query}
+			+root_directory() : path {query}
+			+root_path() : path {query}
+			+stem() : path {query}
+			+concat(const Source& x) : path&
+			+concat(InputIterator first, InputIterator last) : path&
+			+operator+=(const path& x) : path&
+			+operator+=(const string_type& x) : path&
+			+operator+=(const char* x) : path&
+			+operator+=(char x) : path&
+			+operator/=(const path& p) : path&
+			+operator=(const path& p) : path&
+			+operator=(const string_type& p) : path&
+			+remove_filename() : path&
+			+replace_extension(const path& replacement) : path&
+			+replace_filename(const path& replacement) : path&
+			+string() : std::string {query}
+			-_splitPath() : std::vector<string_type>
+			-_path : string_type
+			+native() : string_type&
+			-_formatPathInPlace() : void
+			+clear() : void
+			+swap(path& rhs) : void
+		}
+
+		class path::iterator {
+			+iterator()
+			+iterator(const path& p, const std::string::const_iterator& pos)
+			+operator!=(const iterator& other) : bool {query}
+			+operator==(const iterator& other) : bool {query}
+			+operator++(int) : iterator
+			+operator--(int) : iterator
+			+operator++() : iterator&
+			+operator--() : iterator&
+			-_cur : path
+			+operator->() : pointer {query}
+			+operator*() : reference {query}
+			-_first : string_type::const_iterator
+			-_iter : string_type::const_iterator
+			-_last : string_type::const_iterator
+			-decrement(const string_type::const_iterator& pos) : string_type::const_iterator {query}
+			-increment(const string_type::const_iterator& pos) : string_type::const_iterator {query}
+			-_updateCurrent() : void
+		}
+
+		enum directory_options::directory_optionsEnum {
+			follow_directory_symlink
+			none
+			skip_permission_denied
+		}
+
+		enum file_type::file_typeEnum {
+			block
+			character
+			directory
+			fifo
+			none
+			not_found
+			regular
+			socket
+			symlink
+			unknown
+		}
+
+		enum perms::permsEnum {
+			all
+			group_all
+			group_exec
+			group_read
+			group_write
+			mask
+			none
+			others_all
+			others_exec
+			others_read
+			others_write
+			owner_all
+			owner_exec
+			owner_read
+			owner_write
+			set_gid
+			set_uid
+			sticky_bit
+			unknown
+		}
+
+		class directory_options {
+			+directory_options(directory_optionsEnum e)
+			+directory_options(unsigned int e)
+			+operator!=(const directory_options& lhs, const directory_options& rhs) : bool
+			+operator==(const directory_options& lhs, const directory_options& rhs) : bool
+			+operator&(directory_options x, directory_options y) : directory_options
+			+operator^(directory_options x, directory_options y) : directory_options
+			+operator|(directory_options x, directory_options y) : directory_options
+			+operator~(directory_options x) : directory_options
+			-_e : directory_optionsEnum
+		}
+
+		class file_type {
+			+file_type(file_typeEnum e)
+			+operator!=(const file_type& lhs, const file_type& rhs) : bool
+			+operator==(const file_type& lhs, const file_type& rhs) : bool
+			-_e : file_typeEnum
+		}
+
+		class perms {
+			+perms(permsEnum e)
+			+perms(unsigned int e)
+			+operator==(const perms& lhs, const perms& rhs) : bool
+			+operator&(perms x, perms y) : perms
+			+operator^(perms x, perms y) : perms
+			+operator|(perms x, perms y) : perms
+			+operator~(perms x) : perms
+			-_e : permsEnum
+		}
+	}
+}
+
+
+namespace config {
+	class ScannerConfig {
+		+ScannerConfig(std::istream& inputStream)
+		+~ScannerConfig()
+		-_makeToken(TokenKind kind, std::string value) : Token
+		-_makeToken(TokenKind kind, std::string value, int column, int line) : Token
+		+getToken(bool skipNL) : Token
+		-_charIsString(char c) : bool
+		-_scan : ft::scanner::ScannerStream
+	}
+
+	enum TokenKind::TokenKindEnum {
+		kColon
+		kComma
+		kComment
+		kEndOfInput
+		kError
+		kInteger
+		kLeftBrace
+		kNewLine
+		kRightBrace
+		kSemiColon
+		kString
+	}
+
+	class Token {
+		+Token()
+		+kind : TokenKind
+		+column : int
+		+line : int
+		+value : std::string
+	}
+
+	class TokenKind {
+		+TokenKind(TokenKindEnum e)
+		+TokenKind(unsigned int e)
+		-_e : TokenKindEnum
+		+operator!=(const TokenKind& lhs, const TokenKind& rhs) : bool
+		+operator==(const TokenKind& lhs, const TokenKind& rhs) : bool
+		+getValue() : int {query}
 	}
 }
 
@@ -443,16 +1002,10 @@ namespace sckt {
 
 /' Inheritance relationships '/
 
-.AHttpMessage <|-- .HttpRequest
+http.Message <|-- http.Request
 
 
-.AHttpMessage <|-- .HttpResponse
-
-
-parser.IScanner <|-- parser.Scanner
-
-
-parser.IScanner <|-- parser.ScannerFD
+http.Message <|-- http.Response
 
 
 
@@ -460,37 +1013,64 @@ parser.IScanner <|-- parser.ScannerFD
 
 /' Aggregation relationships '/
 
-clnt.Client *-- sckt.Socket
+html.Builder *-- html.Element
 
 
-.HttpRequest *-- .Uri
+.Context *-- .Location
 
 
-.HttpResponse *-- .HttpStatus
+.Context *-- .ServerBlock
 
 
-parser.parser::config.ScannerConfig *-- parser.Scanner
+.Context *-- .Uri
 
 
-parser.parser::config.ScannerConfig "2" *-- parser.parser::http.Token
+.Context *-- ft.filesystem.path
 
 
-parser.parser::http.ScannerHttpRequest *-- parser.Scanner
+web.Device *-- web.Socket
 
 
-parser.parser::http.ScannerHttpRequest "2" *-- parser.parser::http.Token
+html.Element *-- html.Attribute
 
 
-.Server *-- sckt.Socket
+html.Element *-- html.Element
+
+
+.Location *-- .ReturnDirective
+
+
+.Location *-- .action
+
+
+.Location "2" *-- ft.filesystem.path
+
+
+http.Request *-- .Uri
+
+
+http.Response *-- http.Status
+
+
+.ReturnDirective *-- .Uri
+
+
+config.ScannerConfig *-- ft.scanner.ScannerStream
+
+
+parser.http.ScannerMessage *-- ft.scanner.ScannerBuffer
+
+
+web.Server *-- web.Device
 
 
 .ServerBlock *-- .Host
 
 
-.ServerBlock::Location *-- .Host
+.ServerBlock *-- .Location
 
 
-.ServerBlock::Location *-- .Uri
+.ServerBlock "3" *-- ft.filesystem.path
 
 
 .ServerConfig *-- .ServerBlock
@@ -499,10 +1079,586 @@ parser.parser::http.ScannerHttpRequest "2" *-- parser.parser::http.Token
 .ServerConfig o-- .ServerConfig
 
 
-.ServerHandler *-- .Server
+.ServerConfig *-- ft.filesystem.path
 
 
-parser.parser::http.Token "4" *-- parser.parser::http.ScopedEnum
+parser.http.Token "4" *-- parser.http.TokenKind
+
+
+ft.filesystem.directory_entry *-- ft.filesystem.file_status
+
+
+ft.filesystem.directory_entry *-- ft.filesystem.path
+
+
+ft.filesystem.directory_iterator *-- ft.shared_ptr
+
+
+ft.filesystem.directory_iterator::impl *-- ft.filesystem.directory_entry
+
+
+ft.filesystem.directory_iterator::impl *-- ft.filesystem.directory_options
+
+
+ft.filesystem.directory_iterator::impl *-- ft.error_code
+
+
+ft.filesystem.directory_iterator::impl *-- ft.filesystem.path
+
+
+ft.filesystem.file_status *-- ft.filesystem.file_type
+
+
+ft.filesystem.file_status *-- ft.filesystem.perms
+
+
+ft.filesystem.filesystem_error *-- ft.error_code
+
+
+ft.filesystem.filesystem_error "2" *-- ft.filesystem.path
+
+
+ft.filesystem.path::iterator *-- ft.filesystem.path
+
+
+
+
+
+
+/' Dependency relationships '/
+
+html.Attribute <.. html.Builder
+
+
+html.Builder <.. html.Builder
+
+
+html.Element <.. html.Builder
+
+
+html.Element <.. html.Builder
+
+
+html.Element <.. html.Element
+
+
+.Host <.. .ServerBlock
+
+
+.Location <.. .Context
+
+
+.Location <.. .ServerBlock
+
+
+.ReturnDirective <.. .Location
+
+
+.ReturnDirective <.. .ServerBlock
+
+
+config.ScannerConfig <.. .ServerConfig
+
+
+config.ScannerConfig <.. .ServerConfig
+
+
+config.ScannerConfig <.. .ServerConfig
+
+
+config.ScannerConfig <.. .ServerConfig
+
+
+config.ScannerConfig <.. .ServerConfig
+
+
+config.ScannerConfig <.. .ServerConfig
+
+
+config.ScannerConfig <.. .ServerConfig
+
+
+config.ScannerConfig <.. .ServerConfig
+
+
+config.ScannerConfig <.. .ServerConfig
+
+
+config.ScannerConfig <.. .ServerConfig
+
+
+config.ScannerConfig <.. .ServerConfig
+
+
+config.ScannerConfig <.. .ServerConfig
+
+
+config.ScannerConfig <.. .ServerConfig
+
+
+config.ScannerConfig <.. .ServerConfig
+
+
+config.ScannerConfig <.. .ServerConfig
+
+
+config.ScannerConfig <.. .ServerConfig
+
+
+web.Server <.. web.Server
+
+
+web.Server <.. .ServerConfig
+
+
+.ServerBlock <.. .Context
+
+
+.ServerBlock <.. .ServerConfig
+
+
+http.Status <.. http.Response
+
+
+http.Status <.. http.Status
+
+
+http.Status <.. http.Status
+
+
+http.Status <.. http.Status
+
+
+http.Status <.. http.Status
+
+
+http.Status <.. http.Status
+
+
+http.Status <.. http.Status
+
+
+http.Status <.. http.Status
+
+
+http.Status <.. http.Status
+
+
+http.Status <.. http.Status
+
+
+http.Status <.. http.Status
+
+
+http.Status <.. http.Status
+
+
+http.Status <.. http.Status
+
+
+http.Status <.. http.Status
+
+
+http.Status <.. http.Status
+
+
+parser.http.Token <.. .ServerConfig
+
+
+parser.http.Token <.. .ServerConfig
+
+
+parser.http.Token <.. .ServerConfig
+
+
+parser.http.Token <.. .ServerConfig
+
+
+parser.http.Token <.. .ServerConfig
+
+
+parser.http.TokenKind <.. config.ScannerConfig
+
+
+parser.http.TokenKind <.. config.ScannerConfig
+
+
+parser.http.TokenKind <.. parser.http.ScannerMessage
+
+
+parser.http.TokenKind <.. parser.http.TokenKind
+
+
+parser.http.TokenKind <.. parser.http.TokenKind
+
+
+parser.http.TokenKind <.. parser.http.TokenKind
+
+
+parser.http.TokenKind <.. parser.http.TokenKind
+
+
+parser.http.TokenKind <.. parser.http.TokenKind
+
+
+parser.http.TokenKind <.. config.TokenKind
+
+
+parser.http.TokenKind <.. config.TokenKind
+
+
+parser.http.TokenKind <.. config.TokenKind
+
+
+parser.http.TokenKind <.. config.TokenKind
+
+
+parser.http.TokenKind <.. config.TokenKind
+
+
+.Uri <.. .Context
+
+
+.Uri <.. http.Request
+
+
+.Uri <.. .ServerBlock
+
+
+.Uri <.. .ServerBlock
+
+
+.Uri <.. .ServerBlock
+
+
+.Uri <.. .ServerBlock
+
+
+.Uri <.. .ServerConfig
+
+
+.Uri <.. .ServerConfig
+
+
+.Uri <.. .ServerConfig
+
+
+.Uri <.. .Uri
+
+
+.Uri <.. .Uri
+
+
+.Uri <.. .Uri
+
+
+.Uri <.. .Uri
+
+
+.action <.. .Location
+
+
+.action <.. .action
+
+
+.action <.. .action
+
+
+.action <.. .action
+
+
+.action <.. .action
+
+
+.action <.. .action
+
+
+ft.filesystem.directory_entry <.. ft.filesystem.directory_entry
+
+
+ft.filesystem.directory_entry <.. ft.filesystem.directory_entry
+
+
+ft.filesystem.directory_iterator <.. ft.filesystem.directory_iterator
+
+
+ft.filesystem.directory_iterator <.. ft.filesystem.directory_iterator
+
+
+ft.filesystem.directory_iterator <.. ft.filesystem.directory_iterator
+
+
+ft.filesystem.directory_iterator <.. ft.filesystem.directory_iterator
+
+
+ft.filesystem.directory_options <.. ft.filesystem.directory_iterator
+
+
+ft.filesystem.directory_options <.. ft.filesystem.directory_iterator
+
+
+ft.filesystem.directory_options <.. ft.filesystem.directory_iterator::impl
+
+
+ft.filesystem.directory_options <.. ft.filesystem.directory_options
+
+
+ft.filesystem.directory_options <.. ft.filesystem.directory_options
+
+
+ft.filesystem.directory_options <.. ft.filesystem.directory_options
+
+
+ft.filesystem.directory_options <.. ft.filesystem.directory_options
+
+
+ft.filesystem.directory_options <.. ft.filesystem.directory_options
+
+
+ft.errc <.. ft.errc
+
+
+ft.errc <.. ft.errc
+
+
+ft.errc <.. ft.errc
+
+
+ft.error_code <.. ft.filesystem.directory_entry
+
+
+ft.error_code <.. ft.filesystem.directory_entry
+
+
+ft.error_code <.. ft.filesystem.directory_entry
+
+
+ft.error_code <.. ft.filesystem.directory_entry
+
+
+ft.error_code <.. ft.filesystem.directory_entry
+
+
+ft.error_code <.. ft.filesystem.directory_entry
+
+
+ft.error_code <.. ft.filesystem.directory_entry
+
+
+ft.error_code <.. ft.filesystem.directory_entry
+
+
+ft.error_code <.. ft.filesystem.directory_entry
+
+
+ft.error_code <.. ft.filesystem.directory_entry
+
+
+ft.error_code <.. ft.filesystem.directory_entry
+
+
+ft.error_code <.. ft.filesystem.directory_entry
+
+
+ft.error_code <.. ft.filesystem.directory_entry
+
+
+ft.error_code <.. ft.filesystem.directory_entry
+
+
+ft.error_code <.. ft.filesystem.directory_entry
+
+
+ft.error_code <.. ft.filesystem.directory_iterator
+
+
+ft.error_code <.. ft.filesystem.directory_iterator
+
+
+ft.error_code <.. ft.filesystem.directory_iterator::impl
+
+
+ft.error_code <.. ft.filesystem.filesystem_error
+
+
+ft.error_code <.. ft.filesystem.filesystem_error
+
+
+ft.error_code <.. ft.filesystem.filesystem_error
+
+
+ft.filesystem.file_status <.. ft.filesystem.file_status
+
+
+ft.filesystem.file_status <.. ft.filesystem.file_status
+
+
+ft.filesystem.file_status <.. ft.filesystem.file_status
+
+
+ft.filesystem.file_status <.. ft.filesystem.file_status
+
+
+ft.filesystem.file_type <.. ft.filesystem.file_status
+
+
+ft.filesystem.file_type <.. ft.filesystem.file_status
+
+
+ft.filesystem.file_type <.. ft.filesystem.file_type
+
+
+ft.filesystem.file_type <.. ft.filesystem.file_type
+
+
+ft.filesystem.file_type <.. ft.filesystem.file_type
+
+
+ft.filesystem.file_type <.. ft.filesystem.file_type
+
+
+ft.filesystem.file_type <.. ft.filesystem.file_type
+
+
+ft.filesystem.filesystem_error <.. ft.filesystem.filesystem_error
+
+
+ft.filesystem.path <.. .Context
+
+
+ft.filesystem.path <.. .Location
+
+
+ft.filesystem.path <.. .Location
+
+
+ft.filesystem.path <.. .ServerBlock
+
+
+ft.filesystem.path <.. .ServerBlock
+
+
+ft.filesystem.path <.. .ServerBlock
+
+
+ft.filesystem.path <.. .ServerConfig
+
+
+ft.filesystem.path <.. .ServerConfig
+
+
+ft.filesystem.path <.. .ServerConfig
+
+
+ft.filesystem.path <.. .ServerConfig
+
+
+ft.filesystem.path <.. .ServerConfig
+
+
+ft.filesystem.path <.. .ServerConfig
+
+
+ft.filesystem.path <.. ft.filesystem.directory_entry
+
+
+ft.filesystem.path <.. ft.filesystem.directory_entry
+
+
+ft.filesystem.path <.. ft.filesystem.directory_entry
+
+
+ft.filesystem.path <.. ft.filesystem.directory_entry
+
+
+ft.filesystem.path <.. ft.filesystem.directory_iterator
+
+
+ft.filesystem.path <.. ft.filesystem.directory_iterator
+
+
+ft.filesystem.path <.. ft.filesystem.directory_iterator
+
+
+ft.filesystem.path <.. ft.filesystem.directory_iterator
+
+
+ft.filesystem.path <.. ft.filesystem.directory_iterator::impl
+
+
+ft.filesystem.path <.. ft.filesystem.filesystem_error
+
+
+ft.filesystem.path <.. ft.filesystem.filesystem_error
+
+
+ft.filesystem.path <.. ft.filesystem.filesystem_error
+
+
+ft.filesystem.path <.. ft.filesystem.path
+
+
+ft.filesystem.path <.. ft.filesystem.path
+
+
+ft.filesystem.path <.. ft.filesystem.path
+
+
+ft.filesystem.path <.. ft.filesystem.path
+
+
+ft.filesystem.path <.. ft.filesystem.path
+
+
+ft.filesystem.path <.. ft.filesystem.path
+
+
+ft.filesystem.path <.. ft.filesystem.path
+
+
+ft.filesystem.path <.. ft.filesystem.path
+
+
+ft.filesystem.path <.. ft.filesystem.path
+
+
+ft.filesystem.path <.. ft.filesystem.path
+
+
+ft.filesystem.path <.. ft.filesystem.path
+
+
+ft.filesystem.path <.. ft.filesystem.path
+
+
+ft.filesystem.path <.. ft.filesystem.path
+
+
+ft.filesystem.path <.. ft.filesystem.path
+
+
+ft.filesystem.path <.. ft.filesystem.path::iterator
+
+
+ft.filesystem.perms <.. ft.filesystem.file_status
+
+
+ft.filesystem.perms <.. ft.filesystem.file_status
+
+
+ft.filesystem.perms <.. ft.filesystem.perms
+
+
+ft.filesystem.perms <.. ft.filesystem.perms
+
+
+ft.filesystem.perms <.. ft.filesystem.perms
+
+
+ft.shared_ptr <.. ft.shared_ptr
+
+
+ft.shared_ptr <.. ft.shared_ptr
 
 
 
@@ -511,22 +1667,28 @@ parser.parser::http.Token "4" *-- parser.parser::http.ScopedEnum
 
 /' Nested objects '/
 
-.HttpStatus +-- .HttpStatus::Code
+http.Status +-- http.Status::StatusEnum
 
 
-parser.parser::http.ScopedEnum +-- parser.parser::http.ScopedEnum::TokenKind
+parser.http.TokenKind +-- parser.http.TokenKind::TokenKindEnum
 
 
-parser.parser::http.ScopedEnum +-- parser.parser::config.ScopedEnum::TokenKind
+parser.http.TokenKind +-- config.TokenKind::TokenKindEnum
 
 
-.ServerBlock +-- .ServerBlock::Location
+.action +-- .action::actionEnum
 
 
-.ServerConfig +-- .ServerConfig::SyntaxError
+ft.filesystem.directory_options +-- ft.filesystem.directory_options::directory_optionsEnum
 
 
-.Uri +-- .Uri::SyntaxError
+ft.errc +-- ft.errc::errcEnum
+
+
+ft.filesystem.file_type +-- ft.filesystem.file_type::file_typeEnum
+
+
+ft.filesystem.perms +-- ft.filesystem.perms::permsEnum
 
 
 
