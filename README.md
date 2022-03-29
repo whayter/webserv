@@ -10,36 +10,21 @@
 
 In order to make python and ruby cgi works, you must make files executable.
 
-## Documentation
-
-[Build a simple http server from scratch (C)](https://medium.com/from-the-scratch/http-server-what-do-you-need-to-know-to-build-a-simple-http-server-from-scratch-d1ef8945e4fa)
-
-[RFC 7230 (message syntax and routing)](https://www.rfc-editor.org/rfc/pdfrfc/rfc7230.txt.pdf)
-
-[RFC 7231 (semantics and content)](https://www.rfc-editor.org/rfc/pdfrfc/rfc7231.txt.pdf)
-
-[RFC 7232 (conditional requests)](https://www.rfc-editor.org/rfc/pdfrfc/rfc7232.txt.pdf)
-
-[RFC 7233 (range requests)](https://www.rfc-editor.org/rfc/pdfrfc/rfc7233.txt.pdf)
-
-[RFC 7234 (catching)](https://www.rfc-editor.org/rfc/pdfrfc/rfc7234.txt.pdf)
-
-[RFC 7235 (authentication)](https://www.rfc-editor.org/rfc/pdfrfc/rfc7235.txt.pdf)
-
-[The Common Gateway Interface (CGI) Version 1.1 ](https://datatracker.ietf.org/doc/html/rfc3875)
-
-
-
-## generated uml diagram webserv :
-![image2](https://raw.githubusercontent.com/Working-From-Home/webserv/uml/docs/diagrams/out/webserv.svg)
-
 ## Refs :
+
+- [RFC 7230 (message syntax and routing)](https://www.rfc-editor.org/rfc/pdfrfc/rfc7230.txt.pdf)
+- [RFC 7231 (semantics and content)](https://www.rfc-editor.org/rfc/pdfrfc/rfc7231.txt.pdf)
+- [RFC 7232 (conditional requests)](https://www.rfc-editor.org/rfc/pdfrfc/rfc7232.txt.pdf)
+- [RFC 7233 (range requests)](https://www.rfc-editor.org/rfc/pdfrfc/rfc7233.txt.pdf)
+- [RFC 7234 (catching)](https://www.rfc-editor.org/rfc/pdfrfc/rfc7234.txt.pdf)
+- [RFC 7235 (authentication)](https://www.rfc-editor.org/rfc/pdfrfc/rfc7235.txt.pdf)
+
+- [The Common Gateway Interface (CGI) Version 1.1 ](https://datatracker.ietf.org/doc/html/rfc3875)
 
 - [Design pattern helper](https://refactoring.guru/design-patterns)
 - [Design pattern helper 2](https://sourcemaking.com/design_patterns)
 
 #### http server + sockets, etc...
-
 
 - [Good server example, using builder and singleton pattern](https://users.cs.jmu.edu/bernstdh/web/common/lectures/slides_http-server-example_java.php)
 	- [design improved](https://users.cs.jmu.edu/bernstdh/web/common/lectures/slides_http-servlet-example_java.php) 
