@@ -1,8 +1,8 @@
 [![C/C++ CI](https://github.com/Working-From-Home/webserv/actions/workflows/ci.yml/badge.svg)](https://github.com/Working-From-Home/webserv/actions/workflows/ci.yml)
 
-# Webserv
+## 42 - Webserv
 
-#### firsts things first, must install php-cgi at least php-cgi
+#### firsts things first, install php-cgi
 ###### linux
 - sudo apt install php-cgi
 ###### macos
@@ -28,53 +28,6 @@ In order to make python and ruby cgi works, you must make files executable.
 
 [The Common Gateway Interface (CGI) Version 1.1 ](https://datatracker.ietf.org/doc/html/rfc3875)
 
-## To do list / check list from subject:
-
-#### General 
-
-- [x] The C++ standard must be C++ 98. Your project must compile with it.
-- [x] No external library, no Boost, etc...
-- [x] It must be non-blocking and use only 1 poll (or equivalent) for all the IO between the client and the server (listens includes).
-- [x] poll (or equivalent) should check read and write at the same time.
-- [ ] Your server should never block and the client should be bounce properly if necessary.
-- [x] You should never do a read operation or a write operation without going through poll (or equivalent).
-- [x] Checking the value of errno is strictly forbidden after a read or a write operation.
-- [ ] A request to your server should never hang forever.
-- [ ] You server should have default error pages if none are provided.
-- [ ] Your program should not leak and should never crash, (even when out of memory if all the initialization is done)
-- [x] You can’t use fork for something else than CGI (like php or python etc...)
-- [x] You can’t execve another webserver...
-- [x] Your program should have a config file in argument or use a default path.
-- [x] You don’t need to use poll (or equivalent) before reading your config file.
-- [ ] You should be able to serve a fully static website.
-- [ ] Client should be able to upload files.
-- [ ] Your HTTP response status codes must be accurate.
-- [ ] You need at least GET, POST, and DELETE methods.
-- [ ] Stress tests your server it must stay available at all cost.
-
-#### Config file should be able to :
-
-- [x] choose the [port and host](http://nginx.org/en/docs/http/ngx_http_core_module.html#listen) of each "[server](https://nginx.org/en/docs/http/ngx_http_core_module.html#server)"
-- [x] setup the [server_names](http://nginx.org/en/docs/http/server_names.html) or not
-- [x] The first server for a host:port will be the default for this host:port (meaning it will answer to all request that doesn’t belong to an other server)
-- [x] setup default [error pages](http://nginx.org/en/docs/http/ngx_http_core_module.html#error_page)
-- [x] limit [client body size](http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size)
-- [x] [setup routes](http://nginx.org/en/docs/http/ngx_http_core_module.html#location) with one or multiple of the following rules/configuration (routes wont be using regexp):
-	- [x] define a list of accepted HTTP Methods for the route
-	- [x] define an HTTP redirection.
-	- [x] define a directory or a file from where the file should be search (for example if url /kapouet is rooted to /tmp/www, url /kapouet/pouic/toto/pouet is /tmp/www/pouic/toto/pouet)
-	- [x] turn on or off directory listing
-	- [x] default file to answer if the request is a directory
-	- [x] execute CGI based on certain file extension (for example .php)
-		- [x] You wonder what a CGI is ?
-		- [ ] Because you won’t call the CGI directly use the full path as PATH_INFO
-		- [ ] Just remembers that for chunked request, your server needs to unchunked it and the CGI will expect EOF as end of the body.
-		- [ ] Same things for the output of the CGI. if no content_length is returned from the CGI, EOF will mean the end of the returned data.
-		- [ ] Your program should call the cgi with the file requested as first argument
-		- [ ] The cgi should be run in the correct directory for relativ path file access
-		- [x] Your server should work with one CGI (php-cgi, python...)
-	- [ ] make the route able to accept uploaded files and configure where it should be saved
-- [x] You must provide some configuration files and default basic files to test/demonstrate every feature is working during eval
 
 
 ## generated uml diagram webserv :
