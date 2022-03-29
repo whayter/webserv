@@ -2,13 +2,7 @@
 
 ## 42 - webserv
 
-#### firsts things first, install php-cgi
-###### linux
-- sudo apt install php-cgi
-###### macos
- - idk, try with brew bro.
-
-In order to make python and ruby cgi works, you must make files executable.
+php-cgi must be installed. For python or ruby cgi to work, you must make the files executable.
 
 ## Refs :
 
