@@ -1,6 +1,6 @@
 [![C/C++ CI](https://github.com/Working-From-Home/webserv/actions/workflows/ci.yml/badge.svg)](https://github.com/Working-From-Home/webserv/actions/workflows/ci.yml)
 
-## 42 - Webserv
+## 42 - webserv
 
 #### firsts things first, install php-cgi
 ###### linux
